@@ -7,7 +7,9 @@ import NotFound from '@/exceptions/NotFound'
 import ErrorBoundary from '@/exceptions/ErrorBoundary'
 // routes
 import { Blank } from '@/routes/Blank'
-// import { DashLayout } from '@/DashLayout'
+// HomePage
+import { HomePage } from '@/routes/HomePage'
+
 // styles
 import './assets/css/index.css'
 
@@ -17,7 +19,7 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorBoundary />,
     children: [
-      { index: true, element: <Blank /> },
+      { index: true, element: <HomePage /> },
       { path: 'about', element: <Blank /> },
       { path: '*', element: <NotFound /> }
     ]

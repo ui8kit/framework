@@ -1,0 +1,167 @@
+# UI8Kit Architecture Rules
+
+## Component Hierarchy & Responsibility Separation
+
+### 1. Block Components (@apps/local/src/blocks)
+**Purpose**: Semantic page sections wrapped in Block component
+**Structure**:
+```tsx
+// Block component with semantic HTML5 tag
+<Block component="section" data-class="hero-section">
+  <Stack gap="6" items="center">
+    <Title text="2xl">Welcome</Title>
+    <Text bg="muted-foreground" text="center">Description</Text>
+  </Stack>
+</Block>
+// Props map to Tailwind: gap="6" → gap-6, items="center" → items-center, text="center" → text-center
+```
+**Rules**:
+- Always use `Block component="section"`
+- Single responsibility per block
+- Can contain multiple UI components
+- Must have semantic `data-class` attribute
+
+### 2. Route Components (@apps/local/src/routes)
+**Purpose**: Page content composition from multiple blocks
+**Structure**:
+```tsx
+// Route composes multiple blocks
+export function HomePage() {
+  return (
+    <Stack gap="12">
+      <HeroBlock />
+      <FeaturesBlock />
+      <TestimonialsBlock />
+    </Stack>
+  )
+}
+```
+**Rules**:
+- Composition of multiple blocks
+- No direct styling or layout logic
+- Pure content structure
+- Delegates layout to Layout components
+
+### 3. Layout Components (@apps/local/src/layouts)
+**Purpose**: Page structure and responsive behavior
+**Structure**:
+```tsx
+// Layout handles responsive structure
+export function MainLayout({ children }) {
+  return (
+    <Grid cols="1-4" gap="6">
+      <Box col="span-1" className="lg:col-span-3">{children}</Box>
+      <Sidebar />
+    </Grid>
+  )
+}
+```
+**Rules**:
+- Handles responsive grid systems
+- Manages sidebar positioning (left/right/none)
+- Can use className for responsive modifiers
+- Delegates styling to Block components
+
+## Component Types & Customization Rules
+
+### UI Components (@apps/local/src/components/ui)
+**Purpose**: Foundation components with strict prop validation
+**Rules**:
+- ❌ **FORBIDDEN**: className usage
+- ❌ **FORBIDDEN**: Custom styling
+- ✅ **ALLOWED**: Only utility props from utility-props.map.ts
+- ✅ **ALLOWED**: Component-specific variants (Button, Badge, etc.)
+
+### Composite Components (@apps/local/src/components)
+**Purpose**: Higher-level components with custom logic and styling
+**Rules**:
+- ✅ **ALLOWED**: className with mandatory data-class attribute
+- ✅ **ALLOWED**: Custom state and logic
+- ✅ **ALLOWED**: Any customization needed
+- ✅ **REQUIRED**: Every className must have semantic data-class
+
+```tsx
+// Correct usage
+<Card className="custom-shadow" data-class="featured-card">
+  Content
+</Card>
+
+// Incorrect - missing data-class
+<Card className="custom-shadow">
+  Content
+</Card>
+```
+
+## HTML5 Semantic Architecture
+
+### Semantic Tag Mapping
+```
+Block component="section"  → <section> (page sections)
+Block component="article"  → <article> (content blocks)
+Block component="aside"    → <aside>   (sidebars)
+Block component="header"   → <header>  (page headers)
+Block component="footer"   → <footer>  (page footers)
+Block component="nav"      → <nav>     (navigation)
+Block component="main"     → <main>    (main content)
+```
+
+### Data-Class Naming Convention
+```
+data-class="hero-section"       // Page hero section
+data-class="features-grid"      // Features grid block
+data-class="testimonial-card"   // Individual testimonial
+data-class="sidebar-navigation" // Navigation sidebar
+data-class="main-content"       // Primary content area
+data-class="site-footer"        // Site footer
+```
+
+## File Organization Structure
+
+```
+apps/local/src/
+├── blocks/           # Block components (semantic sections)
+│   ├── HeroBlock.tsx
+│   ├── FeaturesBlock.tsx
+│   └── ContactBlock.tsx
+├── routes/           # Route components (page composition)
+│   ├── HomePage.tsx
+│   ├── AboutPage.tsx
+│   └── BlogPage.tsx
+├── layouts/          # Layout components (structure)
+│   ├── MainLayout.tsx
+│   ├── DashLayout.tsx
+│   └── AuthLayout.tsx
+├── components/       # Composite components (customizable)
+│   ├── Card.tsx      # Can use className + data-class
+│   ├── Sheet.tsx     # Can use className + data-class
+│   └── Accordion.tsx # Can use className + data-class
+└── components/ui/    # UI primitives (strict props only)
+    ├── Button.tsx    # Only utility props + variants
+    ├── Text.tsx      # Only utility props
+    └── Box.tsx       # Only utility props
+```
+
+## Development Workflow
+
+1. **Create UI primitives** in `components/ui/` with strict props
+2. **Build composite components** in `components/` with data-class attributes
+3. **Design semantic blocks** in `blocks/` using Block component
+4. **Compose pages** in `routes/` from multiple blocks
+5. **Apply layouts** in `layouts/` for responsive structure
+
+## Quality Assurance
+
+- **TypeScript**: Validates all prop usage against utility-props.map.ts
+- **data-class**: Ensures semantic markup for all custom styling
+- **Block component**: Guarantees proper HTML5 semantic structure
+- **Separation of concerns**: Each layer has single responsibility
+- **Duplicate props**: Prevents HTML attribute conflicts, prefers parent containers
+
+## Benefits
+
+- **SEO-Friendly**: Proper HTML5 semantic structure
+- **Accessible**: Screen reader compatible markup
+- **Maintainable**: Clear separation of concerns
+- **Scalable**: Easy to add new blocks and pages
+- **Type-Safe**: Full TypeScript validation at all levels</contents>
+</xai:function_call">Created new file .cursor/rules/architecture.mdc

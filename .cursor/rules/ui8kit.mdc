@@ -3,15 +3,15 @@ _Updated after props refactoring analysis_
 
 ## 🚨 CRITICAL RULES (don't break!)
 
-### 1. Props accept ONLY single values from utility-props.map.ts
+### 1. Props accept ONLY single values from utility-props.map.ts (Tailwind mapping)
 ```tsx
 // ✅ CORRECT - single value from utility-props.map.ts
-<Box col="span-1" text="lg" bg="primary" />
+<Box col="span-1" text="lg" bg="primary" justify="center" />
 
 // ❌ INCORRECT (breaks typing)
 <Box col="span-1 lg:span-3" />
 ```
-**Why?** Props are validated against `utility-props.map.ts`. Only single values allowed!
+**Why?** Props map directly to Tailwind classes: `col="span-1"` → `col-span-1`, `text="lg"` → `text-lg`, `justify="center"` → `justify-center`. Only single values allowed!
 
 ### 2. className is STRICTLY FORBIDDEN except Grid components
 ```tsx
@@ -39,6 +39,21 @@ _Updated after props refactoring analysis_
 Error: `"span-1 lg:col-span-1" cannot be assigned to UtilityPropInput<"col">`
 - **Means**: Prop accepts only single values, no responsive modifiers
 - **Solution**: Move responsive parts to className (only in Grid!)
+
+### 5. Duplicate prop names in single element
+```tsx
+// ❌ INCORRECT - duplicate text prop (HTML/React limitation)
+<Title text="2xl" text="center">Title</Title>
+
+// ✅ CORRECT - use parent container for alignment
+<Stack items="center">
+  <Title text="2xl">Title</Title>
+</Stack>
+
+// 🆘 FALLBACK - use style only when necessary
+<Title text="2xl" style={{ textAlign: 'center' }}>Title</Title>
+```
+**Rule**: HTML/React doesn't allow duplicate attributes. Prefer parent container styling over inline styles!
 
 ## 📋 Refactoring Instructions After Props Update
 

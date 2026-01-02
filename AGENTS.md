@@ -48,8 +48,9 @@ This project uses three Cursor rules in `.cursor/rules/`:
 
 **DECLARATIVE RULES - Follow these principles for all UI8Kit usage:**
 
-1. **Single Value Props Only**
+1. **Single Value Props Only (Tailwind Mapping)**
    - All component props MUST contain single values from utility-props.map.ts
+   - Props map directly to Tailwind classes: `col="span-1"` → `col-span-1`, `text="center"` → `text-center`
    - No responsive modifiers allowed in props (e.g., no `col="span-1 lg:span-3"`)
    - TypeScript will enforce this through UtilityPropInput validation
 
@@ -77,6 +78,11 @@ This project uses three Cursor rules in `.cursor/rules/`:
    - When utility-props.map.ts lacks required property
    - Use className with semantic data-class attribute
    - Prefer utility props over custom className when possible
+
+7. **Duplicate Prop Prevention**
+   - HTML/React doesn't allow duplicate attributes in single element
+   - Use parent containers for layout/alignment (e.g., `Stack items="center"`)
+   - Use `style={{ }}` only as last resort for unsupported properties
 
 **ENFORCEMENT**: These rules are validated by TypeScript compilation. Breaking them results in build failures.
 
