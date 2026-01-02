@@ -1,0 +1,33 @@
+{
+  "name": "@ui8kit/vite-local",
+  "description": "Local development environment for UI8Kit components, layouts, and documentation",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^0.460.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-resizable-panels": "^3.0.6",
+    "react-router-dom": "^7.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.9",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "postcss": "^8.5.6",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss": "^4.1.9",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  }
+}

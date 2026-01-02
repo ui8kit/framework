@@ -1,0 +1,14 @@
+@import "tailwindcss" source(none);
+
+@import "./shadcn.css";
+
+@source "../../**/*.{ts,tsx}";
+
+@layer base {
+  button {
+    cursor: pointer;
+  }
+  .prose {
+    @apply !text-[.925rem];
+  }
+}

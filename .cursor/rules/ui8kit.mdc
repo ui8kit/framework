@@ -1,0 +1,88 @@
+# UI8Kit Design System Rules
+_Updated after props refactoring analysis_
+
+## 🚨 CRITICAL RULES (don't break!)
+
+### 1. Props accept ONLY single values from utility-props.map.ts
+```tsx
+// ✅ CORRECT - single value from utility-props.map.ts
+<Box col="span-1" text="lg" bg="primary" />
+
+// ❌ INCORRECT (breaks typing)
+<Box col="span-1 lg:span-3" />
+```
+**Why?** Props are validated against `utility-props.map.ts`. Only single values allowed!
+
+### 2. className is STRICTLY FORBIDDEN except Grid components
+```tsx
+// ✅ ONLY in Grid components for responsive modifiers
+<Grid cols="1-4" gap="6">
+  <Box col="span-1" className="lg:col-span-3 md:order-2" />
+</Grid>
+
+// ❌ className everywhere else - use props from utility-props.map.ts
+<Box className="some-custom-class" /> // FORBIDDEN!
+```
+
+### 3. If prop doesn't exist in utility-props.map.ts
+```tsx
+// ✅ Use className with semantic data-class attribute
+<div className="custom-layout-class" data-class="custom-layout">
+  Content
+</div>
+
+// ❌ Never use className without data-class
+<div className="custom-class">Content</div>
+```
+
+### 4. TypeScript errors guide you
+Error: `"span-1 lg:col-span-1" cannot be assigned to UtilityPropInput<"col">`
+- **Means**: Prop accepts only single values, no responsive modifiers
+- **Solution**: Move responsive parts to className (only in Grid!)
+
+## 📋 Refactoring Instructions After Props Update
+
+### Step 1: Find Problem Areas
+Look for in code:
+- Props with modifiers: `col="span-1 lg:span-3"`
+- className usage outside Grid components
+- Missing data-class attributes
+
+### Step 2: Fix According to Rules
+1. **Use only props from utility-props.map.ts** with single values
+2. **For responsive behavior**: use className ONLY in Grid components
+3. **For custom styling**: use className with data-class attribute
+4. **Trust TypeScript errors** - they show invalid prop usage
+
+### Step 3: Test Functionality
+- All components should use props from utility-props.map.ts
+- Grid components can use className for responsive layout
+- Custom components use className with data-class
+
+### Fix Example:
+```tsx
+// BEFORE (incorrect):
+<Box col="span-1 lg:span-3" className="custom-style" />
+
+// AFTER (correct):
+<Grid cols="1-4">
+  <Box col="span-1" className="lg:col-span-3" />
+</Grid>
+<div className="custom-style" data-class="custom-component">
+  Content
+</div>
+```
+
+## 🎯 CORE PRINCIPLES:
+
+- **utility-props.map.ts** = source of truth for all props
+- **Single values only** in props (no responsive modifiers)
+- **className forbidden** except Grid components
+- **data-class required** when using className outside Grid
+- **TypeScript = validator** - listen to its errors!
+
+## 🚫 WHAT TO AVOID:
+- Creating custom variants for existing utility props
+- Using responsive modifiers in props
+- className without data-class attribute
+- Modifying ui/ components or variants/ files

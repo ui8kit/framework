@@ -1,0 +1,17 @@
+.DS_Store
+.vscode/
+.idea/
+.vite/
+.turbo/
+node_modules/
+dist/
+.env
+.env.local
+bun.lock
+bun.lockb
+package-lock.json
+tsconfig.node.tsbuildinfo
+bash.exe.*
+.manual/
+.project/
+.cursorignore

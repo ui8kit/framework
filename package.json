@@ -1,0 +1,29 @@
+{
+  "name": "@ui8kit/framework",
+  "version": "0.0.1",
+  "description": "Next generation UI system for React & HTML5/CSS3 - type-safe components with semantic static generation",
+  "private": true,
+  "license": "GPL-3.0",
+  "keywords": ["ui", "react", "html5", "css3", "semantic", "static-site", "monorepo", "turbo"],
+  "type": "module",
+  "author": {
+    "name": "buildy",
+    "url": "https://ui.buildy.tw"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bunx turbo run dev",
+    "build": "bunx turbo run build",
+    "test": "bunx turbo run test",
+    "lint": "bunx turbo run lint",
+    "html": "bunx turbo run apps/create-html && bunx turbo run html --filter=./apps/create-html",
+    "semantic:build": "bun run html && npx serve -p 8080 -c serve.json apps/html"
+  },
+  "packageManager": "bun@1.3.3",
+  "devDependencies": {
+    "turbo": "^2.5.6"
+  }
+}
