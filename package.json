@@ -17,10 +17,12 @@
   "scripts": {
     "dev": "bunx turbo run dev",
     "build": "bunx turbo run build",
+    "preview": "bunx turbo run preview",
     "test": "bunx turbo run test",
     "lint": "bunx turbo run lint",
-    "html": "bunx turbo run apps/create-html && bunx turbo run html --filter=./apps/create-html",
-    "semantic:build": "bun run html && npx serve -p 8080 -c serve.json apps/html"
+    "html": "bunx turbo run html --filter=./apps/create-html",
+    "semantic:build": "bun run html && npx serve -p 8080 -c serve.json apps/html",
+    "tailwind:build": "bunx @tailwindcss/cli -i www/html/assets/css/index.css -o www/html/styles.css --minify"
   },
   "packageManager": "bun@1.3.3",
   "devDependencies": {

@@ -56,7 +56,7 @@ export function FeaturesBlock() {
               p="6"
               rounded="lg"
               bg="card"
-              border=""
+              border="border"
               data-class={`feature-card-${index}`}
             >
               <Icon

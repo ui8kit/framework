@@ -4,10 +4,10 @@ import { RouteToStatic } from './scripts/routeToStatic'
 
 const generator = new RouteToStatic()
 generator.configure({
-  entryPath: 'apps/admin/src/main.tsx',
+  entryPath: 'apps/local/src/main.tsx',
   outputDir: './www/html',
-  cssSources: ['apps/admin/src/assets/css/style.css'],
+  cssSources: ['apps/local/src/assets/css/style.css'],
   title: 'My HTML App',
-  // dataModulePath: 'apps/admin/src/data/index.ts'
+  // dataModulePath: 'apps/local/src/data/index.ts'
 })
 await generator.generateAll()
