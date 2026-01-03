@@ -8,7 +8,35 @@ const ANALYSIS_FILE = path.join(__dirname, 'missing-classes-analysis.json');
 
 // Функция для извлечения значения из имени класса
 function extractValueFromClassName(className, template) {
-  // Определяем тип шаблона и извлекаем значение
+  // Специальные случаи обработки
+  if (className === 'basis-px' && template.includes('<custom-property>')) {
+    return '1px'; // basis-px -> 1px
+  }
+
+  if (className.startsWith('leading-') && template.includes('[<value>]')) {
+    // leading-normal, leading-relaxed, leading-tight -> извлекаем значение после leading-
+    return className.substring(8);
+  }
+
+  if (className.startsWith('max-w-screen-') && template.includes('<custom-property>')) {
+    // max-w-screen-2xl -> screen-2xl
+    return className.substring(6);
+  }
+
+  if (className.startsWith('object-') && template.includes('[<value>]')) {
+    // object-left-bottom -> left bottom
+    return className.substring(7).replace('-', ' ');
+  }
+
+  if (className === 'rounded' && template.includes('<custom-property>')) {
+    return '0.25rem'; // стандартное значение для rounded
+  }
+
+  if (className === 'shadow-inner' && template.includes('<custom-property>')) {
+    return 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)'; // стандартное значение для shadow-inner
+  }
+
+  // Стандартные случаи
   if (template.includes('<number>')) {
     // Ищем последнее число в классе (целое число)
     const numberMatch = className.match(/(\d+)$/);
@@ -54,6 +82,37 @@ function extractValueFromClassName(className, template) {
 
 // Функция для выбора наиболее подходящего шаблона
 function selectBestTemplate(className, templates) {
+  // Специальные случаи
+  if (className === 'basis-px') {
+    // basis-px -> basis-(<custom-property>)
+    return templates.find(t => t.includes('<custom-property>')) || templates[0];
+  }
+
+  if (className.startsWith('leading-')) {
+    // leading-* -> leading-[<value>]
+    return templates.find(t => t.includes('[<value>]')) || templates[0];
+  }
+
+  if (className.startsWith('max-w-screen-')) {
+    // max-w-screen-* -> max-w-(<custom-property>)
+    return templates.find(t => t.includes('<custom-property>')) || templates[0];
+  }
+
+  if (className.startsWith('object-')) {
+    // object-* -> object-[<value>]
+    return templates.find(t => t.includes('[<value>]')) || templates[0];
+  }
+
+  if (className === 'rounded') {
+    // rounded -> rounded-(<custom-property>)
+    return templates.find(t => t.includes('<custom-property>')) || templates[0];
+  }
+
+  if (className === 'shadow-inner') {
+    // shadow-inner -> shadow-(<custom-property>)
+    return templates.find(t => t.includes('<custom-property>')) || templates[0];
+  }
+
   // Анализируем конец имени класса для определения типа значения
   const lastPart = className.split('-').pop();
 
@@ -130,12 +189,39 @@ function selectBestTemplate(className, templates) {
 }
 
 // Функция для генерации CSS из шаблона
-function generateCssFromTemplate(template, cssTemplate, value) {
+function generateCssFromTemplate(template, cssTemplate, value, className) {
   if (!cssTemplate || !value) return null;
 
   let result = cssTemplate;
 
-  // Заменяем плейсхолдеры на значение
+  // Специальные случаи
+  if (className === 'basis-px') {
+    return 'flex-basis: 1px;';
+  }
+
+  if (className.startsWith('leading-')) {
+    return `line-height: ${value};`;
+  }
+
+  if (className.startsWith('max-w-screen-')) {
+    // max-w-screen-2xl -> max-width: var(--container-2xl);
+    const size = value.replace('screen-', '');
+    return `max-width: var(--container-${size});`;
+  }
+
+  if (className.startsWith('object-')) {
+    return `object-position: ${value};`;
+  }
+
+  if (className === 'rounded') {
+    return 'border-radius: var(--radius);';
+  }
+
+  if (className === 'shadow-inner') {
+    return 'box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);';
+  }
+
+  // Стандартные случаи
   if (template.includes('<number>') || template.includes('<fraction>') ||
       template.includes('<angle>') || template.includes('<color>')) {
     result = result.replace(/<[^>]+>/g, value);
@@ -195,7 +281,7 @@ function main() {
 
     // Генерируем CSS
     const cssTemplate = rowsMap[bestTemplate];
-    const generatedCss = generateCssFromTemplate(bestTemplate, cssTemplate, value);
+    const generatedCss = generateCssFromTemplate(bestTemplate, cssTemplate, value, className);
 
     if (!generatedCss) {
       console.log(`❌ Could not generate CSS for ${className}`);
@@ -208,6 +294,21 @@ function main() {
 
     if (generatedCount % 50 === 0) {
       console.log(`✅ Generated ${generatedCount} classes...`);
+    }
+  }
+
+  // Обрабатываем классы без шаблонов (специальные случаи)
+  const specialClasses = {
+    'break-words': 'word-break: break-word;',
+    'placeholder-foreground': 'color: hsl(var(--muted-foreground));',
+    'placeholder-muted-foreground': 'color: hsl(var(--muted-foreground));'
+  };
+
+  for (const [className, css] of Object.entries(specialClasses)) {
+    if (!existingKeys.has(className) && !generatedClasses[className]) {
+      generatedClasses[className] = css;
+      generatedCount++;
+      console.log(`✅ Added special class: ${className}`);
     }
   }
 
