@@ -1,0 +1,3008 @@
+{
+  "summary": {
+    "totalClasses": 556,
+    "foundClasses": 237,
+    "missingClasses": 319
+  },
+  "categories": {
+    "noTemplate": [
+      "break-words",
+      "placeholder-foreground",
+      "placeholder-muted-foreground"
+    ],
+    "hasTemplate": [
+      {
+        "class": "basis-0",
+        "templates": [
+          "basis-(<custom-property>)",
+          "basis-<fraction>",
+          "basis-<number>",
+          "basis-[<value>]"
+        ]
+      },
+      {
+        "class": "basis-px",
+        "templates": [
+          "basis-(<custom-property>)",
+          "basis-<fraction>",
+          "basis-<number>",
+          "basis-[<value>]"
+        ]
+      },
+      {
+        "class": "bottom-0",
+        "templates": [
+          "bottom-(<custom-property>)",
+          "bottom-<fraction>",
+          "bottom-<number>",
+          "bottom-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-1",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-10",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-11",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-12",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-13",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-2",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-3",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-4",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-5",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-6",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-7",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-8",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-end-9",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-1",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-10",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-11",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-12",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-2",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-3",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-4",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-5",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-6",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-7",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-8",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-span-9",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-1",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-10",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-11",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-12",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-13",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-2",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-3",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-4",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-5",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-6",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-7",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-8",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-start-9",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-tart-2",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "col-tart-8",
+        "templates": [
+          "col-(<custom-property>)",
+          "col-<number>",
+          "col-[<value>]",
+          "col-end-(<custom-property>)",
+          "col-end-<number>",
+          "col-end-[<value>]",
+          "col-span-(<custom-property>)",
+          "col-span-<number>",
+          "col-span-[<value>]",
+          "col-start-(<custom-property>)",
+          "col-start-<number>",
+          "col-start-[<value>]"
+        ]
+      },
+      {
+        "class": "flex-1",
+        "templates": [
+          "flex-(<custom-property>)",
+          "flex-<fraction>",
+          "flex-<number>",
+          "flex-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-0",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-1",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-10",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-12",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-2",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-4",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-6",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-8",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-x-0",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-x-1",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-x-2",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-x-4",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-x-6",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-x-8",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-y-0",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-y-1",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-y-2",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-y-4",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-y-6",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "gap-y-8",
+        "templates": [
+          "gap-(<custom-property>)",
+          "gap-<number>",
+          "gap-[<value>]",
+          "gap-x-(<custom-property>)",
+          "gap-x-<number>",
+          "gap-x-[<value>]",
+          "gap-y-(<custom-property>)",
+          "gap-y-<number>",
+          "gap-y-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-cols-1",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-cols-12",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-cols-2",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-cols-3",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-cols-4",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-cols-5",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-cols-6",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-rows-1",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-rows-12",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-rows-2",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-rows-3",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-rows-4",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-rows-5",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grid-rows-6",
+        "templates": [
+          "grid-cols-(<custom-property>)",
+          "grid-cols-<number>",
+          "grid-cols-[<value>]",
+          "grid-rows-(<custom-property>)",
+          "grid-rows-<number>",
+          "grid-rows-[<value>]"
+        ]
+      },
+      {
+        "class": "grow-0",
+        "templates": [
+          "grow-(<custom-property>)",
+          "grow-<number>",
+          "grow-[<value>]"
+        ]
+      },
+      {
+        "class": "h-3",
+        "templates": [
+          "h-(<custom-property>)",
+          "h-<fraction>",
+          "h-<number>",
+          "h-[<value>]"
+        ]
+      },
+      {
+        "class": "h-4",
+        "templates": [
+          "h-(<custom-property>)",
+          "h-<fraction>",
+          "h-<number>",
+          "h-[<value>]"
+        ]
+      },
+      {
+        "class": "h-5",
+        "templates": [
+          "h-(<custom-property>)",
+          "h-<fraction>",
+          "h-<number>",
+          "h-[<value>]"
+        ]
+      },
+      {
+        "class": "h-6",
+        "templates": [
+          "h-(<custom-property>)",
+          "h-<fraction>",
+          "h-<number>",
+          "h-[<value>]"
+        ]
+      },
+      {
+        "class": "h-8",
+        "templates": [
+          "h-(<custom-property>)",
+          "h-<fraction>",
+          "h-<number>",
+          "h-[<value>]"
+        ]
+      },
+      {
+        "class": "inset-0",
+        "templates": [
+          "inset-(<custom-property>)",
+          "inset-<fraction>",
+          "inset-<number>",
+          "inset-[<value>]",
+          "inset-ring-(<custom-property>)",
+          "inset-ring-<number>",
+          "inset-ring-[<value>]",
+          "inset-shadow-(<custom-property>)",
+          "inset-shadow-[<value>]",
+          "inset-x-(<custom-property>)",
+          "inset-x-<fraction>",
+          "inset-x-<number>",
+          "inset-x-[<value>]",
+          "inset-y-(<custom-property>)",
+          "inset-y-<fraction>",
+          "inset-y-<number>",
+          "inset-y-[<value>]"
+        ]
+      },
+      {
+        "class": "leading-normal",
+        "templates": [
+          "leading-(<custom-property>)",
+          "leading-<number>",
+          "leading-[<value>]"
+        ]
+      },
+      {
+        "class": "leading-relaxed",
+        "templates": [
+          "leading-(<custom-property>)",
+          "leading-<number>",
+          "leading-[<value>]"
+        ]
+      },
+      {
+        "class": "leading-tight",
+        "templates": [
+          "leading-(<custom-property>)",
+          "leading-<number>",
+          "leading-[<value>]"
+        ]
+      },
+      {
+        "class": "left-0",
+        "templates": [
+          "left-(<custom-property>)",
+          "left-<fraction>",
+          "left-<number>",
+          "left-[<value>]"
+        ]
+      },
+      {
+        "class": "m-0",
+        "templates": [
+          "m-(<custom-property>)",
+          "m-<number>",
+          "m-[<value>]"
+        ]
+      },
+      {
+        "class": "m-1",
+        "templates": [
+          "m-(<custom-property>)",
+          "m-<number>",
+          "m-[<value>]"
+        ]
+      },
+      {
+        "class": "m-12",
+        "templates": [
+          "m-(<custom-property>)",
+          "m-<number>",
+          "m-[<value>]"
+        ]
+      },
+      {
+        "class": "m-2",
+        "templates": [
+          "m-(<custom-property>)",
+          "m-<number>",
+          "m-[<value>]"
+        ]
+      },
+      {
+        "class": "m-4",
+        "templates": [
+          "m-(<custom-property>)",
+          "m-<number>",
+          "m-[<value>]"
+        ]
+      },
+      {
+        "class": "m-6",
+        "templates": [
+          "m-(<custom-property>)",
+          "m-<number>",
+          "m-[<value>]"
+        ]
+      },
+      {
+        "class": "m-8",
+        "templates": [
+          "m-(<custom-property>)",
+          "m-<number>",
+          "m-[<value>]"
+        ]
+      },
+      {
+        "class": "max-w-screen-2xl",
+        "templates": [
+          "max-h-(<custom-property>)",
+          "max-h-<fraction>",
+          "max-h-<number>",
+          "max-h-[<value>]",
+          "max-w-(<custom-property>)",
+          "max-w-<fraction>",
+          "max-w-<number>",
+          "max-w-[<value>]"
+        ]
+      },
+      {
+        "class": "max-w-screen-lg",
+        "templates": [
+          "max-h-(<custom-property>)",
+          "max-h-<fraction>",
+          "max-h-<number>",
+          "max-h-[<value>]",
+          "max-w-(<custom-property>)",
+          "max-w-<fraction>",
+          "max-w-<number>",
+          "max-w-[<value>]"
+        ]
+      },
+      {
+        "class": "max-w-screen-md",
+        "templates": [
+          "max-h-(<custom-property>)",
+          "max-h-<fraction>",
+          "max-h-<number>",
+          "max-h-[<value>]",
+          "max-w-(<custom-property>)",
+          "max-w-<fraction>",
+          "max-w-<number>",
+          "max-w-[<value>]"
+        ]
+      },
+      {
+        "class": "max-w-screen-sm",
+        "templates": [
+          "max-h-(<custom-property>)",
+          "max-h-<fraction>",
+          "max-h-<number>",
+          "max-h-[<value>]",
+          "max-w-(<custom-property>)",
+          "max-w-<fraction>",
+          "max-w-<number>",
+          "max-w-[<value>]"
+        ]
+      },
+      {
+        "class": "max-w-screen-xl",
+        "templates": [
+          "max-h-(<custom-property>)",
+          "max-h-<fraction>",
+          "max-h-<number>",
+          "max-h-[<value>]",
+          "max-w-(<custom-property>)",
+          "max-w-<fraction>",
+          "max-w-<number>",
+          "max-w-[<value>]"
+        ]
+      },
+      {
+        "class": "mb-0",
+        "templates": [
+          "mb-(<custom-property>)",
+          "mb-<number>",
+          "mb-[<value>]"
+        ]
+      },
+      {
+        "class": "mb-1",
+        "templates": [
+          "mb-(<custom-property>)",
+          "mb-<number>",
+          "mb-[<value>]"
+        ]
+      },
+      {
+        "class": "mb-12",
+        "templates": [
+          "mb-(<custom-property>)",
+          "mb-<number>",
+          "mb-[<value>]"
+        ]
+      },
+      {
+        "class": "mb-2",
+        "templates": [
+          "mb-(<custom-property>)",
+          "mb-<number>",
+          "mb-[<value>]"
+        ]
+      },
+      {
+        "class": "mb-4",
+        "templates": [
+          "mb-(<custom-property>)",
+          "mb-<number>",
+          "mb-[<value>]"
+        ]
+      },
+      {
+        "class": "mb-6",
+        "templates": [
+          "mb-(<custom-property>)",
+          "mb-<number>",
+          "mb-[<value>]"
+        ]
+      },
+      {
+        "class": "mb-8",
+        "templates": [
+          "mb-(<custom-property>)",
+          "mb-<number>",
+          "mb-[<value>]"
+        ]
+      },
+      {
+        "class": "min-w-0",
+        "templates": [
+          "min-h-(<custom-property>)",
+          "min-h-<fraction>",
+          "min-h-<number>",
+          "min-h-[<value>]",
+          "min-w-(<custom-property>)",
+          "min-w-<fraction>",
+          "min-w-<number>",
+          "min-w-[<value>]"
+        ]
+      },
+      {
+        "class": "ml-0",
+        "templates": [
+          "ml-(<custom-property>)",
+          "ml-<number>",
+          "ml-[<value>]"
+        ]
+      },
+      {
+        "class": "ml-1",
+        "templates": [
+          "ml-(<custom-property>)",
+          "ml-<number>",
+          "ml-[<value>]"
+        ]
+      },
+      {
+        "class": "ml-12",
+        "templates": [
+          "ml-(<custom-property>)",
+          "ml-<number>",
+          "ml-[<value>]"
+        ]
+      },
+      {
+        "class": "ml-2",
+        "templates": [
+          "ml-(<custom-property>)",
+          "ml-<number>",
+          "ml-[<value>]"
+        ]
+      },
+      {
+        "class": "ml-4",
+        "templates": [
+          "ml-(<custom-property>)",
+          "ml-<number>",
+          "ml-[<value>]"
+        ]
+      },
+      {
+        "class": "ml-6",
+        "templates": [
+          "ml-(<custom-property>)",
+          "ml-<number>",
+          "ml-[<value>]"
+        ]
+      },
+      {
+        "class": "ml-8",
+        "templates": [
+          "ml-(<custom-property>)",
+          "ml-<number>",
+          "ml-[<value>]"
+        ]
+      },
+      {
+        "class": "mr-0",
+        "templates": [
+          "mr-(<custom-property>)",
+          "mr-<number>",
+          "mr-[<value>]"
+        ]
+      },
+      {
+        "class": "mr-1",
+        "templates": [
+          "mr-(<custom-property>)",
+          "mr-<number>",
+          "mr-[<value>]"
+        ]
+      },
+      {
+        "class": "mr-12",
+        "templates": [
+          "mr-(<custom-property>)",
+          "mr-<number>",
+          "mr-[<value>]"
+        ]
+      },
+      {
+        "class": "mr-2",
+        "templates": [
+          "mr-(<custom-property>)",
+          "mr-<number>",
+          "mr-[<value>]"
+        ]
+      },
+      {
+        "class": "mr-4",
+        "templates": [
+          "mr-(<custom-property>)",
+          "mr-<number>",
+          "mr-[<value>]"
+        ]
+      },
+      {
+        "class": "mr-6",
+        "templates": [
+          "mr-(<custom-property>)",
+          "mr-<number>",
+          "mr-[<value>]"
+        ]
+      },
+      {
+        "class": "mr-8",
+        "templates": [
+          "mr-(<custom-property>)",
+          "mr-<number>",
+          "mr-[<value>]"
+        ]
+      },
+      {
+        "class": "mt-0",
+        "templates": [
+          "mt-(<custom-property>)",
+          "mt-<number>",
+          "mt-[<value>]"
+        ]
+      },
+      {
+        "class": "mt-1",
+        "templates": [
+          "mt-(<custom-property>)",
+          "mt-<number>",
+          "mt-[<value>]"
+        ]
+      },
+      {
+        "class": "mt-12",
+        "templates": [
+          "mt-(<custom-property>)",
+          "mt-<number>",
+          "mt-[<value>]"
+        ]
+      },
+      {
+        "class": "mt-2",
+        "templates": [
+          "mt-(<custom-property>)",
+          "mt-<number>",
+          "mt-[<value>]"
+        ]
+      },
+      {
+        "class": "mt-4",
+        "templates": [
+          "mt-(<custom-property>)",
+          "mt-<number>",
+          "mt-[<value>]"
+        ]
+      },
+      {
+        "class": "mt-6",
+        "templates": [
+          "mt-(<custom-property>)",
+          "mt-<number>",
+          "mt-[<value>]"
+        ]
+      },
+      {
+        "class": "mt-8",
+        "templates": [
+          "mt-(<custom-property>)",
+          "mt-<number>",
+          "mt-[<value>]"
+        ]
+      },
+      {
+        "class": "mx-0",
+        "templates": [
+          "mx-(<custom-property>)",
+          "mx-<number>",
+          "mx-[<value>]"
+        ]
+      },
+      {
+        "class": "mx-1",
+        "templates": [
+          "mx-(<custom-property>)",
+          "mx-<number>",
+          "mx-[<value>]"
+        ]
+      },
+      {
+        "class": "mx-12",
+        "templates": [
+          "mx-(<custom-property>)",
+          "mx-<number>",
+          "mx-[<value>]"
+        ]
+      },
+      {
+        "class": "mx-2",
+        "templates": [
+          "mx-(<custom-property>)",
+          "mx-<number>",
+          "mx-[<value>]"
+        ]
+      },
+      {
+        "class": "mx-4",
+        "templates": [
+          "mx-(<custom-property>)",
+          "mx-<number>",
+          "mx-[<value>]"
+        ]
+      },
+      {
+        "class": "mx-6",
+        "templates": [
+          "mx-(<custom-property>)",
+          "mx-<number>",
+          "mx-[<value>]"
+        ]
+      },
+      {
+        "class": "mx-8",
+        "templates": [
+          "mx-(<custom-property>)",
+          "mx-<number>",
+          "mx-[<value>]"
+        ]
+      },
+      {
+        "class": "my-0",
+        "templates": [
+          "my-(<custom-property>)",
+          "my-<number>",
+          "my-[<value>]"
+        ]
+      },
+      {
+        "class": "my-1",
+        "templates": [
+          "my-(<custom-property>)",
+          "my-<number>",
+          "my-[<value>]"
+        ]
+      },
+      {
+        "class": "my-12",
+        "templates": [
+          "my-(<custom-property>)",
+          "my-<number>",
+          "my-[<value>]"
+        ]
+      },
+      {
+        "class": "my-2",
+        "templates": [
+          "my-(<custom-property>)",
+          "my-<number>",
+          "my-[<value>]"
+        ]
+      },
+      {
+        "class": "my-4",
+        "templates": [
+          "my-(<custom-property>)",
+          "my-<number>",
+          "my-[<value>]"
+        ]
+      },
+      {
+        "class": "my-6",
+        "templates": [
+          "my-(<custom-property>)",
+          "my-<number>",
+          "my-[<value>]"
+        ]
+      },
+      {
+        "class": "my-8",
+        "templates": [
+          "my-(<custom-property>)",
+          "my-<number>",
+          "my-[<value>]"
+        ]
+      },
+      {
+        "class": "object-left-bottom",
+        "templates": [
+          "object-(<custom-property>)",
+          "object-[<value>]"
+        ]
+      },
+      {
+        "class": "object-left-top",
+        "templates": [
+          "object-(<custom-property>)",
+          "object-[<value>]"
+        ]
+      },
+      {
+        "class": "object-right-bottom",
+        "templates": [
+          "object-(<custom-property>)",
+          "object-[<value>]"
+        ]
+      },
+      {
+        "class": "object-right-top",
+        "templates": [
+          "object-(<custom-property>)",
+          "object-[<value>]"
+        ]
+      },
+      {
+        "class": "order-1",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-10",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-11",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-12",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-2",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-3",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-4",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-5",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-6",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-7",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-8",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "order-9",
+        "templates": [
+          "order-(<custom-property>)",
+          "order-<number>",
+          "order-[<value>]"
+        ]
+      },
+      {
+        "class": "p-0",
+        "templates": [
+          "p-(<custom-property>)",
+          "p-<number>",
+          "p-[<value>]"
+        ]
+      },
+      {
+        "class": "p-1",
+        "templates": [
+          "p-(<custom-property>)",
+          "p-<number>",
+          "p-[<value>]"
+        ]
+      },
+      {
+        "class": "p-12",
+        "templates": [
+          "p-(<custom-property>)",
+          "p-<number>",
+          "p-[<value>]"
+        ]
+      },
+      {
+        "class": "p-2",
+        "templates": [
+          "p-(<custom-property>)",
+          "p-<number>",
+          "p-[<value>]"
+        ]
+      },
+      {
+        "class": "p-4",
+        "templates": [
+          "p-(<custom-property>)",
+          "p-<number>",
+          "p-[<value>]"
+        ]
+      },
+      {
+        "class": "p-6",
+        "templates": [
+          "p-(<custom-property>)",
+          "p-<number>",
+          "p-[<value>]"
+        ]
+      },
+      {
+        "class": "p-8",
+        "templates": [
+          "p-(<custom-property>)",
+          "p-<number>",
+          "p-[<value>]"
+        ]
+      },
+      {
+        "class": "pb-0",
+        "templates": [
+          "pb-(<custom-property>)",
+          "pb-<number>",
+          "pb-[<value>]"
+        ]
+      },
+      {
+        "class": "pb-1",
+        "templates": [
+          "pb-(<custom-property>)",
+          "pb-<number>",
+          "pb-[<value>]"
+        ]
+      },
+      {
+        "class": "pb-12",
+        "templates": [
+          "pb-(<custom-property>)",
+          "pb-<number>",
+          "pb-[<value>]"
+        ]
+      },
+      {
+        "class": "pb-2",
+        "templates": [
+          "pb-(<custom-property>)",
+          "pb-<number>",
+          "pb-[<value>]"
+        ]
+      },
+      {
+        "class": "pb-4",
+        "templates": [
+          "pb-(<custom-property>)",
+          "pb-<number>",
+          "pb-[<value>]"
+        ]
+      },
+      {
+        "class": "pb-6",
+        "templates": [
+          "pb-(<custom-property>)",
+          "pb-<number>",
+          "pb-[<value>]"
+        ]
+      },
+      {
+        "class": "pb-8",
+        "templates": [
+          "pb-(<custom-property>)",
+          "pb-<number>",
+          "pb-[<value>]"
+        ]
+      },
+      {
+        "class": "pl-0",
+        "templates": [
+          "pl-(<custom-property>)",
+          "pl-<number>",
+          "pl-[<value>]"
+        ]
+      },
+      {
+        "class": "pl-1",
+        "templates": [
+          "pl-(<custom-property>)",
+          "pl-<number>",
+          "pl-[<value>]"
+        ]
+      },
+      {
+        "class": "pl-12",
+        "templates": [
+          "pl-(<custom-property>)",
+          "pl-<number>",
+          "pl-[<value>]"
+        ]
+      },
+      {
+        "class": "pl-2",
+        "templates": [
+          "pl-(<custom-property>)",
+          "pl-<number>",
+          "pl-[<value>]"
+        ]
+      },
+      {
+        "class": "pl-4",
+        "templates": [
+          "pl-(<custom-property>)",
+          "pl-<number>",
+          "pl-[<value>]"
+        ]
+      },
+      {
+        "class": "pl-6",
+        "templates": [
+          "pl-(<custom-property>)",
+          "pl-<number>",
+          "pl-[<value>]"
+        ]
+      },
+      {
+        "class": "pl-8",
+        "templates": [
+          "pl-(<custom-property>)",
+          "pl-<number>",
+          "pl-[<value>]"
+        ]
+      },
+      {
+        "class": "pr-0",
+        "templates": [
+          "pr-(<custom-property>)",
+          "pr-<number>",
+          "pr-[<value>]"
+        ]
+      },
+      {
+        "class": "pr-1",
+        "templates": [
+          "pr-(<custom-property>)",
+          "pr-<number>",
+          "pr-[<value>]"
+        ]
+      },
+      {
+        "class": "pr-12",
+        "templates": [
+          "pr-(<custom-property>)",
+          "pr-<number>",
+          "pr-[<value>]"
+        ]
+      },
+      {
+        "class": "pr-2",
+        "templates": [
+          "pr-(<custom-property>)",
+          "pr-<number>",
+          "pr-[<value>]"
+        ]
+      },
+      {
+        "class": "pr-4",
+        "templates": [
+          "pr-(<custom-property>)",
+          "pr-<number>",
+          "pr-[<value>]"
+        ]
+      },
+      {
+        "class": "pr-6",
+        "templates": [
+          "pr-(<custom-property>)",
+          "pr-<number>",
+          "pr-[<value>]"
+        ]
+      },
+      {
+        "class": "pr-8",
+        "templates": [
+          "pr-(<custom-property>)",
+          "pr-<number>",
+          "pr-[<value>]"
+        ]
+      },
+      {
+        "class": "pt-0",
+        "templates": [
+          "pt-(<custom-property>)",
+          "pt-<number>",
+          "pt-[<value>]"
+        ]
+      },
+      {
+        "class": "pt-1",
+        "templates": [
+          "pt-(<custom-property>)",
+          "pt-<number>",
+          "pt-[<value>]"
+        ]
+      },
+      {
+        "class": "pt-12",
+        "templates": [
+          "pt-(<custom-property>)",
+          "pt-<number>",
+          "pt-[<value>]"
+        ]
+      },
+      {
+        "class": "pt-2",
+        "templates": [
+          "pt-(<custom-property>)",
+          "pt-<number>",
+          "pt-[<value>]"
+        ]
+      },
+      {
+        "class": "pt-4",
+        "templates": [
+          "pt-(<custom-property>)",
+          "pt-<number>",
+          "pt-[<value>]"
+        ]
+      },
+      {
+        "class": "pt-6",
+        "templates": [
+          "pt-(<custom-property>)",
+          "pt-<number>",
+          "pt-[<value>]"
+        ]
+      },
+      {
+        "class": "pt-8",
+        "templates": [
+          "pt-(<custom-property>)",
+          "pt-<number>",
+          "pt-[<value>]"
+        ]
+      },
+      {
+        "class": "px-0",
+        "templates": [
+          "px-(<custom-property>)",
+          "px-<number>",
+          "px-[<value>]"
+        ]
+      },
+      {
+        "class": "px-1",
+        "templates": [
+          "px-(<custom-property>)",
+          "px-<number>",
+          "px-[<value>]"
+        ]
+      },
+      {
+        "class": "px-12",
+        "templates": [
+          "px-(<custom-property>)",
+          "px-<number>",
+          "px-[<value>]"
+        ]
+      },
+      {
+        "class": "px-2",
+        "templates": [
+          "px-(<custom-property>)",
+          "px-<number>",
+          "px-[<value>]"
+        ]
+      },
+      {
+        "class": "px-4",
+        "templates": [
+          "px-(<custom-property>)",
+          "px-<number>",
+          "px-[<value>]"
+        ]
+      },
+      {
+        "class": "px-6",
+        "templates": [
+          "px-(<custom-property>)",
+          "px-<number>",
+          "px-[<value>]"
+        ]
+      },
+      {
+        "class": "px-8",
+        "templates": [
+          "px-(<custom-property>)",
+          "px-<number>",
+          "px-[<value>]"
+        ]
+      },
+      {
+        "class": "py-0",
+        "templates": [
+          "py-(<custom-property>)",
+          "py-<number>",
+          "py-[<value>]"
+        ]
+      },
+      {
+        "class": "py-16",
+        "templates": [
+          "py-(<custom-property>)",
+          "py-<number>",
+          "py-[<value>]"
+        ]
+      },
+      {
+        "class": "py-2",
+        "templates": [
+          "py-(<custom-property>)",
+          "py-<number>",
+          "py-[<value>]"
+        ]
+      },
+      {
+        "class": "py-32",
+        "templates": [
+          "py-(<custom-property>)",
+          "py-<number>",
+          "py-[<value>]"
+        ]
+      },
+      {
+        "class": "py-4",
+        "templates": [
+          "py-(<custom-property>)",
+          "py-<number>",
+          "py-[<value>]"
+        ]
+      },
+      {
+        "class": "py-48",
+        "templates": [
+          "py-(<custom-property>)",
+          "py-<number>",
+          "py-[<value>]"
+        ]
+      },
+      {
+        "class": "py-8",
+        "templates": [
+          "py-(<custom-property>)",
+          "py-<number>",
+          "py-[<value>]"
+        ]
+      },
+      {
+        "class": "right-0",
+        "templates": [
+          "right-(<custom-property>)",
+          "right-<fraction>",
+          "right-<number>",
+          "right-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-0",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-1",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-2",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-4",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-8",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-offset-0",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-offset-1",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-offset-2",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-offset-4",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "ring-offset-8",
+        "templates": [
+          "ring-(<custom-property>)",
+          "ring-<number>",
+          "ring-[<value>]"
+        ]
+      },
+      {
+        "class": "rounded",
+        "templates": [
+          "rounded-(<custom-property>)",
+          "rounded-[<value>]",
+          "rounded-b-(<custom-property>)",
+          "rounded-b-[<value>]",
+          "rounded-bl-(<custom-property>)",
+          "rounded-bl-[<value>]",
+          "rounded-br-(<custom-property>)",
+          "rounded-br-[<value>]",
+          "rounded-e-(<custom-property>)",
+          "rounded-e-[<value>]",
+          "rounded-ee-(<custom-property>)",
+          "rounded-ee-[<value>]",
+          "rounded-es-(<custom-property>)",
+          "rounded-es-[<value>]",
+          "rounded-l-(<custom-property>)",
+          "rounded-l-[<value>]",
+          "rounded-r-(<custom-property>)",
+          "rounded-r-[<value>]",
+          "rounded-s-(<custom-property>)",
+          "rounded-s-[<value>]",
+          "rounded-se-(<custom-property>)",
+          "rounded-se-[<value>]",
+          "rounded-ss-(<custom-property>)",
+          "rounded-ss-[<value>]",
+          "rounded-t-(<custom-property>)",
+          "rounded-t-[<value>]",
+          "rounded-tl-(<custom-property>)",
+          "rounded-tl-[<value>]",
+          "rounded-tr-(<custom-property>)",
+          "rounded-tr-[<value>]"
+        ]
+      },
+      {
+        "class": "row-end-1",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-end-2",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-end-3",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-end-4",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-end-5",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-end-6",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-end-7",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-start-1",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-start-2",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-start-3",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-start-4",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-start-5",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-start-6",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "row-start-7",
+        "templates": [
+          "row-(<custom-property>)",
+          "row-<number>",
+          "row-[<value>]",
+          "row-end-(<custom-property>)",
+          "row-end-<number>",
+          "row-end-[<value>]",
+          "row-span-(<custom-property>)",
+          "row-span-<number>",
+          "row-span-[<value>]",
+          "row-start-(<custom-property>)",
+          "row-start-<number>",
+          "row-start-[<value>]"
+        ]
+      },
+      {
+        "class": "shadow-inner",
+        "templates": [
+          "shadow-(<custom-property>)",
+          "shadow-(color:<custom-property>)",
+          "shadow-[<value>]"
+        ]
+      },
+      {
+        "class": "shrink-0",
+        "templates": [
+          "shrink-(<custom-property>)",
+          "shrink-<number>",
+          "shrink-[<value>]"
+        ]
+      },
+      {
+        "class": "space-x-0",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-x-1",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-x-2",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-x-4",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-x-6",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-x-8",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-y-0",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-y-1",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-y-2",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-y-4",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-y-6",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "space-y-8",
+        "templates": [
+          "space-x-(<custom-property>)",
+          "space-x-<number>",
+          "space-x-[<value>]",
+          "space-y-(<custom-property>)",
+          "space-y-<number>",
+          "space-y-[<value>]"
+        ]
+      },
+      {
+        "class": "top-0",
+        "templates": [
+          "top-(<custom-property>)",
+          "top-<fraction>",
+          "top-<number>",
+          "top-[<value>]"
+        ]
+      },
+      {
+        "class": "w-3",
+        "templates": [
+          "w-(<custom-property>)",
+          "w-<fraction>",
+          "w-<number>",
+          "w-[<value>]"
+        ]
+      },
+      {
+        "class": "w-4",
+        "templates": [
+          "w-(<custom-property>)",
+          "w-<fraction>",
+          "w-<number>",
+          "w-[<value>]"
+        ]
+      },
+      {
+        "class": "w-5",
+        "templates": [
+          "w-(<custom-property>)",
+          "w-<fraction>",
+          "w-<number>",
+          "w-[<value>]"
+        ]
+      },
+      {
+        "class": "w-6",
+        "templates": [
+          "w-(<custom-property>)",
+          "w-<fraction>",
+          "w-<number>",
+          "w-[<value>]"
+        ]
+      },
+      {
+        "class": "w-8",
+        "templates": [
+          "w-(<custom-property>)",
+          "w-<fraction>",
+          "w-<number>",
+          "w-[<value>]"
+        ]
+      },
+      {
+        "class": "z-0",
+        "templates": [
+          "z-(<custom-property>)",
+          "z-<number>",
+          "z-[<value>]"
+        ]
+      },
+      {
+        "class": "z-10",
+        "templates": [
+          "z-(<custom-property>)",
+          "z-<number>",
+          "z-[<value>]"
+        ]
+      },
+      {
+        "class": "z-20",
+        "templates": [
+          "z-(<custom-property>)",
+          "z-<number>",
+          "z-[<value>]"
+        ]
+      },
+      {
+        "class": "z-30",
+        "templates": [
+          "z-(<custom-property>)",
+          "z-<number>",
+          "z-[<value>]"
+        ]
+      },
+      {
+        "class": "z-40",
+        "templates": [
+          "z-(<custom-property>)",
+          "z-<number>",
+          "z-[<value>]"
+        ]
+      },
+      {
+        "class": "z-50",
+        "templates": [
+          "z-(<custom-property>)",
+          "z-<number>",
+          "z-[<value>]"
+        ]
+      }
+    ],
+    "dynamicColors": [
+      "accent-auto",
+      "bg-accent",
+      "bg-accent-foreground",
+      "bg-background",
+      "bg-border",
+      "bg-card",
+      "bg-destructive",
+      "bg-destructive-foreground",
+      "bg-foreground",
+      "bg-input",
+      "bg-muted",
+      "bg-muted-foreground",
+      "bg-popover",
+      "bg-primary",
+      "bg-primary-foreground",
+      "bg-ring",
+      "bg-secondary",
+      "bg-secondary-foreground",
+      "border-0",
+      "border-2",
+      "border-4",
+      "border-accent",
+      "border-b-0",
+      "border-b-2",
+      "border-b-4",
+      "border-border",
+      "border-destructive",
+      "border-foreground",
+      "border-input",
+      "border-l-0",
+      "border-l-2",
+      "border-l-4",
+      "border-muted",
+      "border-primary",
+      "border-r-0",
+      "border-r-2",
+      "border-r-4",
+      "border-ring",
+      "border-secondary",
+      "border-t-0",
+      "border-t-2",
+      "border-t-4",
+      "caret-accent",
+      "caret-foreground",
+      "caret-primary",
+      "caret-secondary",
+      "text-accent-foreground",
+      "text-destructive",
+      "text-destructive-foreground",
+      "text-foreground",
+      "text-muted-foreground",
+      "text-primary",
+      "text-primary-foreground",
+      "text-secondary",
+      "text-secondary-foreground"
+    ],
+    "other": []
+  },
+  "patterns": {
+    "absolute": 1,
+    "accent": 3,
+    "aspect": 3,
+    "auto": 8,
+    "basis": 4,
+    "bg": 18,
+    "block": 1,
+    "border": 34,
+    "bottom": 2,
+    "break": 3,
+    "capitalize": 1,
+    "caret": 6,
+    "col": 44,
+    "collapse": 1,
+    "content": 6,
+    "contents": 1,
+    "fixed": 1,
+    "flex": 9,
+    "font": 4,
+    "gap": 20,
+    "grid": 20,
+    "grow": 2,
+    "h": 12,
+    "hidden": 1,
+    "hyphens": 3,
+    "inline": 4,
+    "inset": 2,
+    "invisible": 1,
+    "italic": 1,
+    "items": 5,
+    "justify": 10,
+    "leading": 3,
+    "left": 2,
+    "lowercase": 1,
+    "m": 8,
+    "max": 17,
+    "mb": 8,
+    "min": 6,
+    "ml": 8,
+    "mr": 8,
+    "mt": 8,
+    "mx": 8,
+    "my": 8,
+    "normal": 1,
+    "object": 14,
+    "order": 15,
+    "overflow": 12,
+    "p": 7,
+    "pb": 7,
+    "pl": 7,
+    "placeholder": 2,
+    "pointer": 2,
+    "pr": 7,
+    "pt": 7,
+    "px": 7,
+    "py": 7,
+    "relative": 1,
+    "right": 2,
+    "ring": 10,
+    "rounded": 34,
+    "row": 16,
+    "shadow": 7,
+    "shrink": 2,
+    "space": 12,
+    "static": 1,
+    "sticky": 1,
+    "text": 22,
+    "top": 2,
+    "tracking": 6,
+    "truncate": 1,
+    "underline": 1,
+    "uppercase": 1,
+    "visible": 1,
+    "w": 12,
+    "whitespace": 6,
+    "z": 7
+  }
+}
