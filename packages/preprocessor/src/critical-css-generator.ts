@@ -37,7 +37,7 @@ export async function generateCriticalCSS(
 }
 
 /**
- * Analyze route file to find which components are used
+ * Analyze route file to find which components are used and their dependencies
  */
 async function analyzeRouteComponents(routeFile: string, options: CriticalCSSOptions): Promise<Set<string>> {
   const { verbose = false } = options;
@@ -45,22 +45,31 @@ async function analyzeRouteComponents(routeFile: string, options: CriticalCSSOpt
 
   const usedComponents = new Set<string>();
 
-  // Simple regex to find component usage (improve this for more accuracy)
+  // Find direct component usage in JSX
   const componentRegex = /<([A-Z][\w]*)/g;
   let match;
 
   while ((match = componentRegex.exec(content)) !== null) {
     const componentName = match[1];
     usedComponents.add(componentName);
+
+    // Add component dependencies (layout components, etc.)
+    const dependencies = getComponentDependencies(componentName);
+    dependencies.forEach(dep => usedComponents.add(dep));
   }
 
-  // Also check imports to be more accurate
-  const importRegex = /import\s+{[^}]*}?\s+from\s+['"]([^'"]*)['"]/g;
+  // Analyze imports to find more components
+  const importRegex = /import\s+{([^}]*)}\s+from\s+['"]([^'"]*)['"]/g;
   while ((match = importRegex.exec(content)) !== null) {
-    const importPath = match[1];
-    if (importPath.includes('components') || importPath.includes('ui')) {
-      // Could parse the imported file for component names
-      // For now, we'll use the basic approach
+    const importedItems = match[1];
+    const importPath = match[2];
+
+    if (importPath.includes('blocks') || importPath.includes('layouts')) {
+      // Parse imported block/layout components
+      const items = importedItems.split(',').map(item => item.trim());
+      items.forEach(item => {
+        if (item) usedComponents.add(item);
+      });
     }
   }
 
@@ -72,15 +81,73 @@ async function analyzeRouteComponents(routeFile: string, options: CriticalCSSOpt
 }
 
 /**
+ * Get component dependencies (which components this component uses)
+ */
+function getComponentDependencies(componentName: string): string[] {
+  const dependencies: Record<string, string[]> = {
+    // Layout components and their dependencies
+    'DashLayout': ['Sidebar', 'Navbar', 'Block', 'Box', 'Container', 'Button', 'Icon', 'Text', 'Group', 'Stack'],
+    'Sidebar': ['Block', 'Box', 'Stack', 'Text'],
+    'Navbar': ['Block', 'Group', 'Icon', 'Text', 'Button'],
+
+    // Block components
+    'HeroBlock': ['Block', 'Stack', 'Text', 'Group', 'Button'],
+    'FeaturesBlock': ['Block', 'Stack', 'Text', 'Grid', 'Box'],
+    'DashboardBlock': ['Block', 'Text', 'Grid', 'Box', 'Group'],
+
+    // UI components
+    'Button': ['button'],
+    'Icon': ['span'],
+    'Text': ['p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+    'Box': ['div'],
+    'Block': ['div', 'section', 'article', 'header', 'footer', 'nav', 'aside'],
+    'Container': ['div'],
+    'Group': ['div'],
+    'Stack': ['div'],
+    'Grid': ['div'],
+  };
+
+  return dependencies[componentName] || [];
+}
+
+/**
  * Filter components to only include those used in the route
  */
 function filterRouteComponents(
   allComponents: ComponentStyle[],
   usedComponents: Set<string>
 ): ComponentStyle[] {
-  // For now, include all components since we need a more sophisticated analysis
-  // In a real implementation, we'd track component usage through the tree
-  return allComponents;
+  // Map component names to their data-class selectors
+  const componentSelectors = new Map<string, string[]>([
+    ['Sidebar', ['sidebar']],
+    ['Navbar', ['navbar', 'navbar-group', 'navbar-brand-group', 'navbar-toggle-dark-mode-button']],
+    ['HeroBlock', ['hero-section', 'hero-content', 'hero-title', 'hero-description', 'hero-actions', 'hero-cta-primary', 'hero-cta-secondary']],
+    ['FeaturesBlock', ['features-section', 'features-header', 'features-title', 'features-description', 'features-grid']],
+    ['DashboardBlock', ['dashboard-section', 'dashboard-title', 'dashboard-grid', 'dashboard-description', 'dashboard-actions', 'dashboard-preview']],
+    ['Block', ['block']],
+    ['Box', ['box']],
+    ['Container', ['container']],
+    ['Button', ['button']],
+    ['Icon', ['icon']],
+    ['Text', ['text']],
+    ['Group', ['group']],
+    ['Stack', ['stack']],
+  ]);
+
+  const allowedSelectors = new Set<string>();
+
+  // Add selectors for used components
+  for (const componentName of usedComponents) {
+    const selectors = componentSelectors.get(componentName);
+    if (selectors) {
+      selectors.forEach(selector => allowedSelectors.add(selector));
+    }
+  }
+
+  // Filter components to only include allowed selectors
+  return allComponents.filter(component =>
+    allowedSelectors.has(component.selector.replace('.', ''))
+  );
 }
 
 /**

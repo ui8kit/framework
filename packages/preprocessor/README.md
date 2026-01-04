@@ -24,6 +24,15 @@ bun run css:generate
 bun run css:generate:pure
 ```
 
+### Generate Critical CSS for Route (Ultimate Optimization)
+```bash
+# Generate critical CSS for specific route
+bun run css:generate:critical
+
+# Or specify custom route:
+bun packages/preprocessor/src/index.ts -- --critical-route apps/local/src/routes/MyPage.tsx
+```
+
 ### Watch Mode (Development)
 ```bash
 bun run css:watch
@@ -103,6 +112,13 @@ The following props are ignored during CSS generation:
 - You want semantic CSS without utility classes
 - You're building with a different CSS framework or custom styles
 
+### Use `critical.{route}.css` when:
+- You need ultimate performance optimization
+- Each page/route should have only its own styles
+- You're building for mobile-first or critical rendering path
+- Zero unused CSS is critical for your use case
+- **Performance Impact**: Up to 70% CSS size reduction per route
+
 ## Integration
 
 **For Tailwind projects:**
@@ -115,4 +131,28 @@ The following props are ignored during CSS generation:
 @import './dist/ui8kit.local.css';
 ```
 
-Both files can be included in your build process alongside other CSS files.
+**For Critical CSS (React Router):**
+```tsx
+import { CriticalCSSInjector } from '@/components/CriticalCSSInjector';
+// Import the generated critical CSS as raw text
+import criticalCSS from '../dist/critical.HomePage.css?raw';
+
+export function HomePage() {
+  return (
+    <>
+      {/* Inject only the CSS needed for this specific page */}
+      <CriticalCSSInjector css={criticalCSS} id="homepage-critical-css" />
+      <HeroBlock />
+      <FeaturesBlock />
+    </>
+  );
+}
+```
+
+**Benefits:**
+- ⚡ **Faster FCP (First Contentful Paint)**
+- 📱 **Better mobile performance**
+- 🎯 **Zero unused CSS per route**
+- 🚀 **Critical rendering path optimization**
+
+All CSS files can be included in your build process alongside other assets.

@@ -36,7 +36,7 @@ interface PreprocessorOptions {
  * Main preprocessor function
  */
 export async function preprocess(options: PreprocessorOptions): Promise<void> {
-  const { srcDir, outputFile, pureCssFile, watch = false, verbose = false } = options;
+  const { srcDir, outputFile, pureCssFile, criticalRouteFile, criticalCssFile, watch = false, verbose = false } = options;
 
   if (verbose) {
     console.log(`🔍 Analyzing components in: ${srcDir}`);
@@ -67,6 +67,16 @@ export async function preprocess(options: PreprocessorOptions): Promise<void> {
       }
     }
 
+    // Generate critical CSS for route if requested
+    if (criticalRouteFile && criticalCssFile) {
+      const criticalCss = await generateCriticalCSS(criticalRouteFile, srcDir, { verbose });
+      await Bun.write(criticalCssFile, criticalCss);
+
+      if (verbose) {
+        console.log(`🚀 Generated ${criticalCssFile} (${criticalCss.length} bytes)`);
+      }
+    }
+
     // Start watcher if requested
     if (watch) {
       console.log(`👀 Watching for changes in ${srcDir}...`);
@@ -88,12 +98,18 @@ if (import.meta.main) {
   const verbose = args.includes('--verbose');
   const pureCss = args.includes('--pure-css');
 
+  // Check for critical CSS args: --critical-route <route-file>
+  const criticalIndex = args.indexOf('--critical-route');
+  const criticalRouteFile = criticalIndex !== -1 ? args[criticalIndex + 1] : undefined;
+
   const appName = 'local'; // Could be extracted from path or args
 
   const options: PreprocessorOptions = {
     srcDir: './apps/local/src',
     outputFile: './apps/local/dist/tailwind.apply.css',
     pureCssFile: pureCss ? `./apps/local/dist/ui8kit.${appName}.css` : undefined,
+    criticalRouteFile: criticalRouteFile,
+    criticalCssFile: criticalRouteFile ? `./apps/local/dist/critical.${criticalRouteFile.split('/').pop()?.replace('.tsx', '')}.css` : undefined,
     watch,
     verbose
   };
