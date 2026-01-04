@@ -1,6 +1,9 @@
 # UI8Kit CSS Preprocessor
 
-A preprocessor that generates `tailwind.apply.css` by analyzing React components and converting utility props to CSS `@apply` directives.
+A preprocessor that generates both `tailwind.apply.css` and `ui8kit.{app}.css` by analyzing React components:
+
+- **tailwind.apply.css**: Utility props converted to `@apply` directives (for Tailwind CSS)
+- **ui8kit.{app}.css**: Utility props converted to pure CSS3 properties (Tailwind-free)
 
 ## How It Works
 
@@ -11,9 +14,14 @@ A preprocessor that generates `tailwind.apply.css` by analyzing React components
 
 ## Usage
 
-### Generate CSS Once
+### Generate CSS with @apply (Tailwind)
 ```bash
 bun run css:generate
+```
+
+### Generate Pure CSS3 (Tailwind-free)
+```bash
+bun run css:generate:pure
 ```
 
 ### Watch Mode (Development)
@@ -21,8 +29,9 @@ bun run css:generate
 bun run css:watch
 ```
 
-## Example
+## Output Types
 
+### Tailwind @apply CSS (tailwind.apply.css)
 **Input Component:**
 ```tsx
 <Box p="4" bg="card" data-class="main-content">
@@ -30,7 +39,7 @@ bun run css:watch
 </Box>
 ```
 
-**Output CSS:**
+**Output:**
 ```css
 .main-content {
   @apply p-4 bg-card;
@@ -40,6 +49,21 @@ bun run css:watch
   @apply text-lg;
 }
 ```
+
+### Pure CSS3 (ui8kit.{app}.css)
+**Same input produces:**
+```css
+.main-content {
+  padding: calc(var(--spacing) * 4);
+  /* Unknown class: bg-card */
+}
+
+.title {
+  /* Unknown class: text-lg */
+}
+```
+
+**Note**: Unknown classes (theme colors, text sizes, etc.) are commented out. Only CSS properties from `ui8kit.map.ts` are converted.
 
 ## Architecture
 
@@ -65,12 +89,30 @@ The following props are ignored during CSS generation:
 - `className` (handled separately)
 - `component`, `children`, `key`, `ref` (React-specific)
 
+## When to Use Each Type
+
+### Use `tailwind.apply.css` when:
+- Your project uses Tailwind CSS
+- You want access to all Tailwind utilities (colors, typography, etc.)
+- You need responsive design utilities
+- You're building with Tailwind's design system
+
+### Use `ui8kit.{app}.css` when:
+- You want to avoid Tailwind CSS dependency
+- You need pure CSS3 for static sites or other frameworks
+- You want semantic CSS without utility classes
+- You're building with a different CSS framework or custom styles
+
 ## Integration
 
-Add the generated CSS to your Tailwind configuration:
-
+**For Tailwind projects:**
 ```css
 @import './dist/tailwind.apply.css';
 ```
 
-Or include it in your build process alongside other CSS files.
+**For pure CSS projects:**
+```css
+@import './dist/ui8kit.local.css';
+```
+
+Both files can be included in your build process alongside other CSS files.
