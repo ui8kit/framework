@@ -21,7 +21,9 @@
     "test": "bunx turbo run test",
     "lint": "bunx turbo run lint",
     "html": "bunx turbo run html --filter=./apps/create-html",
-    "semantic:build": "bun run html && npx serve -p 8080 -c serve.json apps/html"
+    "semantic:build": "bun run html && npx serve -p 8080 -c serve.json apps/html",
+    "css:generate": "bun packages/preprocessor/src/index.ts",
+    "css:watch": "bun packages/preprocessor/src/index.ts --watch --verbose"
   },
   "packageManager": "bun@1.3.3",
   "devDependencies": {
