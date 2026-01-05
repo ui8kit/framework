@@ -211,61 +211,39 @@ class HtmlToCss {
   }
 
   /**
-   * Group elements by selectors, handling conflicts with suffixes
+   * Group elements by unique class combinations, eliminating duplicates
+   * Each unique set of classes gets assigned to the first encountered selector
    */
   private groupBySelectors(elements: ElementData[]): Map<string, string[]> {
     const selectorMap = new Map<string, string[]>()
-    const usedSelectors = new Set<string>()
+    const classSetToSelector = new Map<string, string>()
 
     for (const element of elements) {
-      let selector = element.selector
-      let classes = element.classes
+      const classes = element.classes
+      const normalizedClasses = this.normalizeClasses(classes)
+      const classKey = normalizedClasses.join(' ')
 
-      // Handle conflicts: if selector exists but classes differ, add suffix
-      if (usedSelectors.has(selector)) {
-        const existingClasses = selectorMap.get(selector) || []
-        if (!this.classesEqual(existingClasses, classes)) {
-          // Generate new selector with suffix
-          selector = this.generateSelectorWithSuffix(selector)
-          // Retry until we find unique selector
-          while (usedSelectors.has(selector)) {
-            selector = this.generateSelectorWithSuffix(selector)
-          }
-        }
+      // If we've already seen this exact set of classes, skip it
+      if (classSetToSelector.has(classKey)) {
+        continue // This class combination is already assigned to a selector
       }
 
-      // Merge classes (remove duplicates)
-      const existingClasses = selectorMap.get(selector) || []
-      const mergedClasses = [...new Set([...existingClasses, ...classes])]
-
-      selectorMap.set(selector, mergedClasses)
-      usedSelectors.add(selector)
+      // Assign this class combination to the current selector
+      classSetToSelector.set(classKey, element.selector)
+      selectorMap.set(element.selector, classes)
     }
 
     return selectorMap
   }
 
   /**
-   * Generate selector with random suffix
+   * Normalize classes by sorting them alphabetically
+   * This ensures that ['a', 'b'] and ['b', 'a'] are treated as identical
    */
-  private generateSelectorWithSuffix(baseSelector: string): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    let suffix = ''
-    for (let i = 0; i < 7; i++) {
-      suffix += chars.charAt(Math.floor(Math.random() * chars.length))
-    }
-    return `${baseSelector}-${suffix}`
+  private normalizeClasses(classes: string[]): string[] {
+    return [...classes].sort()
   }
 
-  /**
-   * Check if two class arrays are equal (order doesn't matter)
-   */
-  private classesEqual(classes1: string[], classes2: string[]): boolean {
-    if (classes1.length !== classes2.length) return false
-    const set1 = new Set(classes1)
-    const set2 = new Set(classes2)
-    return set1.size === set2.size && [...set1].every(cls => set2.has(cls))
-  }
 
   /**
    * Load ui8kit.map.ts and parse it
