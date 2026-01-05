@@ -116,6 +116,74 @@ CSS files in `assets/css/`:
 }
 ```
 
+## Styles Mode Configuration
+
+Choose the styling approach that fits your needs:
+
+### `tailwind` (Default)
+- **HTML**: `<div data-class="box" class="p-4 bg-card">` (classes preserved)
+- **CSS**: No external CSS generated - classes work with Tailwind CSS
+- **Use case**: Standard Tailwind CSS projects
+
+### `css3`
+- **HTML**: `<div data-class="box">` (classes removed)
+- **CSS**: `tailwind.apply.css` (for Tailwind processor) + `ui8kit.local.css` (pure CSS3)
+- **Use case**: Pure CSS projects with Tailwind compatibility option
+
+### `css3inline`
+- **HTML**: `<div data-class="box">` (classes removed)
+- **CSS**: Inline `<style>` in HTML `<head>` + `tailwind.apply.css` (for compatibility)
+- **Use case**: Ultimate optimization with Tailwind processor fallback
+
+## Examples
+
+### Tailwind Mode
+```html
+<!-- Input -->
+<div data-class="box" class="p-4 bg-card">
+  <p data-class="text" class="text-lg font-normal">Hello</p>
+</div>
+
+<!-- Output -->
+<div data-class="box" class="p-4 bg-card">
+  <p data-class="text" class="text-lg font-normal">Hello</p>
+</div>
+```
+*No external CSS generated - works directly with Tailwind CSS*
+
+### CSS3 Mode
+```html
+<!-- Input -->
+<div data-class="box" class="p-4 bg-card">
+  <p data-class="text" class="text-lg font-normal">Hello</p>
+</div>
+
+<!-- Output -->
+<div data-class="box">
+  <p data-class="text">Hello</p>
+</div>
+```
+*External CSS: `tailwind.apply.css` + `ui8kit.local.css`*
+
+### CSS3 Inline Mode
+```html
+<!-- Input -->
+<div data-class="box" class="p-4 bg-card">
+  <p data-class="text" class="text-lg font-normal">Hello</p>
+</div>
+
+<!-- Output -->
+<head>
+  <style>.box{padding: calc(var(--spacing) * 4)}.text{font-size: var(--text-lg);line-height: var(--text-lg--line-height);font-weight: 400}</style>
+</head>
+<body>
+  <div data-class="box">
+    <p data-class="text">Hello</p>
+  </div>
+</body>
+```
+*Inline CSS + `tailwind.apply.css` for Tailwind processor compatibility*
+
 ## CSS Mapping & Optimization
 
 ### ui8kit.map.json
@@ -173,13 +241,14 @@ const htmlGen = new RouteToStatic()
 htmlGen.configure({ entryPath: '../local/src/main.tsx', outputDir: './www/html' })
 await htmlGen.generateAll()
 
-// CSS extraction
+// CSS extraction with different modes
 const cssGen = new HtmlToCss()
 cssGen.configure({
   htmlDir: './www/html',
   ui8kitMapPath: './lib/ui8kit.map.json',
   applyCssFile: './www/html/assets/css/tailwind.apply.css',
-  pureCssFile: './www/html/assets/css/ui8kit.local.css'
+  pureCssFile: './www/html/assets/css/ui8kit.local.css',
+  stylesMode: 'tailwind' // 'tailwind' | 'css3' | 'css3inline'
 })
 await cssGen.generateAll()
 ```

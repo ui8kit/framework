@@ -13,7 +13,7 @@
  */
 
 import { writeFileSync, mkdirSync, existsSync, readdirSync, readFileSync } from 'fs'
-import { join, dirname } from 'path'
+import { join, dirname, relative } from 'path'
 
 type HtmlToCssConfig = {
   /** Directory containing HTML files */
@@ -24,6 +24,10 @@ type HtmlToCssConfig = {
   applyCssFile: string
   /** Output file for pure CSS3 */
   pureCssFile: string
+  /** Styling mode */
+  stylesMode?: 'tailwind' | 'css3' | 'css3inline'
+  /** Output directory for processed HTML (optional) */
+  outputHtmlDir?: string
 }
 
 type ElementData = {
@@ -54,6 +58,13 @@ class HtmlToCss {
   }
 
   /**
+   * Get styles mode from config (defaults to tailwind)
+   */
+  private getStylesMode(): 'tailwind' | 'css3' | 'css3inline' {
+    return this.config?.stylesMode || 'tailwind'
+  }
+
+  /**
    * Generate CSS files from HTML
    */
   async generateAll(): Promise<void> {
@@ -78,15 +89,31 @@ class HtmlToCss {
     const ui8kitMap = await this.loadUi8kitMap(mapPath)
     console.log(`📚 Loaded ${ui8kitMap.size} CSS mappings from ${mapPath}`)
 
-    // 4. Generate @apply CSS (Tailwind compatible)
-    const applyCss = this.generateApplyCss(groupedElements)
-    this.writeCssFile(applyCssFile, applyCss)
-    console.log(`✅ Generated ${applyCssFile} (${applyCss.length} bytes)`)
+    const stylesMode = this.getStylesMode()
 
-    // 5. Generate pure CSS3
-    const pureCss = this.generatePureCss(groupedElements, ui8kitMap)
-    this.writeCssFile(pureCssFile, pureCss)
-    console.log(`✅ Generated ${pureCssFile} (${pureCss.length} bytes)`)
+    if (stylesMode === 'css3inline') {
+      // Generate inline styles for head
+      await this.processCss3InlineMode(groupedElements, ui8kitMap)
+      console.log('✅ Processed CSS3 inline mode - styles injected into HTML head')
+    } else {
+      // Generate external CSS files
+      if (stylesMode === 'tailwind') {
+        // Tailwind mode: classes stay in HTML, no external CSS needed
+        console.log('✅ Tailwind mode: classes preserved in HTML, no external CSS generated')
+      } else if (stylesMode === 'css3') {
+        // Generate both apply CSS (for Tailwind processor) and pure CSS3
+        const applyCss = this.generateApplyCss(groupedElements)
+        this.writeCssFile(applyCssFile, applyCss)
+        console.log(`✅ Generated ${applyCssFile} (${applyCss.length} bytes)`)
+
+        const pureCss = this.generatePureCss(groupedElements, ui8kitMap)
+        this.writeCssFile(pureCssFile, pureCss)
+        console.log(`✅ Generated ${pureCssFile} (${pureCss.length} bytes)`)
+      }
+
+      // Process HTML files based on mode (remove class attributes for css3)
+      await this.processHtmlFilesForMode(stylesMode)
+    }
 
     console.log('🎉 CSS generation completed!')
   }
@@ -149,7 +176,7 @@ class HtmlToCss {
       const dataClass = this.extractDataClassAttribute(tagContent)
       const tagName = this.extractTagName(tagContent)
 
-      if (classes.length > 0) {
+      if (classes.length > 0 || dataClass) {
         elements.push({
           selector: dataClass || this.generateSelector(tagName),
           classes,
@@ -343,6 +370,119 @@ class HtmlToCss {
  */\n\n`
 
     return header + cssRules.join('\n\n') + '\n'
+  }
+
+  /**
+   * Process HTML files based on styles mode
+   */
+  private async processHtmlFilesForMode(mode: 'tailwind' | 'css3' | 'css3inline'): Promise<void> {
+    if (mode === 'tailwind') {
+      // No changes needed for tailwind mode
+      return
+    }
+
+    const htmlFiles = this.getHtmlFiles(this.config!.htmlDir)
+    const outputDir = this.config!.outputHtmlDir
+
+    for (const filePath of htmlFiles) {
+      let htmlContent = readFileSync(filePath, 'utf-8')
+
+      if (mode === 'css3') {
+        // Remove class attributes, keep only data-class
+        htmlContent = this.removeClassAttributes(htmlContent)
+      }
+
+      // Write to output directory if specified, otherwise modify in place
+      const targetPath = outputDir ? this.getOutputPath(filePath, outputDir) : filePath
+      if (outputDir) {
+        this.ensureDir(dirname(targetPath))
+      }
+
+      writeFileSync(targetPath, htmlContent, 'utf-8')
+    }
+
+    console.log(`✅ Processed ${htmlFiles.length} HTML files for ${mode} mode${outputDir ? ` → ${outputDir}` : ''}`)
+  }
+
+  /**
+   * Get output path for HTML file in output directory
+   */
+  private getOutputPath(inputPath: string, outputDir: string): string {
+    const relativePath = relative(this.config!.htmlDir, inputPath)
+    return join(outputDir, relativePath)
+  }
+
+  /**
+   * Ensure directory exists
+   */
+  private ensureDir(dirPath: string): void {
+    if (!existsSync(dirPath)) {
+      mkdirSync(dirPath, { recursive: true })
+    }
+  }
+
+  /**
+   * Process CSS3 inline mode - inject styles into HTML head
+   */
+  private async processCss3InlineMode(groupedElements: Map<string, string[]>, ui8kitMap: Map<string, string>): Promise<void> {
+    const htmlFiles = this.getHtmlFiles(this.config!.htmlDir)
+    const outputDir = this.config!.outputHtmlDir
+    const pureCss = this.generatePureCss(groupedElements, ui8kitMap)
+
+    // Minify CSS for inline injection
+    const minifiedCss = this.minifyCss(pureCss)
+
+    for (const filePath of htmlFiles) {
+      let htmlContent = readFileSync(filePath, 'utf-8')
+
+      // Remove class attributes, keep only data-class
+      htmlContent = this.removeClassAttributes(htmlContent)
+
+      // Inject inline styles into head
+      htmlContent = this.injectInlineStyles(htmlContent, minifiedCss)
+
+      // Write to output directory if specified, otherwise modify in place
+      const targetPath = outputDir ? this.getOutputPath(filePath, outputDir) : filePath
+      if (outputDir) {
+        this.ensureDir(dirname(targetPath))
+      }
+
+      writeFileSync(targetPath, htmlContent, 'utf-8')
+    }
+
+    console.log(`✅ Injected ${minifiedCss.length} bytes of CSS into ${htmlFiles.length} HTML files${outputDir ? ` → ${outputDir}` : ''}`)
+  }
+
+  /**
+   * Remove class attributes from HTML, keep data-class
+   */
+  private removeClassAttributes(htmlContent: string): string {
+    // Remove class="..." attributes but keep data-class
+    return htmlContent.replace(/\s+class\s*=\s*["'][^"']*["']/g, '')
+  }
+
+  /**
+   * Inject inline styles into HTML head
+   */
+  private injectInlineStyles(htmlContent: string, css: string): string {
+    const styleTag = `<style>${css}</style>`
+
+    // Insert before closing </head>
+    return htmlContent.replace('</head>', `  ${styleTag}\n  </head>`)
+  }
+
+  /**
+   * Simple CSS minification
+   */
+  private minifyCss(css: string): string {
+    return css
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
+      .replace(/\s+/g, ' ') // Collapse whitespace
+      .replace(/\s*{\s*/g, '{') // Remove spaces around braces
+      .replace(/\s*}\s*/g, '}') // Remove spaces around closing braces
+      .replace(/\s*;\s*/g, ';') // Remove spaces around semicolons
+      .replace(/;\s*}/g, '}') // Remove trailing semicolons
+      .trim()
   }
 
   /**
