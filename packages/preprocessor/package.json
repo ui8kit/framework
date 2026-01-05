@@ -1,0 +1,21 @@
+{
+  "name": "@ui8kit/preprocessor",
+  "version": "0.1.0",
+  "description": "CSS preprocessor for UI8Kit - generates tailwind.apply.css from components",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "ui8kit-css": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target node",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "devDependencies": {
+    "bun": "^1.3.0"
+  }
+}

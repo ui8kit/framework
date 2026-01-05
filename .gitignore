@@ -13,5 +13,4 @@ package-lock.json
 tsconfig.node.tsbuildinfo
 bash.exe.*
 .manual/
-.project/
 .cursorignore

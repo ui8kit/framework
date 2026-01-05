@@ -34,7 +34,7 @@ import { pathToFileURL } from 'url'
 import pretty from 'pretty'
 import { parse } from 'parse5'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
-import { ThemeProvider, skyOSTheme } from '@ui8kit/core'
+import { ThemeProvider, lesseUITheme } from '../../../apps/local/src/providers/theme'
 
 type RouteToStaticConfig = {
   entryPath: string
@@ -222,12 +222,12 @@ class RouteToStatic {
     const appElement = AppComponent
       ? React.createElement(
           ThemeProvider,
-          { theme: skyOSTheme },
+          { theme: lesseUITheme },
           this.createRouterElementForPath(AppComponent, RouteComponent, normalizedPath, routePatternPath)
         )
       : React.createElement(
           ThemeProvider,
-          { theme: skyOSTheme },
+          { theme: lesseUIThemee },
           React.createElement(RouteComponent)
         )
 

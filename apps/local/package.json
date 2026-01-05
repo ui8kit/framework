@@ -7,7 +7,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "css:generate": "bun run --cwd ../../packages/preprocessor src/index.ts",
+    "css:generate:pure": "bun run --cwd ../../packages/preprocessor src/index.ts -- --pure-css",
+    "css:generate:critical": "bun run --cwd ../../packages/preprocessor src/index.ts -- --critical-route apps/local/src/routes/HomePage.tsx",
+    "css:watch": "bun run --cwd ../../packages/preprocessor src/index.ts -- --watch --verbose"
   },
   "dependencies": {
     "lucide-react": "^0.460.0",

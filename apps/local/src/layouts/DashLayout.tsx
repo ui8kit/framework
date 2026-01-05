@@ -18,9 +18,9 @@ export function Sidebar({ children, className, dataClass, title }: SidebarProps)
       className={className}
       data-class={dataClass || "sidebar"}
     >
-      <Box p="4">
-        <Stack gap="4" data-role="dash-sidebar-stack">
-          {title && <Text bg="muted-foreground">{title}</Text>}
+      <Box p="4" data-role="dash-sidebar-box">
+        <Stack gap="4" data-role="dash-sidebar-stack" data-class="sidebar-stack">
+          {title && <Text bg="muted-foreground" data-role="dash-sidebar-title">{title}</Text>}
           {children}
         </Stack>
       </Box>
@@ -37,14 +37,14 @@ export interface NavbarProps {
 
 export function Navbar({ isDarkMode, toggleDarkMode, brand = "App" }: NavbarProps) {
   return (
-    <Block component="nav" bg="card" p="4" data-role="dash-navbar">
-      <Group justify="between" items="center">
-        <Group gap="2" items="center">
+    <Block component="nav" bg="card" p="4" data-role="dash-navbar" data-class="navbar">
+      <Group justify="between" items="center" data-class="navbar-group">
+        <Group gap="2" items="center" data-class="navbar-brand-group">
           <Icon component="span" lucideIcon={Atom} bg="primary" />
           <Text font="bold">{brand}</Text>
         </Group>
 
-        <Button variant="ghost" title="Toggle dark mode" onClick={toggleDarkMode}>
+        <Button variant="ghost" title="Toggle dark mode" onClick={toggleDarkMode} data-class="navbar-toggle-dark-mode-button">
           <Icon component="span" lucideIcon={isDarkMode ? Sun : Moon} />
           <Text text="sm">Theme</Text>
         </Button>
@@ -75,17 +75,17 @@ export function Dashboard({ page: Page, children, sidebar, navbarProps }: Dashbo
     <>
       <Navbar isDarkMode={isDark} toggleDarkMode={toggle} brand={navbarProps?.brand} />
 
-      <Block component="main" data-role="dash-main" relative="" w="full">
+      <Block component="main" data-role="dash-main" relative="" w="full" data-class="main">
         <PanelGroup direction="horizontal" autoSaveId="dashlayout-panels">
-          <Panel defaultSize={20} minSize={10} maxSize={40}>
+          <Panel defaultSize={20} minSize={10} maxSize={40} data-class="sidebar-panel">
             <Sidebar>{sidebar}</Sidebar>
           </Panel>
 
-          <PanelResizeHandle />
+          <PanelResizeHandle data-class="sidebar-resize-handle" />
 
           <Panel defaultSize={80} minSize={50}>
-            <Box p="4">
-              <Container>{Page ? <Page /> : children}</Container>
+            <Box p="4" bg="muted" data-class="main-content-box">
+              <Container data-class="main-content-container">{Page ? <Page /> : children}</Container>
             </Box>
           </Panel>
         </PanelGroup>
