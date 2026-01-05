@@ -47,6 +47,13 @@ class HtmlToCss {
   }
 
   /**
+   * Get ui8kit map path from config (defaults to JSON)
+   */
+  private getUi8kitMapPath(): string {
+    return this.config?.ui8kitMapPath || './lib/ui8kit.map.json'
+  }
+
+  /**
    * Generate CSS files from HTML
    */
   async generateAll(): Promise<void> {
@@ -67,8 +74,9 @@ class HtmlToCss {
     console.log(`🎯 Generated ${groupedElements.size} unique selectors`)
 
     // 3. Load ui8kit map for pure CSS generation
-    const ui8kitMap = this.loadUi8kitMap(ui8kitMapPath)
-    console.log(`📚 Loaded ${ui8kitMap.size} CSS mappings from ui8kit.map.ts`)
+    const mapPath = this.getUi8kitMapPath()
+    const ui8kitMap = await this.loadUi8kitMap(mapPath)
+    console.log(`📚 Loaded ${ui8kitMap.size} CSS mappings from ${mapPath}`)
 
     // 4. Generate @apply CSS (Tailwind compatible)
     const applyCss = this.generateApplyCss(groupedElements)
@@ -246,29 +254,34 @@ class HtmlToCss {
 
 
   /**
-   * Load ui8kit.map.ts and parse it
+   * Load ui8kit.map.json directly
    */
-  private loadUi8kitMap(mapPath: string): Map<string, string> {
-    const mapContent = readFileSync(mapPath, 'utf-8')
-    const ui8kitMap = new Map<string, string>()
+  private async loadUi8kitMap(mapPath: string): Promise<Map<string, string>> {
+    try {
+      // Try JSON first (preferred)
+      const jsonPath = mapPath.replace(/\.ts$/, '.json')
+      const jsonContent = readFileSync(jsonPath, 'utf-8')
+      const ui8kitMapObject = JSON.parse(jsonContent)
 
-    // Parse the export const ui8kitMap = { ... } structure
-    const match = mapContent.match(/export const ui8kitMap = \{([\s\S]*?)\};/)
-    if (!match) {
-      throw new Error(`Could not parse ui8kit.map.ts at ${mapPath}`)
+      // Convert object to Map
+      const ui8kitMap = new Map<string, string>()
+      for (const [key, value] of Object.entries(ui8kitMapObject)) {
+        ui8kitMap.set(key, value as string)
+      }
+
+      return ui8kitMap
+    } catch (error) {
+      // Fallback to TypeScript parsing if JSON fails
+      return this.loadUi8kitMapFallback(mapPath)
     }
+  }
 
-    const objectContent = match[1]
-
-    // Extract key-value pairs
-    const propertyRegex = /"([^"]+)":\s*"([^"]+)",?/g
-    let propertyMatch
-    while ((propertyMatch = propertyRegex.exec(objectContent)) !== null) {
-      const [, className, cssProperty] = propertyMatch
-      ui8kitMap.set(className, cssProperty)
-    }
-
-    return ui8kitMap
+  /**
+   * Fallback method for TypeScript parsing (kept for compatibility)
+   */
+  private loadUi8kitMapFallback(mapPath: string): Map<string, string> {
+    // Simplified fallback - just throw error since we prefer JSON
+    throw new Error(`JSON import failed and TypeScript fallback is not available. Please ensure ${mapPath.replace('.ts', '.json')} exists.`)
   }
 
   /**
