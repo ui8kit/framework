@@ -14,7 +14,8 @@
     "url": "https://github.com/buildy-ui/semantic-starter.git"
   },
   "scripts": {
-    "html": "bun run --bun generate.ts"
+    "html": "bun run --bun generate.ts",
+    "css": "bun run --bun scripts/css.ts"
   },
   "devDependencies": {
     "react": "^19.1.0",
