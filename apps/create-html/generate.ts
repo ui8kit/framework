@@ -1,7 +1,7 @@
 // bun apps/create-html/generate
 
 import { RouteToStatic } from './scripts/routeToStatic'
-import { HtmlToCss } from './scripts/htmlToCss'
+//import { HtmlToCss } from './scripts/htmlToCss'
 
 // 1. Generate HTML files
 console.log('🏗️  Generating HTML files...')
@@ -16,7 +16,7 @@ htmlGenerator.configure({
 await htmlGenerator.generateAll()
 
 // 2. Generate CSS from HTML files
-console.log('🎨 Generating CSS files...')
+/*console.log('🎨 Generating CSS files...')
 const cssGenerator = new HtmlToCss()
 cssGenerator.configure({
   htmlDir: './www/html',
@@ -26,6 +26,6 @@ cssGenerator.configure({
   stylesMode: 'css3inline', // Options: 'tailwind' | 'css3' | 'css3inline'
   outputHtmlDir: './www/html' // Output directory for modified HTML
 })
-await cssGenerator.generateAll()
+await cssGenerator.generateAll()*/
 
 console.log('✅ Static site generation completed!')
