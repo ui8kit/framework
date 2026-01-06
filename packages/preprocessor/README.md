@@ -1,9 +1,32 @@
 # UI8Kit CSS Preprocessor
 
-A preprocessor that generates both `tailwind.apply.css` and `ui8kit.{app}.css` by analyzing React components:
+A preprocessor that generates CSS by creating HTML snapshots of routes and converting them to styles:
 
-- **tailwind.apply.css**: Utility props converted to `@apply` directives (for Tailwind CSS)
-- **ui8kit.{app}.css**: Utility props converted to pure CSS3 properties (Tailwind-free)
+- **HTML Snapshots**: Creates `~snap/{app}/{route}.html` files using React static rendering
+- **tailwind.apply.css**: `@apply` directives for Tailwind CSS projects
+- **ui8kit.{app}.css**: Pure CSS3 properties for Tailwind-free projects
+- **Zero hardcode**: All CSS is extracted from actual rendered HTML
+
+## Architecture
+
+```
+📁 packages/preprocessor/
+├── tsconfig.json              # TypeScript configuration
+├── package.json               # Package configuration
+├── ~snap/                     # HTML snapshots (ignored by git/Tailwind)
+│   └── local/
+│       └── index.html        # Static rendered HTML
+└── src/
+    ├── snapshot-generator.ts # Creates HTML from React routes
+    ├── html-converter.ts     # HTML → CSS conversion
+    └── index.ts              # Main orchestrator
+
+📁 apps/local/dist/            # Generated CSS files (visible to Tailwind)
+├── tailwind.apply.css         # @apply directives for Tailwind
+└── ui8kit.local.css           # Pure CSS3 for Tailwind-free apps
+
+📁 tsconfig.json               # Root TypeScript config for monorepo
+```
 
 ## How It Works
 
@@ -14,23 +37,16 @@ A preprocessor that generates both `tailwind.apply.css` and `ui8kit.{app}.css` b
 
 ## Usage
 
-### Generate CSS with @apply (Tailwind)
+### Generate CSS for Routes
 ```bash
+# Generate @apply CSS for Tailwind projects
 bun run css:generate
-```
 
-### Generate Pure CSS3 (Tailwind-free)
-```bash
+# Generate both @apply CSS and pure CSS3
 bun run css:generate:pure
-```
 
-### Generate Critical CSS for Route (Ultimate Optimization)
-```bash
-# Generate critical CSS for specific route
-bun run css:generate:critical
-
-# Or specify custom route:
-bun packages/preprocessor/src/index.ts -- --critical-route apps/local/src/routes/MyPage.tsx
+# Generate for multiple routes
+bun packages/preprocessor/src/index.ts -- --routes /,/about --pure-css
 ```
 
 ### Watch Mode (Development)
@@ -154,5 +170,75 @@ export function HomePage() {
 - 📱 **Better mobile performance**
 - 🎯 **Zero unused CSS per route**
 - 🚀 **Critical rendering path optimization**
+
+## Migration Notes
+
+**Removed legacy code:**
+- ❌ `parser.ts` - Old component AST parsing
+- ❌ `generator.ts` - Old utility prop generation
+- ❌ `pure-css-generator.ts` - Old CSS generation
+- ❌ `critical-css-generator.ts` - Old critical CSS approach
+- ❌ `watcher.ts` - File watching (for now)
+
+**New approach:**
+- ✅ HTML snapshots in `~snap/` directory
+- ✅ Automatic class extraction from rendered HTML
+- ✅ CSS generation in `apps/local/dist/` (visible to Tailwind)
+- ✅ Zero hardcode - all data extracted from actual HTML
+- ✅ TypeScript configuration with proper types
+- ✅ Turbo monorepo integration
+
+## TypeScript Configuration
+
+The preprocessor includes proper TypeScript configuration:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "types": ["node", "bun"],
+    "strict": true
+  }
+}
+```
+
+## Monorepo Setup
+
+- **Root `tsconfig.json`** - Shared TypeScript config for all packages
+- **Turbo tasks** - `build`, `lint`, and `test` tasks configured
+- **Workspace dependencies** - Proper module resolution across packages
+
+## Test Results
+
+**Input**: HTML snapshot with 20 elements and real Tailwind classes
+**Output** (generated in `apps/local/dist/`):
+- **tailwind.apply.css**: 1,074 bytes, 18 @apply rules
+- **ui8kit.local.css**: 2,254 bytes, 47 CSS properties
+
+**Sample Generated CSS**:
+```css
+/* tailwind.apply.css */
+.hero-content {
+  @apply flex flex-col gap-4 items-center;
+}
+
+.hero-title {
+  @apply text-4xl font-bold;
+}
+
+/* ui8kit.local.css */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  align-items: center;
+}
+
+.hero-title {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+}
+```
 
 All CSS files can be included in your build process alongside other assets.

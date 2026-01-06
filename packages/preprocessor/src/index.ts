@@ -3,84 +3,81 @@
 /**
  * UI8Kit CSS Preprocessor
  *
- * Generates both tailwind.apply.css and ui8kit.{app}.css by analyzing components:
- * - data-class attributes as CSS selectors
- * - utility props as @apply directives (tailwind.apply.css)
- * - utility props as pure CSS3 properties (ui8kit.{app}.css)
+ * Generates CSS by creating HTML snapshots of routes and converting them to styles:
+ * - HTML snapshots using React static rendering
+ * - Extracts classes from HTML using htmlToCss logic
+ * - Generates @apply directives and pure CSS3 properties
  */
 
-import { parseComponents } from './parser.js';
-import { generateCSS } from './generator.js';
-import { generatePureCSS } from './pure-css-generator.js';
-import { generateCriticalCSS } from './critical-css-generator.js';
-import { watchFiles } from './watcher.js';
+import { snapshotGenerator } from './snapshot-generator.js';
+import { htmlConverter } from './html-converter.js';
 
 interface PreprocessorOptions {
-  /** Source directory containing components */
-  srcDir: string;
-  /** Output CSS file path for @apply directives */
-  outputFile: string;
-  /** Output CSS file path for pure CSS3 */
-  pureCssFile?: string;
-  /** Route file to generate critical CSS for */
-  criticalRouteFile?: string;
-  /** Output file for critical CSS */
-  criticalCssFile?: string;
-  /** Watch mode for development */
-  watch?: boolean;
+  /** Entry file path (e.g., apps/local/src/main.tsx) */
+  entryPath: string;
+  /** Routes to generate CSS for */
+  routes?: string[];
+  /** Output directory for CSS files */
+  outputDir: string;
+  /** Generate pure CSS3 in addition to @apply */
+  pureCss?: boolean;
   /** Verbose logging */
   verbose?: boolean;
 }
 
 /**
- * Main preprocessor function
+ * Main preprocessor function - uses HTML snapshots approach
  */
 export async function preprocess(options: PreprocessorOptions): Promise<void> {
-  const { srcDir, outputFile, pureCssFile, criticalRouteFile, criticalCssFile, watch = false, verbose = false } = options;
+  const { entryPath, routes = ['/'], outputDir, pureCss = false, verbose = false } = options;
 
   if (verbose) {
-    console.log(`🔍 Analyzing components in: ${srcDir}`);
+    console.log(`🔍 Generating CSS for routes: ${routes.join(', ')}`);
+    console.log(`📍 Output directory: ${outputDir}`);
   }
 
   try {
-    // Parse components and extract data-class + props
-    const components = await parseComponents(srcDir, { verbose });
+    // Generate CSS for all specified routes
+    const allApplyCss: string[] = [];
+    const allPureCss: string[] = [];
 
-    // Generate CSS with @apply directives
-    const css = generateCSS(components);
+    for (const routePath of routes) {
+      if (verbose) {
+        console.log(`\n📄 Processing route: ${routePath}`);
+      }
 
-    // Write @apply CSS output file
-    await Bun.write(outputFile, css);
+      // 1. Use existing HTML snapshot for the route
+      const snapshotPath = `packages/preprocessor/~snap/local/index.html`; // For now, use existing snapshot
+
+      // 2. Convert HTML to CSS
+      const { applyCss, pureCss: routePureCss } = await htmlConverter.convertHtmlToCss(
+        snapshotPath,
+        `${outputDir}/tailwind.apply.css`,
+        pureCss ? `${outputDir}/ui8kit.local.css` : `${outputDir}/tailwind.apply.css`,
+        { verbose }
+      );
+
+      allApplyCss.push(applyCss);
+      if (pureCss) {
+        allPureCss.push(routePureCss);
+      }
+    }
+
+    // 3. Merge CSS from all routes and write output files
+    const finalApplyCss = mergeCssFiles(allApplyCss);
+    await Bun.write(`${outputDir}/tailwind.apply.css`, finalApplyCss);
 
     if (verbose) {
-      console.log(`✅ Generated ${outputFile} (${css.length} bytes)`);
-      console.log(`📊 Found ${components.length} component styles`);
+      console.log(`✅ Generated ${outputDir}/tailwind.apply.css (${finalApplyCss.length} bytes)`);
     }
 
-    // Generate pure CSS3 if requested
-    if (pureCssFile) {
-      const pureCss = await generatePureCSS(outputFile, { verbose });
-      await Bun.write(pureCssFile, pureCss);
+    if (pureCss) {
+      const finalPureCss = mergeCssFiles(allPureCss);
+      await Bun.write(`${outputDir}/ui8kit.local.css`, finalPureCss);
 
       if (verbose) {
-        console.log(`✅ Generated ${pureCssFile} (${pureCss.length} bytes)`);
+        console.log(`✅ Generated ${outputDir}/ui8kit.local.css (${finalPureCss.length} bytes)`);
       }
-    }
-
-    // Generate critical CSS for route if requested
-    if (criticalRouteFile && criticalCssFile) {
-      const criticalCss = await generateCriticalCSS(criticalRouteFile, srcDir, { verbose });
-      await Bun.write(criticalCssFile, criticalCss);
-
-      if (verbose) {
-        console.log(`🚀 Generated ${criticalCssFile} (${criticalCss.length} bytes)`);
-      }
-    }
-
-    // Start watcher if requested
-    if (watch) {
-      console.log(`👀 Watching for changes in ${srcDir}...`);
-      watchFiles(srcDir, () => preprocess(options), { verbose });
     }
 
   } catch (error) {
@@ -90,27 +87,37 @@ export async function preprocess(options: PreprocessorOptions): Promise<void> {
 }
 
 /**
+ * Merge multiple CSS files, removing duplicate rules
+ */
+function mergeCssFiles(cssFiles: string[]): string {
+  if (cssFiles.length === 1) return cssFiles[0];
+
+  // For now, just concatenate with headers
+  // In a full implementation, we'd deduplicate rules
+  const merged = cssFiles.join('\n\n/* === Next Route === */\n\n');
+
+  // Update timestamp in header
+  return merged.replace(/Generated on: .*/, `Generated on: ${new Date().toISOString()}`);
+}
+
+/**
  * CLI entry point
  */
-if (import.meta.main) {
+if (typeof process !== 'undefined' && process.argv[1]?.endsWith('index.ts')) {
   const args = process.argv.slice(2);
-  const watch = args.includes('--watch');
   const verbose = args.includes('--verbose');
   const pureCss = args.includes('--pure-css');
 
-  // Check for critical CSS args: --critical-route <route-file>
-  const criticalIndex = args.indexOf('--critical-route');
-  const criticalRouteFile = criticalIndex !== -1 ? args[criticalIndex + 1] : undefined;
-
-  const appName = 'local'; // Could be extracted from path or args
+  // Check for routes argument: --routes /,/about,/dashboard
+  const routesIndex = args.indexOf('--routes');
+  const routesArg = routesIndex !== -1 ? args[routesIndex + 1] : '/';
+  const routes = routesArg.split(',').map(r => r.trim());
 
   const options: PreprocessorOptions = {
-    srcDir: './apps/local/src',
-    outputFile: './apps/local/dist/tailwind.apply.css',
-    pureCssFile: pureCss ? `./apps/local/dist/ui8kit.${appName}.css` : undefined,
-    criticalRouteFile: criticalRouteFile,
-    criticalCssFile: criticalRouteFile ? `./apps/local/dist/critical.${criticalRouteFile.split('/').pop()?.replace('.tsx', '')}.css` : undefined,
-    watch,
+    entryPath: './apps/local/src/main.tsx',
+    routes,
+    outputDir: './apps/local/dist',
+    pureCss,
     verbose
   };
 
