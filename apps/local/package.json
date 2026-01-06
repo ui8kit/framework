@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "generate": "bun run generator.config.ts",
-    "generate:css": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes / --snapshots-dir ../../apps/local/snapshots --pure-css --verbose",
+    "generate:css": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes / --snapshots-dir ../../apps/local/views --output-dir ../../apps/local/dist/css --pure-css --verbose",
     "generate:html": "bun run generator.config.ts",
     "preview:static": "bun run generate && serve dist/html"
   },

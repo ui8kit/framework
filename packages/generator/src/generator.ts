@@ -49,11 +49,11 @@ export class Generator {
   async generate(config: GeneratorConfig): Promise<void> {
     console.log(`🚀 Generating static site for ${config.app.name}`);
 
-    // 1. Generate CSS
-    await this.generateCss(config);
-
-    // 2. Generate Liquid views from React components
+    // 1. Generate Liquid views from React components (with data-class attributes)
     await this.generateViews(config);
+
+    // 2. Generate CSS from views (instead of snapshots)
+    await this.generateCss(config);
 
     // 3. Generate final HTML from Liquid views
     await this.generateHtml(config);
@@ -67,16 +67,17 @@ export class Generator {
   private async generateCss(config: GeneratorConfig): Promise<void> {
     console.log('🎨 Generating CSS...');
 
-    // Generate CSS for all routes
+    // Generate CSS for all routes using views instead of snapshots
     await preprocess({
       entryPath: config.css.entryPath,
       routes: config.css.routes,
-      snapshotsDir: config.html.viewsDir.replace('/views', '/snapshots'),
+      snapshotsDir: config.html.viewsDir, // Use views directory directly
       outputDir: config.css.outputDir,
       pureCss: config.css.pureCss,
       verbose: true
     });
   }
+
 
   private async generateViews(config: GeneratorConfig): Promise<void> {
     console.log('📄 Generating Liquid views...');
@@ -97,34 +98,34 @@ export class Generator {
 
   private async generateViewContent(routePath: string): Promise<string> {
     // Placeholder: in real implementation, this would render React component
-    // For now, return simple HTML that matches our existing snapshot
+    // For now, return HTML with proper data-class attributes for semantic selectors
     if (routePath === '/') {
-      return `<div class="hero-section relative">
-  <div class="hero-content flex flex-col gap-4 items-center">
-    <h1 class="hero-title text-4xl font-bold">Welcome to UI8Kit</h1>
-    <p class="hero-description text-lg text-muted-foreground">Build beautiful interfaces with React & CSS3</p>
-    <div class="hero-actions flex gap-4">
-      <button class="hero-cta-primary px-4 py-2 bg-primary text-primary-foreground rounded">Get Started</button>
-      <button class="hero-cta-secondary px-4 py-2 border border-border rounded">Learn More</button>
+      return `<div data-class="hero-section" class="relative">
+  <div data-class="hero-content" class="flex flex-col gap-4 items-center">
+    <h1 data-class="hero-title" class="text-4xl font-bold">Welcome to UI8Kit</h1>
+    <p data-class="hero-description" class="text-lg text-muted-foreground">Build beautiful interfaces with React & CSS3</p>
+    <div data-class="hero-actions" class="flex gap-4">
+      <button data-class="hero-cta-primary" class="px-4 py-2 bg-primary text-primary-foreground rounded">Get Started</button>
+      <button data-class="hero-cta-secondary" class="px-4 py-2 border border-border rounded">Learn More</button>
     </div>
   </div>
 </div>
 
-<div class="features-section py-16">
-  <div class="features-header gap-4 items-center">
-    <h2 class="features-title text-3xl font-semibold">Features</h2>
-    <p class="features-description text-muted-foreground">Everything you need to build modern web applications</p>
+<div data-class="features-section" class="py-16">
+  <div data-class="features-header" class="gap-4 items-center">
+    <h2 data-class="features-title" class="text-3xl font-semibold">Features</h2>
+    <p data-class="features-description" class="text-muted-foreground">Everything you need to build modern web applications</p>
   </div>
-  <div class="features-grid cols-1-2-4 gap-6">
-    <div class="feature-card-0 p-6 border rounded-lg">
-      <div class="feature-icon text-2xl">🚀</div>
-      <h3 class="feature-title text-xl font-medium">Fast</h3>
-      <p class="feature-description text-muted-foreground">Lightning fast performance</p>
+  <div data-class="features-grid" class="cols-1-2-4 gap-6">
+    <div data-class="feature-card-0" class="p-6 border rounded-lg">
+      <div data-class="feature-icon" class="text-2xl">🚀</div>
+      <h3 data-class="feature-title" class="text-xl font-medium">Fast</h3>
+      <p data-class="feature-description" class="text-muted-foreground">Lightning fast performance</p>
     </div>
-    <div class="feature-card-1 p-6 border rounded-lg">
-      <div class="feature-icon text-2xl">🎨</div>
-      <h3 class="feature-title text-xl font-medium">Beautiful</h3>
-      <p class="feature-description text-muted-foreground">Stunning design system</p>
+    <div data-class="feature-card-1" class="p-6 border rounded-lg">
+      <div data-class="feature-icon" class="text-2xl">🎨</div>
+      <h3 data-class="feature-title" class="text-xl font-medium">Beautiful</h3>
+      <p data-class="feature-description" class="text-muted-foreground">Stunning design system</p>
     </div>
   </div>
 </div>`;

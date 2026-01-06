@@ -20,7 +20,7 @@ interface PreprocessorOptions {
   /** Directory containing HTML snapshots */
   snapshotsDir?: string;
   /** Output directory for CSS files */
-  outputDir: string;
+  outputDir?: string;
   /** Generate pure CSS3 in addition to @apply */
   pureCss?: boolean;
   /** Verbose logging */
@@ -31,7 +31,12 @@ interface PreprocessorOptions {
  * Main preprocessor function - uses HTML snapshots approach
  */
 export async function preprocess(options: PreprocessorOptions): Promise<void> {
-  const { entryPath, routes = ['/'], snapshotsDir = 'packages/preprocessor/~snap/local', outputDir, pureCss = false, verbose = false } = options;
+  const { entryPath, routes = ['/'], snapshotsDir, outputDir, pureCss = false, verbose = false } = options;
+
+  // Validate required options
+  if (!snapshotsDir || !outputDir) {
+    throw new Error('snapshotsDir and outputDir are required');
+  }
 
   if (verbose) {
     console.log(`🔍 Generating CSS for routes: ${routes.join(', ')}`);
@@ -90,12 +95,12 @@ export async function preprocess(options: PreprocessorOptions): Promise<void> {
 }
 
 /**
- * Get snapshot file path for a route
+ * Get view file path for a route
  */
 function getSnapshotPath(routePath: string, snapshotsDir: string): string {
   // Normalize route path for filesystem (remove leading slash, handle root)
   const normalizedPath = routePath === '/' ? 'index' : routePath.slice(1);
-  return `${snapshotsDir}/${normalizedPath}.html`;
+  return `${snapshotsDir}/pages/${normalizedPath}.liquid`;
 }
 
 /**
@@ -125,15 +130,26 @@ if (typeof process !== 'undefined' && process.argv[1]?.endsWith('index.ts')) {
   const routesArg = routesIndex !== -1 ? args[routesIndex + 1] : '/';
   const routes = routesArg.split(',').map(r => r.trim());
 
-  // Check for snapshots directory: --snapshots-dir ./apps/local/snapshots
+  // Check for snapshots directory: --snapshots-dir is required
   const snapshotsIndex = args.indexOf('--snapshots-dir');
-  const snapshotsDir = snapshotsIndex !== -1 ? args[snapshotsIndex + 1] : 'packages/preprocessor/~snap/local';
+  const snapshotsDir = snapshotsIndex !== -1 ? args[snapshotsIndex + 1] : undefined;
+
+  // Check for output directory: --output-dir is required
+  const outputIndex = args.indexOf('--output-dir');
+  const outputDir = outputIndex !== -1 ? args[outputIndex + 1] : undefined;
+
+  if (!snapshotsDir || !outputDir) {
+    console.error('❌ Error: --snapshots-dir and --output-dir are required');
+    console.error('💡 Use generator instead: bun run generate');
+    console.error('   Or run directly: --snapshots-dir ./views --output-dir ./dist');
+    process.exit(1);
+  }
 
   const options: PreprocessorOptions = {
     entryPath: './apps/local/src/main.tsx',
     routes,
     snapshotsDir,
-    outputDir: './apps/local/dist',
+    outputDir,
     pureCss,
     verbose
   };

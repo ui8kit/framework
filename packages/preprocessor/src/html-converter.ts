@@ -112,7 +112,7 @@ export class HtmlConverter {
       if (classes.length > 0 || dataClass) {
         elements.push({
           selector: dataClass || this.generateSelector(tagContent),
-          classes,
+          classes: classes.filter(cls => !cls.includes('data-class')), // Remove any data-class from classes
           sourceFile
         });
       }
@@ -200,8 +200,10 @@ export class HtmlConverter {
 
     for (const selector of sortedSelectors) {
       const classes = selectorMap.get(selector) || [];
-      if (classes.length > 0) {
-        cssRules.push(`.${selector} {\n  @apply ${classes.join(' ')};\n}`);
+      // Filter only valid Tailwind classes for @apply
+      const validClasses = classes.filter(cls => this.isValidTailwindClass(cls));
+      if (validClasses.length > 0) {
+        cssRules.push(`.${selector} {\n  @apply ${validClasses.join(' ')};\n}`);
       }
     }
 
@@ -212,6 +214,53 @@ export class HtmlConverter {
  */\n\n`;
 
     return header + cssRules.join('\n\n') + '\n';
+  }
+
+  /**
+   * Check if class is a valid Tailwind class for @apply
+   */
+  private isValidTailwindClass(className: string): boolean {
+    // Check if it's in ui8kit.map.json (known Tailwind classes)
+    if (this.ui8kitMap?.has(className)) {
+      return true;
+    }
+
+    // Check for common Tailwind patterns (basic validation)
+    const tailwindPatterns = [
+      /^p[xylrtb]?-/,           // padding: px-, py-, pl-, pr-, pt-, pb-, p-
+      /^m[xylrtb]?-/,           // margin: mx-, my-, ml-, mr-, mt-, mb-, m-
+      /^gap-/,                  // gap-
+      /^flex/,                  // flex, flex-*
+      /^grid/,                  // grid, grid-*
+      /^text-/,                 // text-*
+      /^bg-/,                   // bg-*
+      /^border/,                // border, border-*
+      /^rounded/,               // rounded, rounded-*
+      /^w-/,                    // w-*
+      /^h-/,                    // h-*
+      /^max-w-/,                // max-w-*
+      /^min-w-/,                // min-w-*
+      /^max-h-/,                // max-h-*
+      /^min-h-/,                // min-h-*
+      /^items-/,                // items-*
+      /^justify-/,              // justify-*
+      /^self-/,                 // self-*
+      /^col-span-/,             // col-span-*
+      /^row-span-/,             // row-span-*
+      /^aspect-/,               // aspect-*
+      /^relative$/,             // relative
+      /^absolute$/,             // absolute
+      /^block$/,                // block
+      /^inline$/,               // inline
+      /^inline-block$/,         // inline-block
+      /^hidden$/,               // hidden
+      /^visible$/,              // visible
+      /^static$/,               // static
+      /^fixed$/,                // fixed
+      /^sticky$/,               // sticky
+    ];
+
+    return tailwindPatterns.some(pattern => pattern.test(className));
   }
 
   /**
