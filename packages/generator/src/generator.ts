@@ -1,7 +1,7 @@
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { Liquid } from 'liquidjs';
-import { preprocess } from '@ui8kit/preprocessor';
+import { htmlConverter } from './html-converter.js';
 
 export interface GeneratorConfig {
   app: {
@@ -67,15 +67,42 @@ export class Generator {
   private async generateCss(config: GeneratorConfig): Promise<void> {
     console.log('🎨 Generating CSS...');
 
-    // Generate CSS for all routes using views instead of snapshots
-    await preprocess({
-      entryPath: config.css.entryPath,
-      routes: config.css.routes,
-      snapshotsDir: config.html.viewsDir, // Use views directory directly
-      outputDir: config.css.outputDir,
-      pureCss: config.css.pureCss,
-      verbose: true
-    });
+    // Generate CSS for all specified routes
+    const allApplyCss: string[] = [];
+    const allPureCss: string[] = [];
+
+    for (const routePath of config.css.routes) {
+      console.log(`📄 Processing route: ${routePath}`);
+
+      // Get view file path for the route
+      const viewFileName = routePath === '/' ? 'index.liquid' : `${routePath.slice(1)}.liquid`;
+      const viewPath = join(config.html.viewsDir, 'pages', viewFileName);
+
+      // Convert Liquid view to CSS
+      const { applyCss, pureCss: routePureCss } = await htmlConverter.convertHtmlToCss(
+        viewPath,
+        `${config.css.outputDir}/tailwind.apply.css`,
+        config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
+        { verbose: true }
+      );
+
+      allApplyCss.push(applyCss);
+      if (config.css.pureCss) {
+        allPureCss.push(routePureCss);
+      }
+    }
+
+    // Merge and write CSS files
+    const finalApplyCss = this.mergeCssFiles(allApplyCss);
+    await Bun.write(`${config.css.outputDir}/tailwind.apply.css`, finalApplyCss);
+
+    console.log(`✅ Generated ${config.css.outputDir}/tailwind.apply.css (${finalApplyCss.length} bytes)`);
+
+    if (config.css.pureCss) {
+      const finalPureCss = this.mergeCssFiles(allPureCss);
+      await Bun.write(`${config.css.outputDir}/ui8kit.local.css`, finalPureCss);
+      console.log(`✅ Generated ${config.css.outputDir}/ui8kit.local.css (${finalPureCss.length} bytes)`);
+    }
   }
 
 
@@ -220,5 +247,15 @@ export class Generator {
     this.liquid.registerFilter('json', (value: any) => JSON.stringify(value));
     this.liquid.registerFilter('lowercase', (value: string) => value.toLowerCase());
     this.liquid.registerFilter('uppercase', (value: string) => value.toUpperCase());
+  }
+
+  private mergeCssFiles(cssFiles: string[]): string {
+    if (cssFiles.length === 1) return cssFiles[0];
+
+    // For now, just concatenate with headers
+    const merged = cssFiles.join('\n\n/* === Next Route === */\n\n');
+
+    // Update timestamp in header
+    return merged.replace(/Generated on: .*/, `Generated on: ${new Date().toISOString()}`);
   }
 }

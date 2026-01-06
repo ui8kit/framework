@@ -12,7 +12,6 @@
     "typecheck": "bunx tsc --noEmit"
   },
   "dependencies": {
-    "@ui8kit/preprocessor": "workspace:*",
     "liquidjs": "^10.10.0"
   },
   "devDependencies": {
