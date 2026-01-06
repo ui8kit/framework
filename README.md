@@ -32,7 +32,7 @@ bun run html
 ui8kit-framework/
 ├── apps/
 │   ├── local/          # Development environment (Vite + React)
-│   └── create-html/    # Static site generator (HTML5/CSS3 output)
+│   └── generator/       # Static site generator (Liquid templates → HTML5/CSS3)
 ├── packages/           # Shared packages
 └── turbo.json          # Monorepo orchestration
 ```

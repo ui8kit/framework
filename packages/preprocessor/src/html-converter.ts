@@ -55,11 +55,13 @@ export class HtmlConverter {
    * Load ui8kit map for CSS property lookups
    */
   private async loadUi8kitMap(htmlFilePath: string): Promise<void> {
-    // Find ui8kit.map.json - try multiple locations
+    // Find ui8kit.map.json - try multiple locations relative to project root
+    const projectRoot = process.cwd();
     const possiblePaths = [
-      join(dirname(htmlFilePath), '../../../local/src/lib/ui8kit.map.json'),
-      join(dirname(htmlFilePath), '../../../../apps/local/src/lib/ui8kit.map.json'),
-      './apps/local/src/lib/ui8kit.map.json'
+      join(projectRoot, '../../../apps/local/src/lib/ui8kit.map.json'), // from packages/generator/dist
+      join(projectRoot, '../../apps/local/src/lib/ui8kit.map.json'),    // from packages/preprocessor/dist
+      join(projectRoot, '../apps/local/src/lib/ui8kit.map.json'),      // from apps/local
+      'apps/local/src/lib/ui8kit.map.json'                            // absolute from project root
     ];
 
     let jsonContent: string | null = null;

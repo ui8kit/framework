@@ -20,8 +20,7 @@
     "preview": "bunx turbo run preview",
     "test": "bunx turbo run test",
     "lint": "bunx turbo run lint",
-    "html": "bunx turbo run html --filter=./apps/create-html",
-    "semantic:build": "bun run html && npx serve -p 8080 -c serve.json apps/html",
+    "html": "bunx turbo run generate --filter=./apps/local",
     "css:generate": "bun packages/preprocessor/src/index.ts -- --routes /",
     "css:generate:pure": "bun packages/preprocessor/src/index.ts -- --routes / --pure-css"
   },

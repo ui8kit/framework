@@ -8,8 +8,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "css:generate": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes /",
-    "css:generate:pure": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes / --pure-css"
+    "generate": "bun run generator.config.ts",
+    "generate:css": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes / --snapshots-dir ../../apps/local/snapshots --pure-css --verbose",
+    "generate:html": "bun run generator.config.ts",
+    "preview:static": "bun run generate && serve dist/html"
   },
   "dependencies": {
     "lucide-react": "^0.460.0",
@@ -23,6 +25,7 @@
     "@tailwindcss/postcss": "^4.1.13",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@ui8kit/generator": "workspace:*",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

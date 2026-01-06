@@ -17,6 +17,8 @@ interface PreprocessorOptions {
   entryPath: string;
   /** Routes to generate CSS for */
   routes?: string[];
+  /** Directory containing HTML snapshots */
+  snapshotsDir?: string;
   /** Output directory for CSS files */
   outputDir: string;
   /** Generate pure CSS3 in addition to @apply */
@@ -29,11 +31,12 @@ interface PreprocessorOptions {
  * Main preprocessor function - uses HTML snapshots approach
  */
 export async function preprocess(options: PreprocessorOptions): Promise<void> {
-  const { entryPath, routes = ['/'], outputDir, pureCss = false, verbose = false } = options;
+  const { entryPath, routes = ['/'], snapshotsDir = 'packages/preprocessor/~snap/local', outputDir, pureCss = false, verbose = false } = options;
 
   if (verbose) {
     console.log(`🔍 Generating CSS for routes: ${routes.join(', ')}`);
     console.log(`📍 Output directory: ${outputDir}`);
+    console.log(`📂 Snapshots directory: ${snapshotsDir}`);
   }
 
   try {
@@ -46,8 +49,8 @@ export async function preprocess(options: PreprocessorOptions): Promise<void> {
         console.log(`\n📄 Processing route: ${routePath}`);
       }
 
-      // 1. Use existing HTML snapshot for the route
-      const snapshotPath = `packages/preprocessor/~snap/local/index.html`; // For now, use existing snapshot
+      // 1. Find HTML snapshot for the route
+      const snapshotPath = getSnapshotPath(routePath, snapshotsDir);
 
       // 2. Convert HTML to CSS
       const { applyCss, pureCss: routePureCss } = await htmlConverter.convertHtmlToCss(
@@ -87,6 +90,15 @@ export async function preprocess(options: PreprocessorOptions): Promise<void> {
 }
 
 /**
+ * Get snapshot file path for a route
+ */
+function getSnapshotPath(routePath: string, snapshotsDir: string): string {
+  // Normalize route path for filesystem (remove leading slash, handle root)
+  const normalizedPath = routePath === '/' ? 'index' : routePath.slice(1);
+  return `${snapshotsDir}/${normalizedPath}.html`;
+}
+
+/**
  * Merge multiple CSS files, removing duplicate rules
  */
 function mergeCssFiles(cssFiles: string[]): string {
@@ -113,9 +125,14 @@ if (typeof process !== 'undefined' && process.argv[1]?.endsWith('index.ts')) {
   const routesArg = routesIndex !== -1 ? args[routesIndex + 1] : '/';
   const routes = routesArg.split(',').map(r => r.trim());
 
+  // Check for snapshots directory: --snapshots-dir ./apps/local/snapshots
+  const snapshotsIndex = args.indexOf('--snapshots-dir');
+  const snapshotsDir = snapshotsIndex !== -1 ? args[snapshotsIndex + 1] : 'packages/preprocessor/~snap/local';
+
   const options: PreprocessorOptions = {
     entryPath: './apps/local/src/main.tsx',
     routes,
+    snapshotsDir,
     outputDir: './apps/local/dist',
     pureCss,
     verbose

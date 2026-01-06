@@ -12,7 +12,7 @@ Instructions for AI coding agents working with this codebase.
 
 ### Applications
 - **`@ui8kit/vite-local`** — Local development environment for components, layouts, and documentation (not for web deployment)
-- **`@ui8kit/create-html`** — Static site generator that converts React routes to pure HTML5/CSS3 for web publishing
+- **`@ui8kit/generator`** — Static site generator that converts React routes to Liquid templates and generates complete HTML5/CSS3 sites
 
 ### Framework Capabilities
 - **React Components** — Type-safe UI components with utility props

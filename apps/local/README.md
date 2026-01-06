@@ -37,7 +37,7 @@ bun run preview
 ⚠️ **This application is NOT for web production deployment**
 
 - Use only for local development and component testing
-- For production websites, use `@ui8kit/create-html` to generate static HTML
+- For production websites, use `@ui8kit/generator` to generate static HTML from Liquid templates
 - All components follow UI8Kit prop validation rules
 
 ## File Structure
