@@ -16,9 +16,9 @@
     "lint": {
       "outputs": []
     },
-    "html": {
-      "dependsOn": ["build"],
-      "outputs": ["examples/**"]
+    "generate": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "preview": {
       "dependsOn": ["^build"],

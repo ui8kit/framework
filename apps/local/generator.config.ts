@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
-import { generator, type GeneratorConfig } from '@ui8kit/generator';
+import { generator } from '@ui8kit/generator';
+import type { GeneratorConfig } from '@ui8kit/generator/src/generator.js';
 
 export const config: GeneratorConfig = {
   app: {
