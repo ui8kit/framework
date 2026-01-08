@@ -1,10 +1,10 @@
-import React from 'react';
+// import React from 'react';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { Liquid } from 'liquidjs';
 import { htmlConverter } from './html-converter.js';
 // Import render directly from source to avoid bundling issues
-import { renderRoute } from '../../render/src/index';
+import { renderRoute } from '@ui8kit/render';
 
 export interface GeneratorConfig {
   app: {
@@ -21,6 +21,7 @@ export interface GeneratorConfig {
     viewsDir: string;
     routes: Record<string, RouteConfig>;
     outputDir: string;
+    mode?: 'tailwind' | 'semantic' | 'inline'; // HTML processing mode
   };
   assets?: {
     copy?: string[];
@@ -145,6 +146,23 @@ export class Generator {
   private async generateHtml(config: GeneratorConfig): Promise<void> {
     console.log('🏗️ Generating final HTML pages...');
 
+    // Determine HTML mode (default to 'tailwind')
+    const htmlMode = config.html.mode || 'tailwind';
+    console.log(`📄 HTML mode: ${htmlMode}`);
+
+    // For inline mode, load the CSS content to inject
+    let cssContent: string | undefined;
+    if (htmlMode === 'inline') {
+      try {
+        const cssPath = join(config.css.outputDir, 'ui8kit.local.css');
+        cssContent = await Bun.file(cssPath).text();
+        console.log(`📄 Loaded CSS for inline injection (${cssContent.length} bytes)`);
+      } catch (error) {
+        console.warn('⚠️ Could not load CSS for inline mode, falling back to semantic mode');
+        // Fall back to semantic mode if CSS file is not available
+      }
+    }
+
     for (const [routePath, route] of Object.entries(config.html.routes)) {
       // Load the corresponding view
       const viewFileName = routePath === '/' ? 'index.liquid' : `${routePath.slice(1)}.liquid`;
@@ -169,14 +187,17 @@ export class Generator {
           ...route.data
         });
 
+        // Process HTML content based on mode
+        const processedHtml = this.processHtmlContent(html, htmlMode, cssContent);
+
         // Save as final HTML
         const htmlFileName = routePath === '/' ? 'index.html' : `${routePath.slice(1)}/index.html`;
         const htmlPath = join(config.html.outputDir, htmlFileName);
 
         await this.ensureDir(dirname(htmlPath));
-        await writeFile(htmlPath, html, 'utf-8');
+        await writeFile(htmlPath, processedHtml, 'utf-8');
 
-        console.log(`  → ${htmlPath} (${html.length} bytes)`);
+        console.log(`  → ${htmlPath} (${processedHtml.length} bytes)`);
       } catch (error) {
         console.warn(`⚠️ Failed to generate HTML for ${routePath}:`, error);
       }
@@ -238,5 +259,60 @@ export class Generator {
 
     // Update timestamp in header
     return merged.replace(/Generated on: .*/, `Generated on: ${new Date().toISOString()}`);
+  }
+
+  /**
+   * Process HTML content based on the configured htmlMode
+   */
+  private processHtmlContent(htmlContent: string, mode: 'tailwind' | 'semantic' | 'inline', cssContent?: string): string {
+    if (mode === 'tailwind') {
+      // No changes needed - keep data-class and class attributes
+      return htmlContent;
+    }
+
+    if (mode === 'semantic' || mode === 'inline') {
+      // Remove class attributes, keep only data-class
+      htmlContent = this.removeClassAttributes(htmlContent);
+    }
+
+    if (mode === 'inline' && cssContent) {
+      // Inject minified CSS into head
+      const minifiedCss = this.minifyCss(cssContent);
+      htmlContent = this.injectInlineStyles(htmlContent, minifiedCss);
+    }
+
+    return htmlContent;
+  }
+
+  /**
+   * Remove class attributes from HTML, keep data-class
+   */
+  private removeClassAttributes(htmlContent: string): string {
+    // Remove class="..." attributes but keep data-class
+    return htmlContent.replace(/\s+class\s*=\s*["'][^"']*["']/g, '');
+  }
+
+  /**
+   * Inject inline styles into HTML head
+   */
+  private injectInlineStyles(htmlContent: string, css: string): string {
+    const styleTag = `<style>${css}</style>`;
+
+    // Insert before closing </head>
+    return htmlContent.replace('</head>', `  ${styleTag}\n  </head>`);
+  }
+
+  /**
+   * Simple CSS minification for inline injection
+   */
+  private minifyCss(css: string): string {
+    return css
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
+      .replace(/\s+/g, ' ') // Collapse whitespace
+      .replace(/\s*{\s*/g, '{') // Remove spaces around braces
+      .replace(/\s*}\s*/g, '}') // Remove spaces around closing braces
+      .replace(/\s*;\s*/g, ';') // Remove spaces around semicolons
+      .replace(/;\s*}/g, '}') // Remove trailing semicolons
+      .trim();
   }
 }

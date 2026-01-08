@@ -38,7 +38,8 @@ export const config: GeneratorConfig = {
   html: {
     viewsDir: './views',
     routes: htmlRoutes,
-    outputDir: './dist/html'
+    outputDir: './dist/html',
+    mode: 'tailwind' // 'tailwind' | 'semantic' | 'inline'
   },
 
   assets: {

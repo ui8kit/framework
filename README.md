@@ -506,9 +506,27 @@ Best for **Tailwind-free projects** or when you want pure CSS3 with CSS variable
 2. **Validate Classes**: Only valid Tailwind utilities go into `@apply`
 3. **Generate Selectors**: Uses `data-class` attributes as CSS selectors
 4. **Deduplicate**: Automatically merges selectors with identical class sets (e.g., from loops)
-5. **Create Rules**: Generates both `@apply` and pure CSS3 rules
+5. **Process HTML**: Applies selected HTML mode (tailwind/semantic/inline)
+6. **Create Rules**: Generates both `@apply` and pure CSS3 rules
 
 **Automatic Optimization**: When components use loops (e.g., `features.map()`), the generator detects identical class sets and merges them into group selectors, reducing CSS file size without any manual intervention.
+
+### HTML Processing Modes
+
+UI8Kit supports three HTML processing modes:
+
+- **`tailwind`** (default): Preserves both `data-class` and `class` attributes for maximum compatibility
+- **`semantic`**: Removes `class` attributes, keeps semantic `data-class` selectors (smaller HTML)
+- **`inline`**: Injects CSS directly into HTML `<head>` for self-contained files
+
+Configure via `generator.config.ts`:
+
+```typescript
+html: {
+  mode: 'semantic', // 'tailwind' | 'semantic' | 'inline'
+  // ...
+}
+```
 
 ### Example Workflow
 

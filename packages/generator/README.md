@@ -444,6 +444,7 @@ html: {
     }
   };
   outputDir: string;   // HTML output directory
+  mode?: 'tailwind' | 'semantic' | 'inline'; // HTML processing mode (default: 'tailwind')
 }
 ```
 
@@ -632,6 +633,48 @@ bun run generate:html -- --verbose
 4. **Direct Rendering**: Renders components directly without context providers
 5. **HTML Output**: Returns HTML string with preserved `data-class` attributes
 
+### HTML Processing Modes
+
+UI8Kit supports three HTML processing modes to give you flexibility in how the generated HTML is structured:
+
+#### `tailwind` Mode (Default)
+- **HTML Output**: Preserves both `data-class` and `class` attributes
+- **CSS Usage**: Requires linking to generated CSS files (`tailwind.apply.css`, `ui8kit.local.css`)
+- **Best For**: Projects using Tailwind CSS, development environments, maximum compatibility
+
+```html
+<div data-class="hero-content" class="flex flex-col gap-4 items-center">
+  <h1 data-class="hero-title" class="text-4xl font-bold">Hello</h1>
+</div>
+```
+
+#### `semantic` Mode
+- **HTML Output**: Removes `class` attributes, keeps only `data-class` attributes
+- **CSS Usage**: Requires linking to generated CSS files (styles applied via semantic selectors)
+- **Best For**: Production sites, semantic HTML, smaller HTML file sizes
+
+```html
+<div data-class="hero-content">
+  <h1 data-class="hero-title">Hello</h1>
+</div>
+```
+
+#### `inline` Mode
+- **HTML Output**: Removes `class` attributes, injects CSS directly into `<head>`
+- **CSS Usage**: Self-contained HTML files, no external CSS dependencies
+- **Best For**: Email templates, static hosting without CSS files, single-file deployment
+
+```html
+<head>
+  <style>.hero-content{display:flex;...}.hero-title{font-size:2.25rem;...}</style>
+</head>
+<body>
+  <div data-class="hero-content">
+    <h1 data-class="hero-title">Hello</h1>
+  </div>
+</body>
+```
+
 ### CSS Generation Process
 
 1. **View Analysis**: Reads generated `.liquid` view files
@@ -639,7 +682,8 @@ bun run generate:html -- --verbose
 3. **Selector Generation**: Creates semantic selectors using `data-class` values
 4. **Deduplication**: Automatically merges selectors with identical class sets (e.g., from loops)
 5. **CSS Creation**: Generates `@apply` directives and optionally pure CSS3
-6. **File Merging**: Combines CSS from all routes into single files
+6. **HTML Processing**: Applies selected mode (tailwind/semantic/inline)
+7. **File Merging**: Combines CSS from all routes into single files
 
 **Deduplication Example**: If `feature-card-0`, `feature-card-1`, `feature-card-2`, and `feature-card-3` all have the same classes, they are automatically combined into a single group selector: `.feature-card-0, .feature-card-1, .feature-card-2, .feature-card-3 { ... }`
 
