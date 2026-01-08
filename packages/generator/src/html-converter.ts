@@ -44,9 +44,12 @@ export class HtmlConverter {
     // Group by selectors
     const groupedElements = this.groupBySelectors(elements);
 
+    // Merge duplicate class sets (e.g., feature-card-0, feature-card-1 with same classes)
+    const mergedSelectors = this.mergeDuplicateClassSets(groupedElements);
+
     // Generate CSS
-    const applyCss = this.generateApplyCss(groupedElements);
-    const pureCss = this.generatePureCss(groupedElements);
+    const applyCss = this.generateApplyCss(mergedSelectors);
+    const pureCss = this.generatePureCss(mergedSelectors);
 
     return { applyCss, pureCss };
   }
@@ -192,6 +195,48 @@ export class HtmlConverter {
   }
 
   /**
+   * Merge selectors with identical class sets to reduce CSS duplication
+   * Example: feature-card-0, feature-card-1, feature-card-2 with same classes
+   * → .feature-card-0, .feature-card-1, .feature-card-2 { @apply ... }
+   */
+  private mergeDuplicateClassSets(
+    selectorMap: Map<string, string[]>
+  ): Map<string, string[]> {
+    // Create reverse mapping: normalized class set → list of selectors
+    const classSetToSelectors = new Map<string, string[]>();
+
+    for (const [selector, classes] of selectorMap.entries()) {
+      // Normalize classes: sort and join to create a unique key
+      const normalizedClasses = this.normalizeClasses(classes);
+      const classSetKey = normalizedClasses.join(' ');
+
+      // Group selectors by their class sets
+      const existingSelectors = classSetToSelectors.get(classSetKey) || [];
+      existingSelectors.push(selector);
+      classSetToSelectors.set(classSetKey, existingSelectors);
+    }
+
+    // Create merged map: combined selector → classes
+    const mergedMap = new Map<string, string[]>();
+
+    for (const [classSetKey, selectors] of classSetToSelectors.entries()) {
+      const classes = classSetKey.split(' ');
+
+      if (selectors.length > 1) {
+        // Multiple selectors with same classes - combine them
+        // Use comma-separated selector: .selector1, .selector2, .selector3
+        const combinedSelector = selectors.sort().join(', ');
+        mergedMap.set(combinedSelector, classes);
+      } else {
+        // Single selector - keep as is
+        mergedMap.set(selectors[0], classes);
+      }
+    }
+
+    return mergedMap;
+  }
+
+  /**
    * Generate @apply CSS
    */
   private generateApplyCss(selectorMap: Map<string, string[]>): string {
@@ -203,7 +248,15 @@ export class HtmlConverter {
       // Filter only valid Tailwind classes for @apply
       const validClasses = classes.filter(cls => this.isValidTailwindClass(cls));
       if (validClasses.length > 0) {
-        cssRules.push(`.${selector} {\n  @apply ${validClasses.join(' ')};\n}`);
+        // Handle combined selectors (comma-separated) vs single selectors
+        if (selector.includes(', ')) {
+          // Group selector: add . before each selector
+          const selectors = selector.split(', ').map(s => `.${s.trim()}`).join(', ');
+          cssRules.push(`${selectors} {\n  @apply ${validClasses.join(' ')};\n}`);
+        } else {
+          // Single selector
+          cssRules.push(`.${selector} {\n  @apply ${validClasses.join(' ')};\n}`);
+        }
       }
     }
 
@@ -223,9 +276,12 @@ export class HtmlConverter {
     // Check if it's in ui8kit.map.json (known Tailwind classes)
     if (this.ui8kitMap?.has(className)) {
       return true;
+    } else {
+      console.warn(`Unknown class: ${className}`);
+      return false;
     }
 
-    // Check for common Tailwind patterns (basic validation)
+    /* // Check for common Tailwind patterns (basic validation)
     const tailwindPatterns = [
       /^p[xylrtb]?-/,           // padding: px-, py-, pl-, pr-, pt-, pb-, p-
       /^m[xylrtb]?-/,           // margin: mx-, my-, ml-, mr-, mt-, mb-, m-
@@ -258,9 +314,10 @@ export class HtmlConverter {
       /^static$/,               // static
       /^fixed$/,                // fixed
       /^sticky$/,               // sticky
-    ];
+    ]; */
 
-    return tailwindPatterns.some(pattern => pattern.test(className));
+    // return tailwindPatterns.some(pattern => pattern.test(className));
+    return true;
   }
 
   /**
@@ -284,7 +341,15 @@ export class HtmlConverter {
       }
 
       if (cssProperties.length > 0) {
-        cssRules.push(`.${selector} {\n${cssProperties.join('\n')}\n}`);
+        // Handle combined selectors (comma-separated) vs single selectors
+        if (selector.includes(', ')) {
+          // Group selector: add . before each selector
+          const selectors = selector.split(', ').map(s => `.${s.trim()}`).join(', ');
+          cssRules.push(`${selectors} {\n${cssProperties.join('\n')}\n}`);
+        } else {
+          // Single selector
+          cssRules.push(`.${selector} {\n${cssProperties.join('\n')}\n}`);
+        }
       }
     }
 

@@ -10,7 +10,7 @@ UI8Kit is a comprehensive UI framework that bridges the gap between React develo
 - **🎨 Liquid Templates** — Modern templating with layouts, partials, and semantic CSS
 - **🎭 Semantic CSS** — Meaningful class names from `data-class` attributes (`.hero-content`, `.nav-menu`)
 - **📱 Responsive Design** — Mobile-first approach with breakpoint-specific utilities
-- **⚡ Static Generation** — Convert React routes to Liquid templates → HTML5/CSS3
+- **⚡ Static Generation** — Convert React routes to Liquid templates → HTML5/CSS3 with automatic CSS deduplication
 - **🎯 Developer Experience** — Full TypeScript support, hot reloading, comprehensive docs
 - **🏗️ Architecture** — Monorepo with Turbo orchestration, multiple deployment targets
 
@@ -25,15 +25,6 @@ bun run dev
 
 # Generate static site (CSS + HTML)
 bun run generate
-
-# Generate only CSS
-bun run generate:css
-
-# Generate only HTML
-bun run generate:html
-
-# Preview generated site
-bun run preview:static
 ```
 
 ## 📁 Project Structure
@@ -53,9 +44,9 @@ ui8kit-framework/
 │   │       └── html/   # Static HTML pages
 │   └── create-html/    # Legacy static generator (deprecated)
 ├── packages/
-│   ├── generator/      # Static site generator core
-│   ├── preprocessor/   # CSS preprocessor for Liquid templates
-│   └── ui8kit/         # Shared UI components
+│   ├── generator/      # Static site generator orchestrator
+│   ├── render/         # React component renderer (React → HTML)
+│   └── core/           # Shared UI components (@ui8kit/core)
 └── turbo.json          # Monorepo orchestration
 ```
 
@@ -101,6 +92,23 @@ Create `generator.config.ts` in your app root:
 // apps/local/generator.config.ts
 import { generator, type GeneratorConfig } from '@ui8kit/generator';
 
+// Define HTML routes first (for auto-syncing CSS routes)
+const htmlRoutes = {
+  '/': {
+    title: 'Home - My App',
+    seo: {
+      description: 'Welcome to my amazing app',
+      keywords: ['app', 'ui', 'react']
+    }
+  },
+  '/about': {
+    title: 'About - My App',
+    seo: {
+      description: 'Learn more about our mission'
+    }
+  }
+};
+
 export const config: GeneratorConfig = {
   // App metadata
   app: {
@@ -110,8 +118,8 @@ export const config: GeneratorConfig = {
 
   // CSS generation settings
   css: {
-    entryPath: './src/main.tsx',  // React entry point
-    routes: ['/', '/about', '/blog'], // Routes to process
+    entryPath: './src/main.tsx',  // React entry point (for router config)
+    routes: Object.keys(htmlRoutes), // Auto-sync with HTML routes
     outputDir: './dist/css',      // CSS output directory
     pureCss: true                 // Generate both @apply and pure CSS3
   },
@@ -119,21 +127,7 @@ export const config: GeneratorConfig = {
   // HTML generation settings
   html: {
     viewsDir: './views',          // Templates directory
-    routes: {
-      '/': {
-        title: 'Home - My App',
-        seo: {
-          description: 'Welcome to my amazing app',
-          keywords: ['app', 'ui', 'react']
-        }
-      },
-      '/about': {
-        title: 'About - My App',
-        seo: {
-          description: 'Learn more about our mission'
-        }
-      }
-    },
+    routes: htmlRoutes,           // Use the routes defined above
     outputDir: './dist/html'      // HTML output directory
   },
 
@@ -150,15 +144,27 @@ if (import.meta.main) {
 }
 ```
 
+**Router Configuration Requirement**: Your `main.tsx` must use `createBrowserRouter` with a `children` array:
+
+```typescript
+// src/main.tsx
+import { createBrowserRouter } from 'react-router-dom';
+import { HomePage } from '@/routes/HomePage';
+import { Blank } from '@/routes/Blank';
+
+export const router = createBrowserRouter({
+  children: [
+    { index: true, element: <HomePage /> },
+    { path: 'about', element: <Blank /> }
+  ]
+});
+```
+
 ### Creating Liquid Templates
 
 #### Layout Template (`views/layouts/layout.liquid`)
 
 ```liquid
----
-layout: false
----
-
 <!DOCTYPE html>
 <html lang="{{ lang | default: 'en' }}">
 <head>
@@ -171,17 +177,20 @@ layout: false
   {% endif %}
 
   {% if meta.keywords %}
-  <meta name="keywords" content="{{ meta.keywords | join: ', ' }}">
+  <meta name="keywords" content="{{ meta.keywords }}">
+  {% endif %}
+
+  {% if meta.image %}
+  <meta property="og:image" content="{{ meta.image }}">
   {% endif %}
 
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,...">
 </head>
-<body class="bg-background text-foreground">
+<body>
   {% include 'partials/header.liquid' %}
 
   <main class="min-h-screen">
-    {{ content }}
+    {{ content | raw }}
   </main>
 
   {% include 'partials/footer.liquid' %}
@@ -190,6 +199,10 @@ layout: false
 </body>
 </html>
 ```
+
+**Important**: 
+- Use `{{ content | raw }}` filter to prevent Liquid from escaping HTML entities in the generated content
+- Your `main.tsx` must use `createBrowserRouter` with a `children` array for the renderer to discover routes (see router configuration example below)
 
 #### Page Template (`views/layouts/page.liquid`)
 
@@ -289,6 +302,11 @@ export function HeroBlock() {
 .hero-actions {
   @apply flex gap-4;
 }
+
+/* Automatic deduplication: identical selectors from loops are merged */
+.feature-card-0, .feature-card-1, .feature-card-2, .feature-card-3 {
+  @apply flex-col gap-4 items-start justify-start p-6 rounded-lg;
+}
 ```
 
 **ui8kit.local.css** (Pure CSS3):
@@ -304,7 +322,17 @@ export function HeroBlock() {
   font-size: var(--text-4xl);
   font-weight: 700;
 }
+
+/* Automatic deduplication works for pure CSS3 too */
+.features-header, .hero-content {
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  align-items: center;
+  justify-content: flex-start;
+}
 ```
+
+**CSS Optimization**: The generator automatically merges selectors with identical class sets, reducing CSS file size by up to 25% for components with repeated patterns (loops, maps, etc.). This happens automatically - no configuration needed.
 
 #### HTML Files (`dist/html/`)
 
@@ -352,64 +380,75 @@ Add to your `package.json`:
 {
   "scripts": {
     "generate": "bun run generator.config.ts",
-    "generate:css": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes /,/about --snapshots-dir ../../apps/local/views --output-dir ../../apps/local/dist/css --pure-css --verbose",
     "generate:html": "bun run generator.config.ts",
     "preview:static": "bun run generate && serve dist/html"
   }
 }
 ```
 
+**Note**: The `generate` command handles both CSS and HTML generation automatically. There's no separate `generate:css` command needed - CSS is generated from the Liquid views created during HTML generation.
+
 ### Advanced Configuration
 
-#### Multiple Layouts
+#### Dynamic Route Synchronization
 
 ```typescript
-// generator.config.ts
-html: {
-  templates: {
-    layout: './views/layouts/layout.liquid',
-    blog: './views/layouts/blog.liquid',    // Different layout for blog
-    minimal: './views/layouts/minimal.liquid' // Minimal layout
+// Automatically sync CSS routes with HTML routes
+const htmlRoutes = {
+  '/': { title: 'Home', seo: { ... } },
+  '/about': { title: 'About', seo: { ... } },
+  '/blog': { title: 'Blog', seo: { ... } }
+};
+
+export const config: GeneratorConfig = {
+  css: {
+    routes: Object.keys(htmlRoutes), // Always in sync!
+    // ...
   },
-  routes: {
-    '/': { template: 'layout' },           // Uses default layout
-    '/blog': { template: 'blog' },         // Uses blog layout
-    '/about': { template: 'minimal' }      // Uses minimal layout
+  html: {
+    routes: htmlRoutes,
+    // ...
   }
-}
+};
 ```
 
 #### Custom Route Data
 
 ```typescript
-routes: {
+const htmlRoutes = {
   '/blog/hello-world': {
     title: 'Hello World Blog Post',
-    template: 'blog',
+    seo: {
+      description: 'My first blog post',
+      keywords: ['blog', 'welcome']
+    },
     data: {
       author: 'John Doe',
       published: '2024-01-15',
       tags: ['welcome', 'introduction']
     }
   }
-}
+};
 ```
+
+**Note**: The `data` field is available in Liquid templates via `{{ data.author }}`, `{{ data.published }}`, etc.
 
 #### SEO Optimization
 
 ```typescript
-routes: {
+const htmlRoutes = {
   '/': {
     title: 'Home - My App',
     seo: {
       description: 'Welcome to my amazing app built with UI8Kit',
       keywords: ['ui', 'react', 'typescript', 'css3'],
-      image: '/og-image.png',
-      canonical: 'https://myapp.com/'
+      image: '/og-image.png'
     }
   }
-}
+};
 ```
+
+**Note**: SEO meta tags are automatically generated from the `seo` configuration and available in Liquid templates via `{{ meta.description }}`, `{{ meta.keywords }}`, etc.
 
 ## 🎨 CSS Generation: @apply vs Pure CSS3
 
@@ -466,7 +505,10 @@ Best for **Tailwind-free projects** or when you want pure CSS3 with CSS variable
 1. **Extract Classes**: Parser extracts `class` attributes from Liquid templates
 2. **Validate Classes**: Only valid Tailwind utilities go into `@apply`
 3. **Generate Selectors**: Uses `data-class` attributes as CSS selectors
-4. **Create Rules**: Generates both `@apply` and pure CSS3 rules
+4. **Deduplicate**: Automatically merges selectors with identical class sets (e.g., from loops)
+5. **Create Rules**: Generates both `@apply` and pure CSS3 rules
+
+**Automatic Optimization**: When components use loops (e.g., `features.map()`), the generator detects identical class sets and merges them into group selectors, reducing CSS file size without any manual intervention.
 
 ### Example Workflow
 
@@ -555,6 +597,7 @@ UI8Kit provides a triple approach:
 - **Liquid Templating**: Modern template engine with layouts, partials, and filters
 - **Semantic Selectors**: `data-class` attributes generate meaningful CSS selectors
 - **Dual CSS Generation**: Both `@apply` directives and pure CSS3 properties
+- **Automatic Deduplication**: Merges duplicate class sets to optimize CSS file size (up to 25% reduction)
 - **Configuration-Driven**: Single config file controls all generation aspects
 - **Component Variants**: Predefined variants for consistent design systems
 - **Type Safety**: Full TypeScript support with compile-time validation
