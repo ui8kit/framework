@@ -1,0 +1,103 @@
+# UI8Kit Render Package Rules
+
+## 📦 Package Purpose
+The `@ui8kit/render` package is responsible for converting React components to static HTML markup with semantic `data-class` attributes. This package bridges the gap between React development and static site generation.
+
+## 🎯 Core Responsibilities
+
+### 1. React Component Rendering
+- **React Static Rendering**: Use `renderToStaticMarkup()` to convert React components to HTML
+- **Data-Class Preservation**: Ensure all `data-class` attributes are preserved in the output HTML
+- **Route-Based Rendering**: Render components based on route configuration from `generator.config.ts`
+
+### 2. Component Discovery
+- **Dynamic Imports**: Load React components dynamically from the application's entry point
+- **Route Matching**: Match routes from `html.routes` to corresponding React components
+- **Fallback Handling**: Provide meaningful fallbacks for missing components
+
+### 3. HTML Output
+- **Clean HTML**: Generate semantic HTML with proper structure and data-class attributes
+- **No Runtime Code**: Output should be pure HTML, no JavaScript or React runtime
+- **Semantic Selectors**: Use `data-class` attributes for CSS targeting instead of random selectors
+
+## 🔧 Technical Implementation
+
+### Configuration Integration
+```typescript
+// Reads from generator.config.ts
+const routes = config.html.routes; // { '/': RouteConfig, '/about': RouteConfig }
+```
+
+### Component Loading Pattern
+```typescript
+// Dynamic import pattern
+const component = await import(`${appPath}/src/pages${route}.tsx`);
+// Or fallback to default export from main.tsx
+```
+
+### HTML Generation
+```typescript
+import { renderToStaticMarkup } from 'react-dom/server';
+
+const html = renderToStaticMarkup(<Component {...props} />);
+```
+
+## 🚫 Restrictions & Best Practices
+
+### Dependencies
+- ✅ **Allowed**: React, React-DOM, generator types
+- ❌ **Forbidden**: Any UI libraries, CSS frameworks, or runtime dependencies
+
+### File Structure
+- ✅ **Single Entry Point**: `src/index.ts` exports the renderer
+- ✅ **Clean Architecture**: Minimal files, focused on single responsibility
+- ❌ **No Business Logic**: Don't implement routing, state management, or data fetching
+
+### Error Handling
+- ✅ **Graceful Degradation**: Return placeholder HTML for missing components
+- ✅ **Clear Error Messages**: Log issues but don't break the build
+- ❌ **Silent Failures**: Always provide feedback about rendering issues
+
+## 🔄 Integration Points
+
+### Generator Integration
+- **Called by**: `@ui8kit/generator` in `generateViewContent()`
+- **Receives**: Route path, app entry point, route configuration
+- **Returns**: HTML string with `data-class` attributes
+
+### Application Configuration
+- **Reads from**: `apps/*/generator.config.ts`
+- **Uses**: `html.routes` for route definitions
+- **Depends on**: App's React components and entry point
+
+## 📋 Development Workflow
+
+1. **Component Development**: Build React components in the app with `data-class` attributes
+2. **Configuration**: Define routes in `generator.config.ts`
+3. **Rendering**: Renderer converts components to HTML with preserved attributes
+4. **CSS Generation**: Generator uses HTML for semantic CSS creation
+5. **Final HTML**: Liquid templates combine HTML with layouts
+
+## 🎨 Data-Class Attribute Convention
+
+All React components should use semantic `data-class` attributes:
+
+```tsx
+// ✅ Good: Semantic and reusable
+<div data-class="hero-section">
+  <h1 data-class="hero-title">Welcome</h1>
+  <button data-class="hero-cta-primary">Get Started</button>
+</div>
+
+// ❌ Bad: Generic or Tailwind-only
+<div className="bg-blue-500 text-white p-4">
+  <h1 className="text-2xl font-bold">Welcome</h1>
+</div>
+```
+
+## 🔍 Quality Assurance
+
+- **HTML Validation**: Output HTML should be valid and semantic
+- **Attribute Preservation**: All `data-class` attributes must be present
+- **Performance**: Rendering should be fast, no blocking operations
+- **Compatibility**: Work with all React versions supported by UI8Kit

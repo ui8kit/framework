@@ -2,6 +2,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { Liquid } from 'liquidjs';
 import { htmlConverter } from './html-converter.js';
+import { renderRoute, type RouteConfig } from '@ui8kit/render';
 
 export interface GeneratorConfig {
   app: {
@@ -24,15 +25,8 @@ export interface GeneratorConfig {
   };
 }
 
-export interface RouteConfig {
-  title: string;
-  seo?: {
-    description?: string;
-    keywords?: string[];
-    image?: string;
-  };
-  data?: Record<string, any>;
-}
+// RouteConfig is now defined in @ui8kit/render package
+export { type RouteConfig } from '@ui8kit/render';
 
 export class Generator {
   private liquid: Liquid;
@@ -67,11 +61,11 @@ export class Generator {
   private async generateCss(config: GeneratorConfig): Promise<void> {
     console.log('🎨 Generating CSS...');
 
-    // Generate CSS for all specified routes
+    // Generate CSS for all routes that have views (use html.routes as source of truth)
     const allApplyCss: string[] = [];
     const allPureCss: string[] = [];
 
-    for (const routePath of config.css.routes) {
+    for (const routePath of Object.keys(config.html.routes)) {
       console.log(`📄 Processing route: ${routePath}`);
 
       // Get view file path for the route
@@ -109,10 +103,10 @@ export class Generator {
   private async generateViews(config: GeneratorConfig): Promise<void> {
     console.log('📄 Generating Liquid views...');
 
-    // For now, we'll create simple placeholder views
-    // In real implementation, this would render React components
-    for (const routePath of config.css.routes) {
-      const viewContent = await this.generateViewContent(routePath);
+    // Generate views for all HTML routes (not just CSS routes)
+    for (const routePath of Object.keys(config.html.routes)) {
+      const routeConfig = config.html.routes[routePath];
+      const viewContent = await this.generateViewContent(config, routePath, routeConfig);
       const viewFileName = routePath === '/' ? 'index.liquid' : `${routePath.slice(1)}.liquid`;
       const viewPath = join(config.html.viewsDir, 'pages', viewFileName);
 
@@ -123,42 +117,19 @@ export class Generator {
     }
   }
 
-  private async generateViewContent(routePath: string): Promise<string> {
-    // Placeholder: in real implementation, this would render React component
-    // For now, return HTML with proper data-class attributes for semantic selectors
-    if (routePath === '/') {
-      return `<div data-class="hero-section" class="relative">
-  <div data-class="hero-content" class="flex flex-col gap-4 items-center">
-    <h1 data-class="hero-title" class="text-4xl font-bold">Welcome to UI8Kit</h1>
-    <p data-class="hero-description" class="text-lg text-muted-foreground">Build beautiful interfaces with React & CSS3</p>
-    <div data-class="hero-actions" class="flex gap-4">
-      <button data-class="hero-cta-primary" class="px-4 py-2 bg-primary text-primary-foreground rounded">Get Started</button>
-      <button data-class="hero-cta-secondary" class="px-4 py-2 border border-border rounded">Learn More</button>
-    </div>
-  </div>
-</div>
+  private async generateViewContent(
+    config: GeneratorConfig,
+    routePath: string,
+    routeConfig: GeneratorConfig['html']['routes'][string]
+  ): Promise<string> {
+    // Use the render package to convert React component to HTML
+    // It will parse the router config from entryPath and render the correct component
+    const html = await renderRoute({
+      entryPath: config.css.entryPath,
+      routePath
+    });
 
-<div data-class="features-section" class="py-16">
-  <div data-class="features-header" class="gap-4 items-center">
-    <h2 data-class="features-title" class="text-3xl font-semibold">Features</h2>
-    <p data-class="features-description" class="text-muted-foreground">Everything you need to build modern web applications</p>
-  </div>
-  <div data-class="features-grid" class="cols-1-2-4 gap-6">
-    <div data-class="feature-card-0" class="p-6 border rounded-lg">
-      <div data-class="feature-icon" class="text-2xl">🚀</div>
-      <h3 data-class="feature-title" class="text-xl font-medium">Fast</h3>
-      <p data-class="feature-description" class="text-muted-foreground">Lightning fast performance</p>
-    </div>
-    <div data-class="feature-card-1" class="p-6 border rounded-lg">
-      <div data-class="feature-icon" class="text-2xl">🎨</div>
-      <h3 data-class="feature-title" class="text-xl font-medium">Beautiful</h3>
-      <p data-class="feature-description" class="text-muted-foreground">Stunning design system</p>
-    </div>
-  </div>
-</div>`;
-    }
-
-    return `<div class="page"><h1>Page for ${routePath}</h1></div>`;
+    return html;
   }
 
   private async generateHtml(config: GeneratorConfig): Promise<void> {

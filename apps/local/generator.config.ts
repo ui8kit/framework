@@ -3,6 +3,24 @@
 import { generator } from '@ui8kit/generator';
 import type { GeneratorConfig } from '@ui8kit/generator/src/generator.js';
 
+// Define HTML routes first
+const htmlRoutes = {
+  '/': {
+    title: 'UI8Kit - Next Generation UI System',
+    seo: {
+      description: 'Build beautiful interfaces with React & CSS3. Type-safe components with semantic static generation.',
+      keywords: ['ui', 'react', 'css3', 'typescript', 'components', 'design-system']
+    }
+  },
+  '/about': {
+    title: 'About UI8Kit',
+    seo: {
+      description: 'Learn more about UI8Kit - a comprehensive UI system for modern web development.',
+      keywords: ['about', 'ui8kit', 'react', 'css3']
+    }
+  }
+};
+
 export const config: GeneratorConfig = {
   app: {
     name: 'UI8Kit App',
@@ -11,29 +29,14 @@ export const config: GeneratorConfig = {
 
   css: {
     entryPath: './src/main.tsx',
-    routes: ['/'], // Generate CSS for home page
+    routes: Object.keys(htmlRoutes), // Generate CSS for all HTML routes
     outputDir: './dist/css',
     pureCss: true
   },
 
   html: {
     viewsDir: './views',
-    routes: {
-      '/': {
-        title: 'UI8Kit - Next Generation UI System',
-        seo: {
-          description: 'Build beautiful interfaces with React & CSS3. Type-safe components with semantic static generation.',
-          keywords: ['ui', 'react', 'css3', 'typescript', 'components', 'design-system']
-        }
-      },
-      '/about': {
-        title: 'About UI8Kit',
-        seo: {
-          description: 'Learn more about UI8Kit - a comprehensive UI system for modern web development.',
-          keywords: ['about', 'ui8kit', 'react', 'css3']
-        }
-      }
-    },
+    routes: htmlRoutes,
     outputDir: './dist/html'
   },
 

@@ -24,7 +24,7 @@
   {% include 'partials/header.liquid' %}
 
   <main class="min-h-screen">
-    {{ content }}
+    {{ content | raw }}
   </main>
 
   {% include 'partials/footer.liquid' %}

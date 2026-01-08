@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:js": "tsc --project tsconfig.build.json",
     "preview": "vite preview",
-    "generate": "bun run generator.config.ts",
+    "generate": "bun run build:js && bun run generator.config.ts",
     "generate:css": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes / --snapshots-dir ../../apps/local/views --output-dir ../../apps/local/dist/css --pure-css --verbose",
     "generate:html": "bun run generator.config.ts",
     "preview:static": "bun run generate && serve dist/html"
