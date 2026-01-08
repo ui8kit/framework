@@ -1,80 +1,136 @@
 # UI8Kit Render Package Rules
 
 ## 📦 Package Purpose
-The `@ui8kit/render` package is responsible for converting React components to static HTML markup with semantic `data-class` attributes. This package bridges the gap between React development and static site generation.
+
+The `@ui8kit/render` package converts React components to static HTML markup with semantic `data-class` attributes. It bridges React development and static site generation by parsing router configuration and rendering components directly without runtime dependencies.
 
 ## 🎯 Core Responsibilities
 
 ### 1. React Component Rendering
-- **React Static Rendering**: Use `renderToStaticMarkup()` to convert React components to HTML
-- **Data-Class Preservation**: Ensure all `data-class` attributes are preserved in the output HTML
-- **Route-Based Rendering**: Render components based on route configuration from `generator.config.ts`
+- **Static Rendering**: Use `renderToStaticMarkup()` to convert React components to HTML
+- **Direct Rendering**: Render components directly without RouterProvider or context wrappers
+- **Data-Class Preservation**: Ensure all `data-class` attributes are preserved in output HTML
+- **Route-Based Rendering**: Match routes to components based on router configuration
 
-### 2. Component Discovery
-- **Dynamic Imports**: Load React components dynamically from the application's entry point
-- **Route Matching**: Match routes from `html.routes` to corresponding React components
-- **Fallback Handling**: Provide meaningful fallbacks for missing components
+### 2. Router Configuration Parsing
+- **Source Analysis**: Parse `createBrowserRouter` configuration from entry file (`main.tsx`)
+- **Import Resolution**: Extract component imports and resolve file paths
+- **Route Mapping**: Build map of route paths to component names
+- **Dynamic Loading**: Load components dynamically using resolved import paths
 
-### 3. HTML Output
-- **Clean HTML**: Generate semantic HTML with proper structure and data-class attributes
-- **No Runtime Code**: Output should be pure HTML, no JavaScript or React runtime
-- **Semantic Selectors**: Use `data-class` attributes for CSS targeting instead of random selectors
+### 3. Component Discovery & Loading
+- **Dynamic Imports**: Load React components dynamically from application source
+- **Path Resolution**: Resolve `@/` aliases and relative imports to actual file paths
+- **Export Handling**: Support both default and named exports
+- **Fallback Handling**: Provide meaningful fallback HTML for missing components
+
+### 4. HTML Output
+- **Clean HTML**: Generate semantic HTML with proper structure
+- **No Runtime Code**: Output pure HTML, no JavaScript or React runtime
+- **Semantic Selectors**: Preserve `data-class` attributes for CSS targeting
+- **No Context Dependencies**: Components rendered without React context (ThemeProvider, Router, etc.)
 
 ## 🔧 Technical Implementation
 
-### Configuration Integration
+### Render Options
 ```typescript
-// Reads from generator.config.ts
-const routes = config.html.routes; // { '/': RouteConfig, '/about': RouteConfig }
+interface RenderOptions {
+  entryPath: string;    // Path to main.tsx (e.g., './src/main.tsx')
+  routePath: string;    // Route to render (e.g., '/', '/about')
+}
 ```
 
 ### Component Loading Pattern
 ```typescript
-// Dynamic import pattern
-const component = await import(`${appPath}/src/pages${route}.tsx`);
-// Or fallback to default export from main.tsx
+// 1. Parse router config from entry file
+const fileContent = readFileSync(entryPath, 'utf8');
+const importsMap = parseImports(fileContent);  // Map component names to import paths
+const routesMap = parseRoutes(fileContent);    // Map routes to component names
+
+// 2. Find component for route
+const componentName = routesMap.get('/');
+const importInfo = importsMap.get(componentName);
+
+// 3. Resolve and load component
+const absPath = resolveImportPath(entryDir, importInfo.specifier);
+const module = await import(pathToFileURL(absPath).href);
+const Component = importInfo.isNamed ? module[componentName] : module.default;
+
+// 4. Render directly
+const element = React.createElement(Component);
+return renderToStaticMarkup(element);
 ```
 
-### HTML Generation
+### Router Configuration Parsing
 ```typescript
-import { renderToStaticMarkup } from 'react-dom/server';
+// Parses patterns like:
+// createBrowserRouter({
+//   children: [
+//     { index: true, element: <HomePage /> },
+//     { path: 'about', element: <Blank /> }
+//   ]
+// })
 
-const html = renderToStaticMarkup(<Component {...props} />);
+// Extracts:
+// - importsMap: { 'HomePage': { specifier: '@/routes/HomePage', isNamed: true } }
+// - routesMap: { '/': 'HomePage', '/about': 'Blank' }
 ```
+
+### Import Path Resolution
+- **Alias Support**: `@/` → `src/` directory
+- **Relative Paths**: `./` and `../` resolved relative to entry directory
+- **File Extensions**: Tries `.tsx`, `.ts`, `.jsx`, `.js` and `index.*` variants
+- **Error Handling**: Throws clear errors for unresolvable imports
 
 ## 🚫 Restrictions & Best Practices
 
 ### Dependencies
-- ✅ **Allowed**: React, React-DOM, generator types
-- ❌ **Forbidden**: Any UI libraries, CSS frameworks, or runtime dependencies
+- ✅ **Peer Dependencies**: React, React-DOM (via peerDependencies, not direct)
+- ✅ **Allowed**: Node.js file system APIs, path resolution utilities
+- ❌ **Forbidden**: Direct React dependencies, UI libraries, CSS frameworks, runtime dependencies
+- ❌ **Forbidden**: React Router, Theme providers, or any context providers
 
-### File Structure
-- ✅ **Single Entry Point**: `src/index.ts` exports the renderer
-- ✅ **Clean Architecture**: Minimal files, focused on single responsibility
-- ❌ **No Business Logic**: Don't implement routing, state management, or data fetching
+### Architecture Principles
+- ✅ **Simple & Direct**: Render components directly without wrappers
+- ✅ **No Context**: Don't provide React context (ThemeProvider, RouterProvider, etc.)
+- ✅ **Static Only**: Only use `renderToStaticMarkup`, no hydration or runtime code
+- ❌ **No Router**: Don't use `createMemoryRouter` or `RouterProvider` for static generation
+- ❌ **No Providers**: Don't wrap components in context providers
+
+### Component Compatibility
+- ✅ **Pure Components**: Components that don't require context work perfectly
+- ⚠️ **Context Hooks**: Components using `useTheme()`, `useRouter()`, etc. need special handling
+- ❌ **Runtime State**: Components requiring runtime state won't work in static generation
 
 ### Error Handling
 - ✅ **Graceful Degradation**: Return placeholder HTML for missing components
-- ✅ **Clear Error Messages**: Log issues but don't break the build
+- ✅ **Clear Error Messages**: Log issues with context (route, component name, file path)
+- ✅ **Non-Breaking**: Don't throw errors that break the build process
 - ❌ **Silent Failures**: Always provide feedback about rendering issues
 
 ## 🔄 Integration Points
 
 ### Generator Integration
-- **Called by**: `@ui8kit/generator` in `generateViewContent()`
-- **Receives**: Route path, app entry point, route configuration
-- **Returns**: HTML string with `data-class` attributes
+- **Called by**: `@ui8kit/generator` in `generateViewContent()` method
+- **Receives**: Route path and entry point path from generator config
+- **Returns**: HTML string with preserved `data-class` attributes
+- **No Config Access**: Renderer doesn't read generator config directly
 
-### Application Configuration
-- **Reads from**: `apps/*/generator.config.ts`
-- **Uses**: `html.routes` for route definitions
-- **Depends on**: App's React components and entry point
+### Application Dependencies
+- **Depends on**: Application's React components and router configuration
+- **Uses**: Entry file (`main.tsx`) to discover routes and components
+- **No Coupling**: Doesn't depend on application-specific code or configurations
+
+### React Version Compatibility
+- **Peer Dependencies**: Supports React 18 and 19 via peerDependencies
+- **Version Resolution**: Uses React version from application (not bundled)
+- **No Conflicts**: Avoids version conflicts by using peer dependencies
 
 ## 📋 Development Workflow
 
-1. **Component Development**: Build React components in the app with `data-class` attributes
-2. **Configuration**: Define routes in `generator.config.ts`
-3. **Rendering**: Renderer converts components to HTML with preserved attributes
+1. **Component Development**: Build React components with `data-class` attributes
+2. **Router Configuration**: Define routes in `main.tsx` using `createBrowserRouter`
+3. **Rendering**: Renderer parses router config and renders components to HTML
 4. **CSS Generation**: Generator uses HTML for semantic CSS creation
 5. **Final HTML**: Liquid templates combine HTML with layouts
 
@@ -84,20 +140,83 @@ All React components should use semantic `data-class` attributes:
 
 ```tsx
 // ✅ Good: Semantic and reusable
-<div data-class="hero-section">
-  <h1 data-class="hero-title">Welcome</h1>
-  <button data-class="hero-cta-primary">Get Started</button>
-</div>
+<Block component="section" data-class="hero-section">
+  <Stack gap="6" items="center" data-class="hero-content">
+    <Title text="4xl" data-class="hero-title">Welcome</Title>
+    <Button data-class="hero-cta-primary">Get Started</Button>
+  </Stack>
+</Block>
 
-// ❌ Bad: Generic or Tailwind-only
+// Generated HTML:
+<section data-class="hero-section" class="relative">
+  <div data-class="hero-content" class="flex flex-col gap-6 items-center">
+    <h1 data-class="hero-title" class="text-4xl font-bold">Welcome</h1>
+    <button data-class="hero-cta-primary" class="...">Get Started</button>
+  </div>
+</section>
+
+// ❌ Bad: No semantic selectors
 <div className="bg-blue-500 text-white p-4">
   <h1 className="text-2xl font-bold">Welcome</h1>
 </div>
+```
+
+## 🔍 Component Rendering Strategy
+
+### Direct Rendering (Current Approach)
+```typescript
+// Simple and direct - no wrappers
+const Component = await loadComponent(entryPath, componentName);
+const element = React.createElement(Component);
+return renderToStaticMarkup(element);
+```
+
+### Why No Context Providers?
+- **Static Generation**: No runtime context needed for static HTML
+- **Simplicity**: Direct rendering is simpler and more reliable
+- **Performance**: Faster rendering without context overhead
+- **Compatibility**: Works with components that don't require context
+
+### Handling Context-Dependent Components
+If components require context (e.g., `useTheme()`), they should:
+1. **Use Default Values**: Provide fallback values for static generation
+2. **Conditional Logic**: Check if context exists before using it
+3. **SSR-Safe Hooks**: Create hooks that work without context
+
+Example:
+```tsx
+// ❌ Won't work in static generation
+export function Component() {
+  const { theme } = useTheme();  // Throws error without ThemeProvider
+  return <div>{theme.name}</div>;
+}
+
+// ✅ Works in static generation
+export function Component() {
+  const theme = useTheme?.() ?? defaultTheme;  // Fallback
+  return <div>{theme.name}</div>;
+}
 ```
 
 ## 🔍 Quality Assurance
 
 - **HTML Validation**: Output HTML should be valid and semantic
 - **Attribute Preservation**: All `data-class` attributes must be present
-- **Performance**: Rendering should be fast, no blocking operations
-- **Compatibility**: Work with all React versions supported by UI8Kit
+- **Performance**: Rendering should be fast (< 100ms per route)
+- **Compatibility**: Work with React 18 and 19
+- **Error Recovery**: Missing components should return fallback HTML
+- **Route Coverage**: All configured routes should render successfully
+
+## 🚨 Common Pitfalls
+
+1. **Missing Router Config**: Entry file must use `createBrowserRouter` with `children` array
+2. **Import Resolution**: Ensure `@/` alias is correctly resolved to `src/` directory
+3. **Component Exports**: Components must be exported (default or named) from their files
+4. **Context Dependencies**: Components using hooks require special handling
+5. **File Extensions**: Ensure component files have correct extensions (`.tsx`, `.ts`)
+
+## 📚 Related Documentation
+
+- See `packages/generator/.cursor/rules/generator.mdc` for generator architecture
+- See `apps/local/src/main.tsx` for router configuration examples
+- See `.project/report/render-refactoring-2025-01.md` for recent refactoring details

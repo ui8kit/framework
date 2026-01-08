@@ -2,11 +2,12 @@
 
 A comprehensive static site generator that converts React components to Liquid templates and generates complete HTML/CSS sites.
 
-- **React → Liquid**: Transforms JSX components into Liquid template views
+- **React → Liquid**: Transforms JSX components into Liquid template views using `@ui8kit/render`
 - **Semantic Selectors**: Uses `data-class` attributes for meaningful CSS selectors
-- **CSS Generation**: Extracts classes and generates `@apply` directives and pure CSS3
+- **CSS Generation**: Extracts classes from generated views and generates `@apply` directives and pure CSS3
 - **Liquid Templating**: Full Liquid.js support with layouts, partials, and helpers
 - **Configuration-Driven**: Single config file controls all generation aspects
+- **Framework Agnostic**: Generator delegates React rendering to `@ui8kit/render` package
 
 ## Architecture
 
@@ -38,23 +39,42 @@ A comprehensive static site generator that converts React components to Liquid t
 
 ## How It Works
 
-1. **Analyze React Components**: Extracts JSX structure and `data-class` attributes
-2. **Generate Liquid Views**: Creates `.liquid` template files from component HTML
-3. **Extract CSS Classes**: Parses class attributes and generates semantic selectors
+1. **Render React Components**: Delegates to `@ui8kit/render` to convert React components to HTML
+   - Parses router configuration from `main.tsx`
+   - Loads and renders route components directly (no context providers)
+   - Preserves all `data-class` attributes in output HTML
+
+2. **Generate Liquid Views**: Creates `.liquid` template files from rendered HTML
+   - Stores HTML with `data-class` attributes in `views/pages/`
+   - One view file per route (e.g., `index.liquid`, `about.liquid`)
+
+3. **Extract CSS Classes**: Parses generated views and generates semantic selectors
+   - Extracts classes and `data-class` attributes from HTML
+   - Generates `@apply` CSS with semantic selectors (e.g., `.hero-section { @apply ... }`)
+   - Optionally generates pure CSS3 from Tailwind classes
+
 4. **Apply Liquid Templates**: Renders final HTML using layouts and partials
-5. **Generate Stylesheets**: Creates `@apply` CSS and pure CSS3 from extracted classes
+   - Combines views with layout templates
+   - Applies route metadata (title, SEO, etc.)
+   - Includes partials (header, footer, etc.)
+
+5. **Generate Stylesheets**: Creates merged CSS files from all routes
+   - Combines CSS from multiple routes into single files
+   - Outputs `tailwind.apply.css` and optionally `ui8kit.local.css`
 
 ## Installation
 
-The generator is part of the UI8Kit monorepo:
+The generator is part of the UI8Kit monorepo and uses source files directly (no build step required):
 
 ```bash
 # Install all dependencies
 bun install
 
-# Build the generator
-bunx turbo run build --filter=@ui8kit/generator
+# The generator uses source files directly via workspace imports
+# No build step needed - TypeScript files are executed directly by Bun
 ```
+
+**Note**: The generator uses `peerDependencies` for React, so React must be installed in your application.
 
 ## Usage
 
@@ -64,40 +84,71 @@ Create `generator.config.ts` in your app directory:
 
 ```typescript
 // apps/local/generator.config.ts
-import { generator } from '@ui8kit/generator';
+import { generator, type GeneratorConfig } from '@ui8kit/generator';
 
-export const config = {
+// Define HTML routes first
+const htmlRoutes = {
+  '/': {
+    title: 'Home Page',
+    seo: {
+      description: 'Welcome to my app',
+      keywords: ['app', 'react']
+    }
+  },
+  '/about': {
+    title: 'About Page',
+    seo: {
+      description: 'Learn more about us',
+      keywords: ['about', 'company']
+    }
+  }
+};
+
+export const config: GeneratorConfig = {
   app: {
     name: 'My App',
     lang: 'en'
   },
 
   css: {
-    entryPath: './src/main.tsx',
-    routes: ['/', '/about'],
+    entryPath: './src/main.tsx',  // Path to your React entry file
+    routes: Object.keys(htmlRoutes), // Generate CSS for all HTML routes
     outputDir: './dist/css',
-    pureCss: true
+    pureCss: true  // Generate pure CSS3 in addition to @apply
   },
 
   html: {
     viewsDir: './views',
-    routes: {
-      '/': {
-        title: 'Home Page',
-        seo: {
-          description: 'Welcome to my app',
-          keywords: ['app', 'react']
-        }
-      }
-    },
+    routes: htmlRoutes,
     outputDir: './dist/html'
+  },
+
+  assets: {
+    copy: ['./public/**/*']  // Copy static assets
   }
 };
 
 // Run generation
 if (import.meta.main) {
+  console.log('🛠️ Starting static site generation...');
   await generator.generate(config);
 }
+```
+
+**Important**: Your `main.tsx` must use `createBrowserRouter` with a `children` array for the renderer to discover routes:
+
+```typescript
+// src/main.tsx
+import { createBrowserRouter } from 'react-router-dom';
+import { HomePage } from '@/routes/HomePage';
+import { Blank } from '@/routes/Blank';
+
+export const router = createBrowserRouter({
+  children: [
+    { index: true, element: <HomePage /> },
+    { path: 'about', element: <Blank /> }
+  ]
+});
 ```
 
 ### Commands
@@ -119,7 +170,38 @@ bun run preview:static
 ### Advanced Configuration
 
 ```typescript
-export const config = {
+import { generator, type GeneratorConfig } from '@ui8kit/generator';
+
+const htmlRoutes = {
+  '/': {
+    title: 'Home - UI8Kit',
+    seo: {
+      description: 'Next generation UI framework',
+      keywords: ['ui', 'react', 'typescript'],
+      image: '/og-image.png'
+    },
+    data: {
+      hero: {
+        title: 'Welcome',
+        subtitle: 'Build amazing interfaces'
+      }
+    }
+  },
+  '/about': {
+    title: 'About - UI8Kit',
+    seo: {
+      description: 'Learn about UI8Kit framework'
+    }
+  },
+  '/contact': {
+    title: 'Contact - UI8Kit',
+    seo: {
+      description: 'Get in touch with us'
+    }
+  }
+};
+
+export const config: GeneratorConfig = {
   app: {
     name: 'UI8Kit App',
     lang: 'en'
@@ -127,39 +209,14 @@ export const config = {
 
   css: {
     entryPath: './src/main.tsx',
-    routes: ['/', '/about', '/contact'],
+    routes: Object.keys(htmlRoutes), // Auto-sync with HTML routes
     outputDir: './dist/css',
     pureCss: true
   },
 
   html: {
-    viewsDir: './views',
-    templates: {
-      layout: './views/layouts/main.liquid',
-      page: './views/layouts/page.liquid'
-    },
-    routes: {
-      '/': {
-        title: 'Home - UI8Kit',
-        seo: {
-          description: 'Next generation UI framework',
-          keywords: ['ui', 'react', 'typescript'],
-          image: '/og-image.png'
-        },
-        data: {
-          hero: {
-            title: 'Welcome',
-            subtitle: 'Build amazing interfaces'
-          }
-        }
-      },
-      '/about': {
-        title: 'About - UI8Kit',
-        seo: {
-          description: 'Learn about UI8Kit framework'
-        }
-      }
-    },
+    viewsDir: './views',  // Directory for Liquid views and templates
+    routes: htmlRoutes,
     outputDir: './dist/html'
   },
 
@@ -225,16 +282,27 @@ layout: layout
 
 ### Generated View (`views/pages/index.liquid`)
 
+The generator creates Liquid view files from rendered React components:
+
 ```liquid
-<div data-class="hero-section" class="relative">
+<section data-class="hero-section" class="relative">
   <div data-class="hero-content" class="flex flex-col gap-4 items-center">
     <h1 data-class="hero-title" class="text-4xl font-bold">Welcome to UI8Kit</h1>
     <p data-class="hero-description" class="text-lg text-muted-foreground">
       Build beautiful interfaces with React & CSS3
     </p>
   </div>
-</div>
+</section>
+<section data-class="features-section" class="">
+  <!-- FeaturesBlock content -->
+</section>
 ```
+
+**Note**: Views are generated automatically from your React components. The renderer:
+- Parses router configuration from `main.tsx`
+- Loads route components dynamically
+- Renders them to HTML with preserved `data-class` attributes
+- Saves HTML as `.liquid` files
 
 ## CSS Generation
 
@@ -388,26 +456,64 @@ layout: custom-layout
 ### Generator Class
 
 ```typescript
-class Generator {
-  async generate(config: GeneratorConfig): Promise<void>
-}
+import { generator, Generator, GeneratorConfig } from '@ui8kit/generator';
+
+// Use singleton instance
+await generator.generate(config);
+
+// Or create new instance
+const gen = new Generator();
+await gen.generate(config);
 ```
 
 ### Types
 
 ```typescript
 interface GeneratorConfig {
-  app: AppConfig;
-  css: CssConfig;
-  html: HtmlConfig;
-  assets?: AssetsConfig;
+  app: {
+    name: string;
+    lang?: string;
+  };
+  css: {
+    entryPath: string;      // Path to React entry file (main.tsx)
+    routes: string[];       // Routes to generate CSS for
+    outputDir: string;      // CSS output directory
+    pureCss?: boolean;      // Generate pure CSS3 in addition to @apply
+  };
+  html: {
+    viewsDir: string;       // Directory for Liquid views and templates
+    routes: Record<string, RouteConfig>;  // Route configurations
+    outputDir: string;      // HTML output directory
+  };
+  assets?: {
+    copy?: string[];        // Files/directories to copy
+  };
 }
 
 interface RouteConfig {
   title: string;
-  seo?: SeoConfig;
-  data?: Record<string, any>;
+  seo?: {
+    description?: string;
+    keywords?: string[];
+    image?: string;
+  };
+  data?: Record<string, any>;  // Additional template data
 }
+```
+
+### Render Integration
+
+The generator uses `@ui8kit/render` internally:
+
+```typescript
+// Generator calls renderer for each route
+import { renderRoute } from '@ui8kit/render';
+
+const html = await renderRoute({
+  entryPath: config.css.entryPath,  // './src/main.tsx'
+  routePath: '/'                    // Route to render
+});
+// Returns: HTML string with data-class attributes
 ```
 
 ## Integration
@@ -448,16 +554,32 @@ export default defineConfig({
 ### Common Issues
 
 **Q: CSS files are not generated**
-A: Ensure `css.routes` contains valid routes and `css.outputDir` is writable.
+A: Ensure `css.routes` contains valid routes matching `html.routes` keys, and `css.outputDir` is writable.
 
-**Q: HTML pages are empty**
-A: Check that React components have proper `data-class` attributes and are exported.
+**Q: HTML pages are empty or missing components**
+A: 
+- Check that React components are properly exported (default or named)
+- Verify router configuration in `main.tsx` uses `createBrowserRouter` with `children` array
+- Ensure components don't require React context (ThemeProvider, RouterProvider) - they won't work in static generation
+- Check console output for rendering errors
+
+**Q: Components not found during rendering**
+A:
+- Verify import paths in `main.tsx` are correct
+- Ensure `@/` alias resolves to `src/` directory
+- Check that component files exist and have correct extensions (`.tsx`, `.ts`)
 
 **Q: Liquid templates not rendering**
-A: Verify template paths in `html.templates` configuration.
+A: 
+- Verify layout template exists at `views/layouts/layout.liquid`
+- Check that `viewsDir` path is correct in configuration
+- Ensure Liquid template uses `{{ content | raw }}` filter to prevent HTML escaping
 
 **Q: Partials not found**
-A: Ensure partials are in the correct directory structure under `viewsDir/partials/`.
+A: Ensure partials are in the correct directory structure under `viewsDir/partials/` and use correct paths in `{% include %}` statements.
+
+**Q: React version conflicts**
+A: The generator uses `peerDependencies` for React. Ensure your app has React installed and versions are compatible (React 18 or 19).
 
 ### Debug Mode
 
@@ -468,12 +590,43 @@ bun run generate:css -- --verbose
 bun run generate:html -- --verbose
 ```
 
+## Architecture Details
+
+### Rendering Process
+
+1. **Component Discovery**: Renderer parses `main.tsx` to find router configuration
+2. **Route Matching**: Maps route paths to component names from router config
+3. **Component Loading**: Dynamically imports components using resolved paths
+4. **Direct Rendering**: Renders components directly without context providers
+5. **HTML Output**: Returns HTML string with preserved `data-class` attributes
+
+### CSS Generation Process
+
+1. **View Analysis**: Reads generated `.liquid` view files
+2. **Class Extraction**: Parses HTML to extract classes and `data-class` attributes
+3. **Selector Generation**: Creates semantic selectors using `data-class` values
+4. **CSS Creation**: Generates `@apply` directives and optionally pure CSS3
+5. **File Merging**: Combines CSS from all routes into single files
+
+### Key Design Decisions
+
+- **No Context Providers**: Components are rendered directly without ThemeProvider or RouterProvider for simplicity
+- **Semantic Selectors**: Uses `data-class` instead of random class names for better CSS maintainability
+- **Configuration-Driven**: All paths and options come from configuration, no hardcoded values
+- **Framework Agnostic**: Generator delegates React rendering to `@ui8kit/render` package
+
 ## Contributing
 
 1. Follow the existing code style
 2. Add tests for new features
 3. Update documentation
 4. Ensure TypeScript types are correct
+5. Follow the architecture rules in `.cursor/rules/generator.mdc`
+
+## Related Packages
+
+- **`@ui8kit/render`**: React component renderer (see `packages/render/.cursor/rules/render.mdc`)
+- **`@ui8kit/core`**: UI components with utility props
 
 ## License
 

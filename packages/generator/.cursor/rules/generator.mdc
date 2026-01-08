@@ -1,135 +1,244 @@
 # UI8Kit Generator Package Rules
 
 ## 📦 Package Purpose
-The `@ui8kit/generator` package is the orchestration layer for static site generation. It coordinates between rendering React components, extracting CSS, and generating final HTML pages using Liquid templates.
+
+The `@ui8kit/generator` package orchestrates the complete static site generation pipeline. It coordinates React component rendering, CSS extraction, and HTML assembly using Liquid templates, producing deployable static sites from React applications.
 
 ## 🎯 Core Responsibilities
 
 ### 1. Orchestration & Coordination
-- **Process Management**: Coordinate the entire static generation pipeline
-- **Configuration Management**: Read and validate generator configuration
-- **Error Aggregation**: Collect and report errors from all generation steps
+- **Process Management**: Coordinate the entire static generation pipeline (views → CSS → HTML → assets)
+- **Configuration Management**: Read and validate `GeneratorConfig` from application config files
+- **Error Handling**: Collect and report errors from all generation steps without breaking the build
+- **Dependency Management**: Coordinate with `@ui8kit/render` for React component rendering
 
 ### 2. View Generation
 - **React Rendering**: Delegate to `@ui8kit/render` for React → HTML conversion
-- **Liquid Views**: Store rendered HTML as `.liquid` view files
-- **Route Processing**: Process all routes defined in configuration
+- **Route Processing**: Process all routes defined in `config.html.routes`
+- **Liquid Views**: Store rendered HTML as `.liquid` view files in `views/pages/`
+- **Data-Class Preservation**: Ensure all `data-class` attributes are preserved in generated views
 
 ### 3. CSS Generation
-- **HTML Analysis**: Extract classes from generated views
-- **Semantic CSS**: Generate CSS with `@apply` directives and pure CSS3
-- **File Merging**: Combine CSS from multiple routes
+- **HTML Analysis**: Extract classes from generated Liquid views (not snapshots)
+- **Semantic CSS**: Generate CSS with `@apply` directives using `data-class` selectors
+- **Pure CSS3**: Optionally generate pure CSS3 from Tailwind classes
+- **File Merging**: Combine CSS from multiple routes into single files
+- **Class Validation**: Filter invalid Tailwind classes from `@apply` directives
 
 ### 4. HTML Assembly
-- **Liquid Rendering**: Use Liquid templates to assemble final HTML
-- **Layout Application**: Apply layouts, partials, and metadata
-- **Static Output**: Generate final HTML files for deployment
+- **Liquid Rendering**: Use Liquid.js to assemble final HTML pages
+- **Layout Application**: Apply layouts, partials, and metadata from templates
+- **Static Output**: Generate final HTML files in `dist/html/` for deployment
+- **SEO Support**: Generate meta tags from route configuration
 
 ## 🔧 Technical Implementation
 
 ### Configuration Structure
 ```typescript
 interface GeneratorConfig {
-  app: { name: string; lang?: string };
-  css: { entryPath: string; routes: string[]; outputDir: string; pureCss?: boolean };
-  html: { viewsDir: string; routes: Record<string, RouteConfig>; outputDir: string };
-  assets?: { copy?: string[] };
+  app: {
+    name: string;
+    lang?: string;
+  };
+  css: {
+    entryPath: string;      // Path to React entry (main.tsx)
+    routes: string[];       // Routes to generate CSS for
+    outputDir: string;      // CSS output directory
+    pureCss?: boolean;      // Generate pure CSS3 in addition to @apply
+  };
+  html: {
+    viewsDir: string;       // Directory for Liquid views
+    routes: Record<string, RouteConfig>;  // Route configurations
+    outputDir: string;      // HTML output directory
+  };
+  assets?: {
+    copy?: string[];        // Files/directories to copy
+  };
+}
+
+interface RouteConfig {
+  title: string;
+  seo?: {
+    description?: string;
+    keywords?: string[];
+    image?: string;
+  };
+  data?: Record<string, any>;
 }
 ```
 
 ### Generation Pipeline
-1. **Views**: React components → HTML with `data-class` → Liquid views
-2. **CSS**: HTML analysis → `@apply` CSS + pure CSS3 → merged files
-3. **HTML**: Liquid views + layouts → final HTML pages
-4. **Assets**: Copy static files to output directories
+
+1. **Views Generation** (`generateViews`)
+   - For each route in `config.html.routes`:
+     - Call `renderRoute()` from `@ui8kit/render`
+     - Receive HTML string with `data-class` attributes
+     - Save as `.liquid` file in `views/pages/`
+
+2. **CSS Generation** (`generateCss`)
+   - For each route:
+     - Read generated `.liquid` view file
+     - Extract classes and `data-class` attributes
+     - Generate `@apply` CSS with semantic selectors
+     - Optionally generate pure CSS3
+   - Merge CSS from all routes into single files
+
+3. **HTML Assembly** (`generateHtml`)
+   - For each route:
+     - Read `.liquid` view file
+     - Render through `layouts/layout.liquid`
+     - Apply route metadata (title, SEO, etc.)
+     - Save final HTML to `dist/html/`
+
+4. **Asset Copying** (`copyAssets`)
+   - Copy static files from configured paths to output directories
 
 ### File Organization
 ```
 apps/local/
-├── views/           # Generated Liquid views
-│   ├── pages/       # Route-specific content
-│   ├── layouts/     # Layout templates
-│   └── partials/    # Reusable components
+├── views/                    # Generated Liquid views
+│   ├── pages/                # Route-specific content
+│   │   ├── index.liquid      # / route
+│   │   └── about.liquid      # /about route
+│   ├── layouts/              # Layout templates
+│   │   └── layout.liquid     # Main layout
+│   └── partials/             # Reusable components
 ├── dist/
-│   ├── css/         # Generated stylesheets
-│   └── html/        # Final HTML pages
-└── generator.config.ts  # Configuration
+│   ├── css/                  # Generated stylesheets
+│   │   ├── tailwind.apply.css
+│   │   └── ui8kit.local.css
+│   └── html/                 # Final HTML pages
+│       ├── index.html
+│       └── about/
+│           └── index.html
+└── generator.config.ts        # Configuration
 ```
 
 ## 🚫 Restrictions & Best Practices
 
 ### Dependencies
-- ✅ **Allowed**: Liquid.js, file system operations, HTML processing
-- ❌ **Forbidden**: React, UI libraries, CSS frameworks, runtime dependencies
+- ✅ **Allowed**: Liquid.js, file system operations, HTML processing, `@ui8kit/render`
+- ✅ **Peer Dependencies**: React, React-DOM (via peerDependencies, not direct dependencies)
+- ❌ **Forbidden**: Direct React dependencies, UI libraries, CSS frameworks, runtime dependencies
 
 ### Framework Independence
-- ✅ **No React Coupling**: Generator should work with any rendering engine
-- ✅ **Template Agnostic**: Support multiple template engines (Liquid, Handlebars, etc.)
-- ❌ **Framework Specifics**: Don't hardcode React-specific logic
+- ✅ **No React Coupling**: Generator delegates React rendering to `@ui8kit/render`
+- ✅ **Template Agnostic**: Support multiple template engines (currently Liquid.js)
+- ❌ **Framework Specifics**: Don't hardcode React-specific logic in generator
 
 ### Configuration First
-- ✅ **Config Driven**: All paths and options come from configuration
-- ✅ **Validation**: Validate configuration before processing
+- ✅ **Config Driven**: All paths and options come from `GeneratorConfig`
+- ✅ **Validation**: Validate configuration structure before processing
 - ❌ **Hardcoded Paths**: No application-specific paths in package code
+- ❌ **Default Values**: Don't assume default paths - require explicit configuration
 
 ### Error Handling
 - ✅ **Non-Breaking**: Continue processing other routes if one fails
-- ✅ **Clear Messages**: Provide actionable error messages
+- ✅ **Clear Messages**: Provide actionable error messages with context
+- ✅ **Fallback HTML**: Generate placeholder HTML for failed routes
 - ❌ **Silent Failures**: Always report issues and their impact
+
+### CSS Generation Rules
+- ✅ **Semantic Selectors**: Use `data-class` attributes for CSS selectors
+- ✅ **Class Validation**: Filter non-Tailwind classes from `@apply` directives
+- ✅ **Route-Based**: Generate CSS for each route separately, then merge
+- ❌ **Random Selectors**: Don't generate random class names or IDs
 
 ## 🔄 Integration Points
 
 ### Render Package Integration
-- **Calls**: `@ui8kit/render` for React component rendering
-- **Provides**: Route configuration and app context
-- **Receives**: HTML strings with `data-class` attributes
+- **Calls**: `renderRoute()` from `@ui8kit/render` for React component rendering
+- **Provides**: Route path and entry point path
+- **Receives**: HTML string with preserved `data-class` attributes
+- **No Context**: Generator doesn't provide React context (ThemeProvider, Router, etc.)
 
 ### Application Configuration
 - **Reads from**: `apps/*/generator.config.ts`
 - **Validates**: Configuration structure and required fields
 - **Uses**: All config sections (app, css, html, assets)
+- **No Overrides**: Respects configuration exactly as provided
 
 ### Build System Integration
-- **Called by**: Application build scripts
-- **Outputs to**: Configured output directories
+- **Called by**: Application build scripts (`bun run generate`)
+- **Outputs to**: Configured output directories (`dist/css/`, `dist/html/`)
 - **Triggers**: Manual generation or automated builds
+- **Idempotent**: Can be run multiple times safely
 
 ## 📋 Development Workflow
 
 1. **Configuration**: App defines routes and settings in `generator.config.ts`
-2. **View Generation**: Generator calls renderer for each route
-3. **CSS Extraction**: Analyze generated HTML for classes and styles
-4. **HTML Assembly**: Combine views with Liquid templates
+2. **View Generation**: Generator calls `renderRoute()` for each route
+3. **CSS Extraction**: Analyze generated HTML for classes and `data-class` attributes
+4. **HTML Assembly**: Combine views with Liquid templates and layouts
 5. **Asset Copying**: Copy static files to output directories
 
 ## 🎨 HTML Generation Strategy
 
 ### Data-Class Preservation
 - **Semantic Selectors**: Use `data-class` for meaningful CSS targeting
-- **Attribute Forwarding**: Preserve all `data-class` attributes in output
-- **CSS Compatibility**: Ensure generated CSS works with data-class selectors
+- **Attribute Forwarding**: Preserve all `data-class` attributes in output HTML
+- **CSS Compatibility**: Ensure generated CSS works with `[data-class="..."]` selectors
 
 ### Liquid Template System
 ```liquid
 <!-- layouts/layout.liquid -->
 <!DOCTYPE html>
-<html lang="{{ lang }}">
+<html lang="{{ lang | default: 'en' }}">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title }}</title>
-  {% include 'partials/head.liquid' %}
+  
+  {% if meta.description %}
+  <meta name="description" content="{{ meta.description }}">
+  {% endif %}
+  
+  <link rel="stylesheet" href="/css/tailwind.apply.css">
+  {% if pureCss %}
+  <link rel="stylesheet" href="/css/ui8kit.local.css">
+  {% endif %}
 </head>
 <body>
   {% include 'partials/header.liquid' %}
-  <main>{{ content }}</main>
+  
+  <main class="min-h-screen">
+    {{ content | raw }}
+  </main>
+  
   {% include 'partials/footer.liquid' %}
 </body>
 </html>
 ```
 
+### Generated View Format
+```liquid
+<!-- views/pages/index.liquid -->
+<section data-class="hero-section" class="relative">
+  <div data-class="hero-content" class="flex flex-col gap-4 items-center">
+    <h1 data-class="hero-title" class="text-4xl font-bold">Welcome</h1>
+  </div>
+</section>
+```
+
 ## 🔍 Quality Assurance
 
-- **File Generation**: Verify all expected files are created
-- **HTML Validity**: Ensure generated HTML is well-formed
-- **CSS Compatibility**: Generated CSS should work with the target framework
-- **Performance**: Generation should complete in reasonable time
-- **Configuration Coverage**: All config options should be tested
+- **File Generation**: Verify all expected files are created in correct locations
+- **HTML Validity**: Ensure generated HTML is well-formed and semantic
+- **CSS Compatibility**: Generated CSS should work with Tailwind and pure CSS3
+- **Performance**: Generation should complete in reasonable time (< 10s for typical sites)
+- **Configuration Coverage**: All config options should be tested and documented
+- **Error Recovery**: Failed routes should not break entire generation process
+
+## 🚨 Common Pitfalls
+
+1. **Missing Routes**: Ensure `css.routes` matches `html.routes` keys
+2. **Path Resolution**: All paths are relative to `process.cwd()` (app directory)
+3. **Liquid Escaping**: Use `| raw` filter for HTML content to prevent entity escaping
+4. **CSS Merging**: Multiple routes may generate duplicate CSS - ensure proper merging
+5. **Context Dependencies**: Components requiring React context won't work without special handling
+
+## 📚 Related Documentation
+
+- See `packages/render/.cursor/rules/render.mdc` for renderer architecture
+- See `apps/local/generator.config.ts` for configuration examples
+- See `packages/generator/README.md` for API documentation
