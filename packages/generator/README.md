@@ -649,18 +649,18 @@ UI8Kit supports three HTML processing modes to give you flexibility in how the g
 ```
 
 #### `semantic` Mode
-- **HTML Output**: Removes `class` attributes, keeps only `data-class` attributes
+- **HTML Output**: Removes `class` attributes, converts `data-class` to `class` (removes `data-` prefix)
 - **CSS Usage**: Requires linking to generated CSS files (styles applied via semantic selectors)
 - **Best For**: Production sites, semantic HTML, smaller HTML file sizes
 
 ```html
-<div data-class="hero-content">
-  <h1 data-class="hero-title">Hello</h1>
+<div class="hero-content">
+  <h1 class="hero-title">Hello</h1>
 </div>
 ```
 
 #### `inline` Mode
-- **HTML Output**: Removes `class` attributes, injects CSS directly into `<head>`
+- **HTML Output**: Removes `class` attributes, converts `data-class` to `class` (removes `data-` prefix), injects CSS directly into `<head>`
 - **CSS Usage**: Self-contained HTML files, no external CSS dependencies
 - **Best For**: Email templates, static hosting without CSS files, single-file deployment
 
@@ -669,8 +669,8 @@ UI8Kit supports three HTML processing modes to give you flexibility in how the g
   <style>.hero-content{display:flex;...}.hero-title{font-size:2.25rem;...}</style>
 </head>
 <body>
-  <div data-class="hero-content">
-    <h1 data-class="hero-title">Hello</h1>
+  <div class="hero-content">
+    <h1 class="hero-title">Hello</h1>
   </div>
 </body>
 ```

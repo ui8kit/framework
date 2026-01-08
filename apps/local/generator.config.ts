@@ -2,7 +2,6 @@
 
 // Import directly from source to avoid bundling issues
 import { generator, type GeneratorConfig } from '../../packages/generator/src/index';
-import { ThemeProvider, lesseUITheme } from './src/providers/theme';
 
 // Define HTML routes first
 const htmlRoutes = {
@@ -44,13 +43,9 @@ export const config: GeneratorConfig = {
 
   assets: {
     copy: ['./public/**/*']
-  },
-
-  // Context providers for rendering
-  render: {
-    themeProvider: ThemeProvider,
-    themeProps: { theme: lesseUITheme }
   }
+
+  // Note: No render section needed - renderer works without context providers
 };
 
 // Run generation if this file is executed directly

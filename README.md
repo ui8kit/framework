@@ -334,6 +334,8 @@ export function HeroBlock() {
 
 **CSS Optimization**: The generator automatically merges selectors with identical class sets, reducing CSS file size by up to 25% for components with repeated patterns (loops, maps, etc.). This happens automatically - no configuration needed.
 
+**HTML Optimization**: In `semantic` and `inline` modes, `data-class` attributes are converted to standard `class` attributes (removing the `data-` prefix) for cleaner, more semantic HTML.
+
 #### HTML Files (`dist/html/`)
 
 **index.html** (Complete page):
@@ -353,13 +355,13 @@ export function HeroBlock() {
   </header>
 
   <main class="min-h-screen">
-    <div data-class="hero-section" class="relative">
-      <div data-class="hero-content" class="flex flex-col gap-4 items-center">
-        <h1 data-class="hero-title" class="text-4xl font-bold">Welcome to UI8Kit</h1>
-        <p data-class="hero-description" class="text-xl">Build beautiful interfaces</p>
-        <div data-class="hero-actions" class="flex gap-4">
-          <button data-class="hero-cta-primary" class="px-4 py-2 bg-primary...">Get Started</button>
-          <button data-class="hero-cta-secondary" class="px-4 py-2 border...">Learn More</button>
+    <div class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">Welcome to UI8Kit</h1>
+        <p class="hero-description">Build beautiful interfaces</p>
+        <div class="hero-actions">
+          <button class="hero-cta-primary">Get Started</button>
+          <button class="hero-cta-secondary">Learn More</button>
         </div>
       </div>
     </div>
@@ -516,7 +518,7 @@ Best for **Tailwind-free projects** or when you want pure CSS3 with CSS variable
 UI8Kit supports three HTML processing modes:
 
 - **`tailwind`** (default): Preserves both `data-class` and `class` attributes for maximum compatibility
-- **`semantic`**: Removes `class` attributes, keeps semantic `data-class` selectors (smaller HTML)
+- **`semantic`**: Removes `class` attributes, converts `data-class` to `class` (removes `data-` prefix, smaller HTML)
 - **`inline`**: Injects CSS directly into HTML `<head>` for self-contained files
 
 Configure via `generator.config.ts`:

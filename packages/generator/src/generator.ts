@@ -271,8 +271,9 @@ export class Generator {
     }
 
     if (mode === 'semantic' || mode === 'inline') {
-      // Remove class attributes, keep only data-class
+      // Remove class attributes, convert data-class to class (remove data- prefix)
       htmlContent = this.removeClassAttributes(htmlContent);
+      htmlContent = this.convertDataClassToClass(htmlContent);
     }
 
     if (mode === 'inline' && cssContent) {
@@ -290,6 +291,14 @@ export class Generator {
   private removeClassAttributes(htmlContent: string): string {
     // Remove class="..." attributes but keep data-class
     return htmlContent.replace(/\s+class\s*=\s*["'][^"']*["']/g, '');
+  }
+
+  /**
+   * Convert data-class attributes to class attributes
+   */
+  private convertDataClassToClass(htmlContent: string): string {
+    // Convert data-class="value" to class="value"
+    return htmlContent.replace(/data-class\s*=\s*["']([^"']*)["']/g, 'class="$1"');
   }
 
   /**
