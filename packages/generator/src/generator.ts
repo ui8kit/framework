@@ -1,8 +1,10 @@
+import React from 'react';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { Liquid } from 'liquidjs';
 import { htmlConverter } from './html-converter.js';
-import { renderRoute, type RouteConfig } from '@ui8kit/render';
+// Import render directly from source to avoid bundling issues
+import { renderRoute } from '../../render/src/index';
 
 export interface GeneratorConfig {
   app: {
@@ -26,7 +28,15 @@ export interface GeneratorConfig {
 }
 
 // RouteConfig is now defined in @ui8kit/render package
-export { type RouteConfig } from '@ui8kit/render';
+export interface RouteConfig {
+  title: string;
+  seo?: {
+    description?: string;
+    keywords?: string[];
+    image?: string;
+  };
+  data?: Record<string, any>;
+}
 
 export class Generator {
   private liquid: Liquid;

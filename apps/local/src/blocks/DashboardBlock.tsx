@@ -1,5 +1,4 @@
 import { Block, Grid, Stack, Box, Button, Title, Text  } from "@ui8kit/core";
-import { useTheme } from '@/providers/theme';
 
 // Block component - semantic page section
 const content = {
@@ -8,7 +7,8 @@ const content = {
 }
 
 export function DashboardBlock() {
-  const { rounded } = useTheme();
+  // Theme context is provided at app level for runtime
+  // For static generation, we use default values
 
   return (
     <Block w="full" component="section" data-class="dashboard-section">
