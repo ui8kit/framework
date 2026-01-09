@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Import htmlToCss functionality
 // Note: We'll copy the core logic here to avoid circular dependencies
@@ -14,6 +15,7 @@ interface HtmlConverterOptions {
  */
 export class HtmlConverter {
   private ui8kitMap: Map<string, string> | null = null;
+  private shadcnMap: Map<string, string> | null = null;
 
   /**
    * Convert HTML file to CSS files
@@ -32,6 +34,9 @@ export class HtmlConverter {
 
     // Load ui8kit map
     await this.loadUi8kitMap(htmlFilePath);
+
+    // Load shadcn map
+    await this.loadShadcnMap(htmlFilePath);
 
     // Extract elements from HTML
     const html = await readFile(htmlFilePath, 'utf-8');
@@ -93,6 +98,28 @@ export class HtmlConverter {
       }
     } catch (error) {
       throw new Error(`Failed to parse ui8kit.map.json from ${foundPath}: ${error}`);
+    }
+  }
+
+  /**
+   * Load shadcn map for CSS property lookups
+   */
+  private async loadShadcnMap(htmlFilePath: string): Promise<void> {
+    // Find shadcn.map.json relative to this file's location
+    const pkgDir = dirname(fileURLToPath(import.meta.url));
+    const shadcnMapPath = join(pkgDir, '../src/lib/shadcn.map.json');
+
+    try {
+      const jsonContent = await readFile(shadcnMapPath, 'utf-8');
+      const shadcnMapObject = JSON.parse(jsonContent);
+
+      this.shadcnMap = new Map<string, string>();
+      for (const [key, value] of Object.entries(shadcnMapObject)) {
+        this.shadcnMap.set(key, value as string);
+      }
+    } catch (error) {
+      console.warn(`Failed to load shadcn.map.json from ${shadcnMapPath}: ${error}. Using empty map.`);
+      this.shadcnMap = new Map<string, string>();
     }
   }
 
@@ -276,10 +303,15 @@ export class HtmlConverter {
     // Check if it's in ui8kit.map.json (known Tailwind classes)
     if (this.ui8kitMap?.has(className)) {
       return true;
-    } else {
-      console.warn(`Unknown class: ${className}`);
-      return false;
     }
+
+    // Check if it's in shadcn.map.json (known shadcn classes)
+    if (this.shadcnMap?.has(className)) {
+      return true;
+    }
+
+    console.warn(`Unknown class: ${className}`);
+    return false;
 
     /* // Check for common Tailwind patterns (basic validation)
     const tailwindPatterns = [
@@ -332,7 +364,16 @@ export class HtmlConverter {
       const cssProperties: string[] = [];
 
       for (const className of classes) {
-        const cssProperty = this.ui8kitMap?.get(className);
+        let cssProperty: string | undefined;
+
+        // First check ui8kit map
+        cssProperty = this.ui8kitMap?.get(className);
+
+        // If not found in ui8kit, check shadcn map
+        if (!cssProperty) {
+          cssProperty = this.shadcnMap?.get(className);
+        }
+
         if (cssProperty) {
           cssProperties.push(`  ${cssProperty}`);
         } else {

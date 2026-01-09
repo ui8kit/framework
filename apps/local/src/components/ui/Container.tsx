@@ -26,10 +26,13 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
 
     const Element = component as ElementType;
 
+    // Use provided data-class or default to "container"
+    const dataClass = (rest as any)['data-class'] || 'container';
+
     return (
       <Element
         ref={ref}
-        data-class="container"
+        data-class={dataClass}
         className={cn(
           defaultProps,
           utilityClassName,

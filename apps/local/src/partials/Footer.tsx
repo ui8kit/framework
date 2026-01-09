@@ -4,7 +4,7 @@ export function Footer({ name = "UI8Kit" }: { name?: string }) {
   return (
     <Block
       component="footer"
-      className="border-t bg-card mt-16"
+      className="border-t bg-card mt-12"
       data-class="site-footer"
     >
       <Container className="container mx-auto px-4 py-8" data-class="site-footer-container">

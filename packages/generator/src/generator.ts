@@ -1,11 +1,12 @@
 // import React from 'react';
-import { writeFile, mkdir, readdir, readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { writeFile, mkdir, readdir, readFile, copyFile, stat } from 'node:fs/promises';
+import { dirname, join, relative, resolve } from 'node:path';
 import { Liquid } from 'liquidjs';
 import { htmlConverter } from './html-converter.js';
 // Import render directly from source to avoid bundling issues
 import { renderRoute, renderComponent } from '@ui8kit/render';
 import { fileURLToPath } from 'node:url';
+import { glob } from 'glob';
 
 export interface GeneratorConfig {
   app: {
@@ -374,6 +375,9 @@ export class Generator {
       meta['og:image'] = route.seo.image;
     }
 
+    // Add shadcn CSS import for design tokens
+    meta['shadcn-css-link'] = '<link rel="stylesheet" href="../css/shadcn.css">';
+
     return meta;
   }
 
@@ -382,9 +386,52 @@ export class Generator {
 
     console.log('📁 Copying assets...');
 
-    // Simple asset copying (in real implementation, use a proper copy utility)
-    for (const asset of config.assets.copy) {
-      console.log(`  → ${asset}`);
+    for (const assetPattern of config.assets.copy) {
+      try {
+        // Handle glob patterns
+        if (assetPattern.includes('*')) {
+          const matches = await glob(assetPattern, { cwd: process.cwd() });
+          for (const match of matches) {
+            await this.copyAssetFile(match, config.html.outputDir, config.css.outputDir);
+          }
+        } else {
+          // Handle direct file paths
+          await this.copyAssetFile(assetPattern, config.html.outputDir, config.css.outputDir);
+        }
+      } catch (error) {
+        console.warn(`⚠️ Failed to copy asset ${assetPattern}:`, error);
+      }
+    }
+  }
+
+  private async copyAssetFile(sourcePath: string, outputDir: string, cssOutputDir?: string): Promise<void> {
+    const absoluteSourcePath = resolve(process.cwd(), sourcePath);
+
+    let destPath: string;
+
+    // For CSS assets from src/assets/css/, copy to the CSS output directory (dist/css)
+    if (absoluteSourcePath.includes(join('src', 'assets', 'css'))) {
+      const relativePath = relative(join(process.cwd(), 'src', 'assets', 'css'), absoluteSourcePath);
+      destPath = join(cssOutputDir || join(outputDir, '..', 'css'), relativePath);
+    } else {
+      // For other assets, keep the relative structure
+      const relativePath = relative(join(process.cwd(), 'src', 'assets'), absoluteSourcePath);
+      destPath = join(outputDir, 'assets', relativePath);
+    }
+
+    try {
+      // Check if source exists and is a file
+      const stats = await stat(absoluteSourcePath);
+      if (!stats.isFile()) {
+        console.warn(`⚠️ Skipping ${sourcePath} - not a file`);
+        return;
+      }
+
+      await this.ensureDir(dirname(destPath));
+      await copyFile(absoluteSourcePath, destPath);
+      console.log(`  → ${relative(destPath, outputDir)}`);
+    } catch (error) {
+      console.warn(`⚠️ Failed to copy ${sourcePath} to ${destPath}:`, error);
     }
   }
 

@@ -82,6 +82,7 @@
   "col-tart-2": "grid-column-start: 2;",
   "col-tart-8": "grid-column-start: 8;",
   "collapse": "visibility: collapse;",
+  "container": "width: 100%;\n    @media (width >= 40rem /* 640px */) {\n        max-width: 40rem /* 640px */;\n    }\n    @media (width >= 48rem /* 768px */) {\n        max-width: 48rem /* 768px */;\n    }\n    @media (width >= 64rem /* 1024px */) {\n        max-width: 64rem /* 1024px */;\n    }\n    @media (width >= 80rem /* 1280px */) {\n        max-width: 80rem /* 1280px */;\n    }\n    @media (width >= 96rem /* 1536px */) {\n        max-width: 96rem /* 1536px */;\n    }",
   "content-around": "align-content: space-around;",
   "content-between": "align-content: space-between;",
   "content-center": "align-content: center;",
@@ -150,6 +151,9 @@
   "h-5": "height: calc(var(--spacing) * 5);",
   "h-6": "height: calc(var(--spacing) * 6);",
   "h-8": "height: calc(var(--spacing) * 8);",
+  "h-10": "height: calc(var(--spacing) * 10);",
+  "h-11": "height: calc(var(--spacing) * 11);",
+  "h-12": "height: calc(var(--spacing) * 12);",
   "h-auto": "height: auto;",
   "h-fit": "height: fit-content;",
   "h-full": "height: 100%;",
@@ -311,6 +315,7 @@
   "overflow-y-hidden": "overflow-y: hidden;",
   "overflow-y-scroll": "overflow-y: scroll;",
   "overflow-y-visible": "overflow-y: visible;",
+  "outline-none": "outline-style: none;",
   "p-0": "padding: calc(var(--spacing) * 0);",
   "p-1": "padding: calc(var(--spacing) * 1);",
   "p-12": "padding: calc(var(--spacing) * 12);",
@@ -499,5 +504,6 @@
   "z-30": "z-index: 30;",
   "z-40": "z-index: 40;",
   "z-50": "z-index: 50;",
-  "z-auto": "z-index: auto;"
+  "z-auto": "z-index: auto;",
+  "transition-colors": "transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;\ntransition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\ntransition-duration: 150ms;"
 }

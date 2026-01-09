@@ -32,7 +32,7 @@ export function Header({ name = "UI8Kit" }: { name?: string }) {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-sm hover:text-primary hidden md:inline"
+                className="text-sm text-primary inline"
                 data-class="site-header-nav-link"
               >
                 {item.label}

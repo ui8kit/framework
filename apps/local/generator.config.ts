@@ -113,7 +113,7 @@ export const config: GeneratorConfig = {
   },
 
   assets: {
-    copy: ['./public/**/*']
+    copy: ['./src/assets/css/**/*']
   }
 
   // Note: No render section needed - renderer works without context providers
