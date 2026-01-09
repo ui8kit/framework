@@ -14,7 +14,3 @@ tsconfig.node.tsbuildinfo
 bash.exe.*
 .manual/
 .cursorignore
-
-# Generated views and snapshots
-**/views/pages/
-**/snapshots/

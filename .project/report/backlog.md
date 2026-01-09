@@ -8,4 +8,4 @@
 - [x]  дублируются классы в local.css `.feature-description`
 - [x]  дублируются классы в селекторах apply `.feature-card-0`, `.feature-card-1` -> `@apply p-6 border rounded-lg`
 - [x]  добавить в конфиг `generator.config.ts` режимы генерации для `html:tailwind, tailwind --pure, semantic`, `css:tailwind, css3, css3inline`. Чистые классы tw без атрибутов (--pure)
-- [ ]  partials генерировать из реакт или пропускать
+- [x]  partials генерировать из реакт или пропускать
