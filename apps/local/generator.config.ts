@@ -91,7 +91,25 @@ export const config: GeneratorConfig = {
     viewsDir: './views',
     routes: htmlRoutes,
     outputDir: './dist/html',
-    mode: 'tailwind' // 'tailwind' | 'semantic' | 'inline'
+    mode: 'tailwind', // 'tailwind' | 'semantic' | 'inline'
+    partials: {
+      sourceDir: './src/partials',
+      outputDir: 'partials',
+      props: {
+        Header: {
+          name: "{{ name | default: 'UI8Kit' }}"
+        },
+        Footer: {
+          name: "{{ name | default: 'UI8Kit' }}"
+        },
+        Navbar: {
+          brand: "{{ brand | default: name | default: 'App' }}"
+        },
+        Sidebar: {
+          title: "{{ sidebarTitle | default: '' }}"
+        }
+      }
+    }
   },
 
   assets: {

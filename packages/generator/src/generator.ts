@@ -1,10 +1,10 @@
 // import React from 'react';
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { Liquid } from 'liquidjs';
 import { htmlConverter } from './html-converter.js';
 // Import render directly from source to avoid bundling issues
-import { renderRoute } from '@ui8kit/render';
+import { renderRoute, renderComponent } from '@ui8kit/render';
 
 export interface GeneratorConfig {
   app: {
@@ -22,6 +22,26 @@ export interface GeneratorConfig {
     routes: Record<string, RouteConfig>;
     outputDir: string;
     mode?: 'tailwind' | 'semantic' | 'inline'; // HTML processing mode
+    /**
+     * Optional: generate Liquid partial templates from React partial components.
+     * When enabled, generator will render all components in `sourceDir` and write them to `${viewsDir}/${outputDir}`.
+     */
+    partials?: {
+      /**
+       * Directory containing React partial components (e.g. './src/partials').
+       * Relative to the current working directory.
+       */
+      sourceDir: string;
+      /**
+       * Output directory under `viewsDir` (defaults to 'partials').
+       */
+      outputDir?: string;
+      /**
+       * Optional per-component props passed at render-time.
+       * Keyed by component name (usually the filename without extension).
+       */
+      props?: Record<string, Record<string, any>>;
+    };
     /**
      * Tailwind-only output tweak:
      * - when true, removes `data-class="..."` from the generated HTML
@@ -103,6 +123,41 @@ export class Generator {
       }
     }
 
+    // Also include shared layout and partial templates (so semantic mode can style them)
+    const extraDirs = [
+      join(config.html.viewsDir, 'partials'),
+      join(config.html.viewsDir, 'layouts'),
+    ];
+
+    for (const dirPath of extraDirs) {
+      let dirEntries: any[] = [];
+      try {
+        dirEntries = await readdir(dirPath, { withFileTypes: true } as any) as any[];
+      } catch {
+        continue;
+      }
+
+      for (const entry of dirEntries) {
+        if (!entry?.isFile?.()) continue;
+        if (!String(entry.name).toLowerCase().endsWith('.liquid')) continue;
+
+        const filePath = join(dirPath, entry.name);
+        console.log(`📄 Processing template: ${filePath}`);
+
+        const { applyCss, pureCss: routePureCss } = await htmlConverter.convertHtmlToCss(
+          filePath,
+          `${config.css.outputDir}/tailwind.apply.css`,
+          config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
+          { verbose: true }
+        );
+
+        allApplyCss.push(applyCss);
+        if (config.css.pureCss) {
+          allPureCss.push(routePureCss);
+        }
+      }
+    }
+
     // Merge and write CSS files
     const finalApplyCss = this.mergeCssFiles(allApplyCss);
     await Bun.write(`${config.css.outputDir}/tailwind.apply.css`, finalApplyCss);
@@ -120,6 +175,9 @@ export class Generator {
   private async generateViews(config: GeneratorConfig): Promise<void> {
     console.log('📄 Generating Liquid views...');
 
+    // 0. Generate Liquid partials from React partial components (optional)
+    await this.generatePartials(config);
+
     // Generate views for all HTML routes (not just CSS routes)
     for (const routePath of Object.keys(config.html.routes)) {
       const routeConfig = config.html.routes[routePath];
@@ -132,6 +190,78 @@ export class Generator {
 
       console.log(`  → ${viewPath}`);
     }
+  }
+
+  private async generatePartials(config: GeneratorConfig): Promise<void> {
+    const partialsConfig = config.html.partials;
+    if (!partialsConfig) return;
+
+    console.log('🧩 Generating Liquid partials...');
+
+    const absSourceDir = join(process.cwd(), partialsConfig.sourceDir);
+    const outputDirName = partialsConfig.outputDir ?? 'partials';
+    const absOutputDir = join(process.cwd(), config.html.viewsDir, outputDirName);
+    const propsByComponent = partialsConfig.props ?? {};
+
+    let entries: Awaited<ReturnType<typeof readdir>>;
+    try {
+      entries = await readdir(absSourceDir, { withFileTypes: true } as any);
+    } catch (error) {
+      console.warn(`⚠️ Partials sourceDir not found: ${partialsConfig.sourceDir}`);
+      return;
+    }
+
+    await this.ensureDir(absOutputDir);
+
+    for (const entry of entries as any[]) {
+      if (!entry?.isFile?.()) continue;
+
+      const fileName: string = entry.name;
+      const lower = fileName.toLowerCase();
+      const isRenderable =
+        lower.endsWith('.tsx') || lower.endsWith('.ts') || lower.endsWith('.jsx') || lower.endsWith('.js');
+      if (!isRenderable) continue;
+
+      const componentName = fileName.replace(/\.(tsx|ts|jsx|js)$/i, '');
+      const modulePath = join(absSourceDir, fileName);
+      const outFileName = `${componentName.toLowerCase()}.liquid`;
+      const outPath = join(absOutputDir, outFileName);
+
+      const props = propsByComponent[componentName] ?? {};
+
+      try {
+        // Prefer a named export that matches the filename, fall back to default export.
+        let html: string;
+        try {
+          html = await renderComponent({ modulePath, exportName: componentName, props });
+        } catch {
+          html = await renderComponent({ modulePath, props });
+        }
+
+        // React escapes quotes inside text nodes, which breaks Liquid string literals.
+        // Fix common HTML entities inside Liquid tags so templates remain valid.
+        html = this.unescapeLiquidTags(html);
+
+        const header = `{% comment %} Generated from ${partialsConfig.sourceDir}/${fileName} by @ui8kit/generator. Do not edit manually. {% endcomment %}\n`;
+        await writeFile(outPath, header + html + '\n', 'utf-8');
+        console.log(`  → ${join(config.html.viewsDir, outputDirName, outFileName)}`);
+      } catch (error) {
+        console.warn(`⚠️ Failed to generate partial from ${fileName}:`, error);
+      }
+    }
+  }
+
+  private unescapeLiquidTags(html: string): string {
+    const decode = (s: string) =>
+      s
+        .replace(/&#x27;|&apos;/g, "'")
+        .replace(/&quot;|&#34;/g, '"');
+
+    // Unescape inside Liquid output tags: {{ ... }}
+    html = html.replace(/\{\{[\s\S]*?\}\}/g, (m) => decode(m));
+    // Unescape inside Liquid statement tags: {% ... %}
+    html = html.replace(/\{%\s*[\s\S]*?\s*%\}/g, (m) => decode(m));
+    return html;
   }
 
   private async generateViewContent(

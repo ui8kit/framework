@@ -1,68 +1,23 @@
 //import React from "react";
-import { Block, Box, Container, Button, Icon, Text, Group, Stack } from "@ui8kit/core";
-import { Atom, Moon, Sun } from "lucide-react";
+import type { ComponentType, ReactNode } from "react";
+import { Block, Box, Container } from "@ui8kit/core";
 import { PanelGroup, Panel, PanelResizeHandle } from "react-resizable-panels";
-
-// Sidebar component used by the DashLayout factory
-export interface SidebarProps {
-  children?: React.ReactNode;
-  className?: string;
-  dataClass?: string;
-  title?: string;
-}
-
-export function Sidebar({ children, className, dataClass, title }: SidebarProps) {
-  return (
-    <Block
-      component="aside"
-      className={className}
-      data-class={dataClass || "sidebar"}
-    >
-      <Box p="4" data-role="dash-sidebar-box">
-        <Stack gap="4" data-role="dash-sidebar-stack" data-class="sidebar-stack">
-          {title && <Text bg="muted-foreground" data-role="dash-sidebar-title">{title}</Text>}
-          {children}
-        </Stack>
-      </Box>
-    </Block>
-  );
-}
-
-// Minimal Navbar with brand and a single dark-mode toggle button
-export interface NavbarProps {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-  brand?: string;
-}
-
-export function Navbar({ isDarkMode, toggleDarkMode, brand = "App" }: NavbarProps) {
-  return (
-    <Block component="nav" bg="card" p="4" data-role="dash-navbar" data-class="navbar">
-      <Group justify="between" items="center" data-class="navbar-group">
-        <Group gap="2" items="center" data-class="navbar-brand-group">
-          <Icon component="span" lucideIcon={Atom} bg="primary" />
-          <Text font="bold">{brand}</Text>
-        </Group>
-
-        <Button variant="ghost" title="Toggle dark mode" onClick={toggleDarkMode} data-class="navbar-toggle-dark-mode-button">
-          <Icon component="span" lucideIcon={isDarkMode ? Sun : Moon} />
-          <Text text="sm">Theme</Text>
-        </Button>
-      </Group>
-    </Block>
-  );
-}
+import { Navbar, NavbarProps } from "@/partials/Navbar";
+import { Sidebar } from "@/partials/Sidebar";
+import { Header } from "@/partials/Header";
+import { Footer } from "@/partials/Footer";
 
 // Dashboard layout composing react-resizable-panels with ui8kit primitives
 export interface DashboardProps {
   /** Optional page component to render in the main panel */
-  page?: React.ComponentType;
+  page?: ComponentType;
   /** Optional children to render in the main panel (used if `page` is not provided) */
-  children?: React.ReactNode;
+  children?: ReactNode;
   /** Optional sidebar content */
-  sidebar?: React.ReactNode;
+  sidebar?: ReactNode;
   /** Navbar props */
-  navbarProps?: Omit<NavbarProps, 'toggleDarkMode' | 'isDarkMode'> & Partial<Pick<NavbarProps, 'isDarkMode' | 'toggleDarkMode'>>;
+  navbarProps?: Omit<NavbarProps, "toggleDarkMode" | "isDarkMode"> &
+    Partial<Pick<NavbarProps, "isDarkMode" | "toggleDarkMode">>;
 }
 
 export function Dashboard({ page: Page, children, sidebar, navbarProps }: DashboardProps) {
@@ -73,6 +28,7 @@ export function Dashboard({ page: Page, children, sidebar, navbarProps }: Dashbo
 
   return (
     <>
+      <Header />
       <Navbar isDarkMode={isDark} toggleDarkMode={toggle} brand={navbarProps?.brand} />
 
       <Block component="main" data-role="dash-main" relative="" w="full" data-class="main">
@@ -90,6 +46,7 @@ export function Dashboard({ page: Page, children, sidebar, navbarProps }: Dashbo
           </Panel>
         </PanelGroup>
       </Block>
+      <Footer />
     </>
   );
 }

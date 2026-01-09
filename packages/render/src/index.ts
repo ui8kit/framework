@@ -1,12 +1,28 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, isAbsolute } from 'path';
 import { pathToFileURL } from 'url';
 
 export interface RenderOptions {
   entryPath: string; // Path to main.tsx
   routePath: string; // Route to render (e.g., '/', '/about')
+}
+
+export interface RenderComponentOptions {
+  /**
+   * Absolute or cwd-relative path to the module that exports the component.
+   * Example: './src/partials/Header.tsx'
+   */
+  modulePath: string;
+  /**
+   * Which export to render (e.g. 'Header'). If omitted, uses the module's default export.
+   */
+  exportName?: string;
+  /**
+   * Props to pass into the component.
+   */
+  props?: Record<string, any>;
 }
 
 /**
@@ -196,4 +212,28 @@ export class Renderer {
 export async function renderRoute(options: RenderOptions): Promise<string> {
   const renderer = new Renderer();
   return renderer.renderRouteToHtml(options);
+}
+
+/**
+ * Render a single component module export to static HTML (no providers).
+ * Useful for generating Liquid partials from React partial components.
+ */
+export async function renderComponent(options: RenderComponentOptions): Promise<string> {
+  const absModulePath = isAbsolute(options.modulePath)
+    ? options.modulePath
+    : join(process.cwd(), options.modulePath);
+
+  const moduleUrl = pathToFileURL(absModulePath).href;
+  const mod = await import(moduleUrl);
+
+  const Component = options.exportName ? mod[options.exportName] : mod.default;
+  if (!Component) {
+    const available = Object.keys(mod).sort().join(', ') || '(none)';
+    throw new Error(
+      `Component export not found. modulePath=${options.modulePath} exportName=${options.exportName ?? 'default'} availableExports=${available}`
+    );
+  }
+
+  const element = React.createElement(Component, options.props ?? {});
+  return renderToStaticMarkup(element);
 }
