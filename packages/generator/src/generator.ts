@@ -1,10 +1,11 @@
 // import React from 'react';
-import { writeFile, mkdir, readdir } from 'node:fs/promises';
+import { writeFile, mkdir, readdir, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { Liquid } from 'liquidjs';
 import { htmlConverter } from './html-converter.js';
 // Import render directly from source to avoid bundling issues
 import { renderRoute, renderComponent } from '@ui8kit/render';
+import { fileURLToPath } from 'node:url';
 
 export interface GeneratorConfig {
   app: {
@@ -67,6 +68,7 @@ export interface RouteConfig {
 
 export class Generator {
   private liquid: Liquid;
+  private templatesDir: string;
 
   constructor() {
     this.liquid = new Liquid({
@@ -75,10 +77,14 @@ export class Generator {
     });
 
     this.registerFilters();
+    const pkgDir = dirname(fileURLToPath(import.meta.url));
+    this.templatesDir = join(pkgDir, '../templates');
   }
 
   async generate(config: GeneratorConfig): Promise<void> {
     console.log(`🚀 Generating static site for ${config.app.name}`);
+
+    await this.ensureLayouts(config);
 
     // 1. Generate Liquid views from React components (with data-class attributes)
     await this.generateViews(config);
@@ -203,9 +209,9 @@ export class Generator {
     const absOutputDir = join(process.cwd(), config.html.viewsDir, outputDirName);
     const propsByComponent = partialsConfig.props ?? {};
 
-    let entries: Awaited<ReturnType<typeof readdir>>;
+    let entries: string[] = [];
     try {
-      entries = await readdir(absSourceDir, { withFileTypes: true } as any);
+      entries = await readdir(absSourceDir);
     } catch (error) {
       console.warn(`⚠️ Partials sourceDir not found: ${partialsConfig.sourceDir}`);
       return;
@@ -213,10 +219,14 @@ export class Generator {
 
     await this.ensureDir(absOutputDir);
 
-    for (const entry of entries as any[]) {
-      if (!entry?.isFile?.()) continue;
-
-      const fileName: string = entry.name;
+    for (const fileName of entries) {
+      const entryPath = join(absSourceDir, fileName);
+      try {
+        const stat = await Bun.file(entryPath).stat();
+        if (!stat.isFile()) continue;
+      } catch {
+        continue;
+      }
       const lower = fileName.toLowerCase();
       const isRenderable =
         lower.endsWith('.tsx') || lower.endsWith('.ts') || lower.endsWith('.jsx') || lower.endsWith('.js');
@@ -383,6 +393,32 @@ export class Generator {
       await mkdir(dirPath, { recursive: true });
     } catch (error) {
       // Directory might already exist
+    }
+  }
+
+  private async ensureLayouts(config: GeneratorConfig): Promise<void> {
+    const layoutsDir = join(process.cwd(), config.html.viewsDir, 'layouts');
+    await this.ensureDir(layoutsDir);
+
+    const layoutFiles = ['layout.liquid', 'page.liquid'];
+
+    for (const fileName of layoutFiles) {
+      const destPath = join(layoutsDir, fileName);
+      try {
+        await readFile(destPath, 'utf-8');
+        continue;
+      } catch {
+        // file missing, fall through to copy from templates
+      }
+
+      const templatePath = join(this.templatesDir, fileName);
+      try {
+        const template = await readFile(templatePath, 'utf-8');
+        await writeFile(destPath, template, 'utf-8');
+        console.log(`  → Layout template created: ${destPath}`);
+      } catch (error) {
+        console.warn(`⚠️ Unable to create layout ${fileName} from templates:`, error);
+      }
     }
   }
 
