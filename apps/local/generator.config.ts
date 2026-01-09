@@ -3,6 +3,59 @@
 // Import directly from source to avoid bundling issues
 import { generator, type GeneratorConfig } from '../../packages/generator/src/index';
 
+type HtmlMode = NonNullable<GeneratorConfig['html']['mode']>;
+
+function usage(): string {
+  return [
+    'Usage:',
+    '  bun run generate --tailwind [--pure]',
+    '  bun run generate --semantic',
+    '  bun run generate --inline',
+    '',
+    'Modes:',
+    '  --tailwind   Keep both class and data-class (default)',
+    '  --semantic   Output semantic HTML: class <- data-class, remove original class',
+    '  --inline     Like --semantic, plus inject CSS into <head>',
+    '',
+    'Flags:',
+    '  --pure       Tailwind-only: remove data-class from generated HTML output',
+  ].join('\n');
+}
+
+function parseCli(argv: string[]): { mode: HtmlMode; pure: boolean } {
+  const args = new Set(argv);
+
+  const hasTailwind = args.has('--tailwind');
+  const hasSemantic = args.has('--semantic');
+  const hasInline = args.has('--inline');
+  const pure = args.has('--pure');
+  const help = args.has('--help') || args.has('-h');
+
+  if (help) {
+    // eslint-disable-next-line no-console
+    console.log(usage());
+    process.exit(0);
+  }
+
+  const modes = [
+    hasTailwind ? 'tailwind' : null,
+    hasSemantic ? 'semantic' : null,
+    hasInline ? 'inline' : null
+  ].filter(Boolean) as HtmlMode[];
+
+  if (modes.length > 1) {
+    throw new Error(`Multiple mode flags provided. Choose only one.\n\n${usage()}`);
+  }
+
+  const mode: HtmlMode = modes[0] ?? 'tailwind';
+
+  if (pure && mode !== 'tailwind') {
+    throw new Error(`--pure can only be used with --tailwind.\n\n${usage()}`);
+  }
+
+  return { mode, pure };
+}
+
 // Define HTML routes first
 const htmlRoutes = {
   '/': {
@@ -50,6 +103,11 @@ export const config: GeneratorConfig = {
 
 // Run generation if this file is executed directly
 if (import.meta.main) {
+  const { mode, pure } = parseCli(process.argv.slice(2));
+  config.html.mode = mode;
+  config.html.stripDataClassInTailwind = pure;
+
   console.log('🛠️ Starting static site generation...');
+  console.log(`📄 Mode: ${mode}${pure ? ' (--pure)' : ''}`);
   await generator.generate(config);
 }

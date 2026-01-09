@@ -32,14 +32,16 @@ export class Renderer {
 
       if (!componentName) {
         console.warn(`⚠️ Route ${routePath} not found in router configuration`);
-        return this.generateFallbackHtml(routePath);
+        //return this.generateFallbackHtml(routePath);
+        return '';
       }
 
       // Load and render component
       const Component = await this.loadComponent(entryPath, componentName);
       if (!Component) {
         console.warn(`⚠️ Component ${componentName} could not be loaded`);
-        return this.generateFallbackHtml(routePath);
+        //return this.generateFallbackHtml(routePath);
+        return '';
       }
 
       // Render component directly (without complex context for now)
@@ -47,7 +49,8 @@ export class Renderer {
       return renderToStaticMarkup(element);
     } catch (error) {
       console.error(`❌ Failed to render route ${routePath}:`, error);
-      return this.generateFallbackHtml(routePath);
+      //return this.generateFallbackHtml(routePath);
+      return '';
     }
   }
 
@@ -174,7 +177,6 @@ export class Renderer {
 
   /**
    * Generate fallback HTML
-   */
   private generateFallbackHtml(routePath: string): string {
     return `<div data-class="page-fallback">
   <div data-class="page-header">
@@ -185,6 +187,7 @@ export class Renderer {
   </div>
 </div>`;
   }
+   */
 }
 
 /**

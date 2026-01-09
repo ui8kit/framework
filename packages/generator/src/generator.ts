@@ -22,6 +22,12 @@ export interface GeneratorConfig {
     routes: Record<string, RouteConfig>;
     outputDir: string;
     mode?: 'tailwind' | 'semantic' | 'inline'; // HTML processing mode
+    /**
+     * Tailwind-only output tweak:
+     * - when true, removes `data-class="..."` from the generated HTML
+     * - keeps regular `class="..."` untouched
+     */
+    stripDataClassInTailwind?: boolean;
   };
   assets?: {
     copy?: string[];
@@ -188,7 +194,12 @@ export class Generator {
         });
 
         // Process HTML content based on mode
-        const processedHtml = this.processHtmlContent(html, htmlMode, cssContent);
+        const processedHtml = this.processHtmlContent(
+          html,
+          htmlMode,
+          cssContent,
+          config.html.stripDataClassInTailwind
+        );
 
         // Save as final HTML
         const htmlFileName = routePath === '/' ? 'index.html' : `${routePath.slice(1)}/index.html`;
@@ -264,8 +275,17 @@ export class Generator {
   /**
    * Process HTML content based on the configured htmlMode
    */
-  private processHtmlContent(htmlContent: string, mode: 'tailwind' | 'semantic' | 'inline', cssContent?: string): string {
+  private processHtmlContent(
+    htmlContent: string,
+    mode: 'tailwind' | 'semantic' | 'inline',
+    cssContent?: string,
+    stripDataClassInTailwind?: boolean
+  ): string {
     if (mode === 'tailwind') {
+      if (stripDataClassInTailwind) {
+        // Tailwind mode, but remove data-class attributes from final HTML
+        return this.removeDataClassAttributes(htmlContent);
+      }
       // No changes needed - keep data-class and class attributes
       return htmlContent;
     }
@@ -291,6 +311,13 @@ export class Generator {
   private removeClassAttributes(htmlContent: string): string {
     // Remove class="..." attributes but keep data-class
     return htmlContent.replace(/\s+class\s*=\s*["'][^"']*["']/g, '');
+  }
+
+  /**
+   * Remove data-class attributes from HTML, keep class
+   */
+  private removeDataClassAttributes(htmlContent: string): string {
+    return htmlContent.replace(/\s+data-class\s*=\s*["'][^"']*["']/g, '');
   }
 
   /**

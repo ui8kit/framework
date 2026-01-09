@@ -7,5 +7,5 @@
 - [x]  `isValidTailwindClass` валидация по карте `ui8kit.map.json` с вырезанием лишнего, например: preline to ui8kit
 - [x]  дублируются классы в local.css `.feature-description`
 - [x]  дублируются классы в селекторах apply `.feature-card-0`, `.feature-card-1` -> `@apply p-6 border rounded-lg`
-- [ ]  добавить в конфиг `generator.config.ts` режимы генерации для `html:tailwind, tailwind --pure, semantic`, `css:tailwind, css3, css3inline`. Чистые классы tw без атрибутов (--pure)
+- [x]  добавить в конфиг `generator.config.ts` режимы генерации для `html:tailwind, tailwind --pure, semantic`, `css:tailwind, css3, css3inline`. Чистые классы tw без атрибутов (--pure)
 - [ ]  partials генерировать из реакт или пропускать
