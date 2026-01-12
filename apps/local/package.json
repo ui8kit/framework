@@ -13,7 +13,7 @@
     "generate:css": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes / --snapshots-dir ../../apps/local/views --output-dir ../../apps/local/dist/css --pure-css --verbose",
     "generate:html": "bun run generator.config.ts",
     "preview:static": "bun run generate && serve dist/html",
-    "clean-css": "node clean-css.cjs"
+    "unused": "bunx uncss dist/html/index.html --output dist/html/assets/clean-test.css --ignore ':hover,:focus,:active,:visited,.js-,.is-,.has-,[],::before,::after,::placeholder,:root,html,body,button,*,@layer,@property' --media --no-banner --timeout 10000"
   },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "^7.0.2",
