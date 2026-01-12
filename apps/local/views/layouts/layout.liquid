@@ -1,32 +1,92 @@
-<!DOCTYPE html>
-  <html lang="{{ lang | default: 'en' }}">
+<!doctype html>
+<html lang="{{ lang | default: 'en' }}">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     {% if meta.description %}
-    <meta name="description" content="{{ meta.description }}">
+      <meta name="description" content="{{ meta.description }}">
     {% endif %}
     {% if meta.keywords %}
-    <meta name="keywords" content="{{ meta.keywords }}">
+      <meta name="keywords" content="{{ meta.keywords }}">
     {% endif %}
     <meta property="og:title" content="{{ title }}">
     {% if meta.description %}
-    <meta property="og:description" content="{{ meta.description }}">
+      <meta property="og:description" content="{{ meta.description }}">
     {% endif %}
     {% if meta.image %}
-    <meta property="og:image" content="{{ meta.image }}">
+      <meta property="og:image" content="{{ meta.image }}">
     {% endif %}
-    {% if meta.shadcn-css-link %}
-    {{ meta.shadcn-css-link }}
+    {% if meta['shadcn-css-link'] %}
+      {{ meta['shadcn-css-link'] }}
     {% endif %}
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGJiYTciIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1ib3gtaWNvbiBsdWNpZGUtYm94Ij48cGF0aCBkPSJNMjEgOGEyIDIgMCAwIDAtMS0xLjczbC03LTRhMiAyIDAgMCAwLTIgMGwtNyA0QTIgMiAwIDAgMCAzIDh2OGEyIDIgMCAwIDAgMSAxLjczbDcgNGEyIDIgMCAwIDAgMiAwbDctNEEyIDIgMCAwIDAgMjEgMTZaIi8+PHBhdGggZD0ibTMuMyA3IDguNyA1IDguNy01Ii8+PHBhdGggZD0iTTEyIDIyVjEyIi8+PC9zdmc+">
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGJiYTciIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1ib3gtaWNvbiBsdWNpZGUtYm94Ij48cGF0aCBkPSJNMjEgOGEyIDIgMCAwIDAtMS0xLjczbC03LTRhMiAyIDAgMCAwLTIgMGwtNyA0QTIgMiAwIDAgMCAzIDh2OGEyIDIgMCAwIDAgMSAxLjczbDcgNGEyIDIgMCAwIDAgMiAwbDctNEEyIDIgMCAwIDAgMjEgMTZaIi8+PHBhdGggZD0ibTMuMyA3IDguNyA1IDguNy01Ii8+PHBhdGggZD0iTTEyIDIyVjEyIi8+PC9zdmc+"
+    >
   </head>
   <body>
     {% include 'partials/header.liquid' %}
-    {{ content }}
+    {% include 'partials/navbar.liquid' %}
+    <main data-class="main" class="relative w-full" data-role="dash-main">
+      <div
+        class=""
+        data-panel-group=""
+        data-panel-group-direction="horizontal"
+        data-panel-group-id="_r_0_"
+        style="display: flex; flex-direction: row; height: 100%; overflow: hidden; width: 100%;"
+      >
+        <div
+          data-class="sidebar-panel"
+          class=""
+          id="_r_1_"
+          data-panel-group-id="_r_0_"
+          data-panel=""
+          data-panel-id="_r_1_"
+          data-panel-size="20.0"
+          style="flex: 20 1 0px; overflow: hidden;"
+        >
+          {% include 'partials/sidebar.liquid' %}
+        </div>
+        <div
+          data-class="sidebar-resize-handle"
+          class=""
+          role="separator"
+          tabindex="0"
+          data-panel-group-direction="horizontal"
+          data-panel-group-id="_r_0_"
+          data-resize-handle=""
+          data-panel-resize-handle-enabled="true"
+          data-panel-resize-handle-id="_r_2_"
+          data-resize-handle-state="inactive"
+          style="touch-action: none; user-select: none;"
+          aria-controls="_r_1_"
+          aria-valuemax="40"
+          aria-valuemin="10"
+          aria-valuenow="20"
+        ></div>
+        <div
+          class=""
+          id="_r_3_"
+          data-panel-group-id="_r_0_"
+          data-panel=""
+          data-panel-id="_r_3_"
+          data-panel-size="80.0"
+          style="flex: 80 1 0px; overflow: hidden;"
+        >
+          <div data-class="main-content-box" class="p-4 bg-muted">
+            <div data-class="main-content-container" class="mx-auto px-4">
+              <div data-class="page-container" class="mx-auto px-4">
+                {{ content }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
     {% include 'partials/footer.liquid' %}
     <script src="/js/main.js"></script>
   </body>
-  </html>
+</html>
