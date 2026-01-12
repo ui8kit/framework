@@ -1,0 +1,65 @@
+{
+    "name": "uncss",
+    "version": "0.17.3",
+    "author": "Giakki",
+    "description": "Remove unused CSS styles",
+    "license": "MIT",
+    "homepage": "https://github.com/uncss/uncss",
+    "scripts": {
+        "cover": "c8 npm run mocha",
+        "eslint": "eslint \"**/*.js\"",
+        "mocha": "mocha \"tests/*.js\"",
+        "lint": "npm run eslint",
+        "test": "npm run eslint && npm run mocha",
+        "test:ci": "npm run eslint && npm run cover"
+    },
+    "main": "src/uncss.js",
+    "bin": {
+        "uncss": "bin/uncss.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/uncss/uncss.git"
+    },
+    "bugs": {
+        "url": "https://github.com/uncss/uncss/issues"
+    },
+    "keywords": [
+        "optimize",
+        "optimise",
+        "unused",
+        "rules",
+        "selector",
+        "CSS",
+        "HTML"
+    ],
+    "files": [
+        "bin",
+        "src"
+    ],
+    "dependencies": {
+        "@root/request": "^1.9.2",
+        "commander": "^4.1.1",
+        "glob": "^7.2.3",
+        "is-absolute-url": "^3.0.3",
+        "is-html": "^2.0.0",
+        "jsdom": "^17.0.0",
+        "lodash": "^4.17.21",
+        "postcss": "^8.4.22",
+        "postcss-selector-parser": "^6.0.11"
+    },
+    "devDependencies": {
+        "c8": "^7.13.0",
+        "chai": "^4.3.7",
+        "chai-resemble": "^2.0.0",
+        "eslint": "^7.32.0",
+        "eslint-config-problems": "^5.0.0",
+        "husky": "^4.3.8",
+        "lint-staged": "^12.5.0",
+        "mocha": "^9.2.2",
+        "prettier": "^2.8.7"
+    },
+    "engines": {
+        "node": ">=12.0"
+    }
+}
