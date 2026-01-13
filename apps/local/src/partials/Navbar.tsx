@@ -20,7 +20,8 @@ export function Navbar({ isDarkMode, toggleDarkMode, brand = "App" }: NavbarProp
           variant="ghost"
           title="Toggle dark mode"
           onClick={toggleDarkMode}
-          data-class="navbar-toggle-dark-mode-button"
+          data-toggle-dark
+          data-class="dark-mode-button"
         >
           <Icon component="span" lucideIcon={isDarkMode ? Sun : Moon} />
           <Text text="sm">Theme</Text>

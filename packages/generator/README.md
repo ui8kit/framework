@@ -248,21 +248,29 @@ export const config: GeneratorConfig = {
     cssFile: './dist/html/assets/css/styles.css',
     outputDir: './dist/html/assets',
     ignore: [
+      // Interactive states
       ':hover',
       ':focus',
       ':active',
       ':visited',
+      // Dynamic classes
       '.js-',
       '.is-',
       '.has-',
       '[]',
+      // Pseudo-elements
       '::before',
       '::after',
       '::placeholder',
+      // Theme support (light/dark mode)
       ':root',
+      '.dark',
+      '@theme',
+      // Base elements
       'html',
       'body',
       'button',
+      // Universal selectors
       '*',
       '@layer',
       '@property'
