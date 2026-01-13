@@ -169,6 +169,13 @@ export class Generator {
     const allApplyCss: string[] = [];
     const allPureCss: string[] = [];
 
+    // 0) Emit semantic component variants CSS (independent of HTML snapshots)
+    const variantsApplyCss = await this.emitVariantsApplyCss(config);
+
+    // Avoid generating component selectors (button, badge, card, image, grid, ...) from HTML snapshots.
+    // Component semantics must come ONLY from variants.apply.css.
+    const ignoreSelectors = await this.getComponentSelectorIgnorePatterns();
+
     for (const routePath of Object.keys(config.html.routes)) {
       console.log(`📄 Processing route: ${routePath}`);
 
@@ -181,7 +188,7 @@ export class Generator {
         viewPath,
         `${config.css.outputDir}/tailwind.apply.css`,
         config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
-        { verbose: true }
+        { verbose: true, ignoreSelectors }
       );
 
       allApplyCss.push(applyCss);
@@ -215,7 +222,7 @@ export class Generator {
           filePath,
           `${config.css.outputDir}/tailwind.apply.css`,
           config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
-          { verbose: true }
+          { verbose: true, ignoreSelectors }
         );
 
         allApplyCss.push(applyCss);
@@ -226,7 +233,9 @@ export class Generator {
     }
 
     // Merge and write CSS files
-    const finalApplyCss = this.mergeCssFiles(allApplyCss);
+    const finalApplyCss = this.mergeCssFiles(
+      [variantsApplyCss, ...allApplyCss].filter(Boolean)
+    );
     await Bun.write(`${config.css.outputDir}/tailwind.apply.css`, finalApplyCss);
 
     console.log(`✅ Generated ${config.css.outputDir}/tailwind.apply.css (${finalApplyCss.length} bytes)`);
@@ -743,7 +752,7 @@ export class Generator {
     if (mode === 'semantic' || mode === 'inline') {
       // Remove class attributes, convert data-class to class (remove data- prefix)
       htmlContent = this.removeClassAttributes(htmlContent);
-      htmlContent = this.convertDataClassToClass(htmlContent);
+      htmlContent = this.convertDataClassAttributesToClass(htmlContent);
     }
 
     if (mode === 'inline' && cssContent) {
@@ -776,6 +785,120 @@ export class Generator {
   private convertDataClassToClass(htmlContent: string): string {
     // Convert data-class="value" to class="value"
     return htmlContent.replace(/data-class\s*=\s*["']([^"']*)["']/g, 'class="$1"');
+  }
+
+  /**
+   * Convert data-class + data-classes attributes to a single class="" attribute.
+   * - stable-dedupes tokens (keeps first appearance order)
+   * - strips both data-class and data-classes from the final output
+   */
+  private convertDataClassAttributesToClass(htmlContent: string): string {
+    const splitTokens = (v: string | undefined) =>
+      (v ?? '')
+        .trim()
+        .split(/\s+/g)
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+    const stableDedupe = (tokens: string[]) => {
+      const out: string[] = [];
+      const seen = new Set<string>();
+      for (const t of tokens) {
+        if (!t) continue;
+        if (seen.has(t)) continue;
+        seen.add(t);
+        out.push(t);
+      }
+      return out;
+    };
+
+    // Process opening tags only; keep inner HTML intact.
+    return htmlContent.replace(
+      /<([a-zA-Z][\w:-]*)([^>]*?)(\/?)>/g,
+      (full, tagName: string, rawAttrs: string, selfClose: string) => {
+        const dataClassMatch = rawAttrs.match(/\s+data-class\s*=\s*["']([^"']*)["']/);
+        const dataClassesMatch = rawAttrs.match(/\s+data-classes\s*=\s*["']([^"']*)["']/);
+
+        if (!dataClassMatch && !dataClassesMatch) return full;
+
+        const tokens = stableDedupe([
+          ...splitTokens(dataClassMatch?.[1]),
+          ...splitTokens(dataClassesMatch?.[1]),
+        ]);
+
+        // Strip both data-attrs; class attr is removed earlier but strip again for safety.
+        let attrs = rawAttrs
+          .replace(/\s+data-class\s*=\s*["'][^"']*["']/g, '')
+          .replace(/\s+data-classes\s*=\s*["'][^"']*["']/g, '')
+          .replace(/\s+class\s*=\s*["'][^"']*["']/g, '');
+
+        const classAttr = tokens.length ? ` class="${tokens.join(' ')}"` : '';
+        return `<${tagName}${attrs}${classAttr}${selfClose}>`;
+      }
+    );
+  }
+
+  /**
+   * Build ignore patterns from `apps/local/src/variants/*.ts` filenames.
+   * Example: button.ts -> /^button(?:-|$)/
+   */
+  private async getComponentSelectorIgnorePatterns(): Promise<RegExp[]> {
+    const variantsDir = await this.resolveVariantsDir();
+    if (!variantsDir) return [];
+    try {
+      const entries = await readdir(variantsDir);
+      const names = entries
+        .filter((f) => f.toLowerCase().endsWith('.ts'))
+        .map((f) => f.replace(/\.ts$/i, ''))
+        .filter((name) => name && name !== 'index');
+      return names.map((name) => new RegExp(`^${name}(?:-|$)`));
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Emit component semantic variants CSS from `apps/local/src/variants/*.ts`.
+   * Writes `${config.css.outputDir}/variants.apply.css` and returns its content.
+   */
+  private async emitVariantsApplyCss(config: GeneratorConfig): Promise<string> {
+    try {
+      await this.ensureDir(config.css.outputDir);
+      const { emitVariantsApplyCss } = await import('./scripts/emit-variants-apply.js');
+      const variantsDir = await this.resolveVariantsDir();
+      if (!variantsDir) {
+        console.warn('⚠️ variants directory not found (tried src/variants and apps/local/src/variants), skipping variants.apply.css');
+        return '';
+      }
+      const css: string = await emitVariantsApplyCss({
+        variantsDir,
+      });
+      await Bun.write(`${config.css.outputDir}/variants.apply.css`, css);
+      console.log(`✅ Generated ${config.css.outputDir}/variants.apply.css (${css.length} bytes)`);
+      return css;
+    } catch (error) {
+      console.warn('⚠️ Failed to emit variants.apply.css:', error);
+      return '';
+    }
+  }
+
+  private async resolveVariantsDir(): Promise<string | null> {
+    const candidates = [
+      // When generator is executed from an app workspace (e.g. apps/local)
+      join(process.cwd(), 'src', 'variants'),
+      // When executed from monorepo root
+      join(process.cwd(), 'apps', 'local', 'src', 'variants'),
+    ];
+
+    for (const p of candidates) {
+      try {
+        const entries = await readdir(p);
+        if (Array.isArray(entries)) return p;
+      } catch {
+        // try next
+      }
+    }
+    return null;
   }
 
   /**

@@ -8,6 +8,11 @@ import { fileURLToPath } from 'node:url';
 
 interface HtmlConverterOptions {
   verbose?: boolean;
+  /**
+   * Ignore selectors during extraction (useful to prevent layout snapshots from emitting component selectors).
+   * If any pattern matches the selector (data-class value), the element is skipped.
+   */
+  ignoreSelectors?: Array<string | RegExp>;
 }
 
 /**
@@ -26,7 +31,7 @@ export class HtmlConverter {
     outputPureCss: string,
     options: HtmlConverterOptions = {}
   ): Promise<{ applyCss: string; pureCss: string }> {
-    const { verbose = false } = options;
+    const { verbose = false, ignoreSelectors = [] } = options;
 
     if (verbose) {
       console.log(`🔄 Converting HTML to CSS: ${htmlFilePath}`);
@@ -40,7 +45,7 @@ export class HtmlConverter {
 
     // Extract elements from HTML
     const html = await readFile(htmlFilePath, 'utf-8');
-    const elements = this.extractElementsFromHtml(html, htmlFilePath);
+    const elements = this.extractElementsFromHtml(html, htmlFilePath, ignoreSelectors);
 
     if (verbose) {
       console.log(`📄 Found ${elements.length} elements with classes`);
@@ -126,8 +131,29 @@ export class HtmlConverter {
   /**
    * Extract elements with classes from HTML
    */
-  private extractElementsFromHtml(html: string, sourceFile: string): ElementData[] {
+  private extractElementsFromHtml(
+    html: string,
+    sourceFile: string,
+    ignoreSelectors: Array<string | RegExp>
+  ): ElementData[] {
     const elements: ElementData[] = [];
+
+    const isIgnored = (selector: string): boolean => {
+      if (!selector) return false;
+      for (const p of ignoreSelectors) {
+        if (!p) continue;
+        if (typeof p === 'string') {
+          if (selector === p) return true;
+          continue;
+        }
+        try {
+          if (p.test(selector)) return true;
+        } catch {
+          // ignore bad regex
+        }
+      }
+      return false;
+    };
 
     // Simple regex to find tags with class or data-class attributes
     const tagRegex = /<[^>]+>/g;
@@ -140,8 +166,12 @@ export class HtmlConverter {
       const dataClass = this.extractDataClassAttribute(tagContent);
 
       if (classes.length > 0 || dataClass) {
+        const selector = dataClass || this.generateSelector(tagContent);
+        if (dataClass && isIgnored(selector)) {
+          continue;
+        }
         elements.push({
-          selector: dataClass || this.generateSelector(tagContent),
+          selector,
           classes: classes.filter(cls => !cls.includes('data-class')), // Remove any data-class from classes
           sourceFile
         });

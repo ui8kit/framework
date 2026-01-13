@@ -120,7 +120,7 @@ export const config: GeneratorConfig = {
   },
 
   uncss: {
-    enabled: true,
+    enabled: false,
     htmlFiles: ['./dist/html/index.html', './dist/html/about/index.html'],
     cssFile: './dist/html/assets/css/styles.css',
     outputDir: './dist/html/assets',
