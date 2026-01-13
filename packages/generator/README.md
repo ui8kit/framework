@@ -48,17 +48,32 @@ A comprehensive static site generator that converts React components to Liquid t
    - Stores HTML with `data-class` attributes in `views/pages/`
    - One view file per route (e.g., `index.liquid`, `about.liquid`)
 
-3. **Extract CSS Classes**: Parses generated views and generates semantic selectors
+3. **Generate Liquid Partials**: Converts React partial components to Liquid templates
+   - Renders individual React components to HTML using `@ui8kit/render`
+   - Saves as reusable `.liquid` partials for inclusion in layouts
+   - Supports component props for runtime customization
+
+4. **Extract CSS Classes**: Parses generated views and generates semantic selectors
    - Extracts classes and `data-class` attributes from HTML
    - Generates `@apply` CSS with semantic selectors (e.g., `.hero-section { @apply ... }`)
    - Optionally generates pure CSS3 from Tailwind classes
 
-4. **Apply Liquid Templates**: Renders final HTML using layouts and partials
+5. **Apply Liquid Templates**: Renders final HTML using layouts and partials
    - Combines views with layout templates
    - Applies route metadata (title, SEO, etc.)
    - Includes partials (header, footer, etc.)
 
-5. **Generate Stylesheets**: Creates merged CSS files from all routes
+6. **Generate Client Script**: Creates client-side JavaScript for interactivity
+   - Generates dark mode toggle functionality
+   - Outputs configurable script file (e.g., `main.js`)
+   - Automatically injected into HTML layouts
+
+7. **Clean Unused CSS**: Removes unused styles with UnCSS
+   - Analyzes generated HTML for used CSS selectors
+   - Removes unused CSS rules to reduce file size (up to 77% reduction)
+   - Outputs cleaned CSS files (e.g., `index-uncss.css`)
+
+8. **Generate Stylesheets**: Creates merged CSS files from all routes
    - Combines CSS from multiple routes into single files
    - Outputs `tailwind.apply.css` and optionally `ui8kit.local.css`
 
@@ -218,6 +233,42 @@ export const config: GeneratorConfig = {
     viewsDir: './views',  // Directory for Liquid views and templates
     routes: htmlRoutes,
     outputDir: './dist/html'
+  },
+
+  clientScript: {
+    enabled: true,
+    outputDir: './dist/assets/js',
+    fileName: 'main.js',
+    darkModeSelector: '[data-toggle-dark]'
+  },
+
+  uncss: {
+    enabled: true,
+    htmlFiles: ['./dist/html/index.html', './dist/html/about/index.html'],
+    cssFile: './dist/html/assets/base.css',
+    outputDir: './dist/html/assets',
+    ignore: [
+      ':hover',
+      ':focus',
+      ':active',
+      ':visited',
+      '.js-',
+      '.is-',
+      '.has-',
+      '[]',
+      '::before',
+      '::after',
+      '::placeholder',
+      ':root',
+      'html',
+      'body',
+      'button',
+      '*',
+      '@layer',
+      '@property'
+    ],
+    media: true,
+    timeout: 10000
   },
 
   assets: {
@@ -445,8 +496,41 @@ html: {
   };
   outputDir: string;   // HTML output directory
   mode?: 'tailwind' | 'semantic' | 'inline'; // HTML processing mode (default: 'tailwind')
+  partials?: {         // Optional: generate Liquid partials from React components
+    sourceDir: string; // Directory containing React partial components
+    outputDir?: string; // Output directory under viewsDir (defaults to 'partials')
+    props?: Record<string, Record<string, any>>; // Per-component props
+  };
+  stripDataClassInTailwind?: boolean; // Remove data-class in tailwind mode
 }
 ```
+
+### Client Script Configuration
+
+```typescript
+clientScript?: {
+  enabled?: boolean;          // Enable client script generation
+  outputDir?: string;         // Output directory (defaults to './dist/assets/js')
+  fileName?: string;          // Script filename (defaults to 'main.js')
+  darkModeSelector?: string;  // Dark mode toggle selector (defaults to '[data-toggle-dark]')
+}
+```
+
+### UnCSS Configuration (CSS Cleanup)
+
+```typescript
+uncss?: {
+  enabled?: boolean;          // Enable unused CSS removal
+  htmlFiles?: string[];       // HTML files to analyze for used selectors
+  cssFile?: string;           // CSS file to process (relative to project root)
+  outputDir?: string;         // Output directory for cleaned CSS
+  ignore?: string[];          // CSS selectors to ignore during cleanup
+  media?: boolean;            // Include media queries in analysis
+  timeout?: number;           // Processing timeout in milliseconds
+}
+```
+
+**Note**: UnCSS automatically ignores script loading by removing `<script>` tags from HTML before analysis.
 
 ### Assets Configuration
 
@@ -517,6 +601,12 @@ interface GeneratorConfig {
     viewsDir: string;       // Directory for Liquid views and templates
     routes: Record<string, RouteConfig>;  // Route configurations
     outputDir: string;      // HTML output directory
+  };
+  clientScript?: {
+    enabled?: boolean;      // Enable client script generation
+    outputDir?: string;     // Client script output directory
+    fileName?: string;      // Client script filename
+    darkModeSelector?: string; // Dark mode toggle selector
   };
   assets?: {
     copy?: string[];        // Files/directories to copy

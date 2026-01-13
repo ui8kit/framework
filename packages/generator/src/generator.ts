@@ -8,6 +8,9 @@ import { renderRoute, renderComponent } from '@ui8kit/render';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'glob';
 
+// @ts-ignore - uncss is CommonJS module without types
+import uncss from 'uncss';
+
 export interface GeneratorConfig {
   app: {
     name: string;
@@ -50,6 +53,54 @@ export interface GeneratorConfig {
      * - keeps regular `class="..."` untouched
      */
     stripDataClassInTailwind?: boolean;
+  };
+  clientScript?: {
+    /**
+     * Generate client-side JavaScript for interactivity
+     */
+    enabled?: boolean;
+    /**
+     * Output directory for client script (defaults to './dist/assets/js')
+     */
+    outputDir?: string;
+    /**
+     * Name of the generated script file (defaults to 'main.js')
+     */
+    fileName?: string;
+    /**
+     * Dark mode toggle selector (defaults to '[data-toggle-dark]')
+     */
+    darkModeSelector?: string;
+  };
+  uncss?: {
+    /**
+     * Enable unused CSS removal with UnCSS
+     */
+    enabled?: boolean;
+    /**
+     * HTML files to analyze for used CSS classes
+     */
+    htmlFiles?: string[];
+    /**
+     * CSS file to process (relative to project root)
+     */
+    cssFile?: string;
+    /**
+     * Output directory for cleaned CSS files
+     */
+    outputDir?: string;
+    /**
+     * CSS selectors to ignore during cleanup (defaults to common interactive/dynamic selectors)
+     */
+    ignore?: string[];
+    /**
+     * Include media queries in analysis
+     */
+    media?: boolean;
+    /**
+     * Timeout for UnCSS processing in milliseconds
+     */
+    timeout?: number;
   };
   assets?: {
     copy?: string[];
@@ -96,7 +147,13 @@ export class Generator {
     // 3. Generate final HTML from Liquid views
     await this.generateHtml(config);
 
-    // 4. Copy assets
+    // 4. Generate client script
+    await this.generateClientScript(config);
+
+    // 5. Clean unused CSS with UnCSS
+    await this.runUncss(config);
+
+    // 6. Copy assets
     await this.copyAssets(config);
 
     console.log('✅ Static site generation completed!');
@@ -329,7 +386,7 @@ export class Generator {
         const html = await this.liquid.renderFile('layouts/layout.liquid', {
           content: viewContent,
           title: route.title,
-          meta: this.buildMetaTags(route),
+          meta: this.buildMetaTags(route, config),
           ...config.app,
           ...route.data
         });
@@ -356,7 +413,141 @@ export class Generator {
     }
   }
 
-  private buildMetaTags(route: RouteConfig): Record<string, string> {
+  private async generateClientScript(config: GeneratorConfig): Promise<void> {
+    if (!config.clientScript?.enabled) return;
+
+    console.log('📜 Generating client script...');
+
+    const outputDir = config.clientScript.outputDir ?? './dist/assets/js';
+    const fileName = config.clientScript.fileName ?? 'main.js';
+    const darkModeSelector = config.clientScript.darkModeSelector ?? '[data-toggle-dark]';
+
+    // Read the source client script
+    const scriptPath = join(this.templatesDir, '..', 'src', 'scripts', 'entry-client.tsx');
+    let scriptContent = await readFile(scriptPath, 'utf-8');
+
+    // Replace the hardcoded selector with configured one
+    scriptContent = scriptContent.replace(/\[data-toggle-dark\]/g, darkModeSelector);
+
+    // For now, we'll output the script as-is (TypeScript will be transpiled by Bun)
+    // In production, you might want to transpile this to plain JS
+    const outputPath = join(process.cwd(), outputDir, fileName);
+    await this.ensureDir(dirname(outputPath));
+    await writeFile(outputPath, scriptContent, 'utf-8');
+
+    console.log(`  → ${outputPath}`);
+  }
+
+  private async runUncss(config: GeneratorConfig): Promise<void> {
+    if (!config.uncss?.enabled) return;
+
+    console.log('🧹 Running UnCSS to remove unused styles...');
+
+    // Application config takes precedence, then default values
+    const htmlFiles = config.uncss.htmlFiles ?? ['dist/html/index.html'];
+    const cssFile = config.uncss.cssFile ?? 'dist/html/assets/base.css';
+    const outputDir = config.uncss.outputDir ?? 'dist/html/assets';
+    const ignore = config.uncss.ignore ?? [
+      ':hover',
+      ':focus',
+      ':active',
+      ':visited',
+      '.js-',
+      '.is-',
+      '.has-',
+      '[]',
+      '::before',
+      '::after',
+      '::placeholder',
+      ':root',
+      'html',
+      'body',
+      'button',
+      '*',
+      '@layer',
+      '@property'
+    ];
+    const media = config.uncss.media ?? true;
+    const timeout = config.uncss.timeout ?? 10000;
+
+    try {
+      // Ensure output directory exists
+      await this.ensureDir(outputDir);
+
+      // Read CSS content from configured file
+      let cssContent = '';
+      try {
+        const cssPath = join(process.cwd(), cssFile);
+        cssContent = await readFile(cssPath, 'utf-8');
+      } catch (error) {
+        console.warn(`⚠️ Could not read CSS file: ${cssFile}`);
+        return;
+      }
+
+      // Process each HTML file separately to generate individual CSS files
+      for (const htmlFile of htmlFiles) {
+        const htmlPath = join(process.cwd(), htmlFile);
+        try {
+          let htmlContent = await readFile(htmlPath, 'utf-8');
+
+          // Remove script tags from HTML to prevent UnCSS from trying to load them
+          htmlContent = htmlContent.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+
+          // Run UnCSS with raw CSS and single HTML content, ignoring external resources
+          const cleanedCss = await this.processWithUncss(cssContent, [htmlContent], {
+            ignore,
+            media,
+            timeout
+          });
+
+          // Generate output filename based on HTML file
+          const htmlPathParts = htmlFile.split('/');
+          const htmlFileName = htmlPathParts[htmlPathParts.length - 1]?.replace('.html', '') || 'index';
+          const htmlDirName = htmlPathParts[htmlPathParts.length - 2];
+
+          // For files like 'about/index.html', use 'about' as prefix
+          const filePrefix = htmlDirName && htmlDirName !== 'html' && htmlDirName !== 'dist' ? `${htmlDirName}-` : '';
+          const outputPath = join(process.cwd(), outputDir, `${filePrefix}${htmlFileName}-uncss.css`);
+
+          await writeFile(outputPath, cleanedCss, 'utf-8');
+
+          const originalSize = cssContent.length;
+          const cleanedSize = cleanedCss.length;
+          const savings = originalSize - cleanedSize;
+          const percentage = originalSize > 0 ? ((savings / originalSize) * 100).toFixed(1) : '0';
+
+          console.log(`  → ${outputPath} (${cleanedSize} bytes, saved ${savings} bytes / ${percentage}%)`);
+        } catch (error) {
+          console.warn(`⚠️ Failed to process HTML file: ${htmlFile}`, error);
+        }
+      }
+
+      console.log(`  📊 Analyzed ${htmlFiles.length} HTML files for critical CSS`);
+    } catch (error) {
+      console.warn('⚠️ UnCSS processing failed:', error);
+    }
+  }
+
+  private async processWithUncss(cssContent: string, htmlContents: string[], options: any): Promise<string> {
+    return new Promise((resolve, reject) => {
+      uncss(htmlContents, {
+        raw: cssContent,
+        ignore: options.ignore,
+        media: options.media,
+        timeout: options.timeout,
+        banner: false,
+        ignoreSheets: [/.*/] // Ignore all external stylesheets, use only raw CSS
+      }, (error: any, output: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(output);
+        }
+      });
+    });
+  }
+
+  private buildMetaTags(route: RouteConfig, config: GeneratorConfig): Record<string, string> {
     const meta: Record<string, string> = {};
 
     if (route.seo?.description) {
@@ -377,6 +568,13 @@ export class Generator {
 
     // Add shadcn CSS import for design tokens
     meta['shadcn-css-link'] = '<link rel="stylesheet" href="../css/shadcn.css">';
+
+    // Add client script if enabled
+    if (config.clientScript?.enabled) {
+      const scriptPath = config.clientScript.outputDir?.replace('./dist', '') ?? '/assets/js';
+      const scriptName = config.clientScript.fileName ?? 'main.js';
+      meta['client-script'] = `<script src="${scriptPath}/${scriptName}"></script>`;
+    }
 
     return meta;
   }

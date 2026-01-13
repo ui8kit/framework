@@ -112,6 +112,42 @@ export const config: GeneratorConfig = {
     }
   },
 
+  clientScript: {
+    enabled: true,
+    outputDir: './dist/assets/js',
+    fileName: 'main.js',
+    darkModeSelector: '[data-toggle-dark]'
+  },
+
+  uncss: {
+    enabled: true,
+    htmlFiles: ['./dist/html/index.html', './dist/html/about/index.html'],
+    cssFile: './dist/html/assets/base.css',
+    outputDir: './dist/html/assets',
+    ignore: [
+      ':hover',
+      ':focus',
+      ':active',
+      ':visited',
+      '.js-',
+      '.is-',
+      '.has-',
+      '[]',
+      '::before',
+      '::after',
+      '::placeholder',
+      ':root',
+      'html',
+      'body',
+      'button',
+      '*',
+      '@layer',
+      '@property'
+    ],
+    media: true,
+    timeout: 10000
+  },
+
   assets: {
     copy: ['./src/assets/css/**/*']
   }
@@ -120,7 +156,7 @@ export const config: GeneratorConfig = {
 };
 
 // Run generation if this file is executed directly
-if (import.meta.main) {
+if (import.meta.url === new URL(import.meta.url).href) {
   const { mode, pure } = parseCli(process.argv.slice(2));
   config.html.mode = mode;
   config.html.stripDataClassInTailwind = pure;

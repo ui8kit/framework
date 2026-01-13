@@ -17,10 +17,7 @@
     {% if meta.image %}
       <meta property="og:image" content="{{ meta.image }}">
     {% endif %}
-    {% if meta['shadcn-css-link'] %}
-      {{ meta['shadcn-css-link'] }}
-    {% endif %}
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="./assets/base.css">
     <link
       rel="icon"
       type="image/svg+xml"
@@ -87,6 +84,6 @@
       </div>
     </main>
     {% include 'partials/footer.liquid' %}
-    <script src="/js/main.js"></script>
+    <script src="/assets/main.js"></script>
   </body>
 </html>
