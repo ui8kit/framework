@@ -1,0 +1,56 @@
+/* =============================================================================
+   CSS-only tabs (no JS)
+   Works in:
+   - tailwind mode (targets [data-class="..."])
+   - semantic/inline mode (targets .class)
+============================================================================= */
+
+:where(.tabs, [data-class="tabs"]) {
+  display: block;
+}
+
+:where(.tabs-radio, [data-class="tabs-radio"]) {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:where(.tabs-label, [data-class="tabs-label"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+:where(.tabs-panels, [data-class="tabs-panels"]) {
+  border-top: 1px solid hsl(var(--border));
+}
+
+:where(.tabs-panel, [data-class="tabs-panel"]) {
+  display: none;
+}
+
+/* Active tab label */
+#tabs-react:checked + :where(.tabs-label, [data-class="tabs-label"]),
+#tabs-liquid:checked + :where(.tabs-label, [data-class="tabs-label"]),
+#tabs-html:checked + :where(.tabs-label, [data-class="tabs-label"]) {
+  color: hsl(var(--foreground));
+  border-bottom-color: transparent;
+}
+
+/* Show the matching panel */
+#tabs-react:checked ~ :where(.tabs-panels, [data-class="tabs-panels"]) [data-panel="react"] {
+  display: block;
+}
+#tabs-liquid:checked ~ :where(.tabs-panels, [data-class="tabs-panels"]) [data-panel="liquid"] {
+  display: block;
+}
+#tabs-html:checked ~ :where(.tabs-panels, [data-class="tabs-panels"]) [data-panel="html"] {
+  display: block;
+}
+
