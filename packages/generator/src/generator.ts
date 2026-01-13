@@ -144,16 +144,19 @@ export class Generator {
     // 2. Generate CSS from views (instead of snapshots)
     await this.generateCss(config);
 
-    // 3. Generate final HTML from Liquid views
+    // 3. Prepare production CSS assets
+    await this.prepareProductionCss(config);
+
+    // 4. Generate final HTML from Liquid views
     await this.generateHtml(config);
 
-    // 4. Generate client script
+    // 5. Generate client script
     await this.generateClientScript(config);
 
-    // 5. Clean unused CSS with UnCSS
+    // 6. Clean unused CSS with UnCSS
     await this.runUncss(config);
 
-    // 6. Copy assets
+    // 7. Copy assets
     await this.copyAssets(config);
 
     console.log('✅ Static site generation completed!');
@@ -410,6 +413,46 @@ export class Generator {
       } catch (error) {
         console.warn(`⚠️ Failed to generate HTML for ${routePath}:`, error);
       }
+    }
+  }
+
+  private async prepareProductionCss(config: GeneratorConfig): Promise<void> {
+    console.log('📦 Preparing production CSS assets...');
+
+    const sourceCssDir = join(process.cwd(), 'dist', 'assets');
+    const targetCssDir = join(process.cwd(), 'dist', 'html', 'assets', 'css');
+    const targetCssFile = join(targetCssDir, 'styles.css');
+
+    try {
+      // Ensure target directory exists
+      await this.ensureDir(targetCssDir);
+
+      // Find the hashed CSS file in dist/assets
+      let sourceCssFile: string | null = null;
+      try {
+        const entries = await readdir(sourceCssDir);
+        // Look for CSS files that match the pattern index-*.css
+        const cssFile = entries.find(entry =>
+          entry.startsWith('index-') &&
+          entry.endsWith('.css') &&
+          !entry.includes('.map')
+        );
+        if (cssFile) {
+          sourceCssFile = join(sourceCssDir, cssFile);
+        }
+      } catch (error) {
+        // dist/assets might not exist yet
+      }
+
+      if (sourceCssFile) {
+        // Copy and rename the CSS file
+        await copyFile(sourceCssFile, targetCssFile);
+        console.log(`  → ${targetCssFile}`);
+      } else {
+        console.warn('⚠️ No production CSS file found in dist/assets, skipping CSS preparation');
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to prepare production CSS:', error);
     }
   }
 

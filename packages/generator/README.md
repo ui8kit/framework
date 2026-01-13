@@ -245,7 +245,7 @@ export const config: GeneratorConfig = {
   uncss: {
     enabled: true,
     htmlFiles: ['./dist/html/index.html', './dist/html/about/index.html'],
-    cssFile: './dist/html/assets/base.css',
+    cssFile: './dist/html/assets/css/styles.css',
     outputDir: './dist/html/assets',
     ignore: [
       ':hover',
