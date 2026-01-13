@@ -523,14 +523,14 @@ uncss?: {
   enabled?: boolean;          // Enable unused CSS removal
   htmlFiles?: string[];       // HTML files to analyze for used selectors
   cssFile?: string;           // CSS file to process (relative to project root)
-  outputDir?: string;         // Output directory for cleaned CSS
+  outputDir?: string;         // Output directory for cleaned CSS (fallback)
   ignore?: string[];          // CSS selectors to ignore during cleanup
   media?: boolean;            // Include media queries in analysis
   timeout?: number;           // Processing timeout in milliseconds
 }
 ```
 
-**Note**: UnCSS automatically ignores script loading by removing `<script>` tags from HTML before analysis.
+**Note**: UnCSS creates `unused.css` files in the same directory as each `index.html` for easy testing with `<link rel="stylesheet" href="unused.css">`.
 
 ### Assets Configuration
 

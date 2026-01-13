@@ -543,14 +543,9 @@ export class Generator {
             timeout
           });
 
-          // Generate output filename based on HTML file
-          const htmlPathParts = htmlFile.split('/');
-          const htmlFileName = htmlPathParts[htmlPathParts.length - 1]?.replace('.html', '') || 'index';
-          const htmlDirName = htmlPathParts[htmlPathParts.length - 2];
-
-          // For files like 'about/index.html', use 'about' as prefix
-          const filePrefix = htmlDirName && htmlDirName !== 'html' && htmlDirName !== 'dist' ? `${htmlDirName}-` : '';
-          const outputPath = join(process.cwd(), outputDir, `${filePrefix}${htmlFileName}-uncss.css`);
+          // Generate output filename: unused.css in the same directory as HTML file
+          const htmlDir = dirname(join(process.cwd(), htmlFile));
+          const outputPath = join(htmlDir, 'unused.css');
 
           await writeFile(outputPath, cleanedCss, 'utf-8');
 
@@ -559,13 +554,14 @@ export class Generator {
           const savings = originalSize - cleanedSize;
           const percentage = originalSize > 0 ? ((savings / originalSize) * 100).toFixed(1) : '0';
 
-          console.log(`  → ${outputPath} (${cleanedSize} bytes, saved ${savings} bytes / ${percentage}%)`);
+          const relativePath = relative(process.cwd(), outputPath);
+          console.log(`  → ${relativePath} (${cleanedSize} bytes, saved ${savings} bytes / ${percentage}%)`);
         } catch (error) {
           console.warn(`⚠️ Failed to process HTML file: ${htmlFile}`, error);
         }
       }
 
-      console.log(`  📊 Analyzed ${htmlFiles.length} HTML files for critical CSS`);
+      console.log(`  📊 Generated ${htmlFiles.length} unused.css files for critical CSS analysis`);
     } catch (error) {
       console.warn('⚠️ UnCSS processing failed:', error);
     }
