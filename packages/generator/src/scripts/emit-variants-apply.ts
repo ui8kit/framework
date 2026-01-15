@@ -16,22 +16,6 @@ type Entity = {
   rules: Map<string, Tokens>; // selector -> tokens
 };
 
-export interface VariantsArtifacts {
-  /**
-   * CSS content for variants.apply.css
-   */
-  css: string;
-  /**
-   * All semantic selectors (including base entities, e.g. "button", and per-variant selectors, e.g. "button-primary").
-   * Sorted for deterministic output.
-   */
-  selectors: string[];
-  /**
-   * Optional: selector -> token list (stable-deduped). Useful for diagnostics/debugging.
-   */
-  selectorToTokens?: Record<string, string[]>;
-}
-
 const OMIT_KEY_FOR: Record<string, true> = {
   variant: true,
   size: true,
@@ -132,11 +116,6 @@ function deriveEntityName(
 }
 
 export async function emitVariantsApplyCss(options: EmitVariantsApplyCssOptions): Promise<string> {
-  const { css } = await emitVariantsArtifacts(options);
-  return css;
-}
-
-export async function emitVariantsArtifacts(options: EmitVariantsApplyCssOptions): Promise<VariantsArtifacts> {
   const { variantsDir } = options;
   const entries = await readdir(variantsDir);
   const variantFiles = entries
@@ -239,16 +218,12 @@ export async function emitVariantsArtifacts(options: EmitVariantsApplyCssOptions
   // Build CSS
   const cssRules: string[] = [];
   const entityNames = Array.from(entities.keys()).sort();
-  const selectorsOut: string[] = [];
-  const selectorToTokens: Record<string, string[]> = {};
 
   for (const entityName of entityNames) {
     const e = entities.get(entityName)!;
     const baseTokens = stableDedupe(e.baseTokens);
     if (baseTokens.length) {
       cssRules.push(`.${entityName} {\n  @apply ${baseTokens.join(" ")};\n}`);
-      selectorsOut.push(entityName);
-      selectorToTokens[entityName] = baseTokens;
     }
 
     const selectors = Array.from(e.rules.keys()).sort();
@@ -256,8 +231,6 @@ export async function emitVariantsArtifacts(options: EmitVariantsApplyCssOptions
       const tokens = stableDedupe(e.rules.get(sel)!);
       if (!tokens.length) continue;
       cssRules.push(`.${sel} {\n  @apply ${tokens.join(" ")};\n}`);
-      selectorsOut.push(sel);
-      selectorToTokens[sel] = tokens;
     }
   }
 
@@ -269,13 +242,6 @@ export async function emitVariantsArtifacts(options: EmitVariantsApplyCssOptions
 
 `;
 
-  const css = header + cssRules.join("\n\n") + "\n";
-  const selectors = Array.from(new Set(selectorsOut)).sort();
-
-  return {
-    css,
-    selectors,
-    selectorToTokens,
-  };
+  return header + cssRules.join("\n\n") + "\n";
 }
 

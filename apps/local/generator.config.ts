@@ -71,13 +71,6 @@ const htmlRoutes = {
       description: 'Learn more about UI8Kit - a comprehensive UI system for modern web development.',
       keywords: ['about', 'ui8kit', 'react', 'css3']
     }
-  },
-  '/buttons': {
-    title: 'Buttons',
-    seo: {
-      description: 'Button component demos with React/Liquid/HTML snippets.',
-      keywords: ['buttons', 'ui8kit', 'components', 'react', 'html', 'liquid']
-    }
   }
 };
 
