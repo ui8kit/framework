@@ -10,6 +10,7 @@ import { glob } from 'glob';
 
 // @ts-ignore - uncss is CommonJS module without types
 import uncss from 'uncss';
+import { emitVariantElements } from './scripts/emit-variant-elements.js';
 
 export interface GeneratorConfig {
   app: {
@@ -105,6 +106,27 @@ export interface GeneratorConfig {
   assets?: {
     copy?: string[];
   };
+  /**
+   * Generate reusable variant elements (React components with data-class attributes).
+   */
+  elements?: {
+    /**
+     * Enable generation of variant elements
+     */
+    enabled?: boolean;
+    /**
+     * Directory containing variant definitions (e.g. './src/variants')
+     */
+    variantsDir?: string;
+    /**
+     * Output directory for generated elements (e.g. './src/elements')
+     */
+    outputDir?: string;
+    /**
+     * Import path for components (e.g. '../components')
+     */
+    componentsImportPath?: string;
+  };
 }
 
 // RouteConfig is now defined in @ui8kit/render package
@@ -159,7 +181,45 @@ export class Generator {
     // 7. Copy assets
     await this.copyAssets(config);
 
+    // 8. Generate variant elements (optional)
+    await this.generateVariantElements(config);
+
     console.log('✅ Static site generation completed!');
+  }
+
+  private async generateVariantElements(config: GeneratorConfig): Promise<void> {
+    if (!config.elements?.enabled) return;
+
+    console.log('🧩 Generating variant elements...');
+
+    const variantsDir = config.elements.variantsDir ?? './src/variants';
+    const outputDir = config.elements.outputDir ?? './src/elements';
+    const componentsImportPath = config.elements.componentsImportPath ?? '../components';
+
+    const absVariantsDir = join(process.cwd(), variantsDir);
+    const absOutputDir = join(process.cwd(), outputDir);
+
+    try {
+      const result = await emitVariantElements({
+        variantsDir: absVariantsDir,
+        outputDir: absOutputDir,
+        componentsImportPath,
+      });
+
+      // Ensure output directory exists
+      await this.ensureDir(absOutputDir);
+
+      // Write all generated files
+      for (const [fileName, content] of result.files) {
+        const filePath = join(absOutputDir, fileName);
+        await writeFile(filePath, content, 'utf-8');
+        console.log(`  → ${filePath}`);
+      }
+
+      console.log(`✅ Generated ${result.files.size} element files`);
+    } catch (error) {
+      console.warn('⚠️ Failed to generate variant elements:', error);
+    }
   }
 
   private async generateCss(config: GeneratorConfig): Promise<void> {

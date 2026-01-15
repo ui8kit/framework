@@ -158,6 +158,13 @@ export const config: GeneratorConfig = {
 
   assets: {
     copy: ['./src/assets/css/**/*']
+  },
+
+  elements: {
+    enabled: true,
+    variantsDir: './src/variants',
+    outputDir: './src/elements',
+    componentsImportPath: '../components'
   }
 
   // Note: No render section needed - renderer works without context providers
