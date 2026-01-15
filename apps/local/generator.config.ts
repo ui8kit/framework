@@ -91,7 +91,7 @@ export const config: GeneratorConfig = {
     viewsDir: './views',
     routes: htmlRoutes,
     outputDir: './dist/html',
-    mode: 'tailwind', // 'tailwind' | 'semantic' | 'inline'
+    mode: 'semantic', // 'tailwind' | 'semantic' | 'inline'
     partials: {
       sourceDir: './src/partials',
       outputDir: 'partials',

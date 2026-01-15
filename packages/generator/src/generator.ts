@@ -230,11 +230,7 @@ export class Generator {
     const allPureCss: string[] = [];
 
     // 0) Emit semantic component variants CSS (independent of HTML snapshots)
-    const variantsApplyCss = await this.emitVariantsApplyCss(config);
-
-    // Avoid generating component selectors (button, badge, card, image, grid, ...) from HTML snapshots.
-    // Component semantics must come ONLY from variants.apply.css.
-    const ignoreSelectors = await this.getComponentSelectorIgnorePatterns();
+    await this.emitVariantsApplyCss(config);
 
     for (const routePath of Object.keys(config.html.routes)) {
       console.log(`📄 Processing route: ${routePath}`);
@@ -248,7 +244,7 @@ export class Generator {
         viewPath,
         `${config.css.outputDir}/tailwind.apply.css`,
         config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
-        { verbose: true, ignoreSelectors }
+        { verbose: true }
       );
 
       allApplyCss.push(applyCss);
@@ -282,7 +278,7 @@ export class Generator {
           filePath,
           `${config.css.outputDir}/tailwind.apply.css`,
           config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
-          { verbose: true, ignoreSelectors }
+          { verbose: true }
         );
 
         allApplyCss.push(applyCss);
@@ -292,10 +288,10 @@ export class Generator {
       }
     }
 
-    // Merge and write CSS files
-    const finalApplyCss = this.mergeCssFiles(
-      [variantsApplyCss, ...allApplyCss].filter(Boolean)
-    );
+    // Write CSS files separately (no merging - developer imports what they need)
+    // variants.apply.css - already written by emitVariantsApplyCss
+    // tailwind.apply.css - layout/page specific selectors only
+    const finalApplyCss = this.mergeCssFiles(allApplyCss.filter(Boolean));
     await Bun.write(`${config.css.outputDir}/tailwind.apply.css`, finalApplyCss);
 
     console.log(`✅ Generated ${config.css.outputDir}/tailwind.apply.css (${finalApplyCss.length} bytes)`);
@@ -899,46 +895,25 @@ export class Generator {
   }
 
   /**
-   * Build ignore patterns from `apps/local/src/variants/*.ts` filenames.
-   * Example: button.ts -> /^button(?:-|$)/
-   */
-  private async getComponentSelectorIgnorePatterns(): Promise<RegExp[]> {
-    const variantsDir = await this.resolveVariantsDir();
-    if (!variantsDir) return [];
-    try {
-      const entries = await readdir(variantsDir);
-      const names = entries
-        .filter((f) => f.toLowerCase().endsWith('.ts'))
-        .map((f) => f.replace(/\.ts$/i, ''))
-        .filter((name) => name && name !== 'index');
-      return names.map((name) => new RegExp(`^${name}(?:-|$)`));
-    } catch {
-      return [];
-    }
-  }
-
-  /**
    * Emit component semantic variants CSS from `apps/local/src/variants/*.ts`.
-   * Writes `${config.css.outputDir}/variants.apply.css` and returns its content.
+   * Writes `${config.css.outputDir}/variants.apply.css`.
    */
-  private async emitVariantsApplyCss(config: GeneratorConfig): Promise<string> {
+  private async emitVariantsApplyCss(config: GeneratorConfig): Promise<void> {
     try {
       await this.ensureDir(config.css.outputDir);
       const { emitVariantsApplyCss } = await import('./scripts/emit-variants-apply.js');
       const variantsDir = await this.resolveVariantsDir();
       if (!variantsDir) {
         console.warn('⚠️ variants directory not found (tried src/variants and apps/local/src/variants), skipping variants.apply.css');
-        return '';
+        return;
       }
-      const css: string = await emitVariantsApplyCss({
+      const css = await emitVariantsApplyCss({
         variantsDir,
       });
       await Bun.write(`${config.css.outputDir}/variants.apply.css`, css);
       console.log(`✅ Generated ${config.css.outputDir}/variants.apply.css (${css.length} bytes)`);
-      return css;
     } catch (error) {
       console.warn('⚠️ Failed to emit variants.apply.css:', error);
-      return '';
     }
   }
 

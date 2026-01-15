@@ -40,7 +40,7 @@ export function DashboardBlock() {
         </Title>
 
         <Grid cols="1-2-3" gap="6" data-class="dashboard-grid">
-          {companies.map((company) => (
+          {companies.map((company, index) => (
             <CardElement key={company.name}>
               <CardHeaderElement>
                 <CardTitleElement>{company.name}</CardTitleElement>
@@ -51,7 +51,7 @@ export function DashboardBlock() {
                 <p data-class="company-employees">Employees: {company.employees}</p>
               </CardContentElement>
               <CardFooterElement>
-                <ButtonPrimary>View Profile</ButtonPrimary>
+                <ButtonPrimary data-class={`button-primary-bold-${index}`} font="bold">View Profile</ButtonPrimary>
                 <ButtonOutline>Contact</ButtonOutline>
               </CardFooterElement>
             </CardElement>
