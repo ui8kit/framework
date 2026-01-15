@@ -3,7 +3,9 @@
  * Do not edit manually - this file is auto-generated
  */
 
+import type { ReactNode, ComponentProps } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components";
+import type { CardProps, CardContentProps, CardDescriptionProps, CardFooterProps, CardHeaderProps, CardTitleProps } from "../components";
 
 /**
  * Card variant elements for documentation and reuse.
@@ -28,37 +30,45 @@ export function CardElements() {
 }
 
 /**
- * Individual card elements as named exports.
- * Use these for copy-paste or registry integration.
+ * Reusable card element components.
+ * Accept children and props for composition.
  */
-export const CardBase = () => (
-  <Card data-class="card">Card</Card>
+/** Base Card with semantic data-class */
+export const CardElement = ({ children, ...props }: Omit<ComponentProps<typeof Card>, "data-class"> & { children?: ReactNode }) => (
+  <Card data-class="card" {...props}>{children ?? "Card"}</Card>
 );
 
-export const CardFilled = () => (
-  <Card data-class="card-filled" variant="filled">Card Filled</Card>
+/** Card with filled variant */
+export const CardFilled = ({ children, ...props }: Omit<ComponentProps<typeof Card>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Card data-class="card-filled" variant="filled" {...props}>{children ?? "Card Filled"}</Card>
 );
 
-export const CardOutlined = () => (
-  <Card data-class="card-outlined" variant="outlined">Card Outlined</Card>
+/** Card with outlined variant */
+export const CardOutlined = ({ children, ...props }: Omit<ComponentProps<typeof Card>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Card data-class="card-outlined" variant="outlined" {...props}>{children ?? "Card Outlined"}</Card>
 );
 
-export const CardContentElement = () => (
-  <CardContent data-class="card-content">Card Content</CardContent>
+/** Card Content with semantic data-class */
+export const CardContentElement = ({ children, ...props }: Omit<ComponentProps<typeof CardContent>, "data-class"> & { children?: ReactNode }) => (
+  <CardContent data-class="card-content" {...props}>{children ?? "Card Content"}</CardContent>
 );
 
-export const CardDescriptionElement = () => (
-  <CardDescription data-class="card-description">Card Description</CardDescription>
+/** Card Description with semantic data-class */
+export const CardDescriptionElement = ({ children, ...props }: Omit<ComponentProps<typeof CardDescription>, "data-class"> & { children?: ReactNode }) => (
+  <CardDescription data-class="card-description" {...props}>{children ?? "Card Description"}</CardDescription>
 );
 
-export const CardFooterElement = () => (
-  <CardFooter data-class="card-footer">Card Footer</CardFooter>
+/** Card Footer with semantic data-class */
+export const CardFooterElement = ({ children, ...props }: Omit<ComponentProps<typeof CardFooter>, "data-class"> & { children?: ReactNode }) => (
+  <CardFooter data-class="card-footer" {...props}>{children ?? "Card Footer"}</CardFooter>
 );
 
-export const CardHeaderElement = () => (
-  <CardHeader data-class="card-header">Card Header</CardHeader>
+/** Card Header with semantic data-class */
+export const CardHeaderElement = ({ children, ...props }: Omit<ComponentProps<typeof CardHeader>, "data-class"> & { children?: ReactNode }) => (
+  <CardHeader data-class="card-header" {...props}>{children ?? "Card Header"}</CardHeader>
 );
 
-export const CardTitleElement = () => (
-  <CardTitle data-class="card-title">Card Title</CardTitle>
+/** Card Title with semantic data-class */
+export const CardTitleElement = ({ children, ...props }: Omit<ComponentProps<typeof CardTitle>, "data-class"> & { children?: ReactNode }) => (
+  <CardTitle data-class="card-title" {...props}>{children ?? "Card Title"}</CardTitle>
 );

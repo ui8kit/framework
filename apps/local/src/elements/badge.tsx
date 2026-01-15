@@ -3,7 +3,9 @@
  * Do not edit manually - this file is auto-generated
  */
 
+import type { ReactNode, ComponentProps } from "react";
 import { Badge } from "../components";
+import type { BadgeProps } from "../components";
 
 /**
  * Badge variant elements for documentation and reuse.
@@ -29,45 +31,55 @@ export function BadgeElements() {
 }
 
 /**
- * Individual badge elements as named exports.
- * Use these for copy-paste or registry integration.
+ * Reusable badge element components.
+ * Accept children and props for composition.
  */
-export const BadgeBase = () => (
-  <Badge data-class="badge">Badge</Badge>
+/** Base Badge with semantic data-class */
+export const BadgeElement = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class"> & { children?: ReactNode }) => (
+  <Badge data-class="badge" {...props}>{children ?? "Badge"}</Badge>
 );
 
-export const BadgeDestructive = () => (
-  <Badge data-class="badge-destructive" variant="destructive">Badge Destructive</Badge>
+/** Badge with destructive variant */
+export const BadgeDestructive = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-destructive" variant="destructive" {...props}>{children ?? "Badge Destructive"}</Badge>
 );
 
-export const BadgeInfo = () => (
-  <Badge data-class="badge-info" variant="info">Badge Info</Badge>
+/** Badge with info variant */
+export const BadgeInfo = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-info" variant="info" {...props}>{children ?? "Badge Info"}</Badge>
 );
 
-export const BadgeLg = () => (
-  <Badge data-class="badge-lg" size="lg">Badge Lg</Badge>
+/** Badge with lg variant */
+export const BadgeLg = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "size"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-lg" size="lg" {...props}>{children ?? "Badge Lg"}</Badge>
 );
 
-export const BadgeOutline = () => (
-  <Badge data-class="badge-outline" variant="outline">Badge Outline</Badge>
+/** Badge with outline variant */
+export const BadgeOutline = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-outline" variant="outline" {...props}>{children ?? "Badge Outline"}</Badge>
 );
 
-export const BadgeSecondary = () => (
-  <Badge data-class="badge-secondary" variant="secondary">Badge Secondary</Badge>
+/** Badge with secondary variant */
+export const BadgeSecondary = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-secondary" variant="secondary" {...props}>{children ?? "Badge Secondary"}</Badge>
 );
 
-export const BadgeSm = () => (
-  <Badge data-class="badge-sm" size="sm">Badge Sm</Badge>
+/** Badge with sm variant */
+export const BadgeSm = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "size"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-sm" size="sm" {...props}>{children ?? "Badge Sm"}</Badge>
 );
 
-export const BadgeSuccess = () => (
-  <Badge data-class="badge-success" variant="success">Badge Success</Badge>
+/** Badge with success variant */
+export const BadgeSuccess = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-success" variant="success" {...props}>{children ?? "Badge Success"}</Badge>
 );
 
-export const BadgeWarning = () => (
-  <Badge data-class="badge-warning" variant="warning">Badge Warning</Badge>
+/** Badge with warning variant */
+export const BadgeWarning = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-warning" variant="warning" {...props}>{children ?? "Badge Warning"}</Badge>
 );
 
-export const BadgeXs = () => (
-  <Badge data-class="badge-xs" size="xs">Badge Xs</Badge>
+/** Badge with xs variant */
+export const BadgeXs = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "size"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-xs" size="xs" {...props}>{children ?? "Badge Xs"}</Badge>
 );

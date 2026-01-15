@@ -403,9 +403,25 @@ ${generateReusableComponents(filePrefix, componentName, allVariants, subEntities
 }
 
 /**
- * Generate named exports for individual elements
+ * Generate type imports for component props
  */
-function generateNamedExports(
+function generateTypeImports(
+  componentName: string,
+  subEntities: SubEntityElement[],
+  componentsImportPath: string
+): string {
+  // Import prop types from components
+  const propTypes = [`${componentName}Props`];
+  for (const sub of subEntities) {
+    propTypes.push(`${sub.componentName}Props`);
+  }
+  return `import type { ${propTypes.join(", ")} } from "${componentsImportPath}";`;
+}
+
+/**
+ * Generate reusable component wrappers that accept children and props
+ */
+function generateReusableComponents(
   filePrefix: string,
   componentName: string,
   allVariants: Array<{
@@ -414,30 +430,31 @@ function generateNamedExports(
     valueKey: string;
     displayName: string;
   }>,
-  subEntities: SubEntityElement[],
-  _componentsImportPath: string
+  subEntities: SubEntityElement[]
 ): string {
   const exports: string[] = [];
 
-  // Base element export
-  const baseExportName = `${componentName}Base`;
-  exports.push(`export const ${baseExportName} = () => (
-  <${componentName} data-class="${filePrefix}">${componentName}</${componentName}>
+  // Base reusable component
+  exports.push(`/** Base ${componentName} with semantic data-class */
+export const ${componentName}Element = ({ children, ...props }: Omit<ComponentProps<typeof ${componentName}>, "data-class"> & { children?: ReactNode }) => (
+  <${componentName} data-class="${filePrefix}" {...props}>{children ?? "${componentName}"}</${componentName}>
 );`);
 
-  // Variant element exports
+  // Variant reusable components
   for (const v of allVariants) {
     const exportName = `${componentName}${toPascalCase(v.valueKey)}`;
-    exports.push(`export const ${exportName} = () => (
-  <${componentName} data-class="${v.selector}" ${v.variantKey}="${v.valueKey}">${v.displayName}</${componentName}>
+    exports.push(`/** ${componentName} with ${v.valueKey} variant */
+export const ${exportName} = ({ children, ...props }: Omit<ComponentProps<typeof ${componentName}>, "data-class" | "${v.variantKey}"> & { children?: ReactNode }) => (
+  <${componentName} data-class="${v.selector}" ${v.variantKey}="${v.valueKey}" {...props}>{children ?? "${v.displayName}"}</${componentName}>
 );`);
   }
 
-  // Sub-entity element exports (e.g., CardHeaderElement, CardTitleElement)
+  // Sub-entity reusable components (e.g., CardHeaderElement, CardTitleElement)
   for (const sub of subEntities) {
     const exportName = `${sub.componentName}Element`;
-    exports.push(`export const ${exportName} = () => (
-  <${sub.componentName} data-class="${sub.entityName}">${sub.displayName}</${sub.componentName}>
+    exports.push(`/** ${sub.displayName} with semantic data-class */
+export const ${exportName} = ({ children, ...props }: Omit<ComponentProps<typeof ${sub.componentName}>, "data-class"> & { children?: ReactNode }) => (
+  <${sub.componentName} data-class="${sub.entityName}" {...props}>{children ?? "${sub.displayName}"}</${sub.componentName}>
 );`);
   }
 

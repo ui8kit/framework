@@ -1,42 +1,62 @@
-import { Block, Grid, Stack, Box, Button, Title, Text  } from "@ui8kit/core";
+import { Block, Grid, Stack, Title } from "@ui8kit/core";
+import {
+  CardElement,
+  CardHeaderElement,
+  CardTitleElement,
+  CardDescriptionElement,
+  CardContentElement,
+  CardFooterElement,
+} from "../elements/card";
+import { ButtonPrimary, ButtonOutline } from "../elements/button";
 
-// Block component - semantic page section
-const content = {
-  title: "Welcome to the dashboard",
-  description: "This is the dashboard description"
-}
+// Company data for cards
+const companies = [
+  {
+    name: "Acme Corp",
+    description: "Leading provider of innovative solutions",
+    industry: "Technology",
+    employees: "500+",
+  },
+  {
+    name: "TechStart Inc",
+    description: "Building the future of AI",
+    industry: "Artificial Intelligence",
+    employees: "50-100",
+  },
+  {
+    name: "GlobalTrade Ltd",
+    description: "International commerce platform",
+    industry: "E-commerce",
+    employees: "200-500",
+  },
+];
 
 export function DashboardBlock() {
-  // Theme context is provided at app level for runtime
-  // For static generation, we use default values
-
   return (
     <Block w="full" component="section" data-class="dashboard-section">
       <Stack gap="6">
-        <Title text="2xl" bg="secondary-foreground" mt="6" data-class="dashboard-title">
-          {content.title}
+        <Title text="2xl" mt="6" data-class="dashboard-title">
+          Company Directory
         </Title>
 
-        <Grid cols="1-2-3" data-class="dashboard-grid">
-          <Box col="span-2" data-class="dashboard-description">
-            <Text bg="muted-foreground">{content.description}</Text>
-          </Box>
-
-          <Box col="span-1" flex="" justify="end" items="end" data-class="dashboard-actions">
-            <Button onClick={() => console.log("Button clicked")}>Click me</Button>
-          </Box>
+        <Grid cols="1-2-3" gap="6" data-class="dashboard-grid">
+          {companies.map((company) => (
+            <CardElement key={company.name}>
+              <CardHeaderElement>
+                <CardTitleElement>{company.name}</CardTitleElement>
+                <CardDescriptionElement>{company.industry}</CardDescriptionElement>
+              </CardHeaderElement>
+              <CardContentElement>
+                <p>{company.description}</p>
+                <p data-class="company-employees">Employees: {company.employees}</p>
+              </CardContentElement>
+              <CardFooterElement>
+                <ButtonPrimary>View Profile</ButtonPrimary>
+                <ButtonOutline>Contact</ButtonOutline>
+              </CardFooterElement>
+            </CardElement>
+          ))}
         </Grid>
-
-        <Box
-          p="4"
-          rounded="lg"
-          shadow="none"
-          bg="card"
-          border=""
-          aspect="video"
-          w="full"
-          data-class="dashboard-preview"
-        />
       </Stack>
     </Block>
   );

@@ -3,7 +3,9 @@
  * Do not edit manually - this file is auto-generated
  */
 
+import type { ReactNode, ComponentProps } from "react";
 import { Image, ImageFit, ImagePosition } from "../components";
+import type { ImageProps, ImageFitProps, ImagePositionProps } from "../components";
 
 /**
  * Image variant elements for documentation and reuse.
@@ -38,77 +40,95 @@ export function ImageElements() {
 }
 
 /**
- * Individual image elements as named exports.
- * Use these for copy-paste or registry integration.
+ * Reusable image element components.
+ * Accept children and props for composition.
  */
-export const ImageBase = () => (
-  <Image data-class="image">Image</Image>
+/** Base Image with semantic data-class */
+export const ImageElement = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class"> & { children?: ReactNode }) => (
+  <Image data-class="image" {...props}>{children ?? "Image"}</Image>
 );
 
-export const ImageSquare = () => (
-  <Image data-class="aspect-ratio-square" aspect="square">AspectRatio Square</Image>
+/** Image with square variant */
+export const ImageSquare = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "aspect"> & { children?: ReactNode }) => (
+  <Image data-class="aspect-ratio-square" aspect="square" {...props}>{children ?? "AspectRatio Square"}</Image>
 );
 
-export const ImageVideo = () => (
-  <Image data-class="aspect-ratio-video" aspect="video">AspectRatio Video</Image>
+/** Image with video variant */
+export const ImageVideo = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "aspect"> & { children?: ReactNode }) => (
+  <Image data-class="aspect-ratio-video" aspect="video" {...props}>{children ?? "AspectRatio Video"}</Image>
 );
 
-export const ImageContain = () => (
-  <Image data-class="image-fit-contain" fit="contain">ImageFit Contain</Image>
+/** Image with contain variant */
+export const ImageContain = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "fit"> & { children?: ReactNode }) => (
+  <Image data-class="image-fit-contain" fit="contain" {...props}>{children ?? "ImageFit Contain"}</Image>
 );
 
-export const ImageFill = () => (
-  <Image data-class="image-fit-fill" fit="fill">ImageFit Fill</Image>
+/** Image with fill variant */
+export const ImageFill = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "fit"> & { children?: ReactNode }) => (
+  <Image data-class="image-fit-fill" fit="fill" {...props}>{children ?? "ImageFit Fill"}</Image>
 );
 
-export const ImageNone = () => (
-  <Image data-class="image-fit-none" fit="none">ImageFit None</Image>
+/** Image with none variant */
+export const ImageNone = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "fit"> & { children?: ReactNode }) => (
+  <Image data-class="image-fit-none" fit="none" {...props}>{children ?? "ImageFit None"}</Image>
 );
 
-export const ImageScaleDown = () => (
-  <Image data-class="image-fit-scale-down" fit="scale-down">ImageFit ScaleDown</Image>
+/** Image with scale-down variant */
+export const ImageScaleDown = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "fit"> & { children?: ReactNode }) => (
+  <Image data-class="image-fit-scale-down" fit="scale-down" {...props}>{children ?? "ImageFit ScaleDown"}</Image>
 );
 
-export const ImageBottom = () => (
-  <Image data-class="image-position-bottom" position="bottom">ImagePosition Bottom</Image>
+/** Image with bottom variant */
+export const ImageBottom = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-bottom" position="bottom" {...props}>{children ?? "ImagePosition Bottom"}</Image>
 );
 
-export const ImageBottomLeft = () => (
-  <Image data-class="image-position-bottom-left" position="bottom-left">ImagePosition BottomLeft</Image>
+/** Image with bottom-left variant */
+export const ImageBottomLeft = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-bottom-left" position="bottom-left" {...props}>{children ?? "ImagePosition BottomLeft"}</Image>
 );
 
-export const ImageBottomRight = () => (
-  <Image data-class="image-position-bottom-right" position="bottom-right">ImagePosition BottomRight</Image>
+/** Image with bottom-right variant */
+export const ImageBottomRight = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-bottom-right" position="bottom-right" {...props}>{children ?? "ImagePosition BottomRight"}</Image>
 );
 
-export const ImageLeft = () => (
-  <Image data-class="image-position-left" position="left">ImagePosition Left</Image>
+/** Image with left variant */
+export const ImageLeft = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-left" position="left" {...props}>{children ?? "ImagePosition Left"}</Image>
 );
 
-export const ImageRight = () => (
-  <Image data-class="image-position-right" position="right">ImagePosition Right</Image>
+/** Image with right variant */
+export const ImageRight = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-right" position="right" {...props}>{children ?? "ImagePosition Right"}</Image>
 );
 
-export const ImageTop = () => (
-  <Image data-class="image-position-top" position="top">ImagePosition Top</Image>
+/** Image with top variant */
+export const ImageTop = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-top" position="top" {...props}>{children ?? "ImagePosition Top"}</Image>
 );
 
-export const ImageTopLeft = () => (
-  <Image data-class="image-position-top-left" position="top-left">ImagePosition TopLeft</Image>
+/** Image with top-left variant */
+export const ImageTopLeft = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-top-left" position="top-left" {...props}>{children ?? "ImagePosition TopLeft"}</Image>
 );
 
-export const ImageTopRight = () => (
-  <Image data-class="image-position-top-right" position="top-right">ImagePosition TopRight</Image>
+/** Image with top-right variant */
+export const ImageTopRight = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "position"> & { children?: ReactNode }) => (
+  <Image data-class="image-position-top-right" position="top-right" {...props}>{children ?? "ImagePosition TopRight"}</Image>
 );
 
-export const ImageWithPlaceholder = () => (
-  <Image data-class="image-with-placeholder" withPlaceholder="with-placeholder">Image WithPlaceholder</Image>
+/** Image with with-placeholder variant */
+export const ImageWithPlaceholder = ({ children, ...props }: Omit<ComponentProps<typeof Image>, "data-class" | "withPlaceholder"> & { children?: ReactNode }) => (
+  <Image data-class="image-with-placeholder" withPlaceholder="with-placeholder" {...props}>{children ?? "Image WithPlaceholder"}</Image>
 );
 
-export const ImageFitElement = () => (
-  <ImageFit data-class="image-fit">Image Fit</ImageFit>
+/** Image Fit with semantic data-class */
+export const ImageFitElement = ({ children, ...props }: Omit<ComponentProps<typeof ImageFit>, "data-class"> & { children?: ReactNode }) => (
+  <ImageFit data-class="image-fit" {...props}>{children ?? "Image Fit"}</ImageFit>
 );
 
-export const ImagePositionElement = () => (
-  <ImagePosition data-class="image-position">Image Position</ImagePosition>
+/** Image Position with semantic data-class */
+export const ImagePositionElement = ({ children, ...props }: Omit<ComponentProps<typeof ImagePosition>, "data-class"> & { children?: ReactNode }) => (
+  <ImagePosition data-class="image-position" {...props}>{children ?? "Image Position"}</ImagePosition>
 );
