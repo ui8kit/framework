@@ -9,18 +9,29 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "declaration": false,
-    "sourceMap": false
+    "sourceMap": false,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@ui8kit/core": ["src/components/index"]
+    }
   },
   "include": [
     "src/routes/**/*",
     "src/blocks/**/*",
     "src/components/**/*",
-    "src/providers/**/*"
+    "src/providers/**/*",
+    "src/partials/**/*",
+    "src/layouts/**/*",
+    "src/lib/**/*"
   ],
   "exclude": [
     "src/main.tsx",
     "src/App.tsx",
+    "src/routes/DocsPage.tsx",
     "**/*.test.*",
-    "**/*.spec.*"
+    "**/*.spec.*",
+    "node_modules",
+    "../../packages/**/*"
   ]
 }

@@ -17,15 +17,15 @@ export function BadgeElements() {
   {/* Base */}
   <Badge data-class="badge">Badge</Badge>
   {/* Variants */}
-  <Badge data-class="badge-destructive" variant="destructive">Badge Destructive</Badge>
-  <Badge data-class="badge-info" variant="info">Badge Info</Badge>
-  <Badge data-class="badge-lg" size="lg">Badge Lg</Badge>
-  <Badge data-class="badge-outline" variant="outline">Badge Outline</Badge>
-  <Badge data-class="badge-secondary" variant="secondary">Badge Secondary</Badge>
-  <Badge data-class="badge-sm" size="sm">Badge Sm</Badge>
-  <Badge data-class="badge-success" variant="success">Badge Success</Badge>
-  <Badge data-class="badge-warning" variant="warning">Badge Warning</Badge>
-  <Badge data-class="badge-xs" size="xs">Badge Xs</Badge>
+  <Badge data-class="badge-size-lg" size="lg">BadgeSize Lg</Badge>
+  <Badge data-class="badge-size-sm" size="sm">BadgeSize Sm</Badge>
+  <Badge data-class="badge-size-xs" size="xs">BadgeSize Xs</Badge>
+  <Badge data-class="badge-variant-destructive" variant="destructive">BadgeVariant Destructive</Badge>
+  <Badge data-class="badge-variant-info" variant="info">BadgeVariant Info</Badge>
+  <Badge data-class="badge-variant-outline" variant="outline">BadgeVariant Outline</Badge>
+  <Badge data-class="badge-variant-secondary" variant="secondary">BadgeVariant Secondary</Badge>
+  <Badge data-class="badge-variant-success" variant="success">BadgeVariant Success</Badge>
+  <Badge data-class="badge-variant-warning" variant="warning">BadgeVariant Warning</Badge>
     </>
   );
 }
@@ -39,47 +39,47 @@ export const BadgeElement = ({ children, ...props }: Omit<ComponentProps<typeof 
   <Badge data-class="badge" {...props}>{children ?? "Badge"}</Badge>
 );
 
-/** Badge with destructive variant */
-export const BadgeDestructive = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-destructive" variant="destructive" {...props}>{children ?? "Badge Destructive"}</Badge>
-);
-
-/** Badge with info variant */
-export const BadgeInfo = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-info" variant="info" {...props}>{children ?? "Badge Info"}</Badge>
-);
-
 /** Badge with lg variant */
 export const BadgeLg = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-lg" size="lg" {...props}>{children ?? "Badge Lg"}</Badge>
-);
-
-/** Badge with outline variant */
-export const BadgeOutline = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-outline" variant="outline" {...props}>{children ?? "Badge Outline"}</Badge>
-);
-
-/** Badge with secondary variant */
-export const BadgeSecondary = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-secondary" variant="secondary" {...props}>{children ?? "Badge Secondary"}</Badge>
+  <Badge data-class="badge-size-lg" size="lg" {...props}>{children ?? "BadgeSize Lg"}</Badge>
 );
 
 /** Badge with sm variant */
 export const BadgeSm = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-sm" size="sm" {...props}>{children ?? "Badge Sm"}</Badge>
-);
-
-/** Badge with success variant */
-export const BadgeSuccess = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-success" variant="success" {...props}>{children ?? "Badge Success"}</Badge>
-);
-
-/** Badge with warning variant */
-export const BadgeWarning = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-warning" variant="warning" {...props}>{children ?? "Badge Warning"}</Badge>
+  <Badge data-class="badge-size-sm" size="sm" {...props}>{children ?? "BadgeSize Sm"}</Badge>
 );
 
 /** Badge with xs variant */
 export const BadgeXs = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Badge data-class="badge-xs" size="xs" {...props}>{children ?? "Badge Xs"}</Badge>
+  <Badge data-class="badge-size-xs" size="xs" {...props}>{children ?? "BadgeSize Xs"}</Badge>
+);
+
+/** Badge with destructive variant */
+export const BadgeDestructive = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-variant-destructive" variant="destructive" {...props}>{children ?? "BadgeVariant Destructive"}</Badge>
+);
+
+/** Badge with info variant */
+export const BadgeInfo = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-variant-info" variant="info" {...props}>{children ?? "BadgeVariant Info"}</Badge>
+);
+
+/** Badge with outline variant */
+export const BadgeOutline = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-variant-outline" variant="outline" {...props}>{children ?? "BadgeVariant Outline"}</Badge>
+);
+
+/** Badge with secondary variant */
+export const BadgeSecondary = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-variant-secondary" variant="secondary" {...props}>{children ?? "BadgeVariant Secondary"}</Badge>
+);
+
+/** Badge with success variant */
+export const BadgeSuccess = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-variant-success" variant="success" {...props}>{children ?? "BadgeVariant Success"}</Badge>
+);
+
+/** Badge with warning variant */
+export const BadgeWarning = ({ children, ...props }: Omit<ComponentProps<typeof Badge>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Badge data-class="badge-variant-warning" variant="warning" {...props}>{children ?? "BadgeVariant Warning"}</Badge>
 );

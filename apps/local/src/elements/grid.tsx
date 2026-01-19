@@ -17,28 +17,28 @@ export function GridElements() {
   {/* Base */}
   <Grid data-class="grid">Grid</Grid>
   {/* Variants */}
-  <Grid data-class="grid-1-2" cols="1-2">Grid 12</Grid>
-  <Grid data-class="grid-1-2-3" cols="1-2-3">Grid 123</Grid>
-  <Grid data-class="grid-1-2-3-4" cols="1-2-3-4">Grid 1234</Grid>
-  <Grid data-class="grid-1-2-4" cols="1-2-4">Grid 124</Grid>
-  <Grid data-class="grid-1-2-6" cols="1-2-6">Grid 126</Grid>
-  <Grid data-class="grid-1-3" cols="1-3">Grid 13</Grid>
-  <Grid data-class="grid-1-3-4" cols="1-3-4">Grid 134</Grid>
-  <Grid data-class="grid-1-3-6" cols="1-3-6">Grid 136</Grid>
-  <Grid data-class="grid-1-4" cols="1-4">Grid 14</Grid>
-  <Grid data-class="grid-1-5" cols="1-5">Grid 15</Grid>
-  <Grid data-class="grid-1-6" cols="1-6">Grid 16</Grid>
-  <Grid data-class="grid-2-3" cols="2-3">Grid 23</Grid>
-  <Grid data-class="grid-2-3-4" cols="2-3-4">Grid 234</Grid>
-  <Grid data-class="grid-2-4" cols="2-4">Grid 24</Grid>
-  <Grid data-class="grid-2-5" cols="2-5">Grid 25</Grid>
-  <Grid data-class="grid-2-6" cols="2-6">Grid 26</Grid>
-  <Grid data-class="grid-3-4" cols="3-4">Grid 34</Grid>
-  <Grid data-class="grid-3-5" cols="3-5">Grid 35</Grid>
-  <Grid data-class="grid-3-6" cols="3-6">Grid 36</Grid>
-  <Grid data-class="grid-4-5" cols="4-5">Grid 45</Grid>
-  <Grid data-class="grid-4-6" cols="4-6">Grid 46</Grid>
-  <Grid data-class="grid-5-6" cols="5-6">Grid 56</Grid>
+  <Grid data-class="grid-cols-1-2" cols="1-2">GridCols 12</Grid>
+  <Grid data-class="grid-cols-1-2-3" cols="1-2-3">GridCols 123</Grid>
+  <Grid data-class="grid-cols-1-2-3-4" cols="1-2-3-4">GridCols 1234</Grid>
+  <Grid data-class="grid-cols-1-2-4" cols="1-2-4">GridCols 124</Grid>
+  <Grid data-class="grid-cols-1-2-6" cols="1-2-6">GridCols 126</Grid>
+  <Grid data-class="grid-cols-1-3" cols="1-3">GridCols 13</Grid>
+  <Grid data-class="grid-cols-1-3-4" cols="1-3-4">GridCols 134</Grid>
+  <Grid data-class="grid-cols-1-3-6" cols="1-3-6">GridCols 136</Grid>
+  <Grid data-class="grid-cols-1-4" cols="1-4">GridCols 14</Grid>
+  <Grid data-class="grid-cols-1-5" cols="1-5">GridCols 15</Grid>
+  <Grid data-class="grid-cols-1-6" cols="1-6">GridCols 16</Grid>
+  <Grid data-class="grid-cols-2-3" cols="2-3">GridCols 23</Grid>
+  <Grid data-class="grid-cols-2-3-4" cols="2-3-4">GridCols 234</Grid>
+  <Grid data-class="grid-cols-2-4" cols="2-4">GridCols 24</Grid>
+  <Grid data-class="grid-cols-2-5" cols="2-5">GridCols 25</Grid>
+  <Grid data-class="grid-cols-2-6" cols="2-6">GridCols 26</Grid>
+  <Grid data-class="grid-cols-3-4" cols="3-4">GridCols 34</Grid>
+  <Grid data-class="grid-cols-3-5" cols="3-5">GridCols 35</Grid>
+  <Grid data-class="grid-cols-3-6" cols="3-6">GridCols 36</Grid>
+  <Grid data-class="grid-cols-4-5" cols="4-5">GridCols 45</Grid>
+  <Grid data-class="grid-cols-4-6" cols="4-6">GridCols 46</Grid>
+  <Grid data-class="grid-cols-5-6" cols="5-6">GridCols 56</Grid>
     </>
   );
 }
@@ -54,110 +54,110 @@ export const GridElement = ({ children, ...props }: Omit<ComponentProps<typeof G
 
 /** Grid with 1-2 variant */
 export const Grid12 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-2" cols="1-2" {...props}>{children ?? "Grid 12"}</Grid>
+  <Grid data-class="grid-cols-1-2" cols="1-2" {...props}>{children ?? "GridCols 12"}</Grid>
 );
 
 /** Grid with 1-2-3 variant */
 export const Grid123 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-2-3" cols="1-2-3" {...props}>{children ?? "Grid 123"}</Grid>
+  <Grid data-class="grid-cols-1-2-3" cols="1-2-3" {...props}>{children ?? "GridCols 123"}</Grid>
 );
 
 /** Grid with 1-2-3-4 variant */
 export const Grid1234 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-2-3-4" cols="1-2-3-4" {...props}>{children ?? "Grid 1234"}</Grid>
+  <Grid data-class="grid-cols-1-2-3-4" cols="1-2-3-4" {...props}>{children ?? "GridCols 1234"}</Grid>
 );
 
 /** Grid with 1-2-4 variant */
 export const Grid124 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-2-4" cols="1-2-4" {...props}>{children ?? "Grid 124"}</Grid>
+  <Grid data-class="grid-cols-1-2-4" cols="1-2-4" {...props}>{children ?? "GridCols 124"}</Grid>
 );
 
 /** Grid with 1-2-6 variant */
 export const Grid126 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-2-6" cols="1-2-6" {...props}>{children ?? "Grid 126"}</Grid>
+  <Grid data-class="grid-cols-1-2-6" cols="1-2-6" {...props}>{children ?? "GridCols 126"}</Grid>
 );
 
 /** Grid with 1-3 variant */
 export const Grid13 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-3" cols="1-3" {...props}>{children ?? "Grid 13"}</Grid>
+  <Grid data-class="grid-cols-1-3" cols="1-3" {...props}>{children ?? "GridCols 13"}</Grid>
 );
 
 /** Grid with 1-3-4 variant */
 export const Grid134 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-3-4" cols="1-3-4" {...props}>{children ?? "Grid 134"}</Grid>
+  <Grid data-class="grid-cols-1-3-4" cols="1-3-4" {...props}>{children ?? "GridCols 134"}</Grid>
 );
 
 /** Grid with 1-3-6 variant */
 export const Grid136 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-3-6" cols="1-3-6" {...props}>{children ?? "Grid 136"}</Grid>
+  <Grid data-class="grid-cols-1-3-6" cols="1-3-6" {...props}>{children ?? "GridCols 136"}</Grid>
 );
 
 /** Grid with 1-4 variant */
 export const Grid14 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-4" cols="1-4" {...props}>{children ?? "Grid 14"}</Grid>
+  <Grid data-class="grid-cols-1-4" cols="1-4" {...props}>{children ?? "GridCols 14"}</Grid>
 );
 
 /** Grid with 1-5 variant */
 export const Grid15 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-5" cols="1-5" {...props}>{children ?? "Grid 15"}</Grid>
+  <Grid data-class="grid-cols-1-5" cols="1-5" {...props}>{children ?? "GridCols 15"}</Grid>
 );
 
 /** Grid with 1-6 variant */
 export const Grid16 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-1-6" cols="1-6" {...props}>{children ?? "Grid 16"}</Grid>
+  <Grid data-class="grid-cols-1-6" cols="1-6" {...props}>{children ?? "GridCols 16"}</Grid>
 );
 
 /** Grid with 2-3 variant */
 export const Grid23 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-2-3" cols="2-3" {...props}>{children ?? "Grid 23"}</Grid>
+  <Grid data-class="grid-cols-2-3" cols="2-3" {...props}>{children ?? "GridCols 23"}</Grid>
 );
 
 /** Grid with 2-3-4 variant */
 export const Grid234 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-2-3-4" cols="2-3-4" {...props}>{children ?? "Grid 234"}</Grid>
+  <Grid data-class="grid-cols-2-3-4" cols="2-3-4" {...props}>{children ?? "GridCols 234"}</Grid>
 );
 
 /** Grid with 2-4 variant */
 export const Grid24 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-2-4" cols="2-4" {...props}>{children ?? "Grid 24"}</Grid>
+  <Grid data-class="grid-cols-2-4" cols="2-4" {...props}>{children ?? "GridCols 24"}</Grid>
 );
 
 /** Grid with 2-5 variant */
 export const Grid25 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-2-5" cols="2-5" {...props}>{children ?? "Grid 25"}</Grid>
+  <Grid data-class="grid-cols-2-5" cols="2-5" {...props}>{children ?? "GridCols 25"}</Grid>
 );
 
 /** Grid with 2-6 variant */
 export const Grid26 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-2-6" cols="2-6" {...props}>{children ?? "Grid 26"}</Grid>
+  <Grid data-class="grid-cols-2-6" cols="2-6" {...props}>{children ?? "GridCols 26"}</Grid>
 );
 
 /** Grid with 3-4 variant */
 export const Grid34 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-3-4" cols="3-4" {...props}>{children ?? "Grid 34"}</Grid>
+  <Grid data-class="grid-cols-3-4" cols="3-4" {...props}>{children ?? "GridCols 34"}</Grid>
 );
 
 /** Grid with 3-5 variant */
 export const Grid35 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-3-5" cols="3-5" {...props}>{children ?? "Grid 35"}</Grid>
+  <Grid data-class="grid-cols-3-5" cols="3-5" {...props}>{children ?? "GridCols 35"}</Grid>
 );
 
 /** Grid with 3-6 variant */
 export const Grid36 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-3-6" cols="3-6" {...props}>{children ?? "Grid 36"}</Grid>
+  <Grid data-class="grid-cols-3-6" cols="3-6" {...props}>{children ?? "GridCols 36"}</Grid>
 );
 
 /** Grid with 4-5 variant */
 export const Grid45 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-4-5" cols="4-5" {...props}>{children ?? "Grid 45"}</Grid>
+  <Grid data-class="grid-cols-4-5" cols="4-5" {...props}>{children ?? "GridCols 45"}</Grid>
 );
 
 /** Grid with 4-6 variant */
 export const Grid46 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-4-6" cols="4-6" {...props}>{children ?? "Grid 46"}</Grid>
+  <Grid data-class="grid-cols-4-6" cols="4-6" {...props}>{children ?? "GridCols 46"}</Grid>
 );
 
 /** Grid with 5-6 variant */
 export const Grid56 = ({ children, ...props }: Omit<ComponentProps<typeof Grid>, "data-class" | "cols"> & { children?: ReactNode }) => (
-  <Grid data-class="grid-5-6" cols="5-6" {...props}>{children ?? "Grid 56"}</Grid>
+  <Grid data-class="grid-cols-5-6" cols="5-6" {...props}>{children ?? "GridCols 56"}</Grid>
 );

@@ -285,6 +285,15 @@ interface SubEntityElement {
 }
 
 /**
+ * Known sub-components that are actually separate components (not just variant groups)
+ * Only these will be imported as separate components
+ */
+const KNOWN_SUB_COMPONENTS: Record<string, string[]> = {
+  card: ['header', 'title', 'description', 'content', 'footer'],
+  accordion: ['item', 'trigger', 'content'],
+};
+
+/**
  * Generate element file content for a component
  */
 function generateElementFile(
@@ -303,34 +312,39 @@ function generateElementFile(
     displayName: string;
   }> = [];
 
-  // Collect sub-entities (entities that are not the base, e.g., card-header, card-title)
+  // Collect sub-entities (only those that are actual components, not variant groups)
   const subEntities: SubEntityElement[] = [];
+  const knownSubComponents = KNOWN_SUB_COMPONENTS[filePrefix] || [];
 
   for (const entity of entities) {
     // Check if this is a sub-entity (not the base entity)
     if (entity.name !== filePrefix && entity.name.startsWith(`${filePrefix}-`)) {
-      // This is a sub-entity like card-header, card-title
       const subEntitySuffix = entity.name.slice(filePrefix.length + 1); // e.g., "header" from "card-header"
-      const subComponentName = `${componentName}${toPascalCase(subEntitySuffix)}`; // e.g., "CardHeader"
-      const displayName = `${componentName} ${toPascalCase(subEntitySuffix)}`; // e.g., "Card Header"
+      
+      // Only treat as sub-entity if it's a known sub-component
+      if (knownSubComponents.includes(subEntitySuffix.toLowerCase())) {
+        const subComponentName = `${componentName}${toPascalCase(subEntitySuffix)}`; // e.g., "CardHeader"
+        const displayName = `${componentName} ${toPascalCase(subEntitySuffix)}`; // e.g., "Card Header"
 
-      subEntities.push({
-        entityName: entity.name,
-        componentName: subComponentName,
-        displayName,
-      });
+        subEntities.push({
+          entityName: entity.name,
+          componentName: subComponentName,
+          displayName,
+        });
+      }
     }
 
-    // Collect variants (for both base and sub-entities)
+    // Collect variants (for both base and variant-group entities)
     for (const v of entity.variants) {
       if (v.isDefault) continue;
       if (v.tokens.length === 0) continue;
 
-      const selector = `${entity.name}-${v.valueKey}`;
-      const displayName = `${toPascalCase(entity.name)} ${toPascalCase(v.valueKey)}`;
+      // Use base component name for variant selectors, not sub-entity name
+      const selector = `${filePrefix}-${v.variantKey}-${v.valueKey}`;
+      const displayName = `${componentName}${toPascalCase(v.variantKey)} ${toPascalCase(v.valueKey)}`;
 
       allVariants.push({
-        entityName: entity.name,
+        entityName: filePrefix, // Always use base entity for variants
         selector,
         variantKey: v.variantKey,
         valueKey: v.valueKey,

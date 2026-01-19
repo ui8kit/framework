@@ -281,8 +281,9 @@ export class Generator {
     console.log('📚 Generating MDX documentation...');
 
     try {
-      // Dynamic import to avoid bundling @ui8kit/mdx-react if not used
-      const { generateDocsFromMdx } = await import('@ui8kit/mdx-react/generator');
+      // Dynamic import - use relative path for monorepo resolution
+      const mdxReactPath = '../../mdx-react/dist/server.js';
+      const { generateDocsFromMdx } = await import(mdxReactPath);
 
       await generateDocsFromMdx({
         config: {

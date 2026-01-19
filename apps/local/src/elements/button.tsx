@@ -5,6 +5,7 @@
 
 import type { ReactNode, ComponentProps } from "react";
 import { Button } from "../components";
+import type { ButtonProps } from "../components";
 
 /**
  * Button variant elements for documentation and reuse.
@@ -16,23 +17,22 @@ export function ButtonElements() {
   {/* Base */}
   <Button data-class="button">Button</Button>
   {/* Variants */}
-  <Button data-class="button-content-align-between" contentAlign="between">ButtonContentAlign Between</Button>
-  <Button data-class="button-content-align-center" contentAlign="center">ButtonContentAlign Center</Button>
-  <Button data-class="button-content-align-end" contentAlign="end">ButtonContentAlign End</Button>
-  <Button data-class="button-content-align-start" contentAlign="start">ButtonContentAlign Start</Button>
-  <Button data-class="button-destructive" variant="destructive">Button Destructive</Button>
-  <Button data-class="button-ghost" variant="ghost">Button Ghost</Button>
-  <Button data-class="button-icon" size="icon">Button Icon</Button>
-  <Button data-class="button-lg" size="lg">Button Lg</Button>
-  <Button data-class="button-link" variant="link">Button Link</Button>
-  <Button data-class="button-md" size="md">Button Md</Button>
-  <Button data-class="button-outline" variant="outline">Button Outline</Button>
-  <Button data-class="button-primary" variant="primary">Button Primary</Button>
-  <Button data-class="button-secondary" variant="secondary">Button Secondary</Button>
-  <Button data-class="button-sm" size="sm">Button Sm</Button>
-  <Button data-class="button-xl" size="xl">Button Xl</Button>
-  <Button data-class="button-xs" size="xs">Button Xs</Button>
-  {/* Sub-components */}
+  <Button data-class="button-contentAlign-between" contentAlign="between">ButtonContentAlign Between</Button>
+  <Button data-class="button-contentAlign-center" contentAlign="center">ButtonContentAlign Center</Button>
+  <Button data-class="button-contentAlign-end" contentAlign="end">ButtonContentAlign End</Button>
+  <Button data-class="button-contentAlign-start" contentAlign="start">ButtonContentAlign Start</Button>
+  <Button data-class="button-size-icon" size="icon">ButtonSize Icon</Button>
+  <Button data-class="button-size-lg" size="lg">ButtonSize Lg</Button>
+  <Button data-class="button-size-md" size="md">ButtonSize Md</Button>
+  <Button data-class="button-size-sm" size="sm">ButtonSize Sm</Button>
+  <Button data-class="button-size-xl" size="xl">ButtonSize Xl</Button>
+  <Button data-class="button-size-xs" size="xs">ButtonSize Xs</Button>
+  <Button data-class="button-variant-destructive" variant="destructive">ButtonVariant Destructive</Button>
+  <Button data-class="button-variant-ghost" variant="ghost">ButtonVariant Ghost</Button>
+  <Button data-class="button-variant-link" variant="link">ButtonVariant Link</Button>
+  <Button data-class="button-variant-outline" variant="outline">ButtonVariant Outline</Button>
+  <Button data-class="button-variant-primary" variant="primary">ButtonVariant Primary</Button>
+  <Button data-class="button-variant-secondary" variant="secondary">ButtonVariant Secondary</Button>
     </>
   );
 }
@@ -48,80 +48,80 @@ export const ButtonElement = ({ children, ...props }: Omit<ComponentProps<typeof
 
 /** Button with between variant */
 export const ButtonBetween = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-content-align-between" contentAlign="between" {...props}>{children ?? "ButtonContentAlign Between"}</Button>
+  <Button data-class="button-contentAlign-between" contentAlign="between" {...props}>{children ?? "ButtonContentAlign Between"}</Button>
 );
 
 /** Button with center variant */
 export const ButtonCenter = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-content-align-center" contentAlign="center" {...props}>{children ?? "ButtonContentAlign Center"}</Button>
+  <Button data-class="button-contentAlign-center" contentAlign="center" {...props}>{children ?? "ButtonContentAlign Center"}</Button>
 );
 
 /** Button with end variant */
 export const ButtonEnd = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-content-align-end" contentAlign="end" {...props}>{children ?? "ButtonContentAlign End"}</Button>
+  <Button data-class="button-contentAlign-end" contentAlign="end" {...props}>{children ?? "ButtonContentAlign End"}</Button>
 );
 
 /** Button with start variant */
 export const ButtonStart = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-content-align-start" contentAlign="start" {...props}>{children ?? "ButtonContentAlign Start"}</Button>
-);
-
-/** Button with destructive variant */
-export const ButtonDestructive = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Button data-class="button-destructive" variant="destructive" {...props}>{children ?? "Button Destructive"}</Button>
-);
-
-/** Button with ghost variant */
-export const ButtonGhost = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Button data-class="button-ghost" variant="ghost" {...props}>{children ?? "Button Ghost"}</Button>
+  <Button data-class="button-contentAlign-start" contentAlign="start" {...props}>{children ?? "ButtonContentAlign Start"}</Button>
 );
 
 /** Button with icon variant */
 export const ButtonIcon = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Button data-class="button-icon" size="icon" {...props}>{children ?? "Button Icon"}</Button>
+  <Button data-class="button-size-icon" size="icon" {...props}>{children ?? "ButtonSize Icon"}</Button>
 );
 
 /** Button with lg variant */
 export const ButtonLg = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Button data-class="button-lg" size="lg" {...props}>{children ?? "Button Lg"}</Button>
-);
-
-/** Button with link variant */
-export const ButtonLink = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Button data-class="button-link" variant="link" {...props}>{children ?? "Button Link"}</Button>
+  <Button data-class="button-size-lg" size="lg" {...props}>{children ?? "ButtonSize Lg"}</Button>
 );
 
 /** Button with md variant */
 export const ButtonMd = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Button data-class="button-md" size="md" {...props}>{children ?? "Button Md"}</Button>
-);
-
-/** Button with outline variant */
-export const ButtonOutline = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Button data-class="button-outline" variant="outline" {...props}>{children ?? "Button Outline"}</Button>
-);
-
-/** Button with primary variant */
-export const ButtonPrimary = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Button data-class="button-primary" variant="primary" {...props}>{children ?? "Button Primary"}</Button>
-);
-
-/** Button with secondary variant */
-export const ButtonSecondary = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Button data-class="button-secondary" variant="secondary" {...props}>{children ?? "Button Secondary"}</Button>
+  <Button data-class="button-size-md" size="md" {...props}>{children ?? "ButtonSize Md"}</Button>
 );
 
 /** Button with sm variant */
 export const ButtonSm = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Button data-class="button-sm" size="sm" {...props}>{children ?? "Button Sm"}</Button>
+  <Button data-class="button-size-sm" size="sm" {...props}>{children ?? "ButtonSize Sm"}</Button>
 );
 
 /** Button with xl variant */
 export const ButtonXl = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Button data-class="button-xl" size="xl" {...props}>{children ?? "Button Xl"}</Button>
+  <Button data-class="button-size-xl" size="xl" {...props}>{children ?? "ButtonSize Xl"}</Button>
 );
 
 /** Button with xs variant */
 export const ButtonXs = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "size"> & { children?: ReactNode }) => (
-  <Button data-class="button-xs" size="xs" {...props}>{children ?? "Button Xs"}</Button>
+  <Button data-class="button-size-xs" size="xs" {...props}>{children ?? "ButtonSize Xs"}</Button>
+);
+
+/** Button with destructive variant */
+export const ButtonDestructive = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Button data-class="button-variant-destructive" variant="destructive" {...props}>{children ?? "ButtonVariant Destructive"}</Button>
+);
+
+/** Button with ghost variant */
+export const ButtonGhost = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Button data-class="button-variant-ghost" variant="ghost" {...props}>{children ?? "ButtonVariant Ghost"}</Button>
+);
+
+/** Button with link variant */
+export const ButtonLink = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Button data-class="button-variant-link" variant="link" {...props}>{children ?? "ButtonVariant Link"}</Button>
+);
+
+/** Button with outline variant */
+export const ButtonOutline = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Button data-class="button-variant-outline" variant="outline" {...props}>{children ?? "ButtonVariant Outline"}</Button>
+);
+
+/** Button with primary variant */
+export const ButtonPrimary = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Button data-class="button-variant-primary" variant="primary" {...props}>{children ?? "ButtonVariant Primary"}</Button>
+);
+
+/** Button with secondary variant */
+export const ButtonSecondary = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "variant"> & { children?: ReactNode }) => (
+  <Button data-class="button-variant-secondary" variant="secondary" {...props}>{children ?? "ButtonVariant Secondary"}</Button>
 );

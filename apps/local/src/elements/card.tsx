@@ -17,8 +17,8 @@ export function CardElements() {
   {/* Base */}
   <Card data-class="card">Card</Card>
   {/* Variants */}
-  <Card data-class="card-filled" variant="filled">Card Filled</Card>
-  <Card data-class="card-outlined" variant="outlined">Card Outlined</Card>
+  <Card data-class="card-variant-filled" variant="filled">CardVariant Filled</Card>
+  <Card data-class="card-variant-outlined" variant="outlined">CardVariant Outlined</Card>
   {/* Sub-components */}
   <CardContent data-class="card-content">Card Content</CardContent>
   <CardDescription data-class="card-description">Card Description</CardDescription>
@@ -40,12 +40,12 @@ export const CardElement = ({ children, ...props }: Omit<ComponentProps<typeof C
 
 /** Card with filled variant */
 export const CardFilled = ({ children, ...props }: Omit<ComponentProps<typeof Card>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Card data-class="card-filled" variant="filled" {...props}>{children ?? "Card Filled"}</Card>
+  <Card data-class="card-variant-filled" variant="filled" {...props}>{children ?? "CardVariant Filled"}</Card>
 );
 
 /** Card with outlined variant */
 export const CardOutlined = ({ children, ...props }: Omit<ComponentProps<typeof Card>, "data-class" | "variant"> & { children?: ReactNode }) => (
-  <Card data-class="card-outlined" variant="outlined" {...props}>{children ?? "Card Outlined"}</Card>
+  <Card data-class="card-variant-outlined" variant="outlined" {...props}>{children ?? "CardVariant Outlined"}</Card>
 );
 
 /** Card Content with semantic data-class */

@@ -1,0 +1,59 @@
+{% comment %}
+  Documentation page layout
+  Includes sidebar, content, and TOC
+{% endcomment %}
+
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page_title }} - {{ site.title }}</title>
+  {% if page_description %}
+  <meta name="description" content="{{ page_description }}">
+  {% endif %}
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+  <div data-class="docs-layout">
+    <!-- Sidebar -->
+    <aside data-class="docs-sidebar">
+      {% include 'partials/docs-nav.liquid' %}
+    </aside>
+    
+    <!-- Main Content -->
+    <main data-class="docs-main">
+      <article data-class="docs-article">
+        {% if page_title %}
+        <header data-class="docs-header">
+          <h1 data-class="docs-title">{{ page_title }}</h1>
+          {% if page_description %}
+          <p data-class="docs-description">{{ page_description }}</p>
+          {% endif %}
+        </header>
+        {% endif %}
+        
+        <div data-class="docs-content">
+          {{ content }}
+        </div>
+      </article>
+      
+      <!-- Table of Contents -->
+      {% if page_toc.size > 0 %}
+      <aside data-class="docs-toc">
+        <nav data-class="toc" aria-label="Table of Contents">
+          <h2 data-class="toc-title">On This Page</h2>
+          <ul data-class="toc-list">
+            {% for item in page_toc %}
+            <li data-class="toc-item" data-depth="{{ item.depth }}">
+              <a href="#{{ item.slug }}" data-class="toc-link">{{ item.text }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </aside>
+      {% endif %}
+    </main>
+  </div>
+</body>
+</html>
