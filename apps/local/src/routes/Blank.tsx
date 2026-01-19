@@ -1,9 +1,0 @@
-// Route component - simple blank page
-export function Blank() {
-  return (
-    <div className="blank-page" data-class="blank-page">
-      <h1>About</h1>
-      <p>This is a blank page template.</p>
-    </div>
-  )
-}

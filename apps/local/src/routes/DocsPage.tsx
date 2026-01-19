@@ -1,5 +1,5 @@
 import { Suspense, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import { PageContentProvider, usePageContent, useToc } from '@ui8kit/mdx-react'
 import type { TocEntry, Frontmatter } from '@ui8kit/mdx-react'
 
@@ -19,27 +19,43 @@ interface MdxModule {
  */
 const mdxModules = import.meta.glob<MdxModule>('../../docs/**/*.mdx')
 
+// Build navigation from available MDX files
+const availablePaths = Object.keys(mdxModules).map(path => {
+  // ../../docs/components/button.mdx → /components/button
+  return path
+    .replace('../../docs', '')
+    .replace(/\/index\.mdx$/, '')
+    .replace(/\.mdx$/, '') || '/'
+})
+
 // Debug: log available paths in development
 if (import.meta.env.DEV) {
-  console.log('Available MDX paths:', Object.keys(mdxModules))
+  console.log('Available routes:', availablePaths)
 }
 
 /**
- * Get MDX module path from URL params
+ * Get MDX module path from URL pathname
+ * 
+ * /                    → ../../docs/index.mdx
+ * /components          → ../../docs/components/index.mdx
+ * /components/button   → ../../docs/components/button.mdx
  */
-function getMdxPath(slug?: string): string {
-  // Handle empty slug (docs index)
-  if (!slug || slug === '') {
+function getMdxPath(pathname: string): string {
+  // Normalize pathname
+  const slug = pathname === '/' ? '' : pathname.replace(/^\//, '')
+  
+  // Handle root
+  if (!slug) {
     return '../../docs/index.mdx'
   }
   
-  // First try exact file match: /docs/components/button → ../../docs/components/button.mdx
+  // First try exact file match: /components/button → ../../docs/components/button.mdx
   const filePath = `../../docs/${slug}.mdx`
   if (mdxModules[filePath]) {
     return filePath
   }
   
-  // Then try index file: /docs/components → ../../docs/components/index.mdx
+  // Then try index file: /components → ../../docs/components/index.mdx
   const indexPath = `../../docs/${slug}/index.mdx`
   if (mdxModules[indexPath]) {
     return indexPath
@@ -50,27 +66,27 @@ function getMdxPath(slug?: string): string {
 }
 
 // =============================================================================
-// Docs Page Route
+// Docs Page - Main Component
 // =============================================================================
 
 /**
- * Main documentation page route
+ * Documentation page component
+ * Handles ALL routes - loads MDX based on URL path
  * 
- * Handles dynamic MDX loading based on URL:
- * - /docs → docs/index.mdx
- * - /docs/components/button → docs/components/button.mdx
- * - /docs/components → docs/components/index.mdx
+ * URL → MDX file mapping:
+ *   /                    → docs/index.mdx
+ *   /components          → docs/components/index.mdx
+ *   /components/button   → docs/components/button.mdx
  */
 export function DocsPage() {
-  const { '*': slug } = useParams()
-  const mdxPath = getMdxPath(slug)
+  const location = useLocation()
+  const mdxPath = getMdxPath(location.pathname)
   
   // Check if MDX file exists
   const loader = mdxModules[mdxPath]
   
   if (!loader) {
-    console.log('MDX not found:', mdxPath, 'slug:', slug)
-    return <DocsNotFound slug={slug} availablePaths={Object.keys(mdxModules)} />
+    return <DocsNotFound pathname={location.pathname} />
   }
   
   return (
@@ -81,7 +97,7 @@ export function DocsPage() {
 }
 
 // =============================================================================
-// MDX Page Loader - uses state instead of lazy()
+// MDX Page Loader
 // =============================================================================
 
 interface MdxPageLoaderProps {
@@ -95,7 +111,7 @@ interface LoadedModule {
 }
 
 /**
- * Loads MDX module and wraps with PageContentProvider
+ * Loads MDX module and renders with layout
  */
 function MdxPageLoader({ loader }: MdxPageLoaderProps) {
   const [module, setModule] = useState<LoadedModule | null>(null)
@@ -110,14 +126,6 @@ function MdxPageLoader({ loader }: MdxPageLoaderProps) {
     loader()
       .then((mod) => {
         if (cancelled) return
-        
-        if (import.meta.env.DEV) {
-          console.log('Loaded MDX module:', {
-            hasDefault: !!mod.default,
-            frontmatter: mod.frontmatter,
-            toc: mod.toc,
-          })
-        }
         
         setModule({
           Content: mod.default,
@@ -161,19 +169,23 @@ function MdxPageLoader({ loader }: MdxPageLoaderProps) {
 }
 
 // =============================================================================
-// Docs Layout (inside PageContentProvider)
+// Docs Layout
 // =============================================================================
 
 /**
- * Documentation page layout
- * Uses hooks to access page content from context
+ * Documentation page layout with sidebar and TOC
  */
 function DocsLayout() {
   const { Content, frontmatter } = usePageContent()
   
   return (
     <div className="docs-page" data-class="docs-page">
-      <div className="docs-container" data-class="docs-container">
+      {/* Sidebar Navigation */}
+      <aside className="docs-sidebar" data-class="docs-sidebar">
+        <DocsNavigation />
+      </aside>
+      
+      <div className="docs-main" data-class="docs-main">
         {/* Main Content */}
         <article className="docs-content" data-class="docs-content">
           {frontmatter.title && (
@@ -194,7 +206,7 @@ function DocsLayout() {
           </div>
         </article>
         
-        {/* Table of Contents Sidebar */}
+        {/* Table of Contents */}
         <aside className="docs-toc" data-class="docs-toc">
           <TableOfContents />
         </aside>
@@ -204,9 +216,51 @@ function DocsLayout() {
 }
 
 // =============================================================================
-// Table of Contents Component
+// Navigation Components
 // =============================================================================
 
+/**
+ * Sidebar navigation built from available MDX files
+ */
+function DocsNavigation() {
+  const location = useLocation()
+  
+  return (
+    <nav className="docs-nav" data-class="docs-nav">
+      <div className="docs-nav-header" data-class="docs-nav-header">
+        <Link to="/" className="docs-nav-brand" data-class="docs-nav-brand">
+          UI8Kit
+        </Link>
+      </div>
+      
+      <ul className="docs-nav-list" data-class="docs-nav-list">
+        {availablePaths.map((path) => {
+          const isActive = location.pathname === path
+          const label = path === '/' 
+            ? 'Home' 
+            : path.split('/').pop()?.replace(/-/g, ' ') || path
+          
+          return (
+            <li key={path} className="docs-nav-item" data-class="docs-nav-item">
+              <Link 
+                to={path}
+                className={`docs-nav-link ${isActive ? 'active' : ''}`}
+                data-class="docs-nav-link"
+                data-active={isActive}
+              >
+                {label.charAt(0).toUpperCase() + label.slice(1)}
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
+    </nav>
+  )
+}
+
+/**
+ * Table of Contents for current page
+ */
 function TableOfContents() {
   const toc = useToc()
   
@@ -244,26 +298,25 @@ function TableOfContents() {
 function DocsLoading() {
   return (
     <div className="docs-loading" data-class="docs-loading">
-      <p>Loading documentation...</p>
+      <p>Loading...</p>
     </div>
   )
 }
 
-function DocsNotFound({ slug, availablePaths }: { slug?: string; availablePaths?: string[] }) {
+function DocsNotFound({ pathname }: { pathname: string }) {
   return (
     <div className="docs-not-found" data-class="docs-not-found">
       <h1>Page Not Found</h1>
-      <p>The documentation page "{slug || 'index'}" could not be found.</p>
-      {import.meta.env.DEV && availablePaths && (
-        <details>
-          <summary>Available pages ({availablePaths.length})</summary>
-          <ul>
-            {availablePaths.map(path => (
-              <li key={path}><code>{path}</code></li>
-            ))}
-          </ul>
-        </details>
-      )}
+      <p>The page "{pathname}" could not be found.</p>
+      
+      <h2>Available Pages</h2>
+      <ul>
+        {availablePaths.map(path => (
+          <li key={path}>
+            <Link to={path}>{path || '/'}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

@@ -10,7 +10,7 @@
     "build:js": "tsc --project tsconfig.build.json",
     "client:build": "bun build scripts/entry-client.tsx --outdir dist --minify --target=browser --sourcemap=inline --public-path=/",
     "preview": "vite preview",
-    "generate": "bun run build:js && bun run generator.config.ts",
+    "generate": "bun run generator.config.ts",
     "generate:css": "bun run --cwd ../../packages/preprocessor src/index.ts -- --routes / --snapshots-dir ../../apps/local/views --output-dir ../../apps/local/dist/css --pure-css --verbose",
     "generate:html": "bun run generator.config.ts",
     "preview:static": "bun run generate && serve dist/html",

@@ -136,12 +136,16 @@ async function collectMdxFiles(dir: string): Promise<string[]> {
 
 /**
  * Load components for MDX scope
- * In build mode, we need actual React components
+ * In build mode, we create simple HTML stub components
+ * (real components can't be imported in Node.js without bundling)
  */
 async function loadComponents(
   componentMap: Record<string, string>,
   baseDir: string
 ): Promise<Record<string, React.ComponentType<any>>> {
+  // Import React for createElement
+  const React = await import('react')
+  
   const components: Record<string, React.ComponentType<any>> = {}
   
   // Add built-in doc components
@@ -151,26 +155,69 @@ async function loadComponents(
   components.Callout = Callout as any
   components.Steps = Steps as any
   
-  // Load user components
-  for (const [name, importPath] of Object.entries(componentMap)) {
-    try {
-      // Resolve @ alias to actual path
-      let resolvedPath = importPath
-      if (importPath.startsWith('@/')) {
-        resolvedPath = join(baseDir, 'src', importPath.slice(2))
-      } else if (importPath.startsWith('./') || importPath.startsWith('../')) {
-        resolvedPath = join(baseDir, importPath)
-      }
-      
-      // Try to import component
-      const mod = await import(resolvedPath)
-      components[name] = mod[name] || mod.default
-    } catch (error) {
-      console.warn(`  ⚠ Could not load component ${name} from ${importPath}`)
-    }
+  // Create stub components for user components
+  // These render basic HTML with data-class for semantic generation
+  for (const [name, _importPath] of Object.entries(componentMap)) {
+    components[name] = createStubComponent(name, React)
   }
   
   return components
+}
+
+/**
+ * Create a simple stub component that renders HTML
+ * Used for static generation when real components can't be loaded
+ */
+function createStubComponent(
+  name: string, 
+  React: typeof import('react')
+): React.ComponentType<any> {
+  const dataClass = name.toLowerCase()
+  
+  // Return a functional component that renders semantic HTML
+  return function StubComponent(props: any) {
+    const { children, variant, size, className, ...rest } = props
+    
+    // Build class names from props
+    const classes = [dataClass]
+    if (variant) classes.push(`${dataClass}-${variant}`)
+    if (size) classes.push(`${dataClass}-${size}`)
+    if (className) classes.push(className)
+    
+    // Map component names to HTML elements
+    const tagMap: Record<string, string> = {
+      Button: 'button',
+      Card: 'div',
+      Badge: 'span',
+      Text: 'p',
+      Title: 'h2',
+      Stack: 'div',
+      Box: 'div',
+      Grid: 'div',
+      Container: 'div',
+      Group: 'div',
+      Icon: 'span',
+      Image: 'img',
+    }
+    
+    const tag = tagMap[name] || 'div'
+    
+    // For img elements, handle src differently
+    if (tag === 'img') {
+      return React.createElement(tag, {
+        ...rest,
+        className: classes.join(' '),
+        'data-class': classes.join(' '),
+        alt: rest.alt || name,
+      })
+    }
+    
+    return React.createElement(tag, {
+      ...rest,
+      className: classes.join(' '),
+      'data-class': classes.join(' '),
+    }, children)
+  }
 }
 
 /**

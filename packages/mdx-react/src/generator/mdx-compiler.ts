@@ -68,13 +68,16 @@ export async function compileMdxFile(options: CompileOptions): Promise<Generated
   const relativePath = filePath.replace(docsDir, '').replace(/^[\/\\]/, '')
   const urlPath = filePathToUrlPath(relativePath, basePath)
   
+  // Strip import statements from MDX content (we inject components via props)
+  const contentWithoutImports = stripImports(content)
+  
   // Compile MDX to JavaScript
-  const compiled = await compile(content, {
+  const compiled = await compile(contentWithoutImports, {
     outputFormat: 'function-body',
     development: false,
   })
   
-  // Run compiled MDX
+  // Run compiled MDX with components available
   const { default: MdxContent } = await run(compiled, {
     ...runtime,
     baseUrl: import.meta.url,
@@ -105,6 +108,20 @@ export async function compileMdxFile(options: CompileOptions): Promise<Generated
     toc,
     demos,
   }
+}
+
+/**
+ * Strip import/export statements from MDX content
+ * Components are injected via props instead
+ */
+function stripImports(content: string): string {
+  // Remove import statements
+  let result = content.replace(/^import\s+.*?from\s+['"][^'"]+['"];?\s*$/gm, '')
+  
+  // Remove export statements (but keep export default if any)
+  result = result.replace(/^export\s+(?!default).*?;?\s*$/gm, '')
+  
+  return result.trim()
 }
 
 /**

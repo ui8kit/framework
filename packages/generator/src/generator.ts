@@ -279,32 +279,179 @@ export class Generator {
     if (!config.mdx?.enabled) return;
 
     console.log('📚 Generating MDX documentation...');
+    
+    const docsDir = resolve(config.mdx.docsDir);
+    const outputDir = config.mdx.outputDir || './dist/html';
+    const basePath = config.mdx.basePath || '';
 
     try {
-      // Dynamic import - use relative path for monorepo resolution
-      const mdxReactPath = '../../mdx-react/dist/server.js';
-      const { generateDocsFromMdx } = await import(mdxReactPath);
+      // Scan docs folder for MDX files
+      const mdxFiles = await this.scanMdxFiles(docsDir);
+      console.log(`  Found ${mdxFiles.length} MDX files`);
 
-      await generateDocsFromMdx({
-        config: {
-          enabled: config.mdx.enabled,
-          docsDir: config.mdx.docsDir,
-          outputDir: config.mdx.outputDir,
-          demosDir: config.mdx.demosDir,
-          navOutput: config.mdx.navOutput,
-          basePath: config.mdx.basePath,
-          components: config.mdx.components,
-          propsSource: config.mdx.propsSource,
-          toc: config.mdx.toc,
-        },
-        baseDir: process.cwd(),
-        htmlMode: config.html.mode || 'tailwind',
-        verbose: true,
-      });
+      // For each MDX file, generate static HTML
+      for (const file of mdxFiles) {
+        // Use relative() to correctly strip the docs directory
+        const relativePath = relative(docsDir, file);
+        const urlPath = this.mdxFileToUrl(relativePath, basePath);
+        const outputPath = this.urlToOutputPath(urlPath, outputDir);
+        
+        console.log(`  → ${relativePath} → ${urlPath}`);
+        
+        await this.generateMdxPlaceholder(file, outputPath, urlPath);
+      }
+
+      // Generate navigation JSON
+      if (config.mdx.navOutput) {
+        const nav = await this.generateDocsNav(mdxFiles, docsDir, basePath);
+        await writeFile(config.mdx.navOutput, JSON.stringify(nav, null, 2));
+        console.log(`  → ${config.mdx.navOutput}`);
+      }
+
+      console.log(`✅ Generated ${mdxFiles.length} documentation pages`);
     } catch (error) {
       console.warn('⚠️ Failed to generate MDX documentation:', error);
-      console.warn('   Make sure @ui8kit/mdx-react is installed');
     }
+  }
+
+  private async scanMdxFiles(dir: string): Promise<string[]> {
+    const files: string[] = [];
+    
+    const scan = async (currentDir: string) => {
+      const entries = await readdir(currentDir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const fullPath = join(currentDir, entry.name);
+        
+        if (entry.isDirectory()) {
+          await scan(fullPath);
+        } else if (entry.name.endsWith('.mdx') || entry.name.endsWith('.md')) {
+          files.push(fullPath);
+        }
+      }
+    };
+    
+    await scan(dir);
+    return files;
+  }
+
+  private mdxFileToUrl(relativePath: string, basePath: string): string {
+    let url = relativePath
+      .replace(/\.(mdx?|md)$/, '')
+      .replace(/[\\]/g, '/');
+    
+    // Handle index files
+    if (url.endsWith('/index') || url === 'index') {
+      url = url.replace(/\/?index$/, '');
+    }
+    
+    // Add base path
+    const base = basePath.replace(/\/$/, '');
+    return url ? `${base}/${url}` : base || '/';
+  }
+
+  private urlToOutputPath(urlPath: string, outputDir: string): string {
+    // / → index.html
+    // /components → components/index.html
+    // /components/button → components/button/index.html
+    if (urlPath === '/' || urlPath === '') {
+      return join(outputDir, 'index.html');
+    }
+    return join(outputDir, urlPath, 'index.html');
+  }
+
+  private async generateMdxPlaceholder(
+    mdxPath: string, 
+    outputPath: string, 
+    urlPath: string
+  ): Promise<void> {
+    // Read frontmatter from MDX file
+    const content = await readFile(mdxPath, 'utf-8');
+    const frontmatter = this.parseFrontmatter(content);
+    
+    // Create a simple HTML placeholder
+    // Full rendering requires Vite SSG
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${frontmatter.title || 'Documentation'}</title>
+  <meta name="description" content="${frontmatter.description || ''}">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div class="docs-page" data-class="docs-page">
+      <article class="docs-content" data-class="docs-content">
+        <h1>${frontmatter.title || urlPath}</h1>
+        <p>${frontmatter.description || ''}</p>
+        <p><em>This page requires JavaScript for full content. Enable JavaScript or use the dev server.</em></p>
+      </article>
+    </div>
+  </div>
+  <script type="module" src="/assets/js/main.js"></script>
+</body>
+</html>`;
+    
+    // Ensure directory exists
+    await mkdir(dirname(outputPath), { recursive: true });
+    await writeFile(outputPath, html);
+  }
+
+  private parseFrontmatter(content: string): Record<string, string> {
+    const match = /^---\s*\n([\s\S]*?)\n---/.exec(content);
+    if (!match) return {};
+    
+    const frontmatter: Record<string, string> = {};
+    const lines = match[1].split('\n');
+    
+    for (const line of lines) {
+      const colonIndex = line.indexOf(':');
+      if (colonIndex === -1) continue;
+      
+      const key = line.slice(0, colonIndex).trim();
+      let value = line.slice(colonIndex + 1).trim();
+      
+      // Remove quotes
+      if ((value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+      
+      frontmatter[key] = value;
+    }
+    
+    return frontmatter;
+  }
+
+  private async generateDocsNav(
+    files: string[], 
+    docsDir: string, 
+    basePath: string
+  ): Promise<{ items: Array<{ title: string; path: string }> }> {
+    const items: Array<{ title: string; path: string; order: number }> = [];
+    const resolvedDocsDir = resolve(docsDir);
+    
+    for (const file of files) {
+      const content = await readFile(file, 'utf-8');
+      const frontmatter = this.parseFrontmatter(content);
+      const relativePath = relative(resolvedDocsDir, file);
+      const urlPath = this.mdxFileToUrl(relativePath, basePath);
+      
+      items.push({
+        title: frontmatter.title || urlPath || 'Home',
+        path: urlPath || '/',
+        order: parseInt(frontmatter.order || '99', 10),
+      });
+    }
+    
+    // Sort by order
+    items.sort((a, b) => a.order - b.order);
+    
+    return { 
+      items: items.map(({ title, path }) => ({ title, path }))
+    };
   }
 
   private async generateCss(config: GeneratorConfig): Promise<void> {

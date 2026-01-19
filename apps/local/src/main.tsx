@@ -2,29 +2,27 @@ import { createRoot } from 'react-dom/client'
 import { StrictMode } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ThemeProvider, lesseUITheme } from '@/providers/theme'
-import App from '@/App'
-import NotFound from '@/exceptions/NotFound'
 import ErrorBoundary from '@/exceptions/ErrorBoundary'
-// routes
-import { Blank } from '@/routes/Blank'
-// HomePage
-import { HomePage } from '@/routes/HomePage'
 import { DocsPage } from '@/routes/DocsPage'
 
 // styles
 import './assets/css/index.css'
 
+/**
+ * Docs-first application
+ * All routes are handled by DocsPage which loads MDX from docs/ folder
+ * 
+ * Route mapping:
+ *   /                    → docs/index.mdx
+ *   /components          → docs/components/index.mdx
+ *   /components/button   → docs/components/button.mdx
+ *   /get-started         → docs/get-started/index.mdx
+ */
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <App />,
+    path: '*',
+    element: <DocsPage />,
     errorElement: <ErrorBoundary />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: 'about', element: <Blank /> },
-      { path: 'docs/*', element: <DocsPage /> },
-      { path: '*', element: <NotFound /> }
-    ]
   }
 ])
 

@@ -4,79 +4,63 @@ description: Flexible card component with header, content, and footer sections
 order: 2
 ---
 
-import { Card } from '@/components/Card'
-import { Button } from '@/components/ui/Button'
-
 # Card
 
 The Card component provides a flexible container for displaying content with optional header, content, and footer sections.
 
 ## Basic Usage
 
-<div className="example-preview" data-class="example-preview">
-  <Card>
-    <Card.Header>
-      <Card.Title>Card Title</Card.Title>
-      <Card.Description>Card description</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <p>Card content goes here.</p>
-    </Card.Content>
-    <Card.Footer>
-      <Button>Action</Button>
-    </Card.Footer>
-  </Card>
-</div>
-
 ```tsx
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@ui8kit/core'
+
 <Card>
-  <Card.Header>
-    <Card.Title>Card Title</Card.Title>
-    <Card.Description>Card description</Card.Description>
-  </Card.Header>
-  <Card.Content>
+  <CardHeader>
+    <CardTitle>Card Title</CardTitle>
+  </CardHeader>
+  <CardContent>
     <p>Card content goes here.</p>
-  </Card.Content>
-  <Card.Footer>
+  </CardContent>
+  <CardFooter>
     <Button>Action</Button>
-  </Card.Footer>
+  </CardFooter>
 </Card>
 ```
 
 ## Variants
 
-<div className="example-preview" data-class="example-preview">
-  <Card variant="default">
-    <Card.Content>Default Card</Card.Content>
-  </Card>
-  <Card variant="outlined">
-    <Card.Content>Outlined Card</Card.Content>
-  </Card>
-</div>
+### Default
 
 ```tsx
-<Card variant="default">Default Card</Card>
-<Card variant="outlined">Outlined Card</Card>
+<Card>
+  <CardContent>Default Card</CardContent>
+</Card>
 ```
 
-## Complete Card Example
+### Outlined
 
-<div className="example-preview" data-class="example-preview">
-  <Card variant="outlined">
-    <Card.Header>
-      <Card.Title>Complete Card</Card.Title>
-      <Card.Description>This card has all sections</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-      <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-    </Card.Content>
-    <Card.Footer>
-      <Button variant="ghost">Learn More</Button>
-      <Button variant="primary">Get Started</Button>
-    </Card.Footer>
-  </Card>
-</div>
+```tsx
+<Card variant="outlined">
+  <CardContent>Outlined Card</CardContent>
+</Card>
+```
+
+## Complete Example
+
+```tsx
+<Card variant="outlined">
+  <CardHeader>
+    <CardTitle>Complete Card</CardTitle>
+    <CardDescription>This card has all sections</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Lorem ipsum dolor sit amet.</p>
+  </CardContent>
+  <CardFooter>
+    <Button variant="ghost">Learn More</Button>
+    <Button variant="primary">Get Started</Button>
+  </CardFooter>
+</Card>
+```
 
 ## API Reference
 
@@ -87,52 +71,51 @@ The Card component provides a flexible container for displaying content with opt
 | `variant` | `'default' \| 'outlined' \| 'filled'` | `'default'` | Card variant |
 | `children` | `ReactNode` | - | Card content |
 
-### Card.Header Props
+### CardHeader Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Header content |
 
-### Card.Title Props
+### CardTitle Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `order` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3` | Heading level |
 | `children` | `ReactNode` | - | Title content |
 
-### Card.Description Props
+### CardDescription Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Description content |
 
-### Card.Content Props
+### CardContent Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Main content |
 
-### Card.Footer Props
+### CardFooter Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Footer content |
 
-### CSS Classes
+## CSS Classes
 
-- `card` - Base card class
-- `card-{variant}` - Variant-specific styling
-- `card-header` - Card header section
-- `card-title` - Card title
-- `card-description` - Card description
-- `card-content` - Card content section
-- `card-footer` - Card footer section
+- `card` — Base card class
+- `card-{variant}` — Variant-specific styling
+- `card-header` — Card header section
+- `card-title` — Card title
+- `card-description` — Card description
+- `card-content` — Card content section
+- `card-footer` — Card footer section
 
-### Data Attributes
+## Data Attributes
 
-- `data-class="card"` - Semantic class identifier
-- `data-class="card-header"` - Header section identifier
-- `data-class="card-title"` - Title identifier
-- `data-class="card-description"` - Description identifier
-- `data-class="card-content"` - Content section identifier
-- `data-class="card-footer"` - Footer section identifier
+- `data-class="card"` — Semantic class identifier
+- `data-class="card-header"` — Header section identifier
+- `data-class="card-title"` — Title identifier
+- `data-class="card-content"` — Content section identifier
+- `data-class="card-footer"` — Footer section identifier

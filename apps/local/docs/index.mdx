@@ -1,108 +1,52 @@
 ---
-title: UI8Kit Components
-description: Interactive component documentation
-order: 1
+title: UI8Kit Documentation
+description: A comprehensive UI system for React and static HTML
+order: 0
 ---
 
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/Card'
+# UI8Kit Documentation
 
-# UI8Kit Components
+Welcome to the UI8Kit documentation. UI8Kit provides React components with TypeScript support and generates semantic static HTML.
 
-Welcome to the UI8Kit component documentation. This documentation is built using MDX and provides interactive examples of all UI8Kit components.
-
-## Getting Started
-
-UI8Kit provides a comprehensive set of React components with TypeScript support and consistent design system integration.
-
-### Quick Example
-
-<div className="example-preview" data-class="example-preview">
-  <Button variant="primary">Hello World</Button>
-  <Button variant="secondary">Secondary</Button>
-</div>
+## Quick Start
 
 ```tsx
-import { Button } from '@ui8kit/core'
+import { Button, Card, Stack } from '@ui8kit/core'
 
 export function App() {
   return (
-    <div>
-      <Button variant="primary">Hello World</Button>
-      <Button variant="secondary">Secondary</Button>
-    </div>
+    <Stack gap="4">
+      <Card>
+        <Button variant="primary">Get Started</Button>
+      </Card>
+    </Stack>
   )
 }
 ```
 
-## Component Categories
+## Features
 
-### Layout Components
-- **Card** - Flexible content containers
-- **Grid** - Responsive grid system
-- **Stack** - Vertical layout containers
+- **React Components** — Type-safe components with utility props
+- **Static Generation** — Generate semantic HTML without JavaScript
+- **Design Tokens** — Consistent theming with Shadcn design tokens
+- **Tailwind Integration** — Works with Tailwind CSS
 
-### Interactive Components
-- **Button** - Action buttons with variants
-- **Input** - Form input fields
-- **Select** - Dropdown selections
+## Documentation
 
-### Content Components
-- **Text** - Typography components
-- **Image** - Responsive images
-- **Icon** - Icon components
-
-### Navigation Components
-- **Navbar** - Top navigation
-- **Sidebar** - Side navigation
-- **Breadcrumb** - Navigation path
-
-## Featured Components
-
-### Button Component
-
-<div className="example-preview" data-class="example-preview">
-  <Button variant="primary" size="sm">Small</Button>
-  <Button variant="primary">Default</Button>
-  <Button variant="primary" size="lg">Large</Button>
-</div>
-
-<div className="example-preview" data-class="example-preview">
-  <Button variant="primary">Primary</Button>
-  <Button variant="secondary">Secondary</Button>
-  <Button variant="outline">Outline</Button>
-  <Button variant="ghost">Ghost</Button>
-</div>
+- [Components](/components) — Browse all UI components
+- [Components / Button](/components/button) — Button documentation
+- [Components / Card](/components/card) — Card documentation
 
 ## Design Principles
 
 ### Consistency
-All components follow the same design patterns and use the UI8Kit design tokens.
+All components follow the same design patterns and use shared design tokens.
 
 ### Accessibility
-Components are built with accessibility in mind, following WCAG guidelines.
+Components are built with WCAG guidelines in mind.
 
 ### Performance
-Components are optimized for performance with tree-shaking support.
+Optimized for tree-shaking and minimal bundle size.
 
 ### TypeScript
 Full TypeScript support with comprehensive type definitions.
-
-## Documentation Structure
-
-- **[Components](/docs/components)** - Individual component documentation
-- **[Button](/docs/components/button)** - Button component
-
-## Contributing
-
-This documentation is generated from component code and MDX files. To contribute:
-
-1. Update component implementations
-2. Modify MDX documentation files
-3. Run the documentation generator
-
-## Support
-
-- **GitHub Issues** - Report bugs and request features
-- **Discord** - Community support and discussions
-- **Documentation** - Comprehensive guides and tutorials
