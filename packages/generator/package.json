@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "echo 'No build needed - source is used directly'",
-    "dev": "bun --watch src/index.ts",
+    "dev": "echo 'Generator runs on-demand via generate command'",
     "test": "bun test",
     "lint": "bunx tsc --noEmit",
     "typecheck": "bunx tsc --noEmit"

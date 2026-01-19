@@ -30,7 +30,12 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@ui8kit/core': path.resolve(__dirname, './src/components/index'),
-      '@ui8kit/mdx-react': path.resolve(__dirname, '../../packages/mdx-react/src'),
+      // Point to browser-safe index (no fs, no scanner)
+      '@ui8kit/mdx-react': path.resolve(__dirname, '../../packages/mdx-react/src/index.ts'),
     },
+  },
+  optimizeDeps: {
+    // Exclude server-only modules from browser bundling
+    exclude: ['@ui8kit/mdx-react/server'],
   },
 })

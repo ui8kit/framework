@@ -1,24 +1,15 @@
 // =============================================================================
-// @ui8kit/mdx-react
+// @ui8kit/mdx-react - Browser-safe exports
 // =============================================================================
 // MDX processing package for UI8Kit documentation
 //
-// This package provides:
-// - MDX to React compilation (dev mode)
-// - MDX to Liquid/HTML generation (build mode)
-// - Documentation components (ComponentPreview, PropsTable, etc.)
-// - Props extraction from TypeScript
-// - Navigation generation for sidebars
+// This is the main entry point with BROWSER-SAFE exports only.
+// For Node.js-only features (scanner, generator), use:
+//   import { ... } from '@ui8kit/mdx-react/server'
 // =============================================================================
 
 // -----------------------------------------------------------------------------
-// Configuration
-// -----------------------------------------------------------------------------
-
-export { defineConfig, loadConfig, resolveConfigPath } from './config'
-
-// -----------------------------------------------------------------------------
-// Types
+// Types (always safe)
 // -----------------------------------------------------------------------------
 
 export type {
@@ -56,7 +47,7 @@ export type {
 } from './core/types'
 
 // -----------------------------------------------------------------------------
-// React Context & Hooks
+// React Context & Hooks (browser-safe)
 // -----------------------------------------------------------------------------
 
 export {
@@ -68,7 +59,7 @@ export {
 } from './context'
 
 // -----------------------------------------------------------------------------
-// Documentation Components
+// Documentation Components (browser-safe)
 // -----------------------------------------------------------------------------
 
 export {
@@ -86,7 +77,7 @@ export {
 export { ComponentExample, type ComponentExampleProps } from './components'
 
 // -----------------------------------------------------------------------------
-// Core Utilities
+// Core Parsing Utilities (browser-safe - no fs operations)
 // -----------------------------------------------------------------------------
 
 export {
@@ -97,17 +88,18 @@ export {
   parseMdxFile,
 } from './core/parser'
 
-export {
-  scanDocsTree,
-  flattenDocsTree,
-  buildSidebarFromTree,
-} from './core/scanner'
-
 export { slugify, uniqueSlug } from './core/slugify'
 
 // -----------------------------------------------------------------------------
-// Re-export MDX utilities from @mdx-js
+// Configuration Helper (browser-safe - type only)
 // -----------------------------------------------------------------------------
 
-export { compile as compileMDX } from '@mdx-js/mdx'
+export { defineConfig } from './config'
+
+// -----------------------------------------------------------------------------
+// Re-export MDX utilities from @mdx-js (optional peer deps)
+// -----------------------------------------------------------------------------
+
+// Note: These are re-exported for convenience but require @mdx-js/mdx and @mdx-js/react
+// to be installed as peer dependencies
 export { MDXProvider, useMDXComponents } from '@mdx-js/react'
