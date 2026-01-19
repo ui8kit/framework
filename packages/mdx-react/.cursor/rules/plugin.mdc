@@ -1,381 +1,494 @@
-# @ui8kit/mdx-react Development Rules
+# @ui8kit/mdx-react — Development Rules
 
-## Development Methodology
+## Core Architecture
 
-### TDD (Test-Driven Development) First
+### Dual-Mode Operation
 
-**MANDATORY**: Always write tests with Vitest BEFORE implementing components and logic.
+**Dev Mode (Vite Runtime)**
+- MDX loaded via `import.meta.glob`
+- Full React hydration
+- HMR support for live updates
+- Components accessible in DocsPage via `usePageContent()` hook
 
-#### TDD Workflow
-1. **RED**: Write failing test that describes desired behavior
-2. **GREEN**: Implement minimal code to make test pass
-3. **REFACTOR**: Improve code while keeping tests green
+**Build Mode (Node.js)**
+- File scanner finds MDX files in `docs/` folder
+- Generator creates static HTML in `dist/html/`
+- Navigation JSON generated in `dist/docs-nav.json`
+- Components rendered to placeholder HTML (future: Vite SSG for full rendering)
 
-#### Test Structure
+### Docs-First Routing
+
+File system structure defines routes — NO route config needed:
+
+```
+Input File Structure        URL Path         Output Path
+────────────────────────    ────────────     ──────────────────
+docs/index.mdx              /                index.html
+docs/components/index.mdx   /components      components/index.html
+docs/components/button.mdx  /components/button   components/button/index.html
+```
+
+**Implementation:**
+- Dev: DocsPage converts pathname → MDX file path → loads with glob
+- Build: Generator scans docs folder → generates matching output structure
+
+## Browser vs. Node.js Code Separation
+
+**CRITICAL RULE:** Strict code separation prevents Node.js APIs in browser
+
+### Export Structure
+
 ```typescript
-// 1. RED: Write failing test first
-describe('ComponentExample', () => {
-  it('should render component with default props', () => {
-    // Test will fail initially - component doesn't exist yet
-    render(<ComponentExample component={TestComponent} />);
-    expect(screen.getByRole('region')).toBeInTheDocument();
-  });
-});
+// ✅ src/index.ts - ONLY browser-safe exports
+export { parseFont matter, extractToc, slugify }        // No fs
+export { PageContentProvider, usePageContent }          // React hooks
+export { ComponentPreview, PropsTable, Callout, Steps } // Components
 
-// 2. GREEN: Implement minimal component
-export const ComponentExample = ({ component: Component }) => {
-  return <div data-testid="component-example"><Component /></div>;
-};
+// ❌ NOT exported from index.ts
+export { scanDocsTree }  // Uses fs → would break browser
 
-// 3. REFACTOR: Add proper implementation, types, etc.
-export const ComponentExample = forwardRef<HTMLDivElement, ComponentExampleProps>(
-  ({ component: Component, className, ...props }, ref) => {
-    return (
-      <div ref={ref} className={cn('component-example', className)} {...props}>
-        <Component />
-      </div>
-    );
-  }
-);
+// ✅ src/server.ts - ONLY Node.js exports
+export { scanDocsTree, flattenDocsTree, buildSidebarFromTree }  // Uses fs
+export { generateDocsFromMdx }  // Runs at build-time
+export { loadConfig, resolveConfigPath }  // Dynamic imports
 ```
 
-#### Test Categories
-- **Unit Tests**: Individual component behavior
-- **Integration Tests**: MDX compilation and rendering
-- **E2E Tests**: Full documentation rendering
-- **Performance Tests**: Bundle size and compilation speed
+### Vite Configuration Enforcement
 
-#### Running Tests
-```bash
-# Run all tests
-bun run test
-
-# Run tests in watch mode
-bun run test:watch
-
-# Run tests with coverage
-bun run test:coverage
-
-# Run specific test file
-bun run test ComponentExample.test.tsx
+```typescript
+// apps/local/vite.config.ts
+optimizeDeps: {
+  exclude: ['@ui8kit/mdx-react/server'],  // Don't bundle server code
+}
 ```
 
-## Project Structure
+### Import Rules
 
-### File Organization
-- `src/index.ts` - Main exports and public API
-- `src/compiler.ts` - MDX compilation logic and utilities
-- `src/vite-plugin.ts` - Vite integration and plugin logic
-- `src/components/` - React components for documentation
-- `src/utils/` - Helper functions and utilities
+```typescript
+// ✅ Correct - importing from main (browser)
+import { usePageContent, ComponentPreview } from '@ui8kit/mdx-react'
 
-### Naming Conventions
-- **Components**: PascalCase (ComponentExample, CodeBlock)
-- **Files**: kebab-case (component-example.tsx)
-- **Functions**: camelCase (compileUI8KitMDX)
-- **Constants**: UPPER_SNAKE_CASE (DEFAULT_THEME)
-- **Types**: PascalCase with suffix (MDXOptions, ComponentProps)
+// ✅ Correct - importing from server (Node.js only, build-time)
+import { scanDocsTree, generateDocsFromMdx } from '@ui8kit/mdx-react/server'
+
+// ❌ Wrong - would cause "fs not available in browser"
+import { scanDocsTree } from '@ui8kit/mdx-react'  // fs used in browser!
+```
+
+## File Organization
+
+```
+src/
+├── index.ts                      # Main entry (browser-safe ONLY)
+├── server.ts                     # Server entry (Node.js only)
+├── config.ts                     # Configuration helper
+│
+├── core/
+│   ├── types.ts                  # Shared type definitions
+│   ├── parser.ts                 # MDX parsing utilities (browser-safe)
+│   ├── slugify.ts                # URL slug generation (browser-safe)
+│   └── scanner.ts                # File scanning (Node.js only - NOT exported from index)
+│
+├── context/
+│   └── PageContext.tsx           # React context for page content
+│
+├── components/
+│   ├── index.ts                  # Re-exports all doc components
+│   ├── ComponentPreview.tsx       # Shadcn-style interactive preview
+│   ├── PropsTable.tsx            # Auto-generated from TypeScript
+│   ├── Callout.tsx               # Info/warning/error boxes
+│   ├── Steps.tsx                 # Step-by-step guides
+│   └── ComponentExample.tsx       # (Alias for ComponentPreview)
+│
+├── generator/
+│   ├── index.ts                  # Main generator entry point
+│   ├── mdx-compiler.ts           # Compile MDX to React/HTML
+│   ├── liquid-emitter.ts         # Generate Liquid templates
+│   ├── nav-generator.ts          # Generate navigation JSON
+│   ├── props-extractor.ts        # Parse TypeScript types
+│   └── mdx-compiler-worker.ts    # (Future: parallel compilation)
+│
+└── vite/
+    └── plugin.ts                 # Vite plugin configuration (if needed)
+```
 
 ## Code Standards
 
 ### TypeScript
-- Strict mode enabled
-- No `any` types - use proper type definitions
+
+**Strict mode requirements:**
+- No `any` types — use proper type definitions
+- All function parameters typed
+- Return types explicit (no inference)
 - Interface over type alias for object shapes
 - Generic constraints for reusable types
 
-### React Components
 ```typescript
 // ✅ Correct
-interface ComponentExampleProps {
-  component: React.ComponentType;
-  variants?: string[];
-  title?: string;
+interface FrontmatterType {
+  title: string
+  description?: string
+  order?: number
 }
 
-export const ComponentExample = forwardRef<HTMLDivElement, ComponentExampleProps>(
-  ({ component, variants, title }, ref) => {
-    // Implementation
-  }
-);
+function parseFrontmatter(content: string): FrontmatterType {
+  // ...
+}
 
-ComponentExample.displayName = 'ComponentExample';
+// ❌ Wrong
+function parse(content: any): any {  // No types!
+  // ...
+}
 ```
 
-### MDX Integration
-- Use `enforce: 'pre'` for MDX plugin in Vite
-- Provider import source: `'@mdx-js/react'`
-- JSX runtime: `'automatic'`
-- Support both sync and async compilation
+### React Components
 
-## Component Patterns
+**All components use forwardRef + displayName:**
 
-### Base Component Structure
 ```typescript
-import { forwardRef } from 'react';
-import { cn } from '@ui8kit/core';
-
-export interface ComponentNameProps {
-  // Required props
-  // Optional props with defaults
+export interface ComponentPreviewProps {
+  children: React.ReactNode
+  title?: string
+  variant?: 'default' | 'outlined'
+  className?: string
 }
 
-export const ComponentName = forwardRef<HTMLElement, ComponentNameProps>(
-  ({ className, ...props }, ref) => {
+export const ComponentPreview = forwardRef<HTMLDivElement, ComponentPreviewProps>(
+  ({ children, title, variant = 'default', className, ...rest }, ref) => {
     return (
-      <element
+      <div
         ref={ref}
-        className={cn('base-classes', className)}
+        className={cn('component-preview', `component-preview-${variant}`, className)}
+        data-class="component-preview"
+        {...rest}
+      >
+        {title && <h3 data-class="component-preview-title">{title}</h3>}
+        <div data-class="component-preview-content">
+          {children}
+        </div>
+      </div>
+    )
+  }
+)
+
+ComponentPreview.displayName = 'ComponentPreview'
+```
+
+**Data attributes (semantic CSS):**
+- Always include `data-class` for CSS generation
+- Use kebab-case naming (e.g., `data-class="component-preview-title"`)
+- Maps to: `{{ selector | from data-class | generate CSS }}`
+
+### Naming Conventions
+
+- **Components:** PascalCase (ComponentPreview, PropsTable)
+- **Exports:** camelCase (parseFont matter, extractToc)
+- **Files:** kebab-case (component-preview.tsx, props-table.tsx)
+- **Constants:** UPPER_SNAKE_CASE (DEFAULT_CONFIG)
+- **Types:** PascalCase suffix (FrontmatterType, TocEntry)
+
+## Development Rules
+
+### When Modifying Generator
+
+**Goal:** Create static HTML from MDX files
+
+**Key functions:**
+```typescript
+// In packages/generator/src/generator.ts
+private async generateMdxDocs(config: GeneratorConfig): Promise<void> {
+  // 1. Scan docs folder
+  const mdxFiles = await this.scanMdxFiles(docsDir)
+  
+  // 2. For each file, generate HTML
+  for (const file of mdxFiles) {
+    const urlPath = this.mdxFileToUrl(relativePath, basePath)
+    const outputPath = this.urlToOutputPath(urlPath, outputDir)
+    await this.generateMdxPlaceholder(file, outputPath, urlPath)
+  }
+  
+  // 3. Generate navigation JSON
+  const nav = await this.generateDocsNav(mdxFiles, docsDir, basePath)
+  await writeFile(navOutput, JSON.stringify(nav))
+}
+```
+
+**Path handling (CRITICAL):**
+```typescript
+// Use relative() for cross-platform compatibility
+const relativePath = relative(docsDir, filePath)  // Not: filePath.replace(docsDir, '')
+
+// URL structure
+/ → index.html
+/components → components/index.html
+/components/button → components/button/index.html
+
+// Implementation
+private urlToOutputPath(urlPath: string, outputDir: string): string {
+  if (urlPath === '/' || urlPath === '') {
+    return join(outputDir, 'index.html')
+  }
+  return join(outputDir, urlPath, 'index.html')
+}
+```
+
+### When Modifying Dev Mode (DocsPage)
+
+**Goal:** Load MDX dynamically from `docs/` folder
+
+**Key pattern:**
+```typescript
+// 1. Load all MDX files
+const mdxModules = import.meta.glob<MdxModule>('../../docs/**/*.mdx')
+
+// 2. Build available routes from files
+const availablePaths = Object.keys(mdxModules).map(path =>
+  path.replace('../../docs', '').replace(/\.mdx$/, '') || '/'
+)
+
+// 3. Convert pathname to MDX path
+function getMdxPath(pathname: string): string {
+  if (pathname === '/' || pathname === '') return '../../docs/index.mdx'
+  
+  const filePath = `../../docs/${pathname}.mdx`
+  if (mdxModules[filePath]) return filePath
+  
+  const indexPath = `../../docs/${pathname}/index.mdx`
+  if (mdxModules[indexPath]) return indexPath
+  
+  return null  // 404
+}
+
+// 4. Load and render
+const loader = mdxModules[mdxPath]
+const module = await loader()
+const { default: Content, frontmatter, toc } = module
+
+// 5. Provide context
+<PageContentProvider content={Content} frontmatter={frontmatter} toc={toc}>
+  <YourLayout />
+</PageContentProvider>
+```
+
+### When Modifying Components
+
+**Always use provided utilities:**
+```typescript
+import { cn } from '@ui8kit/core'           // Class name merging
+import { forwardRef, type ReactNode } from 'react'
+
+// ✅ Correct structure
+export const MyComponent = forwardRef<HTMLDivElement, MyComponentProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn('my-component', className)}
+        data-class="my-component"
         {...props}
       >
         {children}
-      </element>
-    );
+      </div>
+    )
   }
-);
-
-ComponentName.displayName = 'ComponentName';
+)
+MyComponent.displayName = 'MyComponent'
 ```
 
-### Component with Variants
-```typescript
-export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
-}
-
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', className, ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cn(
-          'button-base',
-          {
-            'button-primary': variant === 'primary',
-            'button-secondary': variant === 'secondary',
-            'button-outline': variant === 'outline',
-            'button-sm': size === 'sm',
-            'button-md': size === 'md',
-            'button-lg': size === 'lg',
-          },
-          className
-        )}
-        {...props}
-      />
-    );
-  }
-);
-```
-
-## Testing Patterns
+## Testing Strategy
 
 ### Unit Tests
-```typescript
-describe('ComponentExample', () => {
-  it('should render component with default props', () => {
-    render(<ComponentExample component={TestComponent} />);
-    expect(screen.getByRole('region')).toBeInTheDocument();
-  });
 
-  it('should handle variant switching', async () => {
-    render(<ComponentExample component={TestComponent} variants={['primary', 'secondary']} />);
-    const button = screen.getByRole('button', { name: /secondary/i });
-    await userEvent.click(button);
-    // Assertions
-  });
-});
+```typescript
+import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { ComponentPreview } from '../components/ComponentPreview'
+
+describe('ComponentPreview', () => {
+  it('should render children', () => {
+    render(
+      <ComponentPreview>
+        <button>Test</button>
+      </ComponentPreview>
+    )
+    
+    expect(screen.getByRole('button', { name: /test/i })).toBeInTheDocument()
+  })
+  
+  it('should have correct data attributes', () => {
+    const { container } = render(<ComponentPreview />)
+    expect(container.querySelector('[data-class="component-preview"]')).toBeInTheDocument()
+  })
+})
 ```
 
 ### Integration Tests
+
 ```typescript
-describe('MDX compilation', () => {
-  it('should compile MDX with custom components', async () => {
-    const mdxSource = `
-      import { TestComponent } from './components';
-      <TestComponent />
-    `;
+describe('MDX processing', () => {
+  it('should extract frontmatter correctly', async () => {
+    const mdx = `---
+title: Test
+description: Test description
+---
+Content`
+    
+    const fm = parseFrontmatter(mdx)
+    expect(fm.title).toBe('Test')
+    expect(fm.description).toBe('Test description')
+  })
+})
+```
 
-    const result = await compileUI8KitMDX(mdxSource, {
-      components: { TestComponent }
-    });
-
-    expect(result).toContain('React.createElement');
-  });
-});
+**Running tests:**
+```bash
+bun run test                 # All tests
+bun run test:watch         # Watch mode
+bun test -- ComponentPreview.test.tsx  # Specific file
 ```
 
 ## Performance Guidelines
 
 ### Bundle Size
-- Keep component bundles under 50KB gzipped
-- Use dynamic imports for heavy features
-- Implement proper tree shaking
+- Main entry (`@ui8kit/mdx-react`): <30KB gzipped
+- Server entry can be larger (not bundled for browser)
+- Use dynamic imports for large features
 
 ### Compilation Speed
-- MDX compilation should be <100ms per file
-- Cache expensive operations
-- Optimize AST transformations
+- MDX parsing: <50ms per file (regex-based)
+- File scanning: <100ms for typical projects
+- Cache frontmatter if scanning repeatedly
 
-### Runtime Performance
-- Minimize re-renders with proper memoization
-- Use lazy loading for code blocks
-- Optimize component updates
+### Memory Usage
+- Avoid loading entire MDX source in memory
+- Stream large files if processing
+- Clean up event listeners in cleanup functions
 
-## Error Handling
+## Common Patterns
 
-### Compilation Errors
+### Adding a New Utility Function
+
+1. Add to `src/core/parser.ts` (if browser-safe)
+2. Export from `src/index.ts`
+3. Add tests in `test/parser.test.ts`
+4. Update README with usage example
+
 ```typescript
-try {
-  const result = await compileUI8KitMDX(source, options);
-  return result;
-} catch (error) {
-  console.error('MDX compilation failed:', error);
-  throw new Error(`Failed to compile MDX: ${error.message}`);
+// ✅ Browser-safe utility
+export function newUtility(input: string): string {
+  return input.trim().toLowerCase()
+}
+
+// ❌ NOT browser-safe (uses fs)
+export async function scanFiles(dir: string): Promise<string[]> {
+  return readdir(dir)  // Can't use in browser!
 }
 ```
 
-### Component Errors
+### Adding a New Component
+
+1. Create `src/components/NewComponent.tsx`
+2. Export from `src/components/index.ts`
+3. Export from `src/index.ts`
+4. Add tests in `test/NewComponent.test.tsx`
+5. Document in README
+
+### Adding a New Generator Feature
+
+1. Add logic to `packages/generator/src/generator.ts`
+2. If Node.js specific, can use fs/path directly
+3. Add logging for debugging
+4. Test with `bun run generate`
+
+## Error Handling
+
+### Browser-Safe Code
+
 ```typescript
-export const SafeComponent = ({ children, fallback = null }) => {
+// ✅ Graceful fallback
+export function parseConfig(json: string) {
   try {
-    return <>{children}</>;
+    return JSON.parse(json)
   } catch (error) {
-    console.error('Component render error:', error);
-    return fallback;
+    console.error('Invalid config JSON:', error)
+    return null
   }
-};
+}
 ```
 
-## Accessibility
+### Server Code
 
-### ARIA Labels
 ```typescript
-export const AccessibleComponent = ({ label, children }) => {
-  return (
-    <div role="region" aria-label={label}>
-      {children}
-    </div>
-  );
-};
+// ✅ Detailed error with recovery
+export async function scanDocs(dir: string) {
+  try {
+    return await readdir(dir)
+  } catch (error) {
+    console.error(`Failed to scan ${dir}:`, error)
+    return []  // Return empty instead of crashing
+  }
+}
 ```
 
-### Keyboard Navigation
+## Debugging
+
+### Enable Verbose Logging
+
 ```typescript
-export const KeyboardNavigable = ({ onSelect, children }) => {
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      onSelect();
-    }
-  };
-
-  return (
-    <div
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      onClick={onSelect}
-    >
-      {children}
-    </div>
-  );
-};
+// In generator config
+await generator.generate({
+  ...config,
+  verbose: true  // Shows detailed output
+})
 ```
 
-## Documentation
+### Check Available Modules
 
-### Component Documentation
 ```typescript
-/**
- * ComponentExample provides an interactive demo of React components
- * with variant switching and code display capabilities.
- *
- * @example
- * ```tsx
- * <ComponentExample
- *   component={Button}
- *   variants={['primary', 'secondary']}
- *   title="Button Variants"
- * />
- * ```
- */
-export const ComponentExample = forwardRef<HTMLDivElement, ComponentExampleProps>(
-  // Implementation
-);
+// In DocsPage
+console.log('Available MDX paths:', Object.keys(mdxModules))
+console.log('Looking for:', mdxPath)
+console.log('Module exists:', !!mdxModules[mdxPath])
 ```
 
-### MDX Usage Examples
-```mdx
----
-title: Component Documentation
----
+### Validate Frontmatter Parsing
 
-import { ComponentExample } from '@ui8kit/mdx-react'
-import { Button } from '@ui8kit/core'
-
-# Button Component
-
-<ComponentExample
-  component={Button}
-  variants={['primary', 'secondary']}
-  title="Interactive Button Demo"
-/>
+```typescript
+const content = await readFile('test.mdx', 'utf-8')
+const fm = parseFrontmatter(content)
+console.log('Parsed frontmatter:', fm)
 ```
-
-## Git Workflow
-
-### Commit Messages
-- `feat:` - New features
-- `fix:` - Bug fixes
-- `docs:` - Documentation changes
-- `style:` - Code style changes
-- `refactor:` - Code refactoring
-- `test:` - Testing changes
-- `chore:` - Maintenance tasks
-
-### Branch Naming
-- `feature/component-example` - New features
-- `fix/codeblock-highlighting` - Bug fixes
-- `docs/api-reference` - Documentation
-- `refactor/component-structure` - Refactoring
 
 ## Deployment
 
 ### Build Process
+
 ```bash
-# Development
-bun run dev
-
-# Production build
-bun run build
-
 # Type checking
-bun run type-check
+bun run typecheck
 
 # Testing
 bun run test
-bun run test:coverage
+
+# Build
+bun run build
+
+# Verify output
+ls -la dist/
 ```
 
-### Publishing
-```bash
-# Version bump
-bun run version:patch  # or :minor :major
+### Publishing to NPM
 
-# Publish
+```bash
+# Version bump and publish
+bun run version:patch   # or :minor :major
 bun run publish
 ```
 
-## Monitoring
+## Resources
 
-### Performance Metrics
-- Bundle size analysis
-- Compilation time tracking
-- Memory usage monitoring
-- Error rate tracking
-
-### Quality Metrics
-- Test coverage >90%
-- TypeScript strict mode compliance
-- ESLint rule compliance
-- Bundle size <50KB gzipped
+- **@mdx-js/mdx** — MDX specification and compiler
+- **Vite** — Module resolution with `import.meta.glob`
+- **AGENTS.md** — Agent development guide
+- **README.md** — User-facing documentation
+- **project/report/** — Architecture decisions
