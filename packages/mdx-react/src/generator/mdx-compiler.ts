@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import { join, basename, dirname } from 'node:path'
+import { basename } from 'node:path'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { compile, run } from '@mdx-js/mdx'
@@ -9,11 +9,9 @@ import type {
   TocEntry, 
   GeneratedMdxPage, 
   GeneratedDemo,
-  MdxGeneratorConfig,
   TocConfig,
 } from '../core/types'
 import { parseFrontmatter, extractToc } from '../core/parser'
-import { slugify } from '../core/slugify'
 
 // ============================================================================
 // MDX Compiler - Compiles MDX to React and renders to HTML
@@ -238,73 +236,3 @@ function generateLiquidTemplate(
   return lines.join('\n')
 }
 
-/**
- * Parse frontmatter from source
- */
-function parseFrontmatter(source: string): { frontmatter: Frontmatter; content: string } {
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/
-  const match = frontmatterRegex.exec(source)
-  
-  if (!match) {
-    return { frontmatter: {}, content: source }
-  }
-  
-  const frontmatterBlock = match[1]
-  const content = source.slice(match[0].length)
-  const frontmatter: Frontmatter = {}
-  
-  // Parse YAML-like frontmatter
-  for (const line of frontmatterBlock.split('\n')) {
-    const colonIndex = line.indexOf(':')
-    if (colonIndex === -1) continue
-    
-    const key = line.slice(0, colonIndex).trim()
-    let value: string | number | boolean = line.slice(colonIndex + 1).trim()
-    
-    // Remove quotes
-    if ((value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))) {
-      value = value.slice(1, -1)
-    } else if (/^\d+$/.test(value)) {
-      value = parseInt(value, 10)
-    } else if (value === 'true') {
-      value = true
-    } else if (value === 'false') {
-      value = false
-    }
-    
-    frontmatter[key] = value
-  }
-  
-  return { frontmatter, content }
-}
-
-/**
- * Extract TOC from content
- */
-function extractToc(content: string, config?: TocConfig): TocEntry[] {
-  const { minLevel = 2, maxLevel = 3 } = config || {}
-  const headingRegex = /^(#{1,6})\s+(.+?)$/gm
-  const entries: TocEntry[] = []
-  const slugs = new Set<string>()
-  
-  let match
-  while ((match = headingRegex.exec(content)) !== null) {
-    const depth = match[1].length
-    const text = match[2].trim()
-    
-    if (depth < minLevel || depth > maxLevel) continue
-    
-    let slug = slugify(text)
-    let counter = 1
-    const base = slug
-    while (slugs.has(slug)) {
-      slug = `${base}-${counter++}`
-    }
-    slugs.add(slug)
-    
-    entries.push({ depth, text, slug })
-  }
-  
-  return entries
-}

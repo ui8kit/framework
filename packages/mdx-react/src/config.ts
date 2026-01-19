@@ -1,4 +1,4 @@
-import type { MdxConfig } from './types'
+import type { MdxConfig } from './core/types'
 
 /**
  * Define MDX configuration with type safety
@@ -22,20 +22,8 @@ export function defineConfig(config: MdxConfig): MdxConfig {
     // Defaults
     basePath: '/docs',
     outputDir: './dist/docs',
-    toc: {
-      minLevel: 2,
-      maxLevel: 3,
-    },
     sidebar: 'auto',
     sidebarSort: 'frontmatter',
-    mdx: {
-      gfm: true,
-      remarkPlugins: [],
-      rehypePlugins: [],
-    },
-    site: {
-      lang: 'en',
-    },
     // User overrides
     ...config,
     // Deep merge nested objects

@@ -1,6 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { join, relative, basename, dirname } from 'node:path'
-import type { DocsTreeEntry, Frontmatter } from './types'
+import type { DocsTreeEntry } from './types'
 import { parseFrontmatter } from './parser'
 
 /**
@@ -42,7 +42,7 @@ async function scanDirectory(
 ): Promise<DocsTreeEntry[]> {
   const entries: DocsTreeEntry[] = []
   
-  let dirEntries: Awaited<ReturnType<typeof readdir>>
+  let dirEntries
   try {
     dirEntries = await readdir(currentDir, { withFileTypes: true })
   } catch {

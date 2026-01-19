@@ -4,7 +4,6 @@ import type {
   DocsTreeEntry, 
   NavItem, 
   DocsNavigation,
-  Frontmatter,
 } from '../core/types'
 
 // ============================================================================

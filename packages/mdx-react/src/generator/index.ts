@@ -3,13 +3,11 @@ import { join, dirname, relative } from 'node:path'
 import type { 
   MdxGeneratorConfig, 
   GeneratedMdxPage,
-  DocsTreeEntry,
-  DocsNavigation,
 } from '../core/types'
 import { compileMdxFile } from './mdx-compiler'
 import { emitLiquidPage, generateDocsLayoutTemplate, generateDocsNavTemplate } from './liquid-emitter'
 import { generateDocsNavigation } from './nav-generator'
-import { extractPropsFromDirectory, generatePropsData } from './props-extractor'
+import { generatePropsData } from './props-extractor'
 import { scanDocsTree } from '../core/scanner'
 
 // ============================================================================
@@ -143,15 +141,15 @@ async function collectMdxFiles(dir: string): Promise<string[]> {
 async function loadComponents(
   componentMap: Record<string, string>,
   baseDir: string
-): Promise<Record<string, React.ComponentType>> {
-  const components: Record<string, React.ComponentType> = {}
+): Promise<Record<string, React.ComponentType<any>>> {
+  const components: Record<string, React.ComponentType<any>> = {}
   
   // Add built-in doc components
   const { ComponentPreview, PropsTable, Callout, Steps } = await import('../components')
-  components.ComponentPreview = ComponentPreview
-  components.PropsTable = PropsTable
-  components.Callout = Callout
-  components.Steps = Steps
+  components.ComponentPreview = ComponentPreview as any
+  components.PropsTable = PropsTable as any
+  components.Callout = Callout as any
+  components.Steps = Steps as any
   
   // Load user components
   for (const [name, importPath] of Object.entries(componentMap)) {

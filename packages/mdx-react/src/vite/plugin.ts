@@ -20,41 +20,17 @@ import type { VitePluginOptions } from '../core/types'
  * }
  * ```
  */
-export function mdxPlugin(options: VitePluginOptions = {}): Plugin[] {
-  const { docsDir = './docs' } = options
-  
+export function mdxPlugin(_options: VitePluginOptions = {}): Plugin[] {
   return [
     // Pre-configured MDX plugin
     {
       name: 'ui8kit-mdx-pre',
       enforce: 'pre',
       
-      async config() {
-        // Dynamically import MDX plugin to avoid bundling issues
-        const mdx = await import('@mdx-js/rollup')
-        const remarkFrontmatter = await import('remark-frontmatter')
-        const remarkMdxFrontmatter = await import('remark-mdx-frontmatter')
-        const remarkGfm = await import('remark-gfm')
-        const rehypeSlug = await import('rehype-slug')
-        
-        return {
-          plugins: [
-            {
-              ...mdx.default({
-                remarkPlugins: [
-                  remarkGfm.default,
-                  remarkFrontmatter.default,
-                  [remarkMdxFrontmatter.default, { name: 'frontmatter' }],
-                ],
-                rehypePlugins: [
-                  rehypeSlug.default,
-                ],
-                providerImportSource: '@mdx-js/react',
-              }),
-              enforce: 'pre',
-            },
-          ],
-        }
+      config() {
+        // Note: MDX plugin is configured via vite.config.ts directly
+        // This is a placeholder for future expansion
+        return undefined
       },
     },
     

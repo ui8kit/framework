@@ -88,7 +88,7 @@ function parsePropsInterface(interfaceBody: string): PropDefinition[] {
       type: cleanType(type.trim()),
       required: !optional,
       description: docComment?.trim(),
-      defaultValue: extractDefaultValue(name, type),
+      defaultValue: extractDefaultValue(name),
     })
   }
   
@@ -108,7 +108,7 @@ function cleanType(type: string): string {
 /**
  * Try to extract default value from type
  */
-function extractDefaultValue(name: string, type: string): string | undefined {
+function extractDefaultValue(name: string): string | undefined {
   // Common defaults based on prop names and types
   const commonDefaults: Record<string, string> = {
     variant: "'default'",

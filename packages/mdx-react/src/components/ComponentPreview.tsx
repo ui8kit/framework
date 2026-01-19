@@ -1,4 +1,4 @@
-import React, { Children, isValidElement, cloneElement } from 'react'
+import React, { Children, isValidElement } from 'react'
 
 export interface ComponentPreviewProps {
   /**

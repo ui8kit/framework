@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo, type ReactNode, type ComponentType } from 'react'
-import type { Frontmatter, TocEntry, PageContent } from '../types'
+import type { Frontmatter, TocEntry, PageContent } from '../core/types'
 
 /**
  * Page content context value

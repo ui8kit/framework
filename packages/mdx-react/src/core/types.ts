@@ -1,4 +1,4 @@
-import type { ReactNode, ComponentType } from 'react'
+import type { ComponentType } from 'react'
 
 // ============================================================================
 // Generator Config Types (for generator.config.ts)
