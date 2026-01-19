@@ -165,7 +165,38 @@ export const config: GeneratorConfig = {
     variantsDir: './src/variants',
     outputDir: './src/elements',
     componentsImportPath: '../components'
-  }
+  },
+
+  // MDX Documentation Generation
+  mdx: {
+    enabled: true,
+    docsDir: './docs',
+    outputDir: './views/pages/docs',
+    demosDir: './views/partials/demos',
+    navOutput: './dist/docs-nav.json',
+    basePath: '/docs',
+    
+    // Components available in MDX without explicit import
+    components: {
+      Button: '@/components/ui/Button',
+      Card: '@/components/Card',
+      Badge: '@/components/ui/Badge',
+      Stack: '@/components/ui/Stack',
+      Box: '@/components/ui/Box',
+      Grid: '@/components/Grid',
+      Text: '@/components/ui/Text',
+      Title: '@/components/ui/Title',
+    },
+    
+    // TypeScript source for props extraction
+    propsSource: './src/components',
+    
+    // Table of Contents configuration
+    toc: {
+      minLevel: 2,
+      maxLevel: 3,
+    },
+  },
 
   // Note: No render section needed - renderer works without context providers
 };

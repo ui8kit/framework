@@ -127,6 +127,56 @@ export interface GeneratorConfig {
      */
     componentsImportPath?: string;
   };
+  /**
+   * MDX documentation generation configuration
+   */
+  mdx?: {
+    /**
+     * Enable MDX documentation generation
+     */
+    enabled: boolean;
+    /**
+     * Directory containing MDX documentation files
+     * @example './docs'
+     */
+    docsDir: string;
+    /**
+     * Output directory for Liquid page templates
+     * @example './views/pages/docs'
+     */
+    outputDir: string;
+    /**
+     * Output directory for demo partials
+     * @example './views/partials/demos'
+     */
+    demosDir?: string;
+    /**
+     * Output path for navigation JSON (for sidebar)
+     * @example './dist/docs-nav.json'
+     */
+    navOutput?: string;
+    /**
+     * Base URL path for documentation
+     * @example '/docs'
+     */
+    basePath?: string;
+    /**
+     * Components available in MDX without explicit import
+     */
+    components?: Record<string, string>;
+    /**
+     * Directory containing TypeScript component sources for props extraction
+     * @example './src/components'
+     */
+    propsSource?: string;
+    /**
+     * Table of Contents configuration
+     */
+    toc?: {
+      minLevel?: number;
+      maxLevel?: number;
+    };
+  };
 }
 
 // RouteConfig is now defined in @ui8kit/render package
@@ -184,6 +234,9 @@ export class Generator {
     // 8. Generate variant elements (optional)
     await this.generateVariantElements(config);
 
+    // 9. Generate MDX documentation (optional)
+    await this.generateMdxDocs(config);
+
     console.log('✅ Static site generation completed!');
   }
 
@@ -219,6 +272,37 @@ export class Generator {
       console.log(`✅ Generated ${result.files.size} element files`);
     } catch (error) {
       console.warn('⚠️ Failed to generate variant elements:', error);
+    }
+  }
+
+  private async generateMdxDocs(config: GeneratorConfig): Promise<void> {
+    if (!config.mdx?.enabled) return;
+
+    console.log('📚 Generating MDX documentation...');
+
+    try {
+      // Dynamic import to avoid bundling @ui8kit/mdx-react if not used
+      const { generateDocsFromMdx } = await import('@ui8kit/mdx-react/generator');
+
+      await generateDocsFromMdx({
+        config: {
+          enabled: config.mdx.enabled,
+          docsDir: config.mdx.docsDir,
+          outputDir: config.mdx.outputDir,
+          demosDir: config.mdx.demosDir,
+          navOutput: config.mdx.navOutput,
+          basePath: config.mdx.basePath,
+          components: config.mdx.components,
+          propsSource: config.mdx.propsSource,
+          toc: config.mdx.toc,
+        },
+        baseDir: process.cwd(),
+        htmlMode: config.html.mode || 'tailwind',
+        verbose: true,
+      });
+    } catch (error) {
+      console.warn('⚠️ Failed to generate MDX documentation:', error);
+      console.warn('   Make sure @ui8kit/mdx-react is installed');
     }
   }
 

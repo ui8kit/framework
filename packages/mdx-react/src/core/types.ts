@@ -1,27 +1,102 @@
 import type { ReactNode, ComponentType } from 'react'
 
 // ============================================================================
-// Configuration Types
+// Generator Config Types (for generator.config.ts)
 // ============================================================================
 
 /**
- * MDX configuration for @ui8kit/mdx-react
+ * MDX configuration section for GeneratorConfig
+ * Added to generator.config.ts under `mdx` key
  */
-export interface MdxConfig {
+export interface MdxGeneratorConfig {
+  /**
+   * Enable MDX documentation generation
+   */
+  enabled: boolean
+
   /**
    * Directory containing MDX documentation files
    * Relative to config file location
+   * @example './docs'
    */
   docsDir: string
 
   /**
-   * Output directory for generated HTML pages
+   * Output directory for Liquid page templates
+   * @example './views/pages/docs'
+   */
+  outputDir: string
+
+  /**
+   * Output directory for demo partials
+   * @example './views/partials/demos'
+   */
+  demosDir?: string
+
+  /**
+   * Output path for navigation JSON (for sidebar)
+   * @example './dist/docs-nav.json'
+   */
+  navOutput?: string
+
+  /**
+   * Base URL path for documentation
+   * @example '/docs' → /docs/components/button
+   */
+  basePath?: string
+
+  /**
+   * Components available in MDX without explicit import
+   * Key: component name in MDX
+   * Value: import path (can use @ alias)
+   * 
+   * @example
+   * {
+   *   Button: '@/components/ui/Button',
+   *   Card: '@/components/Card',
+   * }
+   */
+  components?: Record<string, string>
+
+  /**
+   * Directory containing TypeScript component sources
+   * Used for automatic props extraction
+   * @example './src/components'
+   */
+  propsSource?: string
+
+  /**
+   * MDX compiler options
+   */
+  mdxOptions?: MdxCompilerOptions
+
+  /**
+   * Table of Contents configuration
+   */
+  toc?: TocConfig
+}
+
+// ============================================================================
+// Standalone MDX Config (for mdx.config.ts - dev mode)
+// ============================================================================
+
+/**
+ * Standalone MDX configuration for development
+ * Used in mdx.config.ts for Vite dev server
+ */
+export interface MdxConfig {
+  /**
+   * Directory containing MDX documentation files
+   */
+  docsDir: string
+
+  /**
+   * Output directory for generated pages (build mode)
    */
   outputDir?: string
 
   /**
    * Base URL path for documentation
-   * @example '/docs' → /docs/components/button
    */
   basePath?: string
 
@@ -37,8 +112,6 @@ export interface MdxConfig {
 
   /**
    * Components available in MDX without explicit import
-   * Key: component name in MDX
-   * Value: import path (can use @ alias)
    */
   components?: Record<string, string>
 
@@ -54,8 +127,6 @@ export interface MdxConfig {
 
   /**
    * Sidebar configuration
-   * 'auto' - Generate from file structure
-   * Array - Manual sidebar items
    */
   sidebar?: 'auto' | SidebarItem[]
 
@@ -64,6 +135,10 @@ export interface MdxConfig {
    */
   sidebarSort?: 'alphabetical' | 'frontmatter'
 }
+
+// ============================================================================
+// Shared Config Types
+// ============================================================================
 
 export interface SiteConfig {
   title?: string
@@ -182,7 +257,7 @@ export interface PageContent {
 }
 
 // ============================================================================
-// Docs Tree Types (for sidebar generation)
+// Docs Tree Types (for sidebar/nav generation)
 // ============================================================================
 
 /**
@@ -220,48 +295,67 @@ export interface DocsTreeEntry {
   isIndex?: boolean
 }
 
+/**
+ * Navigation structure for Liquid sidebar
+ */
+export interface NavItem {
+  title: string
+  path: string
+  order?: number
+  children?: NavItem[]
+}
+
+export interface DocsNavigation {
+  items: NavItem[]
+  generated: string // ISO timestamp
+}
+
 // ============================================================================
-// Generator Types
+// Component Props Types
 // ============================================================================
 
 /**
- * Options for MDX generator
+ * Extracted prop definition for PropsTable
  */
-export interface GeneratorOptions {
-  /**
-   * Resolved MDX config
-   */
-  config: MdxConfig
-
-  /**
-   * Absolute path to config file directory
-   */
-  configDir: string
-
-  /**
-   * Components map (resolved paths)
-   */
-  components?: Record<string, ComponentType>
-
-  /**
-   * Custom layout component
-   */
-  layout?: ComponentType<{ children: ReactNode; frontmatter: Frontmatter; toc: TocEntry[] }>
+export interface PropDefinition {
+  name: string
+  type: string
+  required: boolean
+  defaultValue?: string
+  description?: string
 }
 
 /**
- * Result of generating a single page
+ * Component props metadata
  */
-export interface GeneratedPage {
+export interface ComponentPropsData {
+  componentName: string
+  props: PropDefinition[]
+  sourceFile: string
+}
+
+// ============================================================================
+// Generator Output Types
+// ============================================================================
+
+/**
+ * Result of generating a single MDX page
+ */
+export interface GeneratedMdxPage {
   /**
    * URL path
    */
   urlPath: string
 
   /**
-   * Generated HTML content
+   * Generated Liquid template content
    */
-  html: string
+  liquidContent: string
+
+  /**
+   * Generated HTML content (for html mode)
+   */
+  htmlContent: string
 
   /**
    * Frontmatter from source
@@ -272,6 +366,31 @@ export interface GeneratedPage {
    * Table of contents
    */
   toc: TocEntry[]
+
+  /**
+   * Demo partials extracted from ComponentPreview
+   */
+  demos: GeneratedDemo[]
+}
+
+/**
+ * Generated demo partial
+ */
+export interface GeneratedDemo {
+  /**
+   * Demo identifier (e.g., 'button-primary')
+   */
+  id: string
+
+  /**
+   * Liquid partial content
+   */
+  liquidContent: string
+
+  /**
+   * Original JSX code for display
+   */
+  code: string
 }
 
 // ============================================================================
@@ -286,4 +405,14 @@ export interface VitePluginOptions {
    * Path to mdx.config.ts (auto-detected if not provided)
    */
   configPath?: string
+
+  /**
+   * Docs directory (relative to project root)
+   */
+  docsDir?: string
+
+  /**
+   * Components to inject into MDX scope
+   */
+  components?: Record<string, string>
 }

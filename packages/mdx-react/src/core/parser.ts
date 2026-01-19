@@ -1,4 +1,4 @@
-import type { Frontmatter, TocEntry, TocConfig } from '../types'
+import type { Frontmatter, TocEntry, TocConfig } from './types'
 import { slugify, uniqueSlug } from './slugify'
 
 /**

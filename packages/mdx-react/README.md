@@ -1,22 +1,18 @@
 # @ui8kit/mdx-react
 
-MDX processing package for UI8Kit documentation. Provides isolated MDX → React → HTML pipeline.
+MDX processing package for UI8Kit documentation with two modes:
 
-## Architecture
+- **Dev Mode** — Vite runtime with HMR for interactive component previews
+- **Build Mode** — Generate Liquid templates and HTML for production
 
-This package focuses **only on content processing**:
+## Philosophy
 
-- **MDX Compilation** — Convert MDX files to React components
-- **Frontmatter & TOC** — Extract metadata and table of contents
-- **Docs Scanner** — Build navigation tree from file structure
-- **React Hooks** — Access page content in components
+```
+UI8Kit = shadcn tokens + mantine props + spectre CSS-first
+```
 
-**What it does NOT do** (application responsibility):
-
-- Routing
-- Sidebar UI
-- Layouts
-- Theme/styling
+One source → React / Liquid / Pure HTML with identical design.
+Zero JavaScript for interactivity (CSS-only toggles via `<details>`).
 
 ## Installation
 
@@ -26,149 +22,144 @@ bun add @ui8kit/mdx-react
 
 ## Configuration
 
-Create `mdx.config.ts` in your application:
+### In generator.config.ts (Build Mode)
 
 ```ts
-import { defineConfig } from '@ui8kit/mdx-react'
+import type { GeneratorConfig } from '@ui8kit/generator'
 
-export default defineConfig({
-  docsDir: './docs',
-  outputDir: './dist/docs',
-  basePath: '/docs',
+export const config: GeneratorConfig = {
+  app: { name: 'UI8Kit Docs' },
   
-  site: {
-    title: 'My Docs',
-    description: 'Documentation site',
+  html: {
+    mode: 'semantic', // 'tailwind' | 'semantic' | 'inline'
+    // ...
   },
   
-  components: {
-    Button: '@/components/ui/Button',
-    Card: '@/components/Card',
+  mdx: {
+    enabled: true,
+    docsDir: './docs',
+    outputDir: './views/pages/docs',
+    demosDir: './views/partials/demos',
+    navOutput: './dist/docs-nav.json',
+    basePath: '/docs',
+    
+    components: {
+      Button: '@/components/ui/Button',
+      Card: '@/components/Card',
+    },
+    
+    propsSource: './src/components',
   },
-  
-  toc: {
-    minLevel: 2,
-    maxLevel: 3,
-  },
-  
-  sidebar: 'auto', // or manual array
-})
-```
-
-## Usage
-
-### In React Components
-
-```tsx
-import { usePageContent, useToc } from '@ui8kit/mdx-react'
-
-function DocsPage() {
-  const { Content, frontmatter, toc } = usePageContent()
-  
-  return (
-    <article>
-      <h1>{frontmatter.title}</h1>
-      <nav>
-        {toc.map(item => (
-          <a key={item.slug} href={`#${item.slug}`}>
-            {item.text}
-          </a>
-        ))}
-      </nav>
-      <Content />
-    </article>
-  )
 }
 ```
 
-### Scan Docs Tree (for Sidebar)
-
-```tsx
-import { scanDocsTree, buildSidebarFromTree } from '@ui8kit/mdx-react/utils'
-
-// In your app setup or build script
-const tree = await scanDocsTree('./docs', {
-  basePath: '/docs',
-  sort: 'frontmatter',
-})
-
-const sidebarItems = buildSidebarFromTree(tree)
-```
-
-### Static Generation
+### In vite.config.ts (Dev Mode)
 
 ```ts
-import { MdxGenerator } from '@ui8kit/mdx-react/generator'
+import { mdxPlugin } from '@ui8kit/mdx-react/vite'
+import react from '@vitejs/plugin-react-swc'
 
-const generator = new MdxGenerator({
-  configPath: './mdx.config.ts',
-  verbose: true,
-})
-
-await generator.generate()
-// Outputs: dist/docs/index.html, dist/docs/components/button/index.html, etc.
+export default {
+  plugins: [
+    mdxPlugin(),
+    react(),
+  ],
+}
 ```
 
-## File Structure
+## Documentation Components
 
-```
-docs/
-├── index.mdx              → /docs
-├── getting-started.mdx    → /docs/getting-started
-└── components/
-    ├── index.mdx          → /docs/components
-    ├── button.mdx         → /docs/components/button
-    └── card.mdx           → /docs/components/card
-```
+### ComponentPreview
 
-## MDX Files
+Shadcn-style interactive preview with CSS-only code toggle:
 
 ```mdx
----
-title: Button Component
-description: Interactive button with variants
-order: 1
----
+<ComponentPreview title="Button Variants">
+  <Button variant="primary">Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+</ComponentPreview>
+```
 
-# Button
+### PropsTable
 
-The Button component provides interactive buttons.
+Auto-generated props documentation from TypeScript:
 
-## Usage
+```mdx
+<PropsTable component="Button" />
+```
 
-<Button variant="primary">Click me</Button>
+### Callout
 
-## API
+Info/warning/error boxes:
 
-| Prop | Type | Default |
-|------|------|---------|
-| variant | string | 'default' |
+```mdx
+<Callout type="warning" title="Deprecation Notice">
+  This API will be removed in v2.0
+</Callout>
+```
+
+### Steps
+
+Step-by-step guides:
+
+```mdx
+<Steps>
+  Install the package
+  Import the component
+  Use in your code
+</Steps>
+```
+
+## Build Output
+
+### HTML Modes
+
+| Mode | Output |
+|------|--------|
+| `tailwind` | `class="flex gap-4"` + `data-class="preview"` |
+| `semantic` | `class="preview"` (data-class → class) |
+| `inline` | `class="preview"` + `<style>` CSS inlined |
+
+### Generated Files
+
+```
+views/pages/docs/
+├── index.liquid
+├── components/
+│   ├── button.liquid
+│   └── card.liquid
+
+views/partials/demos/
+├── button-0.liquid
+├── button-1.liquid
+
+dist/
+├── docs-nav.json
+└── props-data.json
 ```
 
 ## Exports
 
 ### Main (`@ui8kit/mdx-react`)
 
-- `defineConfig()` — Create typed config
-- `usePageContent()` — Access current page content
-- `useToc()` — Access table of contents
-- `useFrontmatter()` — Access frontmatter
-- `PageContentProvider` — Context provider
-- `MDXProvider`, `useMDXComponents` — From @mdx-js/react
+- `defineConfig()` — Create typed MDX config
+- `usePageContent()`, `useToc()`, `useFrontmatter()` — React hooks
+- `ComponentPreview`, `PropsTable`, `Callout`, `Steps` — Doc components
+- `parseFrontmatter()`, `extractToc()`, `scanDocsTree()` — Utilities
 
 ### Generator (`@ui8kit/mdx-react/generator`)
 
-- `MdxGenerator` — Generator class
-- `generateMdxPages()` — Convenience function
+- `generateDocsFromMdx()` — Main generator function
+- `compileMdxFile()` — Compile single MDX file
+- `generatePropsData()` — Extract props from TypeScript
 
-### Utils (`@ui8kit/mdx-react/utils`)
+### Vite (`@ui8kit/mdx-react/vite`)
 
-- `scanDocsTree()` — Scan docs directory
-- `flattenDocsTree()` — Flatten tree to list
-- `buildSidebarFromTree()` — Convert tree to sidebar items
-- `parseFrontmatter()` — Extract frontmatter from source
-- `extractToc()` — Extract TOC from content
-- `slugify()` — Convert text to URL slug
+- `mdxPlugin()` — Vite plugin for dev mode
+
+### Core (`@ui8kit/mdx-react/core`)
+
+- All types and utilities
 
 ## License
 

@@ -1,6 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { join, relative, basename, dirname } from 'node:path'
-import type { DocsTreeEntry, Frontmatter, MdxConfig } from '../types'
+import type { DocsTreeEntry, Frontmatter } from './types'
 import { parseFrontmatter } from './parser'
 
 /**
@@ -8,10 +8,10 @@ import { parseFrontmatter } from './parser'
  * 
  * @example
  * ```ts
- * const tree = await scanDocsTree('./docs')
+ * const tree = await scanDocsTree('./docs', { basePath: '/docs' })
  * // [
- * //   { name: 'Getting Started', path: '/getting-started', ... },
- * //   { name: 'Components', path: '/components', children: [...] }
+ * //   { name: 'Getting Started', path: '/docs/getting-started', ... },
+ * //   { name: 'Components', path: '/docs/components', children: [...] }
  * // ]
  * ```
  */
@@ -82,7 +82,7 @@ async function scanDirectory(
       const nonIndexChildren = children.filter(c => !c.isIndex)
       
       const dirEntry: DocsTreeEntry = {
-        name: indexEntry?.frontmatter.title || formatName(dir.name),
+        name: indexEntry?.frontmatter.title as string || formatName(dir.name),
         path: `${basePath}/${dir.name}`,
         filePath: `${dir.name}/`,
         frontmatter: indexEntry?.frontmatter || {},
@@ -200,7 +200,6 @@ export function flattenDocsTree(tree: DocsTreeEntry[]): DocsTreeEntry[] {
 
 /**
  * Build sidebar items from docs tree
- * This is a convenience function for apps that want auto-generated sidebar
  */
 export function buildSidebarFromTree(tree: DocsTreeEntry[]): Array<{
   text: string

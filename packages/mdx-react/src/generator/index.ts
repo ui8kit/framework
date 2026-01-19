@@ -1,30 +1,36 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
+import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
 import { join, dirname, relative } from 'node:path'
-import React from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
-import { compile, run } from '@mdx-js/mdx'
-import * as runtime from 'react/jsx-runtime'
 import type { 
-  MdxConfig, 
-  GeneratedPage, 
-  Frontmatter, 
-  TocEntry,
-  DocsTreeEntry 
-} from '../types'
-import { parseMdxFile } from '../utils/parser'
-import { scanDocsTree, flattenDocsTree } from '../utils/scanner'
-import { loadConfig } from '../config'
+  MdxGeneratorConfig, 
+  GeneratedMdxPage,
+  DocsTreeEntry,
+  DocsNavigation,
+} from '../core/types'
+import { compileMdxFile } from './mdx-compiler'
+import { emitLiquidPage, generateDocsLayoutTemplate, generateDocsNavTemplate } from './liquid-emitter'
+import { generateDocsNavigation } from './nav-generator'
+import { extractPropsFromDirectory, generatePropsData } from './props-extractor'
+import { scanDocsTree } from '../core/scanner'
 
-export interface MdxGeneratorOptions {
+// ============================================================================
+// MDX Documentation Generator
+// ============================================================================
+
+export interface GenerateDocsOptions {
   /**
-   * Path to mdx.config.ts
+   * MDX configuration from generator.config.ts
    */
-  configPath: string
+  config: MdxGeneratorConfig
   
   /**
-   * Base directory for resolving paths (defaults to config file directory)
+   * Base directory (where generator.config.ts is)
    */
-  cwd?: string
+  baseDir: string
+  
+  /**
+   * HTML output mode
+   */
+  htmlMode: 'tailwind' | 'semantic' | 'inline'
   
   /**
    * Verbose logging
@@ -33,190 +39,179 @@ export interface MdxGeneratorOptions {
 }
 
 /**
- * MDX Generator - converts MDX files to static HTML
+ * Generate documentation from MDX files
  * 
- * This is an isolated pipeline that:
- * 1. Scans docs directory for MDX files
- * 2. Parses frontmatter and TOC
- * 3. Compiles MDX to React components
- * 4. Renders to static HTML
- * 
- * @example
- * ```ts
- * import { MdxGenerator } from '@ui8kit/mdx-react/generator'
- * 
- * const generator = new MdxGenerator({
- *   configPath: './mdx.config.ts'
- * })
- * 
- * await generator.generate()
- * ```
+ * Called from @ui8kit/generator when mdx.enabled is true
  */
-export class MdxGenerator {
-  private config!: MdxConfig
-  private configDir: string
-  private verbose: boolean
+export async function generateDocsFromMdx(
+  options: GenerateDocsOptions
+): Promise<GeneratedMdxPage[]> {
+  const { config, baseDir, htmlMode, verbose } = options
   
-  constructor(private options: MdxGeneratorOptions) {
-    this.configDir = options.cwd || dirname(options.configPath)
-    this.verbose = options.verbose ?? false
+  console.log('📚 Generating MDX documentation...')
+  
+  const docsDir = join(baseDir, config.docsDir)
+  const outputDir = join(baseDir, config.outputDir)
+  const demosDir = config.demosDir ? join(baseDir, config.demosDir) : join(outputDir, '../partials/demos')
+  const basePath = config.basePath || '/docs'
+  
+  // 1. Scan docs directory
+  if (verbose) console.log(`  Scanning ${config.docsDir}...`)
+  const docsTree = await scanDocsTree(docsDir, { basePath })
+  const mdxFiles = await collectMdxFiles(docsDir)
+  
+  if (verbose) console.log(`  Found ${mdxFiles.length} MDX files`)
+  
+  // 2. Load components for MDX scope
+  const components = await loadComponents(config.components || {}, baseDir)
+  
+  // 3. Extract props from TypeScript (if configured)
+  if (config.propsSource) {
+    const propsDir = join(baseDir, config.propsSource)
+    const propsOutput = join(baseDir, 'dist/props-data.json')
+    
+    if (verbose) console.log(`  Extracting props from ${config.propsSource}...`)
+    await generatePropsData(propsDir, propsOutput)
   }
   
-  /**
-   * Generate all MDX pages to static HTML
-   */
-  async generate(): Promise<GeneratedPage[]> {
-    // Load config
-    this.config = await loadConfig(this.options.configPath)
-    
-    this.log('🚀 MDX Generator starting...')
-    this.log(`📁 Docs directory: ${this.config.docsDir}`)
-    this.log(`📁 Output directory: ${this.config.outputDir}`)
-    
-    // Scan docs tree
-    const docsDir = join(this.configDir, this.config.docsDir)
-    const tree = await scanDocsTree(docsDir, {
-      basePath: this.config.basePath,
-      sort: this.config.sidebarSort,
-    })
-    
-    // Flatten to get all pages
-    const pages = flattenDocsTree(tree)
-    this.log(`📄 Found ${pages.length} pages to generate`)
-    
-    // Generate each page
-    const results: GeneratedPage[] = []
-    
-    for (const page of pages) {
-      try {
-        const result = await this.generatePage(page, docsDir)
-        results.push(result)
-        this.log(`  ✓ ${page.path}`)
-      } catch (error) {
-        console.error(`  ✗ ${page.path}:`, error)
-      }
-    }
-    
-    // Write docs tree JSON (for sidebar generation in apps)
-    await this.writeDocsTree(tree)
-    
-    this.log(`✅ Generated ${results.length} pages`)
-    
-    return results
-  }
+  // 4. Compile each MDX file
+  const results: GeneratedMdxPage[] = []
   
-  /**
-   * Generate single page from MDX file
-   */
-  private async generatePage(
-    entry: DocsTreeEntry,
-    docsDir: string
-  ): Promise<GeneratedPage> {
-    const filePath = join(docsDir, entry.filePath)
-    const source = await readFile(filePath, 'utf-8')
-    
-    // Parse frontmatter and TOC
-    const { frontmatter, content, toc, excerpt } = parseMdxFile(source, this.config.toc)
-    
-    // Compile MDX to JavaScript
-    const compiled = await compile(content, {
-      outputFormat: 'function-body',
-      development: false,
-      // @ts-ignore - MDX types mismatch
-      remarkPlugins: this.config.mdx?.remarkPlugins || [],
-      // @ts-ignore
-      rehypePlugins: this.config.mdx?.rehypePlugins || [],
-    })
-    
-    // Run compiled MDX to get React component
-    const { default: Content } = await run(compiled, {
-      ...runtime,
-      baseUrl: import.meta.url,
-    })
-    
-    // Render to HTML
-    const element = React.createElement(Content, {})
-    const html = renderToStaticMarkup(element)
-    
-    // Write HTML file
-    await this.writeHtmlFile(entry.path, html, frontmatter, toc)
-    
-    return {
-      urlPath: entry.path,
-      html,
-      frontmatter,
-      toc,
+  for (const filePath of mdxFiles) {
+    try {
+      const result = await compileMdxFile({
+        filePath,
+        docsDir,
+        basePath,
+        components,
+        tocConfig: config.toc,
+        htmlMode,
+      })
+      
+      // Emit Liquid template
+      await emitLiquidPage(result, {
+        pagesDir: outputDir,
+        demosDir,
+        basePath,
+      })
+      
+      results.push(result)
+    } catch (error) {
+      console.error(`  ✗ Failed to compile ${relative(docsDir, filePath)}:`, error)
     }
   }
   
-  /**
-   * Write generated HTML to output directory
-   */
-  private async writeHtmlFile(
-    urlPath: string,
-    content: string,
-    frontmatter: Frontmatter,
-    toc: TocEntry[]
-  ): Promise<void> {
-    const outputDir = join(this.configDir, this.config.outputDir || './dist/docs')
-    
-    // Convert URL path to file path
-    // /docs/components/button → docs/components/button/index.html
-    const relativePath = urlPath.startsWith('/') ? urlPath.slice(1) : urlPath
-    const htmlPath = join(outputDir, relativePath, 'index.html')
-    
-    // Ensure directory exists
-    await mkdir(dirname(htmlPath), { recursive: true })
-    
-    // Wrap content with page metadata as JSON for client hydration
-    const pageData = {
-      frontmatter,
-      toc,
-    }
-    
-    const html = `<!DOCTYPE html>
-<html lang="${this.config.site?.lang || 'en'}">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${frontmatter.title || 'Documentation'} - ${this.config.site?.title || 'Docs'}</title>
-  ${frontmatter.description ? `<meta name="description" content="${frontmatter.description}">` : ''}
-  <script type="application/json" id="page-data">${JSON.stringify(pageData)}</script>
-</head>
-<body>
-  <div id="content" data-page-path="${urlPath}">
-${content}
-  </div>
-</body>
-</html>`
-    
-    await writeFile(htmlPath, html, 'utf-8')
+  // 5. Generate navigation JSON
+  if (config.navOutput) {
+    const navPath = join(baseDir, config.navOutput)
+    await generateDocsNavigation(docsTree, navPath)
   }
   
-  /**
-   * Write docs tree JSON for sidebar generation
-   */
-  private async writeDocsTree(tree: DocsTreeEntry[]): Promise<void> {
-    const outputDir = join(this.configDir, this.config.outputDir || './dist/docs')
-    const jsonPath = join(outputDir, '_docs-tree.json')
-    
-    await mkdir(dirname(jsonPath), { recursive: true })
-    await writeFile(jsonPath, JSON.stringify(tree, null, 2), 'utf-8')
-    
-    this.log(`  → ${jsonPath}`)
-  }
+  // 6. Generate layout templates (optional)
+  await generateTemplates(baseDir, config)
   
-  private log(message: string): void {
-    if (this.verbose) {
-      console.log(message)
-    }
-  }
+  console.log(`✅ Generated ${results.length} documentation pages`)
+  
+  return results
 }
 
 /**
- * Convenience function to generate MDX pages
+ * Collect all MDX files from directory recursively
  */
-export async function generateMdxPages(options: MdxGeneratorOptions): Promise<GeneratedPage[]> {
-  const generator = new MdxGenerator(options)
-  return generator.generate()
+async function collectMdxFiles(dir: string): Promise<string[]> {
+  const files: string[] = []
+  
+  const entries = await readdir(dir, { withFileTypes: true })
+  
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name)
+    
+    if (entry.isDirectory()) {
+      files.push(...await collectMdxFiles(fullPath))
+    } else if (entry.name.endsWith('.mdx') || entry.name.endsWith('.md')) {
+      files.push(fullPath)
+    }
+  }
+  
+  return files
 }
+
+/**
+ * Load components for MDX scope
+ * In build mode, we need actual React components
+ */
+async function loadComponents(
+  componentMap: Record<string, string>,
+  baseDir: string
+): Promise<Record<string, React.ComponentType>> {
+  const components: Record<string, React.ComponentType> = {}
+  
+  // Add built-in doc components
+  const { ComponentPreview, PropsTable, Callout, Steps } = await import('../components')
+  components.ComponentPreview = ComponentPreview
+  components.PropsTable = PropsTable
+  components.Callout = Callout
+  components.Steps = Steps
+  
+  // Load user components
+  for (const [name, importPath] of Object.entries(componentMap)) {
+    try {
+      // Resolve @ alias to actual path
+      let resolvedPath = importPath
+      if (importPath.startsWith('@/')) {
+        resolvedPath = join(baseDir, 'src', importPath.slice(2))
+      } else if (importPath.startsWith('./') || importPath.startsWith('../')) {
+        resolvedPath = join(baseDir, importPath)
+      }
+      
+      // Try to import component
+      const mod = await import(resolvedPath)
+      components[name] = mod[name] || mod.default
+    } catch (error) {
+      console.warn(`  ⚠ Could not load component ${name} from ${importPath}`)
+    }
+  }
+  
+  return components
+}
+
+/**
+ * Generate docs layout templates
+ */
+async function generateTemplates(
+  baseDir: string,
+  config: MdxGeneratorConfig
+): Promise<void> {
+  const viewsDir = dirname(join(baseDir, config.outputDir))
+  const layoutsDir = join(viewsDir, 'layouts')
+  const partialsDir = join(viewsDir, 'partials')
+  
+  // Create directories
+  await mkdir(layoutsDir, { recursive: true })
+  await mkdir(partialsDir, { recursive: true })
+  
+  // Check if layout already exists (don't overwrite)
+  const layoutPath = join(layoutsDir, 'docs.liquid')
+  try {
+    await readFile(layoutPath)
+  } catch {
+    // Create layout template
+    await writeFile(layoutPath, generateDocsLayoutTemplate(), 'utf-8')
+    console.log(`  → ${layoutPath}`)
+  }
+  
+  // Create nav partial template
+  const navPath = join(partialsDir, 'docs-nav.liquid')
+  try {
+    await readFile(navPath)
+  } catch {
+    await writeFile(navPath, generateDocsNavTemplate(), 'utf-8')
+    console.log(`  → ${navPath}`)
+  }
+}
+
+// Re-export types and utilities
+export { compileMdxFile } from './mdx-compiler'
+export { emitLiquidPage } from './liquid-emitter'
+export { generateDocsNavigation, docsTreeToNav, sortNavItems } from './nav-generator'
+export { extractPropsFromFile, extractPropsFromDirectory, generatePropsData } from './props-extractor'
