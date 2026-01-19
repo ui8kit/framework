@@ -13,11 +13,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@ui8kit/core": ["src/components/index"]
-    }
-
+      "@ui8kit/core": ["src/components/index"],
+      "@ui8kit/mdx-react": ["../../packages/mdx-react/src"],
+      "@ui8kit/mdx-react/*": ["../../packages/mdx-react/src/*"]
+    },
+    "types": ["vite/client"]
   },
-  "include": ["src"]
+  "include": ["src", "*.config.ts"]
 }
-
-

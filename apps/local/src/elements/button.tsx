@@ -4,8 +4,7 @@
  */
 
 import type { ReactNode, ComponentProps } from "react";
-import { Button, ButtonContentAlign } from "../components";
-import type { ButtonProps, ButtonContentAlignProps } from "../components";
+import { Button } from "../components";
 
 /**
  * Button variant elements for documentation and reuse.
@@ -34,7 +33,6 @@ export function ButtonElements() {
   <Button data-class="button-xl" size="xl">Button Xl</Button>
   <Button data-class="button-xs" size="xs">Button Xs</Button>
   {/* Sub-components */}
-  <ButtonContentAlign data-class="button-content-align">Button ContentAlign</ButtonContentAlign>
     </>
   );
 }
@@ -126,9 +124,4 @@ export const ButtonXl = ({ children, ...props }: Omit<ComponentProps<typeof Butt
 /** Button with xs variant */
 export const ButtonXs = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "size"> & { children?: ReactNode }) => (
   <Button data-class="button-xs" size="xs" {...props}>{children ?? "Button Xs"}</Button>
-);
-
-/** Button ContentAlign with semantic data-class */
-export const ButtonContentAlignElement = ({ children, ...props }: Omit<ComponentProps<typeof ButtonContentAlign>, "data-class"> & { children?: ReactNode }) => (
-  <ButtonContentAlign data-class="button-content-align" {...props}>{children ?? "Button ContentAlign"}</ButtonContentAlign>
 );

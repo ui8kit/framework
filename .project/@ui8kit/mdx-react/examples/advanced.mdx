@@ -1,0 +1,113 @@
+---
+title: Advanced MDX Example
+description: Advanced usage with multiple components and interactive examples
+---
+
+import { ComponentExample, CodeBlock, Tabs, Tab, Callout, PropsTable } from '@ui8kit/mdx-react'
+import { Button, Card, Input } from '@ui8kit/core'
+
+# Advanced MDX Example
+
+This example demonstrates advanced features of @ui8kit/mdx-react including tabs, multiple components, and props tables.
+
+## Component Examples
+
+### Button with Multiple Variants
+
+<ComponentExample
+  title="All Button Variants"
+  component={Button}
+  variants={['primary', 'secondary', 'outline', 'ghost', 'destructive']}
+  sizes={['sm', 'default', 'lg']}
+  code={`<Button variant="primary" size="default">Primary</Button>`}
+/>
+
+### Card Component
+
+<ComponentExample
+  title="Card with Content"
+  component={Card}
+  variants={['default']}
+  code={`<Card>
+  <CardHeader>
+    <CardTitle>Card Title</CardTitle>
+    <CardDescription>Card description goes here.</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card content goes here.</p>
+  </CardContent>
+  <CardFooter>
+    <Button>Action</Button>
+  </CardFooter>
+</Card>`}
+/>
+
+## Code Examples with Tabs
+
+<Tabs defaultValue="react">
+  <Tab value="react" label="React">
+    <CodeBlock language="tsx" showLineNumbers>
+    {`import { Button, Card } from '@ui8kit/core'
+
+function Example() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Example</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Button variant="primary">
+          Click me
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}`}
+    </CodeBlock>
+  </Tab>
+
+  <Tab value="html" label="HTML">
+    <CodeBlock language="html" showLineNumbers>
+    {`<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Example</h3>
+  </div>
+  <div class="card-content">
+    <button class="button button-primary">
+      Click me
+    </button>
+  </div>
+</div>`}
+    </CodeBlock>
+  </Tab>
+</Tabs>
+
+<Callout type="warning">
+  Make sure to include all necessary CSS classes when using HTML output.
+</Callout>
+
+## Props Documentation
+
+### Button Props
+
+<PropsTable component={Button} />
+
+### Card Props
+
+<PropsTable component={Card} />
+
+## Responsive Example
+
+<ComponentExample
+  title="Responsive Grid"
+  component="div"
+  code={`<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <Card>Item 1</Card>
+  <Card>Item 2</Card>
+  <Card>Item 3</Card>
+</div>`}
+/>
+
+<Callout type="success">
+  All components are fully responsive and work great on mobile devices!
+</Callout>

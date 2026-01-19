@@ -1,0 +1,381 @@
+# @ui8kit/mdx-react Development Rules
+
+## Development Methodology
+
+### TDD (Test-Driven Development) First
+
+**MANDATORY**: Always write tests with Vitest BEFORE implementing components and logic.
+
+#### TDD Workflow
+1. **RED**: Write failing test that describes desired behavior
+2. **GREEN**: Implement minimal code to make test pass
+3. **REFACTOR**: Improve code while keeping tests green
+
+#### Test Structure
+```typescript
+// 1. RED: Write failing test first
+describe('ComponentExample', () => {
+  it('should render component with default props', () => {
+    // Test will fail initially - component doesn't exist yet
+    render(<ComponentExample component={TestComponent} />);
+    expect(screen.getByRole('region')).toBeInTheDocument();
+  });
+});
+
+// 2. GREEN: Implement minimal component
+export const ComponentExample = ({ component: Component }) => {
+  return <div data-testid="component-example"><Component /></div>;
+};
+
+// 3. REFACTOR: Add proper implementation, types, etc.
+export const ComponentExample = forwardRef<HTMLDivElement, ComponentExampleProps>(
+  ({ component: Component, className, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn('component-example', className)} {...props}>
+        <Component />
+      </div>
+    );
+  }
+);
+```
+
+#### Test Categories
+- **Unit Tests**: Individual component behavior
+- **Integration Tests**: MDX compilation and rendering
+- **E2E Tests**: Full documentation rendering
+- **Performance Tests**: Bundle size and compilation speed
+
+#### Running Tests
+```bash
+# Run all tests
+bun run test
+
+# Run tests in watch mode
+bun run test:watch
+
+# Run tests with coverage
+bun run test:coverage
+
+# Run specific test file
+bun run test ComponentExample.test.tsx
+```
+
+## Project Structure
+
+### File Organization
+- `src/index.ts` - Main exports and public API
+- `src/compiler.ts` - MDX compilation logic and utilities
+- `src/vite-plugin.ts` - Vite integration and plugin logic
+- `src/components/` - React components for documentation
+- `src/utils/` - Helper functions and utilities
+
+### Naming Conventions
+- **Components**: PascalCase (ComponentExample, CodeBlock)
+- **Files**: kebab-case (component-example.tsx)
+- **Functions**: camelCase (compileUI8KitMDX)
+- **Constants**: UPPER_SNAKE_CASE (DEFAULT_THEME)
+- **Types**: PascalCase with suffix (MDXOptions, ComponentProps)
+
+## Code Standards
+
+### TypeScript
+- Strict mode enabled
+- No `any` types - use proper type definitions
+- Interface over type alias for object shapes
+- Generic constraints for reusable types
+
+### React Components
+```typescript
+// ✅ Correct
+interface ComponentExampleProps {
+  component: React.ComponentType;
+  variants?: string[];
+  title?: string;
+}
+
+export const ComponentExample = forwardRef<HTMLDivElement, ComponentExampleProps>(
+  ({ component, variants, title }, ref) => {
+    // Implementation
+  }
+);
+
+ComponentExample.displayName = 'ComponentExample';
+```
+
+### MDX Integration
+- Use `enforce: 'pre'` for MDX plugin in Vite
+- Provider import source: `'@mdx-js/react'`
+- JSX runtime: `'automatic'`
+- Support both sync and async compilation
+
+## Component Patterns
+
+### Base Component Structure
+```typescript
+import { forwardRef } from 'react';
+import { cn } from '@ui8kit/core';
+
+export interface ComponentNameProps {
+  // Required props
+  // Optional props with defaults
+}
+
+export const ComponentName = forwardRef<HTMLElement, ComponentNameProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <element
+        ref={ref}
+        className={cn('base-classes', className)}
+        {...props}
+      >
+        {children}
+      </element>
+    );
+  }
+);
+
+ComponentName.displayName = 'ComponentName';
+```
+
+### Component with Variants
+```typescript
+export interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = 'primary', size = 'md', className, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(
+          'button-base',
+          {
+            'button-primary': variant === 'primary',
+            'button-secondary': variant === 'secondary',
+            'button-outline': variant === 'outline',
+            'button-sm': size === 'sm',
+            'button-md': size === 'md',
+            'button-lg': size === 'lg',
+          },
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+```
+
+## Testing Patterns
+
+### Unit Tests
+```typescript
+describe('ComponentExample', () => {
+  it('should render component with default props', () => {
+    render(<ComponentExample component={TestComponent} />);
+    expect(screen.getByRole('region')).toBeInTheDocument();
+  });
+
+  it('should handle variant switching', async () => {
+    render(<ComponentExample component={TestComponent} variants={['primary', 'secondary']} />);
+    const button = screen.getByRole('button', { name: /secondary/i });
+    await userEvent.click(button);
+    // Assertions
+  });
+});
+```
+
+### Integration Tests
+```typescript
+describe('MDX compilation', () => {
+  it('should compile MDX with custom components', async () => {
+    const mdxSource = `
+      import { TestComponent } from './components';
+      <TestComponent />
+    `;
+
+    const result = await compileUI8KitMDX(mdxSource, {
+      components: { TestComponent }
+    });
+
+    expect(result).toContain('React.createElement');
+  });
+});
+```
+
+## Performance Guidelines
+
+### Bundle Size
+- Keep component bundles under 50KB gzipped
+- Use dynamic imports for heavy features
+- Implement proper tree shaking
+
+### Compilation Speed
+- MDX compilation should be <100ms per file
+- Cache expensive operations
+- Optimize AST transformations
+
+### Runtime Performance
+- Minimize re-renders with proper memoization
+- Use lazy loading for code blocks
+- Optimize component updates
+
+## Error Handling
+
+### Compilation Errors
+```typescript
+try {
+  const result = await compileUI8KitMDX(source, options);
+  return result;
+} catch (error) {
+  console.error('MDX compilation failed:', error);
+  throw new Error(`Failed to compile MDX: ${error.message}`);
+}
+```
+
+### Component Errors
+```typescript
+export const SafeComponent = ({ children, fallback = null }) => {
+  try {
+    return <>{children}</>;
+  } catch (error) {
+    console.error('Component render error:', error);
+    return fallback;
+  }
+};
+```
+
+## Accessibility
+
+### ARIA Labels
+```typescript
+export const AccessibleComponent = ({ label, children }) => {
+  return (
+    <div role="region" aria-label={label}>
+      {children}
+    </div>
+  );
+};
+```
+
+### Keyboard Navigation
+```typescript
+export const KeyboardNavigable = ({ onSelect, children }) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onSelect();
+    }
+  };
+
+  return (
+    <div
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onClick={onSelect}
+    >
+      {children}
+    </div>
+  );
+};
+```
+
+## Documentation
+
+### Component Documentation
+```typescript
+/**
+ * ComponentExample provides an interactive demo of React components
+ * with variant switching and code display capabilities.
+ *
+ * @example
+ * ```tsx
+ * <ComponentExample
+ *   component={Button}
+ *   variants={['primary', 'secondary']}
+ *   title="Button Variants"
+ * />
+ * ```
+ */
+export const ComponentExample = forwardRef<HTMLDivElement, ComponentExampleProps>(
+  // Implementation
+);
+```
+
+### MDX Usage Examples
+```mdx
+---
+title: Component Documentation
+---
+
+import { ComponentExample } from '@ui8kit/mdx-react'
+import { Button } from '@ui8kit/core'
+
+# Button Component
+
+<ComponentExample
+  component={Button}
+  variants={['primary', 'secondary']}
+  title="Interactive Button Demo"
+/>
+```
+
+## Git Workflow
+
+### Commit Messages
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `docs:` - Documentation changes
+- `style:` - Code style changes
+- `refactor:` - Code refactoring
+- `test:` - Testing changes
+- `chore:` - Maintenance tasks
+
+### Branch Naming
+- `feature/component-example` - New features
+- `fix/codeblock-highlighting` - Bug fixes
+- `docs/api-reference` - Documentation
+- `refactor/component-structure` - Refactoring
+
+## Deployment
+
+### Build Process
+```bash
+# Development
+bun run dev
+
+# Production build
+bun run build
+
+# Type checking
+bun run type-check
+
+# Testing
+bun run test
+bun run test:coverage
+```
+
+### Publishing
+```bash
+# Version bump
+bun run version:patch  # or :minor :major
+
+# Publish
+bun run publish
+```
+
+## Monitoring
+
+### Performance Metrics
+- Bundle size analysis
+- Compilation time tracking
+- Memory usage monitoring
+- Error rate tracking
+
+### Quality Metrics
+- Test coverage >90%
+- TypeScript strict mode compliance
+- ESLint rule compliance
+- Bundle size <50KB gzipped
