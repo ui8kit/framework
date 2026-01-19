@@ -26,230 +26,176 @@ Instructions for AI coding agents working with this codebase.
 
 ## Development Workflow
 
-1. **Local Development** — Use `@ui8kit/vite-local` for component development and documentation
-2. **Static Generation** — Run `bun run generate` to generate pure HTML from React routes
-   - Generator calls `@ui8kit/render` to convert React components to HTML
-   - Generates Liquid views with `data-class` attributes
-   - Extracts CSS and generates stylesheets
-   - Assembles final HTML pages using Liquid templates
-3. **Web Publishing** — Deploy generated HTML files from `dist/html/` for production
+### Docs-First Architecture
 
-## Three Rules to Follow
+**Routes defined by file structure (no routing config):**
 
-This project uses three Cursor rules in `.cursor/rules/`:
-
-### ⚠️ UI8Kit Props Refactoring Notice
-**After recent props updates, some components may have incorrect prop usage.**
-
-**Quick Check**: Look for TypeScript errors like `"span-1 lg:col-span-1" cannot be assigned to UtilityPropInput<"col">`
-
-**Fix**: Move responsive modifiers from props to className:
-```tsx
-// Wrong:
-<Box col="span-1 lg:span-3" />
-
-// Right:
-<Box col="span-1" className="lg:col-span-3" />
+```
+apps/local/docs/
+├── index.mdx                    → /
+├── components/
+│   ├── index.mdx               → /components
+│   ├── button.mdx              → /components/button
+│   └── card.mdx                → /components/card
 ```
 
-### 🔧 UI8Kit Architecture Principles
+### Dev Mode (Vite with HMR)
 
-**DECLARATIVE RULES - Follow these principles for all UI8Kit usage:**
+1. `bun run dev` starts Vite server
+2. MDX files loaded via `import.meta.glob` in DocsPage
+3. React Router serves pages with full hydration
+4. HMR updates MDX changes instantly
 
-1. **Single Value Props Only (Tailwind Mapping)**
-   - All component props MUST contain single values from utility-props.map.ts
-   - Props map directly to Tailwind classes: `col="span-1"` → `col-span-1`, `text="center"` → `text-center`
-   - No responsive modifiers allowed in props (e.g., no `col="span-1 lg:span-3"`)
-   - TypeScript will enforce this through UtilityPropInput validation
+### Build Mode (Static Generation)
 
-2. **className Usage Restriction**
-   - className is FORBIDDEN on all components except Grid components
-   - Grid components MAY use className ONLY for responsive layout modifiers
-   - Custom styling requires className + mandatory data-class attribute
+1. `bun run generate` scans `docs/` folder
+2. Creates static HTML in `dist/html/` with matching structure
+3. Generates `dist/docs-nav.json` for navigation
+4. Deploys generated files for production
 
-3. **Utility Props as Source of Truth**
-   - Every visual property must come from utility-props.map.ts definitions
-   - No custom variants creation for basic utility props
-   - Component-specific variants exist only for button, badge, card, grid, image
+## Development Principles
 
-4. **TypeScript Error Resolution**
-   - TypeScript errors indicate prop validation failures
-   - Always trust TypeScript over assumptions
-   - Fix by using correct single values from utility-props.map.ts
+### 1. Docs-First Routing
 
-5. **Grid Component Special Rules**
-   - Grid components use cols prop for responsive grid definitions
-   - Grid children may use className for breakpoint-specific overrides
-   - Maintain semantic data-class attributes for all custom className usage
+**No routing config needed — file structure defines routes**
 
-6. **Custom Styling Protocol**
-   - When utility-props.map.ts lacks required property
-   - Use className with semantic data-class attribute
-   - Prefer utility props over custom className when possible
+- `docs/index.mdx` → `/`
+- `docs/components/button.mdx` → `/components/button`
+- Automatic in both dev (via glob) and build (via scanner)
 
-7. **Duplicate Prop Prevention**
-   - HTML/React doesn't allow duplicate attributes in single element
-   - Use parent containers for layout/alignment (e.g., `Stack items="center"`)
-   - Use `style={{ }}` only as last resort for unsupported properties
+### 2. Browser vs. Node.js Code Separation
 
-**ENFORCEMENT**: These rules are validated by TypeScript compilation. Breaking them results in build failures.
+**Strict isolation prevents Node.js APIs in browser bundle**
+
+```typescript
+// ✅ Main entry (@ui8kit/mdx-react) — browser-safe only
+export { parseFrontmatter, usePageContent, ComponentPreview }
+
+// ✅ Server entry (@ui8kit/mdx-react/server) — Node.js only
+export { scanDocsTree, generateDocsFromMdx }
+
+// ❌ Would break browser
+import { scanDocsTree } from '@ui8kit/mdx-react'  // Uses fs!
+```
+
+### 3. UI8Kit Props Rules
+
+**Follow these principles for all component usage:**
+
+1. **Single Value Props Only** — No responsive modifiers in props
+   - ✅ `<Box col="span-1" className="lg:col-span-3" />`
+   - ❌ `<Box col="span-1 lg:span-3" />`
+
+2. **className Restricted** — Only for responsive overrides or custom styling
+   - Requires `data-class` attribute for semantic selectors
+
+3. **data-class Attributes** — Mandatory for CSS generation
+   - `<Button data-class="primary-button">Click</Button>`
 
 See `.cursor/rules/ui8kit.mdc` for complete rules and examples.
 
 ---
 
-## 🏗️ Static Site Generation Architecture
+## Package Guide
 
-### Key Components
+### `@ui8kit/mdx-react` — MDX Documentation
 
-**`@ui8kit/render` Package:**
-- Converts React components to static HTML markup
-- Parses router configuration from `main.tsx` to discover routes
-- Renders components **directly without context providers** (no RouterProvider, ThemeProvider)
-- Preserves all `data-class` attributes in output HTML
-- Uses `peerDependencies` for React (no direct dependencies)
+**Dual-mode MDX processor for docs-first applications**
 
-**`@ui8kit/generator` Package:**
-- Orchestrates the complete generation pipeline
-- Delegates React rendering to `@ui8kit/render`
-- Generates CSS from rendered HTML views
-- Assembles final HTML using Liquid templates
-- Configuration-driven (all paths from `generator.config.ts`)
+- Dev mode: Vite + `import.meta.glob` for HMR
+- Build mode: Static HTML generation with navigation JSON
+- Strict browser/Node.js code separation
+- Automatic route discovery from filesystem
 
-### Generation Pipeline
-
-1. **View Generation**: `generator` → `renderRoute()` → HTML with `data-class` → `.liquid` files
-2. **CSS Generation**: Parse `.liquid` views → Extract classes → Generate `@apply` CSS + pure CSS3
-3. **HTML Assembly**: Combine `.liquid` views with layouts → Final HTML pages
-4. **Asset Copying**: Copy static files to output directories
-
-### Critical Constraints for Agents
-
-#### ⚠️ Component Rendering Limitations
-
-**Components MUST NOT require React context during static generation:**
-
-```tsx
-// ❌ WON'T WORK - Requires ThemeProvider context
-export function Component() {
-  const { theme } = useTheme();  // Throws error without ThemeProvider
-  return <div>{theme.name}</div>;
-}
-
-// ✅ WORKS - No context dependencies
-export function Component() {
-  return <div>Static content</div>;
-}
-
-// ✅ WORKS - Conditional context usage
-export function Component() {
-  const theme = useTheme?.() ?? defaultTheme;  // Fallback for static generation
-  return <div>{theme.name}</div>;
-}
-```
-
-**Why?** The renderer renders components directly without wrapping them in context providers:
+**Key exports:**
 ```typescript
-// Renderer implementation (simplified)
-const Component = await loadComponent(entryPath, componentName);
-const element = React.createElement(Component);  // No providers!
-return renderToStaticMarkup(element);
+// Browser-safe (main entry)
+import { usePageContent, useToc, ComponentPreview } from '@ui8kit/mdx-react'
+
+// Node.js only (server entry)
+import { scanDocsTree, generateDocsFromMdx } from '@ui8kit/mdx-react/server'
 ```
 
-#### 📋 Router Configuration Requirements
+**Configuration:** `apps/local/generator.config.ts`
+- `mdx.docsDir` — Source MDX folder (e.g., `./docs`)
+- `mdx.outputDir` — HTML output folder (e.g., `./dist/html`)
+- `mdx.components` — Available in MDX without imports
 
-**`main.tsx` MUST use `createBrowserRouter` with `children` array:**
+**See:** `packages/mdx-react/AGENTS.md` for development guide
 
-```tsx
-// ✅ CORRECT - Renderer can parse this
-export const router = createBrowserRouter({
-  children: [
-    { index: true, element: <HomePage /> },
-    { path: 'about', element: <Blank /> }
-  ]
-});
+### `@ui8kit/generator` — Static Site Generation
 
-// ❌ WON'T WORK - Renderer can't parse this
-export const router = createBrowserRouter([
-  { path: '/', element: <HomePage /> }
-]);
+**Orchestrates complete generation pipeline**
+
+- Scans `docs/` for MDX files
+- Generates static HTML pages
+- Extracts CSS from classes
+- Copies assets
+
+**See:** `packages/generator/.cursor/rules/generator.mdc` for rules
+
+### `@ui8kit/render` — React Component Rendering
+
+**Converts React components to static HTML**
+
+- Direct component rendering (no context providers)
+- Preserves `data-class` attributes
+- Supports semantic CSS generation
+
+**See:** `packages/render/.cursor/rules/render.mdc` for rules
+
+---
+
+## Working Patterns
+
+### Adding a New Documentation Page
+
+1. Create file in `docs/` folder
+   ```
+   docs/getting-started/installation.mdx
+   ```
+
+2. Add frontmatter with metadata
+   ```mdx
+   ---
+   title: Installation
+   description: How to install UI8Kit
+   order: 1
+   ---
+   ```
+
+3. Write content with markdown + JSX
+
+4. In dev: Auto-loads at `/getting-started/installation`
+
+5. In build: Generates `/getting-started/installation/index.html`
+
+### Running Commands
+
+```bash
+# Dev mode (Vite + HMR)
+bun run dev
+
+# Build mode (Static generation)
+bun run generate
+
+# Both at once (in separate terminals)
+bun run dev &
+bun run generate
 ```
 
-#### 🎯 Data-Class Attribute Requirements
+### Testing Changes
 
-**All components MUST use semantic `data-class` attributes:**
-
-```tsx
-// ✅ CORRECT - Semantic selectors for CSS generation
-<Block component="section" data-class="hero-section">
-  <Stack gap="6" items="center" data-class="hero-content">
-    <Title text="4xl" data-class="hero-title">Welcome</Title>
-  </Stack>
-</Block>
-
-// Generated CSS:
-.hero-section { @apply relative; }
-.hero-content { @apply flex flex-col gap-6 items-center; }
-.hero-title { @apply text-4xl font-bold; }
-```
-
-#### 🔧 Configuration Structure
-
-**`generator.config.ts` structure (no `render` section):**
-
-```typescript
-export const config: GeneratorConfig = {
-  app: { name: string; lang?: string },
-  css: {
-    entryPath: './src/main.tsx',  // Router config source
-    routes: string[],              // Routes to generate CSS for
-    outputDir: './dist/css',
-    pureCss?: boolean
-  },
-  html: {
-    viewsDir: './views',
-    routes: Record<string, RouteConfig>,  // Route configurations
-    outputDir: './dist/html'
-  },
-  assets?: { copy?: string[] }
-  // NO render section - renderer doesn't need provider config
-};
-```
-
-### Common Pitfalls to Avoid
-
-1. **❌ Don't use RouterProvider or ThemeProvider in renderer** - Components are rendered directly
-2. **❌ Don't add `render` section to config** - Removed in refactoring, not needed
-3. **❌ Don't use components with context hooks** - They won't work without providers
-4. **❌ Don't hardcode paths** - All paths come from configuration
-5. **❌ Don't forget `data-class` attributes** - Required for semantic CSS generation
-
-### When Adding New Features
-
-**For Generator (`@ui8kit/generator`):**
-- ✅ Read from `GeneratorConfig` - no hardcoded values
-- ✅ Delegate React rendering to `@ui8kit/render`
-- ✅ Use peerDependencies for React (not direct dependencies)
-- ✅ See `packages/generator/.cursor/rules/generator.mdc` for detailed rules
-
-**For Renderer (`@ui8kit/render`):**
-- ✅ Keep rendering simple - direct component rendering only
-- ✅ No context providers - components must work standalone
-- ✅ Parse router config from entry file
-- ✅ See `packages/render/.cursor/rules/render.mdc` for detailed rules
-
-**For Components:**
-- ✅ Use `data-class` attributes for semantic CSS selectors
-- ✅ Avoid context hooks (`useTheme`, `useRouter`) or provide fallbacks
-- ✅ Export components properly (default or named)
-- ✅ Follow UI8Kit props rules (see above)
+- Dev: http://localhost:5173 (auto-reload on MDX changes)
+- Build: Check `dist/html/` and `dist/docs-nav.json`
 
 ---
 
 ## 📚 Additional Resources
 
+- **@ui8kit/mdx-react README**: `packages/mdx-react/README.md`
+- **@ui8kit/mdx-react AGENTS**: `packages/mdx-react/AGENTS.md`
+- **@ui8kit/mdx-react Rules**: `packages/mdx-react/.cursor/rules/plugin.mdc`
 - **Generator Rules**: `packages/generator/.cursor/rules/generator.mdc`
 - **Renderer Rules**: `packages/render/.cursor/rules/render.mdc`
-- **UI8Kit Rules**: `.cursor/rules/ui8kit.mdc`
-- **Recent Refactoring**: `.project/report/render-refactoring-2025-01.md`
-- **Generator README**: `packages/generator/README.md`
+- **UI8Kit Props Rules**: `.cursor/rules/ui8kit.mdc`
