@@ -73,6 +73,9 @@ export default defineConfig({
         // Workspace packages
         '@ui8kit/render',
         '@ui8kit/mdx-react',
+        '@ui8kit/mdx-react/service',
+        '@ui8kit/mdx-react/server',
+        /^@ui8kit\/mdx-react\/.*/,
       ],
       
       output: {

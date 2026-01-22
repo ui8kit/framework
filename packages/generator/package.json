@@ -51,6 +51,7 @@
     "@types/bun": "^1.2.16",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
+    "@ui8kit/mdx-react": "workspace:*",
     "@vitest/coverage-v8": "^3.2.3",
     "@vitest/ui": "^3.2.3",
     "typescript": "^5.8.0",
