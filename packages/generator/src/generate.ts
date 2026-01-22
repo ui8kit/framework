@@ -7,6 +7,7 @@
 
 import { writeFile, mkdir, copyFile, readdir, stat, readFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { glob } from 'glob';
 
 import { Orchestrator } from './core/orchestrator';
@@ -152,49 +153,53 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
     orchestrator.addStage(new HtmlStage());
     orchestrator.addStage(new AssetStage());
     
-    // 4. Generate views (Liquid files from React)
+    // 4. Initialize layouts (copy templates if missing)
+    logger.info('📐 Initializing layouts...');
+    await initializeLayouts(config, logger);
+    
+    // 5. Generate views (Liquid files from React)
     logger.info('📄 Generating Liquid views...');
     const viewResult = await generateViews(config, logger);
     generated.views = viewResult.views;
     generated.partials = viewResult.partials;
     
-    // 5. Generate CSS
+    // 6. Generate CSS
     logger.info('🎨 Generating CSS...');
     const cssResult = await generateCss(config, logger);
     generated.cssFiles = cssResult.files;
     
-    // 6. Generate HTML
+    // 7. Generate HTML
     logger.info('📝 Generating HTML pages...');
     const htmlResult = await generateHtml(config, logger);
     generated.htmlPages = htmlResult.pages;
     
-    // 7. Copy assets
+    // 8. Copy assets (CSS and other files)
     if (config.assets?.copy?.length) {
       logger.info('📦 Copying assets...');
       const assetResult = await copyAssets(config, logger);
       generated.assets = assetResult.copied;
     }
     
-    // 8. Generate client script
+    // 9. Generate client script
     if (config.clientScript?.enabled) {
       logger.info('📜 Generating client script...');
       await generateClientScript(config, logger);
     }
     
-    // 9. Run UnCSS (optional)
+    // 10. Run UnCSS (optional)
     if (config.uncss?.enabled) {
       logger.info('🔧 Running UnCSS optimization...');
       await runUncss(config, logger);
     }
     
-    // 10. Generate variant elements (optional)
+    // 11. Generate variant elements (optional)
     if (config.elements?.enabled) {
       logger.info('🧩 Generating variant elements...');
       const elementsResult = await generateVariantElements(config, logger);
       generated.elements = elementsResult.generated;
     }
     
-    // 11. Generate MDX documentation (optional)
+    // 12. Generate MDX documentation (optional)
     if (config.mdx?.enabled) {
       logger.info('📚 Generating MDX documentation...');
       await generateMdxDocs(config, logger);
@@ -228,6 +233,54 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
 // =============================================================================
 // Internal generation functions
 // =============================================================================
+
+/**
+ * Initialize layout templates by copying from generator's templates directory
+ */
+async function initializeLayouts(
+  config: GenerateConfig,
+  logger: Logger
+): Promise<void> {
+  const viewsDir = config.html.viewsDir;
+  const layoutsDir = join(viewsDir, 'layouts');
+  
+  // Create layouts directory
+  await mkdir(layoutsDir, { recursive: true });
+  
+  // Get path to generator's templates directory
+  const generatorTemplatesDir = join(
+    dirname(fileURLToPath(import.meta.url)),
+    '..',
+    'templates'
+  );
+  
+  // Template files to copy
+  const templateFiles = ['layout.liquid', 'page.liquid'];
+  
+  for (const templateFile of templateFiles) {
+    const destPath = join(layoutsDir, templateFile);
+    
+    // Check if file already exists
+    try {
+      await stat(destPath);
+      logger.debug(`  Layout exists: ${destPath}`);
+      continue;
+    } catch {
+      // File doesn't exist, copy it
+    }
+    
+    // Try to copy from generator templates
+    const srcPath = join(generatorTemplatesDir, templateFile);
+    
+    try {
+      const content = await readFile(srcPath, 'utf-8');
+      await writeFile(destPath, content, 'utf-8');
+      logger.info(`  → Created layout: ${destPath}`);
+    } catch (error) {
+      logger.warn(`  ⚠️ Could not copy template ${templateFile}: ${error}`);
+    }
+  }
+}
 
 async function generateViews(
   config: GenerateConfig, 
@@ -476,14 +529,30 @@ async function copyAssets(
     const files = await glob(pattern, { nodir: true });
     
     for (const file of files) {
-      // Determine output path relative to dist
-      const relativePath = relative('.', file);
-      const outputPath = join(config.html.outputDir, 'assets', relativePath.replace(/^src\//, ''));
+      // Normalize path separators
+      const normalizedFile = file.replace(/\\/g, '/');
+      
+      // Get just the filename
+      const fileName = normalizedFile.split('/').pop() ?? normalizedFile;
+      
+      // Determine output path based on file type
+      let outputPath: string;
+      
+      if (normalizedFile.includes('/css/') || fileName.endsWith('.css')) {
+        // CSS files go to css output directory
+        outputPath = join(config.css.outputDir, fileName);
+      } else if (normalizedFile.includes('/js/') || fileName.endsWith('.js')) {
+        // JS files go to html assets/js
+        outputPath = join(config.html.outputDir, 'assets', 'js', fileName);
+      } else {
+        // Other files go to html assets with just the filename
+        outputPath = join(config.html.outputDir, 'assets', fileName);
+      }
       
       await mkdir(dirname(outputPath), { recursive: true });
       await copyFile(file, outputPath);
       
-      logger.debug(`  → ${outputPath}`);
+      logger.info(`  → ${outputPath}`);
       copied++;
     }
   }
