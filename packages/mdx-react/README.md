@@ -1,18 +1,14 @@
 # @ui8kit/mdx-react
 
-Lightweight MDX processing package for UI8Kit documentation. Provides React components and utilities for dev-time interactive previews and build-time static HTML generation.
+MDX processing package for UI8Kit documentation. Provides React components and utilities for dev-time interactive previews and build-time static HTML generation.
 
-## Philosophy
+## Features
 
-```
-One source → React (dev) → Static HTML (prod)
-```
-
-**Design principles:**
-- **Docs-First Routing** — File structure defines routes (no config)
-- **Zero JS in production** — CSS-only interactivity (`<details>` toggles)
-- **Type-safe exports** — Strict separation of browser vs. Node.js code
-- **Design system integration** — Shadcn tokens + Mantine props + Spectre CSS
+- **Dual-mode operation** — Interactive dev mode with HMR, static HTML generation for production
+- **Docs-first routing** — Filesystem structure defines routes (no config needed)
+- **React Context & Hooks** — `usePageContent()`, `useToc()`, `useFrontmatter()`
+- **Documentation Components** — `ComponentPreview`, `PropsTable`, `Callout`, `Steps`
+- **Generator Service** — `MdxService` for integration with `@ui8kit/generator`
 
 ## Installation
 
@@ -20,298 +16,290 @@ One source → React (dev) → Static HTML (prod)
 bun add @ui8kit/mdx-react
 ```
 
+## Exports
+
+| Entry Point | Environment | Description |
+|-------------|-------------|-------------|
+| `@ui8kit/mdx-react` | Browser | React context, hooks, components |
+| `@ui8kit/mdx-react/server` | Node.js | Scanner, generator (uses fs) |
+| `@ui8kit/mdx-react/service` | Node.js | IService adapter for Orchestrator |
+| `@ui8kit/mdx-react/vite` | Node.js | Vite plugin for dev mode |
+
 ## Quick Start
 
-### Dev Mode (Vite with HMR)
+### Dev Mode (Vite + HMR)
 
-MDX files in `docs/` folder are automatically loaded with `import.meta.glob`:
+```tsx
+// src/routes/DocsPage.tsx
+import { PageContentProvider, usePageContent, useToc } from '@ui8kit/mdx-react'
 
-```typescript
-// apps/local/src/routes/DocsPage.tsx
-const mdxModules = import.meta.glob<MdxModule>('../../docs/**/*.mdx')
+// Load MDX files with Vite glob
+const mdxModules = import.meta.glob('../docs/**/*.mdx')
 
-const mdxPath = getMdxPath(pathname)  // /components/button → docs/components/button.mdx
-const module = await mdxModules[mdxPath]()
-
-const { default: Content, frontmatter, toc } = await module
-```
-
-### Build Mode (Static Generation)
-
-Generator automatically:
-1. Scans `docs/` folder
-2. Generates HTML pages in `dist/html/`
-3. Creates navigation JSON in `dist/docs-nav.json`
-
-```bash
-bun run generate
-```
-
-## File Structure
-
-```
-apps/local/
-├── docs/                          # Docs-first routing
-│   ├── index.mdx                 # / → /index.html
-│   ├── components/
-│   │   ├── index.mdx             # /components → /components/index.html
-│   │   ├── button.mdx            # /components/button → /components/button/index.html
-│   │   └── card.mdx              # /components/card → /components/card/index.html
-
-apps/local/src/routes/
-└── DocsPage.tsx                  # Single route handles all paths
-
-apps/local/dist/
-├── html/                         # Static output
-│   ├── index.html
-│   ├── components/
-│   │   ├── index.html
-│   │   ├── button/index.html
-│   │   └── card/index.html
-└── docs-nav.json                 # Navigation metadata
-```
-
-## Configuration
-
-### generator.config.ts (Build Mode)
-
-```typescript
-import { generator, type GeneratorConfig } from '@ui8kit/generator'
-
-export const config: GeneratorConfig = {
-  app: { name: 'UI8Kit Docs' },
-  
-  mdx: {
-    enabled: true,
-    docsDir: './docs',           // Source MDX folder
-    outputDir: './dist/html',    // Generate HTML here
-    navOutput: './dist/docs-nav.json',
-    
-    components: {                 // Available in MDX without import
-      Button: '@/components/ui/Button',
-      Card: '@/components/Card',
-    },
-    
-    toc: {
-      minLevel: 2,
-      maxLevel: 3,
-    },
-  },
-}
-
-await generator.generate(config)
-```
-
-### vite.config.ts (Dev Mode)
-
-```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import mdx from '@mdx-js/rollup'
-
-export default defineConfig({
-  plugins: [
-    {
-      ...mdx({
-        remarkPlugins: [
-          remarkFrontmatter,
-          [remarkMdxFrontmatter, { name: 'frontmatter' }],
-        ],
-        rehypePlugins: [rehypeSlug],
-        providerImportSource: '@mdx-js/react',
-      }),
-      enforce: 'pre',
-    },
-    react(),
-  ],
-  resolve: {
-    alias: {
-      '@ui8kit/mdx-react': './packages/mdx-react/src/index.ts',
-    },
-  },
-  optimizeDeps: {
-    exclude: ['@ui8kit/mdx-react/server'],  // Server-only modules
-  },
-})
-```
-
-## MDX Frontmatter
-
-Each MDX file starts with YAML frontmatter:
-
-```mdx
----
-title: Button Component
-description: Action button with variants and sizes
-order: 1
----
-
-# Button
-
-Your content here...
-```
-
-**Fields:**
-- `title` — Page title (required)
-- `description` — SEO description
-- `order` — Sidebar sort order (default: 99)
-
-## React Hooks (Dev Mode)
-
-Use in components to access page metadata:
-
-```typescript
-import { usePageContent, useToc, useFrontmatter } from '@ui8kit/mdx-react'
-
-function Layout() {
+function DocsPage() {
   const { Content, frontmatter } = usePageContent()
   const toc = useToc()
-  const fm = useFrontmatter()
   
   return (
     <article>
       <h1>{frontmatter.title}</h1>
       <Content />
-      <aside>
-        {toc.map(entry => <a href={`#${entry.slug}`}>{entry.text}</a>)}
-      </aside>
+      <TableOfContents items={toc} />
     </article>
   )
 }
 ```
 
-## Utilities
-
-### Core (Browser-safe)
+### Build Mode (Static Generation)
 
 ```typescript
-import {
-  parseFrontmatter,      // Extract YAML frontmatter
-  extractToc,            // Get headings as TOC
-  buildHierarchicalToc,  // Organize TOC by depth
-  extractExcerpt,        // Get first paragraph
-  parseMdxFile,          // Parse MDX to AST
-  slugify,               // Convert text to URL slug
-} from '@ui8kit/mdx-react'
+// generator.config.ts
+import { generate } from '@ui8kit/generator'
+
+await generate({
+  mdx: {
+    enabled: true,
+    docsDir: './docs',
+    outputDir: './dist/html',
+    navOutput: './dist/docs-nav.json',
+    basePath: '/docs',
+  },
+})
 ```
 
-### Server (Node.js-only)
+## Generator Integration
+
+### Using MdxService Directly
 
 ```typescript
-import {
-  scanDocsTree,          // Scan docs folder
-  flattenDocsTree,       // Flatten tree to array
-  buildSidebarFromTree,  // Generate nav structure
-  generateDocsFromMdx,   // Main generator function
-  loadConfig,            // Load config from file
-  resolveConfigPath,     // Find config.ts location
-} from '@ui8kit/mdx-react/server'
+import { MdxService } from '@ui8kit/mdx-react/service'
+
+const service = new MdxService()
+
+await service.initialize({
+  logger: console,
+  config: { html: { mode: 'tailwind' } },
+})
+
+const result = await service.execute({
+  docsDir: './docs',
+  outputDir: './dist/html',
+  basePath: '/docs',
+  navOutput: './dist/docs-nav.json',
+})
+
+console.log(`Generated ${result.pages} pages`)
 ```
 
-## Export Structure
-
-### Main entry (`@ui8kit/mdx-react`)
-Browser-safe only — no fs, no dynamic imports
+### Using MdxStage with Orchestrator
 
 ```typescript
-// React hooks for dev mode
-export { PageContentProvider, usePageContent, useToc, useFrontmatter }
+import { Orchestrator, MdxStage } from '@ui8kit/generator'
 
-// Documentation components
-export { ComponentPreview, PropsTable, Callout, Steps }
+const orchestrator = new Orchestrator({ logger })
+orchestrator.addStage(new MdxStage())
 
-// Browser-safe utilities
-export { parseFrontmatter, extractToc, buildHierarchicalToc, ... }
+// MdxStage runs automatically when mdx.enabled=true
+await orchestrator.generate(config)
 ```
 
-### Server entry (`@ui8kit/mdx-react/server`)
-Node.js-only — fs access, dynamic imports allowed
+## Configuration Reference
+
+### MDX Config in generator.config.ts
 
 ```typescript
-// Scanner
-export { scanDocsTree, flattenDocsTree, buildSidebarFromTree }
-
-// Generator
-export { generateDocsFromMdx }
-
-// Config
-export { loadConfig, resolveConfigPath }
+mdx: {
+  // Required
+  enabled: true,
+  docsDir: './docs',           // MDX source folder
+  outputDir: './dist/html',    // HTML output folder
+  
+  // Optional
+  basePath: '/docs',           // URL prefix for routes
+  navOutput: './dist/nav.json', // Navigation JSON path
+  
+  // Components available in MDX
+  components: {
+    Button: '@/components/ui/Button',
+    Card: '@/components/Card',
+  },
+  
+  // TypeScript props extraction
+  propsSource: './src/components',
+  
+  // Table of Contents
+  toc: {
+    minLevel: 2,  // Start from h2
+    maxLevel: 3,  // Include up to h3
+  },
+}
 ```
 
-## Build Output
+### HTML Output Modes
 
-### HTML Structure
+| Mode | Output | Use Case |
+|------|--------|----------|
+| `tailwind` | `class` + `data-class` | Development, Tailwind processing |
+| `semantic` | `class` only (from data-class) | Clean semantic HTML |
+| `inline` | Semantic + inline `<style>` | Email templates, portability |
 
-**Tailwind mode** (default):
-```html
-<div class="button-group" data-class="button-group">
-  <!-- class from utility-props.map.ts + data-class for semantic selectors -->
-</div>
+## Docs-First Routing
+
+Routes are derived from the filesystem structure:
+
+```
+docs/
+├── index.mdx                 → /
+├── getting-started.mdx       → /getting-started
+├── components/
+│   ├── index.mdx             → /components
+│   ├── button.mdx            → /components/button
+│   └── card.mdx              → /components/card
+└── tutorials/
+    └── getting-started.mdx   → /tutorials/getting-started
 ```
 
-**Semantic mode** (`--semantic`):
-```html
-<div class="button-group">
-  <!-- class from data-class attribute, original class removed -->
-</div>
+## MDX Frontmatter
+
+```mdx
+---
+title: Button Component
+description: Interactive button with variants
+order: 1
+---
+
+# Button
+
+Content here...
 ```
 
-**Inline mode** (`--inline`):
-```html
-<div class="button-group">
-  <!-- Semantic + CSS inlined in <head> -->
-</div>
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Page title, used in `<title>` and navigation |
+| `description` | string | SEO description, meta tag |
+| `order` | number | Sort order in navigation (lower = first) |
+
+## React Hooks
+
+### usePageContent()
+
+```tsx
+const { Content, frontmatter, toc, excerpt } = usePageContent()
 ```
 
-### Generated Files
+### useToc()
+
+```tsx
+const toc = useToc()
+// [{ depth: 2, text: 'Usage', slug: 'usage' }, ...]
+```
+
+### useFrontmatter()
+
+```tsx
+const { title, description } = useFrontmatter()
+```
+
+## Documentation Components
+
+### ComponentPreview
+
+```mdx
+<ComponentPreview title="Primary Button">
+  <Button variant="primary">Click me</Button>
+</ComponentPreview>
+```
+
+### PropsTable
+
+```mdx
+<PropsTable component="Button" />
+```
+
+### Callout
+
+```mdx
+<Callout type="warning">
+  This feature is experimental.
+</Callout>
+```
+
+### Steps
+
+```mdx
+<Steps>
+  1. Install the package
+  2. Import the component
+  3. Use in your code
+</Steps>
+```
+
+## Generated Output
+
+### HTML Pages
 
 ```
 dist/html/
-├── index.html                         # Home page
-├── components/
-│   ├── index.html                    # Components list
-│   ├── button/
-│   │   └── index.html               # Button docs
-│   └── card/
-│       └── index.html               # Card docs
-└── assets/
-    └── css/
-        └── styles.css               # Generated CSS
+├── index.html
+├── getting-started/
+│   └── index.html
+└── components/
+    ├── index.html
+    ├── button/
+    │   └── index.html
+    └── card/
+        └── index.html
 ```
 
-## Architecture
+### Navigation JSON
 
-### Separation of Concerns
+```json
+{
+  "items": [
+    { "title": "Home", "path": "/", "order": 0 },
+    { "title": "Button", "path": "/components/button", "order": 1 }
+  ],
+  "generated": "2026-01-22T12:00:00.000Z"
+}
+```
 
-**Browser (dev-time via Vite):**
-- MDX loaded with `import.meta.glob`
-- Full React hydration
-- HMR support
-- Interactive components
+## Browser vs Node.js Code Separation
 
-**Build-time (Node.js via generator):**
-- MDX scanned from filesystem
-- Components rendered to static HTML
-- CSS extracted to separate file
-- Navigation generated as JSON
+**Critical:** Strict separation prevents Node.js APIs from being bundled for browser.
 
-### Memory & Performance
+```typescript
+// ✅ Browser-safe (main entry)
+import { usePageContent, useToc } from '@ui8kit/mdx-react'
 
-- Dev mode: Source directly via alias (no build needed)
-- Build mode: Simplified static generation (placeholder HTML)
-- Future: Vite SSG for full MDX rendering
+// ✅ Node.js only (server entry)
+import { scanDocsTree, generateDocsFromMdx } from '@ui8kit/mdx-react/server'
 
-## Known Limitations
+// ✅ IService for generator
+import { MdxService } from '@ui8kit/mdx-react/service'
 
-### Build Mode
-- Current: Placeholder HTML with frontmatter only
-- Future: Full MDX rendering via Vite SSG
-- Components require JS fallback message in HTML
+// ❌ Would fail in browser
+import { scanDocsTree } from '@ui8kit/mdx-react' // Uses fs!
+```
 
-### Dev Mode
-- All routes must be files in `docs/` folder
-- `@/` imports work in MDX via Vite alias
-- Components must not require context providers
+## Vite Configuration
+
+```typescript
+// vite.config.ts
+import mdx from '@mdx-js/rollup'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
+
+export default {
+  plugins: [
+    mdx({
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+    }),
+  ],
+  optimizeDeps: {
+    exclude: ['@ui8kit/mdx-react/server'], // Don't bundle server code
+  },
+}
+```
 
 ## License
 

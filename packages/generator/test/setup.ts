@@ -11,8 +11,7 @@ import { beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
 // Global Test Configuration
 // =============================================================================
 
-// Set test timeout
-vi.setConfig({ testTimeout: 30000 });
+// Set test timeout (vitest 3.x uses different config method)
 
 // =============================================================================
 // Global Hooks

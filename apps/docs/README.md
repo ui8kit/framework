@@ -114,6 +114,86 @@ html: {
 }
 ```
 
+### CLI Options
+
+```bash
+# Default: Tailwind mode (keeps class + data-class)
+bun run generate
+
+# Semantic mode: removes Tailwind classes, uses data-class → class
+bun run generate --semantic
+
+# Inline mode: embeds CSS in HTML
+bun run generate --inline
+
+# Pure mode: removes data-class attributes
+bun run generate --pure
+
+# Combine flags
+bun run generate --semantic --pure
+```
+
+| Mode | `class` | `data-class` | CSS |
+|------|---------|--------------|-----|
+| `tailwind` | ✅ Kept | ✅ Kept | External |
+| `semantic` | From data-class | ❌ Removed | External |
+| `inline` | From data-class | ❌ Removed | `<style>` in HTML |
+
+## Dev Mode Routing
+
+In development, `DocsPage.tsx` handles all routing dynamically.
+
+### How It Works
+
+```typescript
+// 1. Vite glob imports all MDX files
+const mdxModules = import.meta.glob('../../docs/**/*.mdx')
+
+// 2. URL pathname → MDX module path
+getMdxPath('/components/button')  // → '../../docs/components/button.mdx'
+
+// 3. Dynamic import with React Suspense
+const loader = mdxModules[mdxPath]
+const { default: Content, frontmatter, toc } = await loader()
+
+// 4. Render with PageContentProvider
+<PageContentProvider content={Content} frontmatter={frontmatter} toc={toc}>
+  <DocsLayout />
+</PageContentProvider>
+```
+
+### Imports from @ui8kit/mdx-react
+
+```typescript
+// React context and hooks
+import { 
+  PageContentProvider,    // Wraps content with context
+  usePageContent,         // Access { Content, frontmatter, toc }
+  useToc,                 // Just the TOC array
+  useFrontmatter,         // Just the frontmatter object
+} from '@ui8kit/mdx-react'
+
+// Type definitions
+import type { 
+  TocEntry,               // { depth, text, slug }
+  Frontmatter,            // { title?, description?, order?, ... }
+} from '@ui8kit/mdx-react'
+```
+
+### Available Hooks
+
+```typescript
+// Full page content
+const { Content, frontmatter, toc, excerpt } = usePageContent()
+
+// Table of contents only
+const toc = useToc()
+// [{ depth: 2, text: 'Usage', slug: 'usage' }, ...]
+
+// Frontmatter only
+const { title, description, order } = useFrontmatter()
+```
+
 ## Writing Documentation
 
 ### MDX File Structure

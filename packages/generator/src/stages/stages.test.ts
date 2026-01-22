@@ -54,7 +54,7 @@ describe('Pipeline Stages', () => {
   
   describe('DEFAULT_STAGES', () => {
     it('should contain all stages in correct order', () => {
-      expect(DEFAULT_STAGES).toEqual(['layout', 'view', 'css', 'html', 'asset']);
+      expect(DEFAULT_STAGES).toEqual(['layout', 'view', 'css', 'html', 'asset', 'mdx']);
     });
   });
 });

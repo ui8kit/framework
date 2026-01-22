@@ -6,7 +6,7 @@
  */
 
 import { writeFile, mkdir, copyFile, readdir, stat, readFile } from 'node:fs/promises';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'glob';
 
@@ -657,156 +657,83 @@ async function generateVariantElements(
   return { generated: result.files.size };
 }
 
+/**
+ * Generate MDX documentation using MdxService.
+ * 
+ * This function dynamically imports and uses the MdxService from @ui8kit/mdx-react
+ * to generate static HTML documentation from MDX files.
+ */
 async function generateMdxDocs(
   config: GenerateConfig,
   logger: Logger
-): Promise<void> {
+): Promise<{ pages: number }> {
   const mdxConfig = config.mdx;
-  if (!mdxConfig) return;
+  if (!mdxConfig) return { pages: 0 };
   
-  const docsDir = resolve(mdxConfig.docsDir);
-  const outputDir = mdxConfig.outputDir || './dist/html';
-  const basePath = mdxConfig.basePath || '';
-  
-  // Scan for MDX files
-  const mdxFiles = await scanMdxFiles(docsDir);
-  logger.info(`  Found ${mdxFiles.length} MDX files`);
-  
-  // Generate HTML for each MDX file
-  for (const file of mdxFiles) {
-    const relativePath = relative(docsDir, file);
-    const urlPath = mdxFileToUrl(relativePath, basePath);
-    const outputPath = urlToOutputPath(urlPath, outputDir);
+  try {
+    // Try multiple import paths for MdxService
+    let MdxService: any;
     
-    logger.info(`  → ${relativePath} → ${urlPath}`);
-    
-    await generateMdxPlaceholder(file, outputPath, urlPath);
-  }
-  
-  // Generate navigation JSON
-  if (mdxConfig.navOutput) {
-    const nav = await generateDocsNav(mdxFiles, docsDir, basePath);
-    await writeFile(mdxConfig.navOutput, JSON.stringify(nav, null, 2));
-    logger.info(`  → ${mdxConfig.navOutput}`);
-  }
-  
-  logger.info(`✅ Generated ${mdxFiles.length} documentation pages`);
-}
-
-async function scanMdxFiles(dir: string): Promise<string[]> {
-  const files: string[] = [];
-  
-  const scan = async (currentDir: string) => {
-    const entries = await readdir(currentDir, { withFileTypes: true });
-    
-    for (const entry of entries) {
-      const fullPath = join(currentDir, entry.name);
-      
-      if (entry.isDirectory()) {
-        await scan(fullPath);
-      } else if (entry.name.endsWith('.mdx') || entry.name.endsWith('.md')) {
-        files.push(fullPath);
+    // Try package import first
+    try {
+      const module = await import('@ui8kit/mdx-react/service');
+      MdxService = module.MdxService;
+    } catch {
+      // Try relative workspace path (for monorepo development)
+      try {
+        const module = await import('../../mdx-react/src/service/index.js');
+        MdxService = module.MdxService;
+      } catch {
+        // Try source path
+        const module = await import('../../../packages/mdx-react/src/service/MdxService.js');
+        MdxService = module.MdxService;
       }
     }
-  };
-  
-  await scan(dir);
-  return files;
-}
-
-function mdxFileToUrl(relativePath: string, basePath: string): string {
-  let url = relativePath
-    .replace(/\.(mdx?|md)$/, '')
-    .replace(/[\\]/g, '/');
-  
-  if (url.endsWith('/index') || url === 'index') {
-    url = url.replace(/\/?index$/, '');
-  }
-  
-  const base = basePath.replace(/\/$/, '');
-  return url ? `${base}/${url}` : base || '/';
-}
-
-function urlToOutputPath(urlPath: string, outputDir: string): string {
-  if (urlPath === '/' || urlPath === '') {
-    return join(outputDir, 'index.html');
-  }
-  return join(outputDir, urlPath, 'index.html');
-}
-
-async function generateMdxPlaceholder(
-  mdxPath: string,
-  outputPath: string,
-  urlPath: string
-): Promise<void> {
-  const content = await readFile(mdxPath, 'utf-8');
-  const frontmatter = parseFrontmatter(content);
-  
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${frontmatter.title || 'Documentation'}</title>
-  <meta name="description" content="${frontmatter.description || ''}">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-</head>
-<body>
-  <div id="app">
-    <div class="docs-page" data-class="docs-page">
-      <article class="docs-content" data-class="docs-content">
-        <h1>${frontmatter.title || urlPath}</h1>
-        <p>${frontmatter.description || ''}</p>
-        <p><em>This page requires JavaScript for full content.</em></p>
-      </article>
-    </div>
-  </div>
-  <script type="module" src="/assets/js/main.js"></script>
-</body>
-</html>`;
-  
-  await mkdir(dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, html, 'utf-8');
-}
-
-function parseFrontmatter(content: string): Record<string, string> {
-  const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!frontmatterMatch) return {};
-  
-  const result: Record<string, string> = {};
-  const lines = frontmatterMatch[1].split(/\r?\n/);
-  
-  for (const line of lines) {
-    const match = line.match(/^(\w+):\s*(.+)$/);
-    if (match) {
-      result[match[1]] = match[2].replace(/^['"]|['"]$/g, '');
-    }
-  }
-  
-  return result;
-}
-
-async function generateDocsNav(
-  mdxFiles: string[],
-  docsDir: string,
-  basePath: string
-): Promise<unknown[]> {
-  const nav: Array<{ title: string; path: string; order: number }> = [];
-  
-  for (const file of mdxFiles) {
-    const content = await readFile(file, 'utf-8');
-    const frontmatter = parseFrontmatter(content);
-    const relativePath = relative(docsDir, file);
-    const urlPath = mdxFileToUrl(relativePath, basePath);
     
-    nav.push({
-      title: frontmatter.title || relativePath.replace(/\.(mdx?|md)$/, ''),
-      path: urlPath || '/',
-      order: parseInt(frontmatter.order || '999', 10),
+    if (!MdxService) {
+      throw new Error('MdxService class not found');
+    }
+    
+    const service = new MdxService();
+    
+    // Initialize service with minimal context
+    await service.initialize({
+      config: {
+        html: { mode: config.html.mode ?? 'tailwind' },
+      },
+      logger: {
+        debug: (msg: string) => logger.debug(msg),
+        info: (msg: string) => logger.info(msg),
+        warn: (msg: string) => logger.warn(msg),
+        error: (msg: string) => logger.error(msg),
+      },
     });
+    
+    // Execute MDX generation
+    const result = await service.execute({
+      docsDir: mdxConfig.docsDir,
+      outputDir: mdxConfig.outputDir,
+      basePath: mdxConfig.basePath,
+      navOutput: mdxConfig.navOutput,
+      components: mdxConfig.components,
+      propsSource: mdxConfig.propsSource,
+      toc: mdxConfig.toc,
+      htmlMode: config.html.mode ?? 'tailwind',
+      verbose: true,
+    });
+    
+    // Cleanup
+    await service.dispose();
+    
+    logger.info(`✅ Generated ${result.pages} documentation pages in ${Math.round(result.duration)}ms`);
+    
+    return { pages: result.pages };
+  } catch (error) {
+    // Fallback: if MdxService is not available, log warning
+    logger.warn(`⚠️ MdxService not available: ${error}`);
+    logger.info('📚 Skipping MDX generation (install @ui8kit/mdx-react for MDX support)');
+    return { pages: 0 };
   }
-  
-  return nav.sort((a, b) => a.order - b.order);
 }
 
 // =============================================================================

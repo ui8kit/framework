@@ -29,6 +29,10 @@
     "./context": {
       "types": "./dist/context/index.d.ts",
       "import": "./dist/context/index.js"
+    },
+    "./service": {
+      "types": "./dist/service/index.d.ts",
+      "import": "./dist/service/index.js"
     }
   },
   "scripts": {
