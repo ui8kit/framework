@@ -111,6 +111,7 @@ export const config: GenerateConfig = {
     outputDir: './dist/html',
     navOutput: './dist/docs-nav.json',
     basePath: '',
+    rootDir: './src',  // For resolving @ alias (e.g., @/components → ./src/components)
     
     components: {
       Button: '@/components/ui/Button',

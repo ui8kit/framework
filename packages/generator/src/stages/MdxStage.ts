@@ -20,6 +20,7 @@ export interface MdxServiceInput {
   };
   htmlMode?: 'tailwind' | 'semantic' | 'inline';
   verbose?: boolean;
+  rootDir?: string;  // For resolving @ alias
 }
 
 /**
@@ -178,6 +179,7 @@ export class MdxStage implements IPipelineStage<void, MdxServiceOutput> {
       toc: cfg.mdx.toc,
       htmlMode: cfg.html?.mode ?? 'tailwind',
       verbose: true,
+      rootDir: cfg.mdx.rootDir,  // For resolving @ alias
     };
     
     logger.info('📚 Generating MDX documentation...');

@@ -720,6 +720,7 @@ async function generateMdxDocs(
       toc: mdxConfig.toc,
       htmlMode: config.html.mode ?? 'tailwind',
       verbose: true,
+      rootDir: (mdxConfig as any).rootDir,  // For resolving @ alias
     });
     
     // Cleanup

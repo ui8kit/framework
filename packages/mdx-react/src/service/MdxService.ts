@@ -28,7 +28,9 @@ import type {
   NavItem,
   DocsNavigation,
   Frontmatter,
+  TocConfig,
 } from '../core/types'
+import type { ComponentType } from 'react'
 
 // =============================================================================
 // Service Interface Types (copied to avoid circular dependency)
@@ -124,6 +126,13 @@ export interface MdxServiceInput {
    * @default false
    */
   verbose?: boolean
+  
+  /**
+   * Root directory for resolving @ alias paths
+   * If provided, @/ will be replaced with this path
+   * @example './src' or process.cwd() + '/src'
+   */
+  rootDir?: string
 }
 
 /**
@@ -172,6 +181,29 @@ export interface MdxFileSystem {
 }
 
 // =============================================================================
+// MDX Compiler Interface (for DI and testing)
+// =============================================================================
+
+/**
+ * Options for compiling a single MDX file
+ */
+export interface MdxCompileOptions {
+  filePath: string
+  docsDir: string
+  basePath: string
+  components: Record<string, ComponentType>
+  tocConfig?: TocConfig
+  htmlMode: 'tailwind' | 'semantic' | 'inline'
+}
+
+/**
+ * MDX Compiler interface for dependency injection
+ */
+export interface IMdxCompiler {
+  compileMdxFile(options: MdxCompileOptions): Promise<GeneratedMdxPage>
+}
+
+// =============================================================================
 // Service Options
 // =============================================================================
 
@@ -183,6 +215,11 @@ export interface MdxServiceOptions {
    * Custom file system (for testing)
    */
   fileSystem?: MdxFileSystem
+  
+  /**
+   * Custom MDX compiler (for testing)
+   */
+  compiler?: IMdxCompiler
 }
 
 // =============================================================================
@@ -206,10 +243,12 @@ export class MdxService {
   
   private context?: MdxServiceContext
   private fs: MdxFileSystem
+  private compiler: IMdxCompiler
   private initialized = false
   
   constructor(options: MdxServiceOptions = {}) {
     this.fs = options.fileSystem ?? this.createDefaultFileSystem()
+    this.compiler = options.compiler ?? this.createDefaultCompiler()
   }
   
   /**
@@ -255,7 +294,10 @@ export class MdxService {
       }
     }
     
-    // 2. Generate pages
+    // 2. Resolve components (if provided as paths)
+    const resolvedComponents = await this.resolveComponents(input.components, input.rootDir)
+    
+    // 3. Generate pages
     const generatedPages: MdxServiceOutput['generatedPages'] = []
     
     for (const filePath of mdxFiles) {
@@ -267,29 +309,53 @@ export class MdxService {
         this.log('debug', `Processing: ${relativePath} → ${urlPath}`)
       }
       
-      // Parse and generate
-      const content = await this.fs.readFile(filePath)
-      const frontmatter = this.parseFrontmatter(content)
-      
-      // Generate placeholder HTML (can be extended to full MDX compilation)
-      const html = this.generateHtmlPage(frontmatter, urlPath, htmlMode)
-      
-      // Write output
-      await this.ensureDir(outputPath)
-      await this.fs.writeFile(outputPath, html)
-      
-      generatedPages.push({
-        urlPath,
-        outputPath,
-        title: frontmatter.title || this.pathToTitle(urlPath),
-      })
-      
-      // Emit event
-      this.emit('mdx:page:generated', {
-        urlPath,
-        outputPath,
-        title: frontmatter.title,
-      })
+      try {
+        // Compile MDX to HTML using the compiler
+        const compiled = await this.compiler.compileMdxFile({
+          filePath,
+          docsDir,
+          basePath,
+          components: resolvedComponents,
+          tocConfig: input.toc,
+          htmlMode,
+        })
+        
+        // Wrap HTML content in full page template
+        const fullHtml = this.wrapHtmlPage(compiled, htmlMode)
+        
+        // Write output
+        await this.ensureDir(outputPath)
+        await this.fs.writeFile(outputPath, fullHtml)
+        
+        generatedPages.push({
+          urlPath: compiled.urlPath,
+          outputPath,
+          title: compiled.frontmatter.title || this.pathToTitle(urlPath),
+        })
+        
+        // Emit event
+        this.emit('mdx:page:generated', {
+          urlPath: compiled.urlPath,
+          outputPath,
+          title: compiled.frontmatter.title,
+        })
+      } catch (error) {
+        this.log('error', `Failed to compile ${relativePath}: ${error}`)
+        
+        // Fallback to placeholder on error
+        const content = await this.fs.readFile(filePath)
+        const frontmatter = this.parseFrontmatter(content)
+        const html = this.generateFallbackPage(frontmatter, urlPath, htmlMode, error as Error)
+        
+        await this.ensureDir(outputPath)
+        await this.fs.writeFile(outputPath, html)
+        
+        generatedPages.push({
+          urlPath,
+          outputPath,
+          title: frontmatter.title || this.pathToTitle(urlPath),
+        })
+      }
     }
     
     // 3. Generate navigation
@@ -426,44 +492,6 @@ export class MdxService {
   }
   
   /**
-   * Generate HTML page from frontmatter
-   */
-  private generateHtmlPage(
-    frontmatter: Frontmatter,
-    urlPath: string,
-    mode: 'tailwind' | 'semantic' | 'inline'
-  ): string {
-    const title = frontmatter.title || this.pathToTitle(urlPath)
-    const description = frontmatter.description || ''
-    
-    // Use data-class for semantic mode compatibility
-    const classAttr = mode === 'semantic' ? 'class' : 'data-class'
-    
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${this.escapeHtml(title)}</title>
-  <meta name="description" content="${this.escapeHtml(description)}">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-</head>
-<body>
-  <div id="app">
-    <div ${classAttr}="docs-page">
-      <article ${classAttr}="docs-content">
-        <h1>${this.escapeHtml(title)}</h1>
-        ${description ? `<p>${this.escapeHtml(description)}</p>` : ''}
-        <p><em>This page requires JavaScript for full MDX content.</em></p>
-      </article>
-    </div>
-  </div>
-  <script type="module" src="/assets/js/main.js"></script>
-</body>
-</html>`
-  }
-  
-  /**
    * Generate navigation from MDX files
    */
   private async generateNavigation(
@@ -564,6 +592,169 @@ export class MdxService {
   private emit(event: string, data: unknown): void {
     if (this.context?.eventBus) {
       this.context.eventBus.emit(event, data)
+    }
+  }
+  
+  /**
+   * Resolve component paths to actual components
+   */
+  private async resolveComponents(
+    componentPaths?: Record<string, string>,
+    rootDir?: string
+  ): Promise<Record<string, ComponentType>> {
+    if (!componentPaths) return {}
+    
+    const resolved: Record<string, ComponentType> = {}
+    
+    // Convert rootDir to absolute path if provided
+    let absoluteRootDir: string | undefined
+    if (rootDir) {
+      const { resolve } = await import('node:path')
+      absoluteRootDir = resolve(process.cwd(), rootDir)
+    }
+    
+    for (const [name, componentPath] of Object.entries(componentPaths)) {
+      try {
+        // Resolve @ alias to absolute path
+        let resolvedPath = componentPath
+        if (componentPath.startsWith('@/') && absoluteRootDir) {
+          const relativePart = componentPath.slice(2) // Remove '@/'
+          const { join } = await import('node:path')
+          resolvedPath = join(absoluteRootDir, relativePart)
+          
+          // Add .tsx extension if not present
+          if (!resolvedPath.match(/\.(tsx?|jsx?)$/)) {
+            resolvedPath += '.tsx'
+          }
+        }
+        
+        this.log('debug', `Trying to import component ${name} from ${resolvedPath}`)
+        
+        // Try to dynamically import the component
+        const module = await import(resolvedPath)
+        resolved[name] = module.default || module[name]
+        this.log('debug', `Resolved component: ${name}`)
+      } catch (error) {
+        this.log('warn', `Failed to resolve component ${name} from ${componentPath}: ${error}`)
+      }
+    }
+    
+    return resolved
+  }
+  
+  /**
+   * Wrap compiled HTML content in a full page template
+   */
+  private wrapHtmlPage(
+    compiled: GeneratedMdxPage,
+    mode: 'tailwind' | 'semantic' | 'inline'
+  ): string {
+    const title = compiled.frontmatter.title || this.pathToTitle(compiled.urlPath)
+    const description = compiled.frontmatter.description || ''
+    
+    // Use class or data-class based on mode
+    const classAttr = mode === 'semantic' ? 'class' : 'data-class'
+    
+    // Generate TOC sidebar if available
+    const tocHtml = compiled.toc.length > 0 
+      ? this.generateTocHtml(compiled.toc, classAttr)
+      : ''
+    
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(title)}</title>
+  <meta name="description" content="${this.escapeHtml(description)}">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div ${classAttr}="docs-page">
+      <article ${classAttr}="docs-content">
+        ${compiled.htmlContent}
+      </article>
+      ${tocHtml}
+    </div>
+  </div>
+  <script type="module" src="/assets/js/main.js"></script>
+</body>
+</html>`
+  }
+  
+  /**
+   * Generate Table of Contents HTML
+   */
+  private generateTocHtml(
+    toc: GeneratedMdxPage['toc'],
+    classAttr: string
+  ): string {
+    const items = toc.map(entry => 
+      `<li><a href="#${entry.slug}">${this.escapeHtml(entry.text)}</a></li>`
+    ).join('\n        ')
+    
+    return `
+      <aside ${classAttr}="docs-toc">
+        <nav ${classAttr}="toc-nav">
+          <h3>On this page</h3>
+          <ul>
+        ${items}
+          </ul>
+        </nav>
+      </aside>`
+  }
+  
+  /**
+   * Generate fallback page when compilation fails
+   */
+  private generateFallbackPage(
+    frontmatter: Frontmatter,
+    urlPath: string,
+    mode: 'tailwind' | 'semantic' | 'inline',
+    error: Error
+  ): string {
+    const title = frontmatter.title || this.pathToTitle(urlPath)
+    const description = frontmatter.description || ''
+    const classAttr = mode === 'semantic' ? 'class' : 'data-class'
+    
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(title)}</title>
+  <meta name="description" content="${this.escapeHtml(description)}">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div ${classAttr}="docs-page">
+      <article ${classAttr}="docs-content">
+        <h1>${this.escapeHtml(title)}</h1>
+        ${description ? `<p>${this.escapeHtml(description)}</p>` : ''}
+        <div ${classAttr}="error-notice">
+          <p><strong>Error:</strong> Failed to compile MDX content.</p>
+          <pre>${this.escapeHtml(error.message)}</pre>
+        </div>
+      </article>
+    </div>
+  </div>
+  <script type="module" src="/assets/js/main.js"></script>
+</body>
+</html>`
+  }
+  
+  /**
+   * Create default MDX compiler
+   */
+  private createDefaultCompiler(): IMdxCompiler {
+    return {
+      compileMdxFile: async (options) => {
+        // Dynamically import the compiler to avoid bundling it in browser
+        const { compileMdxFile } = await import('../generator/mdx-compiler')
+        return compileMdxFile(options)
+      }
     }
   }
   

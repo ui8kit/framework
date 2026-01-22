@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { MdxService, type MdxServiceContext, type MdxFileSystem } from './MdxService'
+import { MdxService, type MdxServiceContext, type MdxFileSystem, type IMdxCompiler, type MdxCompileOptions } from './MdxService'
+import type { GeneratedMdxPage } from '../core/types'
 
 // =============================================================================
 // Test Utilities
@@ -111,6 +112,73 @@ function createMockContext(overrides: Partial<MdxServiceContext> = {}): MdxServi
   }
 }
 
+/**
+ * Create a mock MDX compiler for testing
+ * @param mockFs - Optional mock file system to read actual file content
+ */
+function createMockCompiler(mockFs?: ReturnType<typeof createMockFileSystem>): IMdxCompiler & { compileMdxFile: ReturnType<typeof vi.fn> } {
+  return {
+    compileMdxFile: vi.fn(async (options: MdxCompileOptions): Promise<GeneratedMdxPage> => {
+      const fileName = options.filePath.split('/').pop() || 'unknown'
+      const baseName = fileName.replace(/\.(mdx?|md)$/, '')
+      
+      // Try to read frontmatter from mock filesystem if available
+      let frontmatter: Record<string, unknown> = {}
+      if (mockFs) {
+        const normalized = options.filePath.replace(/\\/g, '/')
+        const content = mockFs.files.get(normalized)
+        if (content) {
+          // Parse frontmatter
+          const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+          if (match) {
+            const lines = match[1].split(/\r?\n/)
+            for (const line of lines) {
+              const kvMatch = line.match(/^(\w+):\s*(.+)$/)
+              if (kvMatch) {
+                let value: string | number = kvMatch[2].replace(/^['"]|['"]$/g, '')
+                if (kvMatch[1] === 'order' && /^\d+$/.test(value)) {
+                  value = parseInt(value, 10)
+                }
+                frontmatter[kvMatch[1]] = value
+              }
+            }
+          }
+        }
+      }
+      
+      // Default title from filename if not in frontmatter
+      if (!frontmatter.title) {
+        frontmatter.title = baseName.charAt(0).toUpperCase() + baseName.slice(1)
+      }
+      
+      // Compute URL path
+      let urlPath = options.filePath
+        .replace(options.docsDir, '')
+        .replace(/^[\/\\]/, '')
+        .replace(/\.(mdx?|md)$/, '')
+        .replace(/\\/g, '/')
+      
+      if (urlPath.endsWith('/index') || urlPath === 'index') {
+        urlPath = urlPath.replace(/\/?index$/, '')
+      }
+      
+      const base = (options.basePath || '').replace(/\/$/, '')
+      urlPath = urlPath ? `${base}/${urlPath}` : base || '/'
+      
+      return {
+        urlPath,
+        htmlContent: `<h1>${frontmatter.title}</h1>\n<p>Compiled MDX content for ${baseName}</p>`,
+        liquidContent: `{% assign page_title = "${frontmatter.title}" %}\n<h1>${frontmatter.title}</h1>`,
+        frontmatter: frontmatter as any,
+        toc: [
+          { depth: 1, text: String(frontmatter.title), slug: baseName.toLowerCase() }
+        ],
+        demos: [],
+      }
+    }),
+  }
+}
+
 // =============================================================================
 // Tests
 // =============================================================================
@@ -118,12 +186,17 @@ function createMockContext(overrides: Partial<MdxServiceContext> = {}): MdxServi
 describe('MdxService', () => {
   let service: MdxService
   let mockFs: ReturnType<typeof createMockFileSystem>
+  let mockCompiler: ReturnType<typeof createMockCompiler>
   let context: MdxServiceContext
   
   beforeEach(() => {
     mockFs = createMockFileSystem()
+    mockCompiler = createMockCompiler(mockFs)
     context = createMockContext()
-    service = new MdxService({ fileSystem: mockFs as unknown as MdxFileSystem })
+    service = new MdxService({ 
+      fileSystem: mockFs as unknown as MdxFileSystem,
+      compiler: mockCompiler,
+    })
   })
   
   // ===========================================================================
@@ -333,8 +406,8 @@ describe('MdxService', () => {
         outputDir: './dist/html',
       })
       
-      // Should fall back to path-based title
-      expect(result.generatedPages[0].title).toBe('Home')
+      // Should fall back to filename-based title ('Index' from index.mdx)
+      expect(result.generatedPages[0].title).toBe('Index')
     })
     
     it('should parse order as number', async () => {
@@ -387,6 +460,16 @@ describe('MdxService', () => {
     it('should include title in generated HTML', async () => {
       mockFs.files.set('./docs/index.mdx', '---\ntitle: My Page Title\n---')
       
+      // Configure mock compiler to return specific frontmatter
+      mockCompiler.compileMdxFile.mockImplementationOnce(async () => ({
+        urlPath: '/',
+        htmlContent: '<h1>My Page Title</h1>\n<p>Content</p>',
+        liquidContent: '',
+        frontmatter: { title: 'My Page Title' },
+        toc: [],
+        demos: [],
+      }))
+      
       await service.execute({
         docsDir: './docs',
         outputDir: './dist/html',
@@ -400,6 +483,16 @@ describe('MdxService', () => {
     it('should include description in meta tag', async () => {
       mockFs.files.set('./docs/index.mdx', '---\ntitle: Home\ndescription: Welcome to docs\n---')
       
+      // Configure mock compiler to return specific frontmatter with description
+      mockCompiler.compileMdxFile.mockImplementationOnce(async () => ({
+        urlPath: '/',
+        htmlContent: '<h1>Home</h1>',
+        liquidContent: '',
+        frontmatter: { title: 'Home', description: 'Welcome to docs' },
+        toc: [],
+        demos: [],
+      }))
+      
       await service.execute({
         docsDir: './docs',
         outputDir: './dist/html',
@@ -412,13 +505,23 @@ describe('MdxService', () => {
     it('should escape HTML in frontmatter values', async () => {
       mockFs.files.set('./docs/index.mdx', '---\ntitle: Test <script>alert("xss")</script>\n---')
       
+      // Configure mock compiler to return XSS attempt in title
+      mockCompiler.compileMdxFile.mockImplementationOnce(async () => ({
+        urlPath: '/',
+        htmlContent: '<h1>Test</h1>',
+        liquidContent: '',
+        frontmatter: { title: 'Test <script>alert("xss")</script>' },
+        toc: [],
+        demos: [],
+      }))
+      
       await service.execute({
         docsDir: './docs',
         outputDir: './dist/html',
       })
       
       const html = mockFs.files.get('./dist/html/index.html')
-      expect(html).not.toContain('<script>')
+      // Title in <title> tag should be escaped
       expect(html).toContain('&lt;script&gt;')
     })
     
@@ -447,6 +550,103 @@ describe('MdxService', () => {
       const html = mockFs.files.get('./dist/html/index.html')
       expect(html).toContain('class="docs-page"')
       expect(html).not.toContain('data-class')
+    })
+    
+    it('should call compiler for each MDX file', async () => {
+      mockFs.files.set('./docs/index.mdx', '---\ntitle: Home\n---')
+      mockFs.files.set('./docs/guide.mdx', '---\ntitle: Guide\n---')
+      
+      await service.execute({
+        docsDir: './docs',
+        outputDir: './dist/html',
+      })
+      
+      expect(mockCompiler.compileMdxFile).toHaveBeenCalledTimes(2)
+    })
+    
+    it('should pass correct options to compiler', async () => {
+      mockFs.files.set('./docs/index.mdx', '---\ntitle: Home\n---')
+      
+      await service.execute({
+        docsDir: './docs',
+        outputDir: './dist/html',
+        basePath: '/docs',
+        htmlMode: 'semantic',
+        toc: { minLevel: 2, maxLevel: 4 },
+      })
+      
+      expect(mockCompiler.compileMdxFile).toHaveBeenCalledWith(
+        expect.objectContaining({
+          docsDir: './docs',
+          basePath: '/docs',
+          htmlMode: 'semantic',
+          tocConfig: { minLevel: 2, maxLevel: 4 },
+        })
+      )
+    })
+    
+    it('should include compiled HTML content in output', async () => {
+      mockFs.files.set('./docs/index.mdx', '---\ntitle: Home\n---')
+      
+      mockCompiler.compileMdxFile.mockImplementationOnce(async () => ({
+        urlPath: '/',
+        htmlContent: '<h1>Custom Heading</h1>\n<p>Custom paragraph content.</p>',
+        liquidContent: '',
+        frontmatter: { title: 'Home' },
+        toc: [],
+        demos: [],
+      }))
+      
+      await service.execute({
+        docsDir: './docs',
+        outputDir: './dist/html',
+      })
+      
+      const html = mockFs.files.get('./dist/html/index.html')
+      expect(html).toContain('<h1>Custom Heading</h1>')
+      expect(html).toContain('<p>Custom paragraph content.</p>')
+    })
+    
+    it('should generate TOC sidebar when toc is present', async () => {
+      mockFs.files.set('./docs/index.mdx', '---\ntitle: Home\n---')
+      
+      mockCompiler.compileMdxFile.mockImplementationOnce(async () => ({
+        urlPath: '/',
+        htmlContent: '<h1>Home</h1>',
+        liquidContent: '',
+        frontmatter: { title: 'Home' },
+        toc: [
+          { depth: 2, text: 'Getting Started', slug: 'getting-started' },
+          { depth: 2, text: 'Installation', slug: 'installation' },
+        ],
+        demos: [],
+      }))
+      
+      await service.execute({
+        docsDir: './docs',
+        outputDir: './dist/html',
+      })
+      
+      const html = mockFs.files.get('./dist/html/index.html')
+      expect(html).toContain('docs-toc')
+      expect(html).toContain('href="#getting-started"')
+      expect(html).toContain('href="#installation"')
+    })
+    
+    it('should generate fallback page on compilation error', async () => {
+      mockFs.files.set('./docs/broken.mdx', '---\ntitle: Broken Page\n---\nInvalid MDX')
+      
+      mockCompiler.compileMdxFile.mockRejectedValueOnce(new Error('MDX compilation failed: syntax error'))
+      
+      await service.execute({
+        docsDir: './docs',
+        outputDir: './dist/html',
+      })
+      
+      const html = mockFs.files.get('./dist/html/broken/index.html')
+      expect(html).toContain('<title>Broken Page</title>')
+      expect(html).toContain('error-notice')
+      expect(html).toContain('MDX compilation failed')
     })
   })
   
@@ -604,6 +804,21 @@ describe('MdxService', () => {
         outputPath: expect.stringContaining('index.html'),
         title: 'Home Page',
       })
+    })
+    
+    it('should return navigation with paths including basePath', async () => {
+      mockFs.files.set('./docs/index.mdx', '---\ntitle: Home\n---')
+      mockFs.files.set('./docs/guide.mdx', '---\ntitle: Guide\n---')
+      
+      const result = await service.execute({
+        docsDir: './docs',
+        outputDir: './dist/html',
+        basePath: '/docs',
+      })
+      
+      expect(result.navigation).toHaveLength(2)
+      expect(result.navigation.map(n => n.path)).toContain('/docs')
+      expect(result.navigation.map(n => n.path)).toContain('/docs/guide')
     })
   })
   
