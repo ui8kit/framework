@@ -53,6 +53,14 @@ export function createMockLogger() {
 }
 
 /**
+ * Normalize path for cross-platform comparison
+ * Removes leading ./ and normalizes slashes
+ */
+function normalizePath(path: string): string {
+  return path.replace(/\\/g, '/').replace(/^\.\//, '');
+}
+
+/**
  * Create a mock file system adapter for testing
  */
 export function createMockFileSystem() {
@@ -61,20 +69,29 @@ export function createMockFileSystem() {
   return {
     files,
     readFile: vi.fn(async (path: string) => {
-      const content = files.get(path);
+      // Normalize path for cross-platform
+      const normalized = normalizePath(path);
+      // Try both normalized and original path
+      const content = files.get(normalized) ?? files.get(path);
       if (!content) throw new Error(`ENOENT: no such file or directory, open '${path}'`);
       return content;
     }),
     writeFile: vi.fn(async (path: string, content: string) => {
-      files.set(path, content);
+      // Store with normalized path
+      files.set(normalizePath(path), content);
     }),
-    exists: vi.fn(async (path: string) => files.has(path)),
+    exists: vi.fn(async (path: string) => {
+      const normalized = normalizePath(path);
+      return files.has(normalized) || files.has(path);
+    }),
     mkdir: vi.fn(async () => {}),
     readdir: vi.fn(async (path: string) => {
+      const normalized = normalizePath(path);
       const entries: string[] = [];
       for (const key of files.keys()) {
-        if (key.startsWith(path)) {
-          const relative = key.slice(path.length + 1);
+        const normalizedKey = normalizePath(key);
+        if (normalizedKey.startsWith(normalized)) {
+          const relative = normalizedKey.slice(normalized.length + 1);
           const firstPart = relative.split('/')[0];
           if (firstPart && !entries.includes(firstPart)) {
             entries.push(firstPart);

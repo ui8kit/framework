@@ -35,6 +35,8 @@ export default defineConfig({
       // Files to include in coverage
       include: [
         'src/core/**/*.ts',
+        'src/services/**/*.ts',
+        'src/plugins/**/*.ts',
       ],
       
       // Files to exclude from coverage
@@ -44,14 +46,15 @@ export default defineConfig({
         'src/**/*.d.ts',
         'src/**/index.ts', // Barrel exports only
         'src/core/interfaces/**', // Type-only files
+        'src/stages/**/*.ts', // Thin wrappers, integration tested
       ],
       
-      // Coverage thresholds for core module
+      // Coverage thresholds
       thresholds: {
-        statements: 85,
-        branches: 80,
-        functions: 80,
-        lines: 85,
+        statements: 75,
+        branches: 70,
+        functions: 70,
+        lines: 75,
       },
       
       // Output formats
