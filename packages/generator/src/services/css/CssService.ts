@@ -1,5 +1,5 @@
 import type { IService, IServiceContext, RouteConfig } from '../../core/interfaces';
-import type { HtmlConverterService, HtmlConverterOutput } from '../html-converter';
+import { HtmlConverterService } from '../html-converter';
 import { join } from 'node:path';
 
 /**
@@ -58,42 +58,19 @@ export interface CssFileSystem {
 }
 
 /**
- * CSS converter interface (legacy, for backward compatibility)
- */
-export interface CssConverter {
-  convertHtmlToCss(
-    htmlFilePath: string,
-    outputApplyCss: string,
-    outputPureCss: string,
-    options?: {
-      verbose?: boolean;
-      ui8kitMapPath?: string;
-      shadcnMapPath?: string;
-    }
-  ): Promise<{ applyCss: string; pureCss: string }>;
-}
-
-/**
- * Converter mode: 'service' uses HtmlConverterService, 'legacy' uses old converter
- */
-export type ConverterMode = 'service' | 'legacy';
-
-/**
  * CssService options
  */
 export interface CssServiceOptions {
   fileSystem?: CssFileSystem;
-  /** Legacy converter (deprecated, use converterMode: 'service' instead) */
-  converter?: CssConverter;
-  /** Converter mode: 'service' (recommended) or 'legacy' (default for backward compatibility) */
-  converterMode?: ConverterMode;
+  /** Custom HtmlConverterService instance (for testing) */
+  htmlConverter?: HtmlConverterService;
 }
 
 /**
  * CssService - Generates CSS from Liquid view files.
  * 
  * Responsibilities:
- * - Extract classes from HTML views
+ * - Extract classes from HTML views using HtmlConverterService
  * - Generate @apply CSS (tailwind.apply.css)
  * - Generate pure CSS3 (ui8kit.local.css)
  * - Merge CSS from multiple routes
@@ -105,36 +82,37 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
   
   private context!: IServiceContext;
   private fs: CssFileSystem;
-  private converter: CssConverter | null;
-  private converterMode: ConverterMode;
-  private htmlConverterService: HtmlConverterService | null = null;
+  private htmlConverter: HtmlConverterService;
+  private converterInitialized = false;
   
   constructor(options: CssServiceOptions = {}) {
     this.fs = options.fileSystem ?? this.createDefaultFileSystem();
-    this.converterMode = options.converterMode ?? 'legacy';
-    this.converter = options.converter ?? (this.converterMode === 'legacy' ? this.createDefaultConverter() : null);
+    this.htmlConverter = options.htmlConverter ?? new HtmlConverterService();
   }
   
   async initialize(context: IServiceContext): Promise<void> {
     this.context = context;
     
-    // Try to get HtmlConverterService from registry if in service mode
-    if (this.converterMode === 'service') {
-      try {
-        // Registry is available on context via eventBus or direct injection
-        const registry = (context as any).registry;
-        if (registry?.has('html-converter')) {
-          this.htmlConverterService = registry.resolve('html-converter');
-        }
-      } catch {
-        this.context.logger.debug('HtmlConverterService not found in registry, using legacy converter');
-        this.converter = this.createDefaultConverter();
+    // Try to get HtmlConverterService from registry first
+    try {
+      const registry = (context as any).registry;
+      if (registry?.has('html-converter')) {
+        this.htmlConverter = registry.resolve('html-converter');
+        this.converterInitialized = true;
       }
+    } catch {
+      // Use our own instance
+    }
+    
+    // Initialize our own converter if not from registry
+    if (!this.converterInitialized) {
+      await this.htmlConverter.initialize(context);
+      this.converterInitialized = true;
     }
   }
   
   async execute(input: CssServiceInput): Promise<CssServiceOutput> {
-    const { viewsDir, outputDir, routes, pureCss = false, mappings, outputFiles = {} } = input;
+    const { viewsDir, outputDir, routes, pureCss = false, outputFiles = {} } = input;
     
     // Merge with defaults
     const cssFileNames: Required<CssOutputFileNames> = { ...DEFAULT_CSS_OUTPUT_FILES, ...outputFiles };
@@ -152,7 +130,10 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
       const viewPath = join(viewsDir, 'pages', viewFileName);
       
       try {
-        const result = await this.convertHtml(viewPath, cssFileNames, mappings);
+        const result = await this.htmlConverter.execute({
+          htmlPath: viewPath,
+          verbose: false,
+        });
         
         allApplyCss.push(result.applyCss);
         if (pureCss) {
@@ -182,7 +163,10 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
           const filePath = join(dirPath, entry.name);
           
           try {
-            const result = await this.convertHtml(filePath, cssFileNames, mappings);
+            const result = await this.htmlConverter.execute({
+              htmlPath: filePath,
+              verbose: false,
+            });
             
             allApplyCss.push(result.applyCss);
             if (pureCss) {
@@ -241,44 +225,10 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
   }
   
   async dispose(): Promise<void> {
-    // No cleanup needed
-  }
-  
-  /**
-   * Convert HTML file using appropriate converter
-   */
-  private async convertHtml(
-    htmlPath: string,
-    cssFileNames: Required<CssOutputFileNames>,
-    mappings?: { ui8kitMap?: string; shadcnMap?: string }
-  ): Promise<{ applyCss: string; pureCss: string }> {
-    // Use HtmlConverterService if available
-    if (this.htmlConverterService) {
-      const result = await this.htmlConverterService.execute({
-        htmlPath,
-        verbose: false,
-      });
-      return {
-        applyCss: result.applyCss,
-        pureCss: result.pureCss,
-      };
+    // Dispose our own converter if we created it
+    if (this.converterInitialized && this.htmlConverter) {
+      await this.htmlConverter.dispose();
     }
-    
-    // Fall back to legacy converter
-    if (!this.converter) {
-      this.converter = this.createDefaultConverter();
-    }
-    
-    return this.converter.convertHtmlToCss(
-      htmlPath,
-      cssFileNames.applyCss,
-      cssFileNames.pureCss,
-      {
-        verbose: false,
-        ui8kitMapPath: mappings?.ui8kitMap,
-        shadcnMapPath: mappings?.shadcnMap,
-      }
-    );
   }
   
   /**
@@ -332,18 +282,6 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
           name: e.name,
           isFile: () => e.isFile(),
         }));
-      },
-    };
-  }
-  
-  /**
-   * Create default converter using html-converter
-   */
-  private createDefaultConverter(): CssConverter {
-    return {
-      convertHtmlToCss: async (htmlFilePath, outputApplyCss, outputPureCss, options) => {
-        const { htmlConverter } = await import('../../html-converter.js');
-        return htmlConverter.convertHtmlToCss(htmlFilePath, outputApplyCss, outputPureCss, options);
       },
     };
   }

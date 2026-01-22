@@ -1,7 +1,49 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CssService } from './CssService';
+import { HtmlConverterService } from '../html-converter';
 import type { IServiceContext, GeneratorConfig } from '../../core/interfaces';
-import { createMockFileSystem, createMockLogger } from '../../../test/setup';
+import { createMockLogger } from '../../../test/setup';
+
+// Mock HtmlConverterService
+function createMockHtmlConverter() {
+  return {
+    name: 'html-converter',
+    version: '1.0.0',
+    dependencies: [],
+    initialize: vi.fn().mockResolvedValue(undefined),
+    execute: vi.fn().mockResolvedValue({
+      applyCss: '.test { @apply bg-red-500; }',
+      pureCss: '.test { background-color: red; }',
+      elementsCount: 1,
+      selectorsCount: 1,
+    }),
+    dispose: vi.fn().mockResolvedValue(undefined),
+  } as unknown as HtmlConverterService;
+}
+
+// Mock file system
+function createMockFs() {
+  const files = new Map<string, string>();
+  
+  return {
+    files,
+    readFile: vi.fn(async (path: string) => {
+      const normalized = path.replace(/\\/g, '/').replace(/^\.\//, '');
+      if (files.has(normalized)) {
+        return files.get(normalized)!;
+      }
+      for (const [key, value] of files.entries()) {
+        if (normalized.endsWith(key) || key.endsWith(normalized)) {
+          return value;
+        }
+      }
+      throw new Error(`ENOENT: ${path}`);
+    }),
+    writeFile: vi.fn().mockResolvedValue(undefined),
+    mkdir: vi.fn().mockResolvedValue(undefined),
+    readdir: vi.fn().mockResolvedValue([]),
+  };
+}
 
 // Mock context factory
 function createMockContext(config: Partial<GeneratorConfig> = {}): IServiceContext {
@@ -49,22 +91,15 @@ function createMockContext(config: Partial<GeneratorConfig> = {}): IServiceConte
 
 describe('CssService', () => {
   let service: CssService;
-  let mockFs: ReturnType<typeof createMockFileSystem>;
-  let mockConverter: {
-    convertHtmlToCss: ReturnType<typeof vi.fn>;
-  };
+  let mockFs: ReturnType<typeof createMockFs>;
+  let mockHtmlConverter: ReturnType<typeof createMockHtmlConverter>;
   
   beforeEach(() => {
-    mockFs = createMockFileSystem();
-    mockConverter = {
-      convertHtmlToCss: vi.fn().mockResolvedValue({
-        applyCss: '.test { @apply bg-red-500; }',
-        pureCss: '.test { background-color: red; }',
-      }),
-    };
+    mockFs = createMockFs();
+    mockHtmlConverter = createMockHtmlConverter();
     
     // Set up view files
-    mockFs.files.set('./views/pages/index.liquid', '<div class="bg-red-500" data-class="test">Hello</div>');
+    mockFs.files.set('views/pages/index.liquid', '<div class="bg-red-500" data-class="test">Hello</div>');
     
     service = new CssService({
       fileSystem: {
@@ -73,7 +108,7 @@ describe('CssService', () => {
         mkdir: mockFs.mkdir,
         readdir: mockFs.readdir,
       },
-      converter: mockConverter,
+      htmlConverter: mockHtmlConverter,
     });
   });
   
@@ -97,6 +132,26 @@ describe('CssService', () => {
       
       await expect(service.initialize(context)).resolves.not.toThrow();
     });
+    
+    it('should use HtmlConverterService from registry if available', async () => {
+      const registryConverter = createMockHtmlConverter();
+      const context = createMockContext();
+      (context.registry as any).has = vi.fn().mockReturnValue(true);
+      (context.registry as any).resolve = vi.fn().mockReturnValue(registryConverter);
+      
+      await service.initialize(context);
+      
+      // Execute to verify it uses the registry converter
+      const input = {
+        viewsDir: './views',
+        outputDir: './dist/css',
+        routes: { '/': { title: 'Home' } },
+      };
+      
+      await service.execute(input);
+      
+      expect(registryConverter.execute).toHaveBeenCalled();
+    });
   });
   
   describe('execute', () => {
@@ -118,8 +173,8 @@ describe('CssService', () => {
     });
     
     it('should process each route view file', async () => {
-      mockFs.files.set('./views/pages/index.liquid', '<div class="test">Home</div>');
-      mockFs.files.set('./views/pages/about.liquid', '<div class="test">About</div>');
+      mockFs.files.set('views/pages/index.liquid', '<div class="test">Home</div>');
+      mockFs.files.set('views/pages/about.liquid', '<div class="test">About</div>');
       
       const input = {
         viewsDir: './views',
@@ -133,7 +188,7 @@ describe('CssService', () => {
       
       await service.execute(input);
       
-      expect(mockConverter.convertHtmlToCss).toHaveBeenCalledTimes(2);
+      expect(mockHtmlConverter.execute).toHaveBeenCalledTimes(2);
     });
     
     it('should generate tailwind.apply.css', async () => {
@@ -220,7 +275,6 @@ describe('CssService', () => {
     
     it('should also process partials and layouts directories', async () => {
       // Mock readdir to return file entries for partials/layouts
-      const originalReaddir = mockFs.readdir;
       mockFs.readdir = vi.fn().mockImplementation(async (path: string) => {
         const normalized = path.replace(/\\/g, '/');
         if (normalized.includes('partials')) {
@@ -232,8 +286,8 @@ describe('CssService', () => {
         return [];
       });
       
-      mockFs.files.set('./views/partials/header.liquid', '<header class="header">Header</header>');
-      mockFs.files.set('./views/layouts/layout.liquid', '<html class="layout">Layout</html>');
+      mockFs.files.set('views/partials/header.liquid', '<header class="header">Header</header>');
+      mockFs.files.set('views/layouts/layout.liquid', '<html class="layout">Layout</html>');
       
       const input = {
         viewsDir: './views',
@@ -250,14 +304,14 @@ describe('CssService', () => {
           mkdir: mockFs.mkdir,
           readdir: mockFs.readdir,
         },
-        converter: mockConverter,
+        htmlConverter: mockHtmlConverter,
       });
       await service.initialize(createMockContext());
       
       await service.execute(input);
       
       // Should process pages + partials + layouts (3 total)
-      expect(mockConverter.convertHtmlToCss.mock.calls.length).toBeGreaterThanOrEqual(3);
+      expect(mockHtmlConverter.execute.mock.calls.length).toBeGreaterThanOrEqual(3);
     });
   });
   

@@ -1,41 +1,37 @@
-// Legacy generator (deprecated, use Orchestrator instead)
-import { Generator, type GeneratorConfig as LegacyGeneratorConfig, type RouteConfig as LegacyRouteConfig } from './generator.js';
+/**
+ * @ui8kit/generator - Static Site Generator
+ * 
+ * Modern architecture with Orchestrator, Services, and Pipeline.
+ */
 
-/** @deprecated Use Orchestrator instead */
-export { Generator };
-/** @deprecated Use GeneratorConfig from core instead */
-export type { LegacyGeneratorConfig, LegacyRouteConfig };
+// =============================================================================
+// Main API - Simple usage
+// =============================================================================
 
-/** @deprecated Use new Orchestrator() instead */
-export const generator = new Generator();
+export { generate, createGenerator } from './generate';
+export type { GenerateConfig, GenerateResult } from './generate';
 
-// ============================================================
-// New Orchestrator System
-// ============================================================
+// Re-export config types for convenience
+export type { GeneratorConfig, RouteConfig } from './core/interfaces';
+
+// =============================================================================
+// Orchestrator System - Advanced usage
+// =============================================================================
 
 // Core exports
 export {
-  // Orchestrator
   Orchestrator,
-  // Pipeline
   Pipeline,
   createPipelineContext,
-  // Event Bus
   EventBus,
-  // Service Registry
   ServiceRegistry,
   CircularDependencyError,
   ServiceNotFoundError,
-  // Logger
   Logger,
 } from './core';
 
 // Types and interfaces
 export type {
-  // Config
-  GeneratorConfig,
-  RouteConfig,
-  // Interfaces
   IOrchestrator,
   GeneratorResult,
   IService,
@@ -56,7 +52,10 @@ export type {
 
 export { DEFAULT_CONFIG } from './core';
 
+// =============================================================================
 // Services
+// =============================================================================
+
 export {
   LayoutService,
   RenderService,
@@ -70,23 +69,30 @@ export {
 export type {
   LayoutServiceInput,
   LayoutServiceOutput,
+  LayoutTemplateConfig,
   RenderServiceInput,
   RenderRouteInput,
   RenderComponentInput,
   RenderServiceOutput,
+  RouterParser,
   ViewServiceInput,
   ViewServiceOutput,
   CssServiceInput,
   CssServiceOutput,
+  CssOutputFileNames,
   HtmlServiceInput,
   HtmlServiceOutput,
   AssetServiceInput,
   AssetServiceOutput,
+  CssFileNames,
   HtmlConverterInput,
   HtmlConverterOutput,
 } from './services';
 
+// =============================================================================
 // Stages
+// =============================================================================
+
 export {
   LayoutStage,
   ViewStage,
@@ -96,7 +102,10 @@ export {
   DEFAULT_STAGES,
 } from './stages';
 
+// =============================================================================
 // Plugins
+// =============================================================================
+
 export {
   PluginManager,
   createPlugin,
@@ -107,7 +116,10 @@ export type {
   PluginHooks,
 } from './plugins';
 
-// Variant scripts (utilities)
+// =============================================================================
+// Utilities
+// =============================================================================
+
 export {
   emitVariantsApplyCss,
   emitVariantsArtifacts,

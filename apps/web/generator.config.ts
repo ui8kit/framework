@@ -1,9 +1,18 @@
 #!/usr/bin/env bun
 
-// Import directly from source to avoid bundling issues
-import { generator, type GeneratorConfig } from '../../packages/generator/src/index';
+/**
+ * UI8Kit Web Generator Configuration
+ * 
+ * Uses the new Orchestrator-based generator system.
+ */
 
-type HtmlMode = NonNullable<GeneratorConfig['html']['mode']>;
+import { generate, type GenerateConfig } from '../../packages/generator/src/index';
+
+type HtmlMode = NonNullable<GenerateConfig['html']['mode']>;
+
+// =============================================================================
+// CLI Parsing
+// =============================================================================
 
 function usage(): string {
   return [
@@ -32,7 +41,6 @@ function parseCli(argv: string[]): { mode: HtmlMode; pure: boolean } {
   const help = args.has('--help') || args.has('-h');
 
   if (help) {
-    // eslint-disable-next-line no-console
     console.log(usage());
     process.exit(0);
   }
@@ -56,7 +64,10 @@ function parseCli(argv: string[]): { mode: HtmlMode; pure: boolean } {
   return { mode, pure };
 }
 
-// Define HTML routes first
+// =============================================================================
+// Configuration
+// =============================================================================
+
 const htmlRoutes = {
   '/': {
     title: 'UI8Kit - Next Generation UI System',
@@ -74,21 +85,20 @@ const htmlRoutes = {
   }
 };
 
-export const config: GeneratorConfig = {
+export const config: GenerateConfig = {
   app: {
     name: 'UI8Kit App',
     lang: 'en'
   },
 
-  // CSS class mappings (auto-detected from ./src/lib/ if not specified)
+  // CSS class mappings
   mappings: {
     ui8kitMap: './src/lib/ui8kit.map.json',
-    // shadcnMap uses generator's built-in by default
   },
 
   css: {
     entryPath: './src/main.tsx',
-    routes: Object.keys(htmlRoutes), // Generate CSS for all HTML routes
+    routes: Object.keys(htmlRoutes),
     outputDir: './dist/css',
     pureCss: true
   },
@@ -97,23 +107,15 @@ export const config: GeneratorConfig = {
     viewsDir: './views',
     routes: htmlRoutes,
     outputDir: './dist/html',
-    mode: 'tailwind', // 'tailwind' | 'semantic' | 'inline'
+    mode: 'tailwind',
     partials: {
       sourceDir: './src/partials',
       outputDir: 'partials',
       props: {
-        Header: {
-          name: "{{ name | default: 'UI8Kit' }}"
-        },
-        Footer: {
-          name: "{{ name | default: 'UI8Kit' }}"
-        },
-        Navbar: {
-          brand: "{{ brand | default: name | default: 'App' }}"
-        },
-        Sidebar: {
-          title: "{{ sidebarTitle | default: '' }}"
-        }
+        Header: { name: "{{ name | default: 'UI8Kit' }}" },
+        Footer: { name: "{{ name | default: 'UI8Kit' }}" },
+        Navbar: { brand: "{{ brand | default: name | default: 'App' }}" },
+        Sidebar: { title: "{{ sidebarTitle | default: '' }}" }
       }
     }
   },
@@ -131,32 +133,12 @@ export const config: GeneratorConfig = {
     cssFile: './dist/html/assets/css/styles.css',
     outputDir: './dist/html/assets',
     ignore: [
-      // Interactive states
-      ':hover',
-      ':focus',
-      ':active',
-      ':visited',
-      // Dynamic classes
-      '.js-',
-      '.is-',
-      '.has-',
-      '[]',
-      // Pseudo-elements
-      '::before',
-      '::after',
-      '::placeholder',
-      // Theme support (light/dark mode)
-      ':root',    // Light theme CSS variables
-      '.dark',    // Dark theme CSS variables
-      '@theme',   // Tailwind theme variables
-      // Base elements
-      'html',
-      'body',
-      'button',
-      // Universal selectors
-      '*',
-      '@layer',
-      '@property'
+      ':hover', ':focus', ':active', ':visited',
+      '.js-', '.is-', '.has-', '[]',
+      '::before', '::after', '::placeholder',
+      ':root', '.dark', '@theme',
+      'html', 'body', 'button',
+      '*', '@layer', '@property'
     ],
     media: true,
     timeout: 10000
@@ -172,17 +154,25 @@ export const config: GeneratorConfig = {
     outputDir: './src/elements',
     componentsImportPath: '../components'
   }
-
-  // Note: No render section needed - renderer works without context providers
 };
 
-// Run generation if this file is executed directly
-if (import.meta.url === new URL(import.meta.url).href) {
-  const { mode, pure } = parseCli(process.argv.slice(2));
-  config.html.mode = mode;
-  config.html.stripDataClassInTailwind = pure;
+// =============================================================================
+// Run Generation
+// =============================================================================
 
-  console.log('🛠️ Starting static site generation...');
-  console.log(`📄 Mode: ${mode}${pure ? ' (--pure)' : ''}`);
-  await generator.generate(config);
+const { mode, pure } = parseCli(process.argv.slice(2));
+config.html.mode = mode;
+config.html.stripDataClassInTailwind = pure;
+
+console.log('🛠️ Starting static site generation...');
+console.log(`📄 Mode: ${mode}${pure ? ' (--pure)' : ''}`);
+
+const result = await generate(config);
+
+if (!result.success) {
+  console.error('❌ Generation failed with errors:');
+  for (const { stage, error } of result.errors) {
+    console.error(`  - ${stage}: ${error.message}`);
+  }
+  process.exit(1);
 }

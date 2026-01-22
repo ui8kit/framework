@@ -3,13 +3,13 @@
 /**
  * UI8Kit Docs Generator Configuration
  * 
- * This is a docs-first application where all routes come from the docs/ folder.
- * The generator scans MDX files and generates static HTML pages.
+ * Docs-first application where routes come from the docs/ folder.
+ * Uses the new Orchestrator-based generator system.
  */
 
-import { generator, type GeneratorConfig } from '../../packages/generator/src/index';
+import { generate, type GenerateConfig } from '../../packages/generator/src/index';
 
-type HtmlMode = NonNullable<GeneratorConfig['html']['mode']>;
+type HtmlMode = NonNullable<GenerateConfig['html']['mode']>;
 
 // =============================================================================
 // CLI Parsing
@@ -45,35 +45,34 @@ Options:
 // Configuration
 // =============================================================================
 
-export const config: GeneratorConfig = {
+export const config: GenerateConfig = {
   app: {
     name: 'UI8Kit Docs',
     lang: 'en'
   },
 
-  // CSS class mappings (auto-detected from ./src/lib/ if not specified)
+  // CSS class mappings
   mappings: {
     ui8kitMap: './src/lib/ui8kit.map.json',
-    // shadcnMap uses generator's built-in by default
   },
 
-  // CSS Generation - uses docs/ as source
+  // CSS Generation
   css: {
     entryPath: './src/main.tsx',
-    routes: ['/'],  // Will scan docs/ for all routes
+    routes: ['/'],
     outputDir: './dist/css',
     pureCss: true
   },
 
-  // HTML Generation - docs-first approach
+  // HTML Generation - routes come from MDX
   html: {
     viewsDir: './views',
-    routes: {},  // Routes come from MDX, not this object
+    routes: {},
     outputDir: './dist/html',
     mode: 'tailwind',
   },
 
-  // Client script for dark mode toggle
+  // Client script for dark mode
   clientScript: {
     enabled: true,
     outputDir: './dist/assets/js',
@@ -105,19 +104,14 @@ export const config: GeneratorConfig = {
     componentsImportPath: '../components'
   },
 
-  // MDX Documentation - THE MAIN CONFIG
-  // Routes are derived from docs/ folder structure:
-  //   docs/index.mdx           → /
-  //   docs/components/index.mdx → /components
-  //   docs/components/button.mdx → /components/button
+  // MDX Documentation - routes derived from docs/ folder
   mdx: {
     enabled: true,
     docsDir: './docs',
-    outputDir: './dist/html',  // Output directly to HTML folder
+    outputDir: './dist/html',
     navOutput: './dist/docs-nav.json',
-    basePath: '',  // No prefix since docs IS the app
+    basePath: '',
     
-    // Components available in MDX
     components: {
       Button: '@/components/ui/Button',
       Card: '@/components/Card',
@@ -142,15 +136,21 @@ export const config: GeneratorConfig = {
 // Run Generator
 // =============================================================================
 
-if (import.meta.url === new URL(import.meta.url).href) {
-  const { mode, pure } = parseCli(process.argv.slice(2));
-  config.html.mode = mode;
-  config.html.stripDataClassInTailwind = pure;
+const { mode, pure } = parseCli(process.argv.slice(2));
+config.html.mode = mode;
+config.html.stripDataClassInTailwind = pure;
 
-  console.log('🛠️ UI8Kit Docs Generator');
-  console.log(`📄 Mode: ${mode}${pure ? ' (--pure)' : ''}`);
-  console.log(`📁 Source: ${config.mdx?.docsDir}`);
-  console.log(`📁 Output: ${config.mdx?.outputDir}`);
-  
-  await generator.generate(config);
+console.log('🛠️ UI8Kit Docs Generator');
+console.log(`📄 Mode: ${mode}${pure ? ' (--pure)' : ''}`);
+console.log(`📁 Source: ${config.mdx?.docsDir}`);
+console.log(`📁 Output: ${config.mdx?.outputDir}`);
+
+const result = await generate(config);
+
+if (!result.success) {
+  console.error('❌ Generation failed with errors:');
+  for (const { stage, error } of result.errors) {
+    console.error(`  - ${stage}: ${error.message}`);
+  }
+  process.exit(1);
 }

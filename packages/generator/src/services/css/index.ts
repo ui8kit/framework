@@ -4,6 +4,5 @@ export type {
   CssServiceOutput,
   CssServiceOptions,
   CssFileSystem,
-  CssConverter,
   CssOutputFileNames,
 } from './CssService';
