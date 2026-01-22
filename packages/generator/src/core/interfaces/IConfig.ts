@@ -1,0 +1,147 @@
+/**
+ * Generator configuration interface.
+ * 
+ * This is the main configuration object passed to the generator.
+ */
+export interface GeneratorConfig {
+  /**
+   * Application metadata
+   */
+  app: {
+    name: string;
+    lang?: string;
+  };
+  
+  /**
+   * CSS class mapping paths
+   */
+  mappings?: {
+    ui8kitMap?: string;
+    shadcnMap?: string;
+  };
+  
+  /**
+   * CSS generation configuration
+   */
+  css: {
+    entryPath: string;
+    routes: string[];
+    outputDir: string;
+    pureCss?: boolean;
+  };
+  
+  /**
+   * HTML generation configuration
+   */
+  html: {
+    viewsDir: string;
+    routes: Record<string, RouteConfig>;
+    outputDir: string;
+    mode?: 'tailwind' | 'semantic' | 'inline';
+    partials?: {
+      sourceDir: string;
+      outputDir?: string;
+      props?: Record<string, Record<string, unknown>>;
+    };
+    stripDataClassInTailwind?: boolean;
+  };
+  
+  /**
+   * Client script configuration
+   */
+  clientScript?: {
+    enabled?: boolean;
+    outputDir?: string;
+    fileName?: string;
+    darkModeSelector?: string;
+  };
+  
+  /**
+   * UnCSS configuration
+   */
+  uncss?: {
+    enabled?: boolean;
+    htmlFiles?: string[];
+    cssFile?: string;
+    outputDir?: string;
+    ignore?: string[];
+    media?: boolean;
+    timeout?: number;
+  };
+  
+  /**
+   * Asset copying configuration
+   */
+  assets?: {
+    copy?: string[];
+  };
+  
+  /**
+   * Variant elements generation
+   */
+  elements?: {
+    enabled?: boolean;
+    variantsDir?: string;
+    outputDir?: string;
+    componentsImportPath?: string;
+  };
+  
+  /**
+   * MDX documentation configuration
+   */
+  mdx?: {
+    enabled: boolean;
+    docsDir: string;
+    outputDir: string;
+    demosDir?: string;
+    navOutput?: string;
+    basePath?: string;
+    components?: Record<string, string>;
+    propsSource?: string;
+    toc?: {
+      minLevel?: number;
+      maxLevel?: number;
+    };
+  };
+  
+  /**
+   * Plugin-specific configuration
+   */
+  plugins?: Record<string, unknown>;
+}
+
+/**
+ * Route configuration
+ */
+export interface RouteConfig {
+  title: string;
+  seo?: {
+    description?: string;
+    keywords?: string[];
+    image?: string;
+  };
+  data?: Record<string, unknown>;
+}
+
+/**
+ * Default configuration values
+ */
+export const DEFAULT_CONFIG: Partial<GeneratorConfig> = {
+  app: {
+    lang: 'en',
+  },
+  html: {
+    mode: 'tailwind',
+  },
+  clientScript: {
+    enabled: false,
+    outputDir: './dist/assets/js',
+    fileName: 'main.js',
+    darkModeSelector: '[data-toggle-dark]',
+  },
+  uncss: {
+    enabled: false,
+    media: true,
+    timeout: 10000,
+  },
+};
