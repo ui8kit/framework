@@ -4,198 +4,223 @@ Instructions for AI coding agents working with this codebase.
 
 ---
 
-## Project Overview
+## Critical Rules
 
-**UI8Kit Framework** — A comprehensive UI system providing both React components and semantic HTML5/CSS3 utilities. This monorepo uses Turbo for orchestration.
+### 1. Utility Props — Single Values Only
 
-## Architecture
+```tsx
+// ✅ CORRECT
+<Box bg="primary" text="lg" gap="6" />
 
-### Applications
-- **`@ui8kit/vite-local`** — Local development environment for components, layouts, and documentation (not for web deployment)
-- **`@ui8kit/generator`** — Static site generator orchestrator that coordinates React rendering, CSS extraction, and HTML assembly
-
-### Packages
-- **`@ui8kit/render`** — React component renderer that converts React components to static HTML with `data-class` attributes
-- **`@ui8kit/generator`** — Orchestrates the complete static generation pipeline (views → CSS → HTML → assets)
-
-### Framework Capabilities
-- **React Components** — Type-safe UI components with utility props
-- **HTML5/CSS3 Semantics** — Bootstrap/Uikit3-style semantic classes (e.g., `button button-primary`)
-- **Utility Props System** — Strict validation via `utility-props.map.ts`
-- **Component Variants** — Button, badge, card, grid, image variants only
-
-## Development Workflow
-
-### Docs-First Architecture
-
-**Routes defined by file structure (no routing config):**
-
-```
-apps/local/docs/
-├── index.mdx                    → /
-├── components/
-│   ├── index.mdx               → /components
-│   ├── button.mdx              → /components/button
-│   └── card.mdx                → /components/card
+// ❌ FORBIDDEN — no modifiers in props
+<Box col="span-1 lg:span-3" />
+<Stack gap="4 md:gap-6" />
 ```
 
-### Dev Mode (Vite with HMR)
+Props map to Tailwind classes: `bg="primary"` → `bg-primary`. Only values from `utility-props.map.ts` are valid.
 
-1. `bun run dev` starts Vite server
-2. MDX files loaded via `import.meta.glob` in DocsPage
-3. React Router serves pages with full hydration
-4. HMR updates MDX changes instantly
+### 2. className Requires data-class
 
-### Build Mode (Static Generation)
+```tsx
+// ✅ CORRECT — className with semantic data-class
+<div className="custom-style" data-class="featured-card">
 
-1. `bun run generate` scans `docs/` folder
-2. Creates static HTML in `dist/html/` with matching structure
-3. Generates `dist/docs-nav.json` for navigation
-4. Deploys generated files for production
+// ❌ FORBIDDEN — className without data-class
+<div className="custom-style">
+```
 
-## Development Principles
+Exception: Grid components can use className for responsive modifiers without data-class.
 
-### 1. Docs-First Routing
+### 3. No Hardcoded Paths in Generator
 
-**No routing config needed — file structure defines routes**
-
-- `docs/index.mdx` → `/`
-- `docs/components/button.mdx` → `/components/button`
-- Automatic in both dev (via glob) and build (via scanner)
-
-### 2. Browser vs. Node.js Code Separation
-
-**Strict isolation prevents Node.js APIs in browser bundle**
+All paths must come from configuration:
 
 ```typescript
-// ✅ Main entry (@ui8kit/mdx-react) — browser-safe only
-export { parseFrontmatter, usePageContent, ComponentPreview }
+// ✅ CORRECT
+const viewsDir = config.html.viewsDir;
+const outputDir = config.css.outputDir;
 
-// ✅ Server entry (@ui8kit/mdx-react/server) — Node.js only
-export { scanDocsTree, generateDocsFromMdx }
-
-// ❌ Would break browser
-import { scanDocsTree } from '@ui8kit/mdx-react'  // Uses fs!
+// ❌ FORBIDDEN
+const viewsDir = './views';
+const outputPath = 'apps/web/dist';
 ```
 
-### 3. UI8Kit Props Rules
+### 4. Services Follow IService Interface
 
-**Follow these principles for all component usage:**
+```typescript
+interface IService<TInput, TOutput> {
+  readonly name: string;
+  readonly version: string;
+  readonly dependencies: readonly string[];
+  
+  initialize(context: IServiceContext): Promise<void>;
+  execute(input: TInput): Promise<TOutput>;
+  dispose(): Promise<void>;
+}
+```
 
-1. **Single Value Props Only** — No responsive modifiers in props
-   - ✅ `<Box col="span-1" className="lg:col-span-3" />`
-   - ❌ `<Box col="span-1 lg:span-3" />`
+Every service must implement this interface for DI and lifecycle management.
 
-2. **className Restricted** — Only for responsive overrides or custom styling
-   - Requires `data-class` attribute for semantic selectors
+### 5. Comments in English Only
 
-3. **data-class Attributes** — Mandatory for CSS generation
-   - `<Button data-class="primary-button">Click</Button>`
-
-See `.cursor/rules/ui8kit.mdc` for complete rules and examples.
+All code comments must be in English, regardless of user's language.
 
 ---
 
-## Package Guide
+## Project Structure
 
-### `@ui8kit/mdx-react` — MDX Documentation
-
-**Dual-mode MDX processor for docs-first applications**
-
-- Dev mode: Vite + `import.meta.glob` for HMR
-- Build mode: Static HTML generation with navigation JSON
-- Strict browser/Node.js code separation
-- Automatic route discovery from filesystem
-
-**Key exports:**
-```typescript
-// Browser-safe (main entry)
-import { usePageContent, useToc, ComponentPreview } from '@ui8kit/mdx-react'
-
-// Node.js only (server entry)
-import { scanDocsTree, generateDocsFromMdx } from '@ui8kit/mdx-react/server'
 ```
-
-**Configuration:** `apps/local/generator.config.ts`
-- `mdx.docsDir` — Source MDX folder (e.g., `./docs`)
-- `mdx.outputDir` — HTML output folder (e.g., `./dist/html`)
-- `mdx.components` — Available in MDX without imports
-
-**See:** `packages/mdx-react/AGENTS.md` for development guide
-
-### `@ui8kit/generator` — Static Site Generation
-
-**Orchestrates complete generation pipeline**
-
-- Scans `docs/` for MDX files
-- Generates static HTML pages
-- Extracts CSS from classes
-- Copies assets
-
-**See:** `packages/generator/.cursor/rules/generator.mdc` for rules
-
-### `@ui8kit/render` — React Component Rendering
-
-**Converts React components to static HTML**
-
-- Direct component rendering (no context providers)
-- Preserves `data-class` attributes
-- Supports semantic CSS generation
-
-**See:** `packages/render/.cursor/rules/render.mdc` for rules
+ui8kit-framework/
+├── apps/
+│   ├── web/                    # Static site (no MDX)
+│   │   ├── generator.config.ts # Generation config
+│   │   ├── src/
+│   │   │   ├── components/ui/  # Strict utility props only
+│   │   │   ├── components/     # className + data-class allowed
+│   │   │   ├── blocks/         # Semantic HTML5 sections
+│   │   │   ├── partials/       # React → Liquid partials
+│   │   │   ├── variants/       # CVA variant definitions
+│   │   │   └── lib/
+│   │   │       ├── ui8kit.map.json     # Class → CSS mapping
+│   │   │       └── utility-props.ts    # Smart props system
+│   │   └── views/              # Generated Liquid templates
+│   │
+│   └── docs/                   # MDX documentation
+│       ├── generator.config.ts
+│       └── docs/               # MDX files → routes
+│
+└── packages/
+    ├── generator/              # Static site generator
+    │   ├── src/
+    │   │   ├── core/           # Orchestrator, Pipeline, EventBus
+    │   │   ├── services/       # LayoutService, CssService, etc.
+    │   │   ├── stages/         # Pipeline stages
+    │   │   └── generate.ts     # High-level API
+    │   └── templates/          # Default Liquid layouts
+    │
+    └── mdx-react/              # MDX processing utilities
+```
 
 ---
 
-## Working Patterns
+## Key Files to Understand
 
-### Adding a New Documentation Page
+| File | Purpose |
+|------|---------|
+| `utility-props.ts` | Smart props → Tailwind class mapping |
+| `ui8kit.map.json` | Tailwind class → Pure CSS mapping (~500 classes) |
+| `shadcn.css` | Design tokens (CSS custom properties) |
+| `generator.config.ts` | Static generation configuration |
+| `generate.ts` | Main generation entry point |
 
-1. Create file in `docs/` folder
-   ```
-   docs/getting-started/installation.mdx
-   ```
+---
 
-2. Add frontmatter with metadata
-   ```mdx
-   ---
-   title: Installation
-   description: How to install UI8Kit
-   order: 1
-   ---
-   ```
+## Generation Flow
 
-3. Write content with markdown + JSX
+```
+1. initializeLayouts()     → Copy templates to views/layouts/
+2. generateViews()         → React → Liquid templates
+3. generateCss()           → Extract classes, generate @apply + pure CSS
+4. generateHtml()          → Liquid → final HTML
+5. copyAssets()            → Static files to dist/
+6. generateClientScript()  → Dark mode, utilities
+7. generateElements()      → Typed variant components
+8. generateMdxDocs()       → MDX → HTML (docs app only)
+```
 
-4. In dev: Auto-loads at `/getting-started/installation`
+---
 
-5. In build: Generates `/getting-started/installation/index.html`
-
-### Running Commands
+## Testing
 
 ```bash
-# Dev mode (Vite + HMR)
-bun run dev
+# Run all tests
+cd packages/generator && bun run test
 
-# Build mode (Static generation)
-bun run generate
+# Watch mode
+bun run test:watch
 
-# Both at once (in separate terminals)
-bun run dev &
-bun run generate
+# Coverage report
+bun run test:coverage
 ```
 
-### Testing Changes
-
-- Dev: http://localhost:5173 (auto-reload on MDX changes)
-- Build: Check `dist/html/` and `dist/docs-nav.json`
+All services have corresponding `.test.ts` files. Use `createMockContext()` and `createMockFileSystem()` from `test/setup.ts`.
 
 ---
 
-## 📚 Additional Resources
+## Common Tasks
 
-- **@ui8kit/mdx-react README**: `packages/mdx-react/README.md`
-- **@ui8kit/mdx-react AGENTS**: `packages/mdx-react/AGENTS.md`
-- **@ui8kit/mdx-react Rules**: `packages/mdx-react/.cursor/rules/plugin.mdc`
-- **Generator Rules**: `packages/generator/.cursor/rules/generator.mdc`
-- **Renderer Rules**: `packages/render/.cursor/rules/render.mdc`
-- **UI8Kit Props Rules**: `.cursor/rules/ui8kit.mdc`
+### Adding a New Service
+
+1. Create `src/services/my-service/MyService.ts`
+2. Implement `IService<TInput, TOutput>`
+3. Create `MyService.test.ts` with TDD approach
+4. Export from `src/services/index.ts`
+5. Register in `generate.ts` or via Orchestrator
+
+### Adding a New Stage
+
+1. Create `src/stages/MyStage.ts`
+2. Implement `IPipelineStage`
+3. Set `order`, `enabled`, `dependencies`
+4. Add to `src/stages/index.ts`
+
+### Modifying Class Whitelist
+
+1. Edit `apps/web/src/lib/ui8kit.map.json`
+2. Add new class → CSS property mapping
+3. Run `bun run generate` to test
+
+---
+
+## Anti-Patterns to Avoid
+
+| Don't | Do Instead |
+|-------|------------|
+| `className="bg-red-500"` on UI components | Use props: `bg="red-500"` |
+| Responsive modifiers in props | Use className in Grid only |
+| Import Node.js APIs in browser code | Check `@ui8kit/mdx-react` server/client separation |
+| Hardcode file paths | Use config values |
+| Skip data-class with className | Always pair them |
+| Create services without tests | TDD approach required |
+
+---
+
+## Architecture Principles
+
+- **SOLID** — Single responsibility, DI, interface segregation
+- **Clean Architecture** — Dependencies point inward
+- **TDD** — Tests before implementation
+- **Zero unused code** — UnCSS removes unused CSS
+- **Semantic HTML5** — Proper tags via Block component
+- **CSS-first** — Prefer `:checked`, `:target` over JS
+
+---
+
+## Helpful Commands
+
+```bash
+# Development
+cd apps/web && bun run dev          # Vite HMR
+cd apps/docs && bun run dev         # Docs with MDX
+
+# Generation
+cd apps/web && bun run generate     # Static site
+cd apps/docs && bun run generate    # Docs site
+
+# Testing
+cd packages/generator && bun run test:coverage
+
+# Type checking
+bun run typecheck
+```
+
+---
+
+## Questions to Ask Before Changes
+
+1. Does this prop value exist in `utility-props.map.ts`?
+2. Will this work in both `@apply` and semantic CSS modes?
+3. Is the path configurable or hardcoded?
+4. Does the service have proper tests?
+5. Is data-class present when using className?
+6. Are comments in English?

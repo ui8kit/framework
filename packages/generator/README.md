@@ -1,812 +1,555 @@
-# UI8Kit Static Site Generator
+# @ui8kit/generator
 
-A comprehensive static site generator that converts React components to Liquid templates and generates complete HTML/CSS sites.
+**Modern Static Site Generator with OOP Architecture**
 
-- **React → Liquid**: Transforms JSX components into Liquid template views using `@ui8kit/render`
-- **Semantic Selectors**: Uses `data-class` attributes for meaningful CSS selectors
-- **CSS Generation**: Extracts classes from generated views and generates `@apply` directives and pure CSS3
-- **Liquid Templating**: Full Liquid.js support with layouts, partials, and helpers
-- **Configuration-Driven**: Single config file controls all generation aspects
-- **Framework Agnostic**: Generator delegates React rendering to `@ui8kit/render` package
+A comprehensive, service-based static site generator that converts React components to semantic HTML with optimized CSS. Built with SOLID principles, dependency injection, and full test coverage.
+
+## Features
+
+- **Orchestrator Pattern** — Central coordination of services and pipeline
+- **Service Architecture** — Modular, testable services with DI
+- **Pipeline System** — Sequential stage execution with error handling
+- **Event-Driven** — Loose coupling via EventBus
+- **Plugin System** — Extensible architecture
+- **TDD Coverage** — 83%+ test coverage with Vitest
+
+## Installation
+
+```bash
+bun add @ui8kit/generator
+```
+
+## Quick Start
+
+```typescript
+import { generate } from '@ui8kit/generator';
+
+const result = await generate({
+  app: { name: 'My App', lang: 'en' },
+  css: {
+    entryPath: './src/main.tsx',
+    routes: ['/'],
+    outputDir: './dist/css',
+    pureCss: true,
+  },
+  html: {
+    viewsDir: './views',
+    routes: { '/': { title: 'Home' } },
+    outputDir: './dist/html',
+  },
+});
+
+console.log(`Generated in ${result.duration}ms`);
+```
 
 ## Architecture
 
 ```
-📁 packages/generator/
-├── src/
-│   ├── generator.ts      # Main generation orchestrator
-│   ├── html-converter.ts # HTML to CSS converter
-│   └── index.ts          # Public API
-├── templates/            # Base Liquid templates
-│   ├── layout.liquid     # Main layout template
-│   ├── page.liquid       # Page template
-│   └── partials/         # Reusable components
-│       ├── header.liquid
-│       └── footer.liquid
-└── dist/                 # Compiled package
-
-📁 apps/web/              # Static site generation (no MDX)
-📁 apps/docs/             # Documentation with MDX
-├── views/                # Generated Liquid views
-│   ├── layouts/          # App-specific layouts
-│   ├── pages/            # Route-specific views
-│   │   ├── index.liquid  # /
-│   │   └── about.liquid  # /about
-│   └── partials/         # App-specific partials
-├── generator.config.ts   # Generation configuration
-└── dist/                 # Generated output
-    ├── css/              # Generated stylesheets
-    └── html/             # Generated HTML pages
+┌─────────────────────────────────────────────────────────────┐
+│                      Orchestrator                           │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │   Logger    │  │  EventBus   │  │  ServiceRegistry    │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │                     Pipeline                         │   │
+│  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────┐│   │
+│  │  │ Layout │→│  View  │→│  CSS   │→│  HTML  │→│Asset││   │
+│  │  │ Stage  │ │ Stage  │ │ Stage  │ │ Stage  │ │Stage││   │
+│  │  └────────┘ └────────┘ └────────┘ └────────┘ └────┘│   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │                     Services                         │   │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────────────────┐ │   │
+│  │  │  Layout  │ │  Render  │ │   HtmlConverter      │ │   │
+│  │  │ Service  │ │ Service  │ │     Service          │ │   │
+│  │  └──────────┘ └──────────┘ └──────────────────────┘ │   │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌────────┐ │   │
+│  │  │   View   │ │   CSS    │ │   HTML   │ │ Asset  │ │   │
+│  │  │ Service  │ │ Service  │ │ Service  │ │Service │ │   │
+│  │  └──────────┘ └──────────┘ └──────────┘ └────────┘ │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## How It Works
+## Core Concepts
 
-1. **Render React Components**: Delegates to `@ui8kit/render` to convert React components to HTML
-   - Parses router configuration from `main.tsx`
-   - Loads and renders route components directly (no context providers)
-   - Preserves all `data-class` attributes in output HTML
+### Orchestrator
 
-2. **Generate Liquid Views**: Creates `.liquid` template files from rendered HTML
-   - Stores HTML with `data-class` attributes in `views/pages/`
-   - One view file per route (e.g., `index.liquid`, `about.liquid`)
-
-3. **Generate Liquid Partials**: Converts React partial components to Liquid templates
-   - Renders individual React components to HTML using `@ui8kit/render`
-   - Saves as reusable `.liquid` partials for inclusion in layouts
-   - Supports component props for runtime customization
-
-4. **Extract CSS Classes**: Parses generated views and generates semantic selectors
-   - Extracts classes and `data-class` attributes from HTML
-   - Generates `@apply` CSS with semantic selectors (e.g., `.hero-section { @apply ... }`)
-   - Optionally generates pure CSS3 from Tailwind classes
-
-5. **Apply Liquid Templates**: Renders final HTML using layouts and partials
-   - Combines views with layout templates
-   - Applies route metadata (title, SEO, etc.)
-   - Includes partials (header, footer, etc.)
-
-6. **Generate Client Script**: Creates client-side JavaScript for interactivity
-   - Generates dark mode toggle functionality
-   - Outputs configurable script file (e.g., `main.js`)
-   - Automatically injected into HTML layouts
-
-7. **Clean Unused CSS**: Removes unused styles with UnCSS
-   - Analyzes generated HTML for used CSS selectors
-   - Removes unused CSS rules to reduce file size (up to 77% reduction)
-   - Outputs cleaned CSS files (e.g., `index-uncss.css`)
-
-8. **Generate Stylesheets**: Creates merged CSS files from all routes
-   - Combines CSS from multiple routes into single files
-   - Outputs `tailwind.apply.css` and optionally `ui8kit.local.css`
-
-## Installation
-
-The generator is part of the UI8Kit monorepo and uses source files directly (no build step required):
-
-```bash
-# Install all dependencies
-bun install
-
-# The generator uses source files directly via workspace imports
-# No build step needed - TypeScript files are executed directly by Bun
-```
-
-**Note**: The generator uses `peerDependencies` for React, so React must be installed in your application.
-
-## Usage
-
-### Basic Configuration
-
-Create `generator.config.ts` in your app directory:
+The central coordinator that manages services, plugins, and pipeline execution.
 
 ```typescript
-// apps/web/generator.config.ts (or apps/docs/generator.config.ts)
-import { generator, type GeneratorConfig } from '@ui8kit/generator';
+import { Orchestrator } from '@ui8kit/generator';
 
-// Define HTML routes first
-const htmlRoutes = {
-  '/': {
-    title: 'Home Page',
-    seo: {
-      description: 'Welcome to my app',
-      keywords: ['app', 'react']
-    }
-  },
-  '/about': {
-    title: 'About Page',
-    seo: {
-      description: 'Learn more about us',
-      keywords: ['about', 'company']
-    }
-  }
-};
+const orchestrator = new Orchestrator({ logger });
 
-export const config: GeneratorConfig = {
-  app: {
-    name: 'My App',
-    lang: 'en'
-  },
+// Register services
+orchestrator.registerService(new LayoutService());
+orchestrator.registerService(new ViewService());
+orchestrator.registerService(new CssService());
 
-  css: {
-    entryPath: './src/main.tsx',  // Path to your React entry file
-    routes: Object.keys(htmlRoutes), // Generate CSS for all HTML routes
-    outputDir: './dist/css',
-    pureCss: true  // Generate pure CSS3 in addition to @apply
-  },
+// Add pipeline stages
+orchestrator.addStage(new LayoutStage());
+orchestrator.addStage(new ViewStage());
+orchestrator.addStage(new CssStage());
 
-  html: {
-    viewsDir: './views',
-    routes: htmlRoutes,
-    outputDir: './dist/html'
-  },
+// Execute generation
+const result = await orchestrator.generate(config);
+```
 
-  assets: {
-    copy: ['./public/**/*']  // Copy static assets
-  }
-};
+### Services
 
-// Run generation
-if (import.meta.main) {
-  console.log('🛠️ Starting static site generation...');
-  await generator.generate(config);
+Services implement `IService<TInput, TOutput>` interface:
+
+```typescript
+interface IService<TInput, TOutput> {
+  readonly name: string;
+  readonly version: string;
+  readonly dependencies: readonly string[];
+  
+  initialize(context: IServiceContext): Promise<void>;
+  execute(input: TInput): Promise<TOutput>;
+  dispose(): Promise<void>;
 }
 ```
 
-**Important**: Your `main.tsx` must use `createBrowserRouter` with a `children` array for the renderer to discover routes:
+**Built-in Services:**
+
+| Service | Purpose |
+|---------|---------|
+| `LayoutService` | Initialize layout templates |
+| `RenderService` | React → HTML rendering |
+| `ViewService` | Generate Liquid views |
+| `CssService` | Extract and generate CSS |
+| `HtmlService` | Render final HTML pages |
+| `AssetService` | Copy static assets |
+| `HtmlConverterService` | HTML → CSS conversion |
+
+### Pipeline Stages
+
+Stages implement `IPipelineStage` interface:
 
 ```typescript
-// src/main.tsx
-import { createBrowserRouter } from 'react-router-dom';
-import { HomePage } from '@/routes/HomePage';
-import { Blank } from '@/routes/Blank';
+interface IPipelineStage {
+  readonly name: string;
+  readonly order: number;
+  readonly enabled: boolean;
+  readonly dependencies?: readonly string[];
+  
+  canExecute(context: IPipelineContext): boolean;
+  execute(input: unknown, context: IPipelineContext): Promise<unknown>;
+}
+```
 
-export const router = createBrowserRouter({
-  children: [
-    { index: true, element: <HomePage /> },
-    { path: 'about', element: <Blank /> }
-  ]
+**Default Pipeline:**
+
+```
+LayoutStage (order: 0)
+    ↓
+ViewStage (order: 1)
+    ↓
+CssStage (order: 2)
+    ↓
+HtmlStage (order: 3)
+    ↓
+AssetStage (order: 4)
+```
+
+### Event Bus
+
+Loose coupling via publish/subscribe:
+
+```typescript
+import { EventBus } from '@ui8kit/generator';
+
+const eventBus = new EventBus();
+
+// Subscribe
+const unsubscribe = eventBus.on('css:generated', (data) => {
+  console.log(`CSS generated: ${data.path}`);
 });
+
+// Emit
+eventBus.emit('css:generated', { path: 'styles.css', size: 1234 });
+
+// Unsubscribe
+unsubscribe();
 ```
 
-### Commands
+### Service Registry
 
-```bash
-# Generate everything
-bun run generate
-
-# Generate only CSS
-bun run generate:css
-
-# Generate only HTML
-bun run generate:html
-
-# Preview generated site
-bun run preview:static
-```
-
-### Advanced Configuration
+Dependency injection with topological sorting:
 
 ```typescript
-import { generator, type GeneratorConfig } from '@ui8kit/generator';
+import { ServiceRegistry } from '@ui8kit/generator';
 
-const htmlRoutes = {
-  '/': {
-    title: 'Home - UI8Kit',
-    seo: {
-      description: 'Next generation UI framework',
-      keywords: ['ui', 'react', 'typescript'],
-      image: '/og-image.png'
-    },
-    data: {
-      hero: {
-        title: 'Welcome',
-        subtitle: 'Build amazing interfaces'
-      }
-    }
-  },
-  '/about': {
-    title: 'About - UI8Kit',
-    seo: {
-      description: 'Learn about UI8Kit framework'
-    }
-  },
-  '/contact': {
-    title: 'Contact - UI8Kit',
-    seo: {
-      description: 'Get in touch with us'
-    }
-  }
-};
+const registry = new ServiceRegistry();
 
-export const config: GeneratorConfig = {
+registry.register(new CssService());      // depends on: ['view']
+registry.register(new ViewService());     // depends on: ['layout']
+registry.register(new LayoutService());   // depends on: []
+
+// Get initialization order (topological sort)
+const order = registry.getInitializationOrder();
+// ['layout', 'view', 'css']
+
+// Initialize all in correct order
+await registry.initializeAll(context);
+```
+
+## Configuration
+
+### Full Configuration Example
+
+```typescript
+import type { GenerateConfig } from '@ui8kit/generator';
+
+const config: GenerateConfig = {
+  // Application metadata
   app: {
-    name: 'UI8Kit App',
-    lang: 'en'
+    name: 'My App',
+    lang: 'en',
   },
 
+  // CSS class mappings
+  mappings: {
+    ui8kitMap: './src/lib/ui8kit.map.json',
+    shadcnMap: './src/lib/shadcn.map.json',
+  },
+
+  // CSS generation
   css: {
     entryPath: './src/main.tsx',
-    routes: Object.keys(htmlRoutes), // Auto-sync with HTML routes
+    routes: ['/', '/about'],
     outputDir: './dist/css',
-    pureCss: true
+    pureCss: true,
   },
 
+  // HTML generation
   html: {
-    viewsDir: './views',  // Directory for Liquid views and templates
-    routes: htmlRoutes,
-    outputDir: './dist/html'
+    viewsDir: './views',
+    routes: {
+      '/': { title: 'Home', seo: { description: '...' } },
+      '/about': { title: 'About', seo: { description: '...' } },
+    },
+    outputDir: './dist/html',
+    mode: 'tailwind', // 'tailwind' | 'semantic' | 'inline'
+    partials: {
+      sourceDir: './src/partials',
+      outputDir: 'partials',
+      props: {
+        Header: { name: "{{ name }}" },
+      },
+    },
   },
 
+  // Client script
   clientScript: {
     enabled: true,
     outputDir: './dist/assets/js',
     fileName: 'main.js',
-    darkModeSelector: '[data-toggle-dark]'
+    darkModeSelector: '[data-toggle-dark]',
   },
 
-  uncss: {
-    enabled: true,
-    htmlFiles: ['./dist/html/index.html', './dist/html/about/index.html'],
-    cssFile: './dist/html/assets/css/styles.css',
-    outputDir: './dist/html/assets',
-    ignore: [
-      // Interactive states
-      ':hover',
-      ':focus',
-      ':active',
-      ':visited',
-      // Dynamic classes
-      '.js-',
-      '.is-',
-      '.has-',
-      '[]',
-      // Pseudo-elements
-      '::before',
-      '::after',
-      '::placeholder',
-      // Theme support (light/dark mode)
-      ':root',
-      '.dark',
-      '@theme',
-      // Base elements
-      'html',
-      'body',
-      'button',
-      // Universal selectors
-      '*',
-      '@layer',
-      '@property'
-    ],
-    media: true,
-    timeout: 10000
-  },
-
+  // Asset copying
   assets: {
-    copy: ['./public/**/*', './src/assets/**/*']
-  }
+    copy: ['./src/assets/css/**/*'],
+  },
+
+  // Variant elements
+  elements: {
+    enabled: true,
+    variantsDir: './src/variants',
+    outputDir: './src/elements',
+    componentsImportPath: '../components',
+  },
+
+  // MDX documentation (optional)
+  mdx: {
+    enabled: true,
+    docsDir: './docs',
+    outputDir: './dist/html',
+    navOutput: './dist/docs-nav.json',
+    basePath: '',
+    components: { Button: '@/components/ui/Button' },
+  },
 };
 ```
 
-## Liquid Templates
+## Testing
 
-### Layout Template (`views/layouts/layout.liquid`)
+The generator uses Vitest with 83%+ coverage:
 
-```liquid
----
-layout: false
----
+```bash
+# Run tests
+bun run test
 
-<!DOCTYPE html>
-<html lang="{{ lang | default: 'en' }}">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }}</title>
+# Watch mode
+bun run test:watch
 
-  {% if meta.description %}
-  <meta name="description" content="{{ meta.description }}">
-  {% endif %}
+# UI mode
+bun run test:ui
 
-  {% if meta.keywords %}
-  <meta name="keywords" content="{{ meta.keywords | join: ', ' }}">
-  {% endif %}
-
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body class="bg-background text-foreground">
-  {% include 'partials/header.liquid' %}
-
-  <main class="min-h-screen">
-    {{ content }}
-  </main>
-
-  {% include 'partials/footer.liquid' %}
-
-  <script src="/js/main.js"></script>
-</body>
-</html>
+# Coverage report
+bun run test:coverage
 ```
 
-### Page Template (`views/layouts/page.liquid`)
+### Test Structure
 
-```liquid
----
-layout: layout
----
-
-<article class="page">
-  <div class="page-content">
-    {{ content }}
-  </div>
-</article>
+```
+src/
+├── core/
+│   ├── events/
+│   │   ├── EventBus.ts
+│   │   └── EventBus.test.ts      # 15 tests
+│   ├── logger/
+│   │   ├── Logger.ts
+│   │   └── Logger.test.ts        # 12 tests
+│   ├── orchestrator/
+│   │   ├── Orchestrator.ts
+│   │   └── Orchestrator.test.ts  # 19 tests
+│   ├── pipeline/
+│   │   ├── Pipeline.ts
+│   │   └── Pipeline.test.ts      # 19 tests
+│   └── registry/
+│       ├── ServiceRegistry.ts
+│       └── ServiceRegistry.test.ts # 20 tests
+├── services/
+│   ├── layout/
+│   │   └── LayoutService.test.ts # 10 tests
+│   ├── render/
+│   │   └── RenderService.test.ts # 19 tests
+│   ├── view/
+│   │   └── ViewService.test.ts   # 12 tests
+│   ├── css/
+│   │   └── CssService.test.ts    # 13 tests
+│   ├── html/
+│   │   └── HtmlService.test.ts   # 13 tests
+│   ├── asset/
+│   │   └── AssetService.test.ts  # 12 tests
+│   └── html-converter/
+│       └── HtmlConverterService.test.ts # 22 tests
+├── stages/
+│   └── stages.test.ts            # 6 tests
+└── plugins/
+    └── PluginManager.test.ts     # 18 tests
 ```
 
-### Generated View (`views/pages/index.liquid`)
-
-The generator creates Liquid view files from rendered React components:
-
-```liquid
-<section data-class="hero-section" class="relative">
-  <div data-class="hero-content" class="flex flex-col gap-4 items-center">
-    <h1 data-class="hero-title" class="text-4xl font-bold">Welcome to UI8Kit</h1>
-    <p data-class="hero-description" class="text-lg text-muted-foreground">
-      Build beautiful interfaces with React & CSS3
-    </p>
-  </div>
-</section>
-<section data-class="features-section" class="">
-  <!-- FeaturesBlock content -->
-</section>
-```
-
-**Note**: Views are generated automatically from your React components. The renderer:
-- Parses router configuration from `main.tsx`
-- Loads route components dynamically
-- Renders them to HTML with preserved `data-class` attributes
-- Saves HTML as `.liquid` files
-
-## CSS Generation
-
-### Input React Component
-
-```tsx
-// src/blocks/HeroBlock.tsx
-export function HeroBlock() {
-  return (
-    <Block component="section" data-class="hero-section">
-      <Stack gap="6" items="center" py="16">
-        <Stack gap="4" items="center" data-class="hero-content">
-          <Title text="4xl" font="bold" data-class="hero-title">
-            Welcome to UI8Kit
-          </Title>
-          <Text text="xl" data-class="hero-description">
-            Build beautiful interfaces
-          </Text>
-        </Stack>
-      </Stack>
-    </Block>
-  );
-}
-```
-
-### Generated CSS
-
-#### `tailwind.apply.css` (Semantic selectors with @apply)
-```css
-.hero-section {
-  @apply relative;
-}
-
-.hero-content {
-  @apply flex flex-col gap-4 items-center;
-}
-
-.hero-title {
-  @apply text-4xl font-bold;
-}
-
-.hero-description {
-  @apply text-lg text-muted-foreground;
-}
-```
-
-**Automatic Deduplication**: When multiple selectors have identical class sets (e.g., from loops), they are automatically merged:
-
-```css
-/* Before: Duplicate rules */
-.feature-card-0 {
-  @apply flex-col gap-4 items-start justify-start p-6 rounded-lg;
-}
-
-.feature-card-1 {
-  @apply flex-col gap-4 items-start justify-start p-6 rounded-lg;
-}
-
-/* After: Merged selector */
-.feature-card-0, .feature-card-1, .feature-card-2, .feature-card-3 {
-  @apply flex-col gap-4 items-start justify-start p-6 rounded-lg;
-}
-```
-
-#### `ui8kit.local.css` (Pure CSS3)
-```css
-.hero-section {
-  position: relative;
-}
-
-.hero-content {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-  align-items: center;
-}
-
-.hero-title {
-  font-size: var(--text-4xl);
-  font-weight: 700;
-}
-
-.hero-description {
-  font-size: var(--text-lg);
-  color: hsl(var(--muted-foreground));
-}
-```
-
-**Automatic Deduplication**: Works for pure CSS3 as well:
-
-```css
-/* Merged selectors with identical properties */
-.features-header, .hero-content {
-  flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-  align-items: center;
-  justify-content: flex-start;
-}
-```
-
-This optimization reduces CSS file size by up to 25% for components with repeated patterns (loops, maps, etc.).
-
-## Configuration Options
-
-### App Configuration
+### Writing Tests
 
 ```typescript
-app: {
-  name: string;        // App name
-  lang?: string;       // Default language (default: 'en')
-}
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { CssService } from './CssService';
+import { createMockLogger } from '../../../test/setup';
+
+describe('CssService', () => {
+  let service: CssService;
+  
+  beforeEach(() => {
+    service = new CssService();
+  });
+  
+  describe('execute', () => {
+    it('should generate CSS from views', async () => {
+      await service.initialize(createMockContext());
+      
+      const result = await service.execute({
+        viewsDir: './views',
+        outputDir: './dist/css',
+        routes: { '/': { title: 'Home' } },
+        pureCss: true,
+      });
+      
+      expect(result.files).toContainEqual(
+        expect.objectContaining({
+          path: expect.stringContaining('tailwind.apply.css'),
+        })
+      );
+    });
+  });
+});
 ```
 
-### CSS Configuration
+## Extending
+
+### Custom Service
 
 ```typescript
-css: {
-  entryPath: string;   // Path to React entry file
-  routes: string[];    // Routes to generate CSS for
-  outputDir: string;   // CSS output directory
-  pureCss?: boolean;   // Generate pure CSS3 in addition to @apply
+import type { IService, IServiceContext } from '@ui8kit/generator';
+
+interface MyInput { data: string }
+interface MyOutput { result: string }
+
+class MyService implements IService<MyInput, MyOutput> {
+  readonly name = 'my-service';
+  readonly version = '1.0.0';
+  readonly dependencies = ['layout'];
+  
+  private context!: IServiceContext;
+  
+  async initialize(context: IServiceContext): Promise<void> {
+    this.context = context;
+    this.context.logger.info('MyService initialized');
+  }
+  
+  async execute(input: MyInput): Promise<MyOutput> {
+    // Your logic here
+    return { result: input.data.toUpperCase() };
+  }
+  
+  async dispose(): Promise<void> {
+    // Cleanup
+  }
 }
 ```
 
-### HTML Configuration
+### Custom Stage
 
 ```typescript
-html: {
-  viewsDir: string;    // Directory containing views and templates
-  routes: {            // Route-specific configuration
-    [path: string]: {
-      title: string;
-      seo?: {
-        description?: string;
-        keywords?: string[];
-        image?: string;
-      };
-      data?: Record<string, any>; // Additional template data
-    }
-  };
-  outputDir: string;   // HTML output directory
-  mode?: 'tailwind' | 'semantic' | 'inline'; // HTML processing mode (default: 'tailwind')
-  partials?: {         // Optional: generate Liquid partials from React components
-    sourceDir: string; // Directory containing React partial components
-    outputDir?: string; // Output directory under viewsDir (defaults to 'partials')
-    props?: Record<string, Record<string, any>>; // Per-component props
-  };
-  stripDataClassInTailwind?: boolean; // Remove data-class in tailwind mode
+import type { IPipelineStage, IPipelineContext } from '@ui8kit/generator';
+
+class MyStage implements IPipelineStage {
+  readonly name = 'my-stage';
+  readonly order = 5;
+  readonly enabled = true;
+  readonly dependencies = ['html'];
+  readonly description = 'Custom processing stage';
+  
+  canExecute(context: IPipelineContext): boolean {
+    return true;
+  }
+  
+  async execute(input: unknown, context: IPipelineContext): Promise<void> {
+    const { logger } = context;
+    
+    logger.info('Executing my stage...');
+    // Your logic here
+    
+    context.setData('my-stage:result', { success: true });
+  }
 }
 ```
 
-### Client Script Configuration
+### Plugin
 
 ```typescript
-clientScript?: {
-  enabled?: boolean;          // Enable client script generation
-  outputDir?: string;         // Output directory (defaults to './dist/assets/js')
-  fileName?: string;          // Script filename (defaults to 'main.js')
-  darkModeSelector?: string;  // Dark mode toggle selector (defaults to '[data-toggle-dark]')
-}
-```
+import { createPlugin } from '@ui8kit/generator';
 
-### UnCSS Configuration (CSS Cleanup)
+const myPlugin = createPlugin({
+  name: 'my-plugin',
+  version: '1.0.0',
+  stages: [new MyStage()],
+  services: [new MyService()],
+  hooks: {
+    onBeforeGenerate: async (context) => {
+      console.log('Before generation');
+    },
+    onAfterGenerate: async (result, context) => {
+      console.log(`Generated in ${result.duration}ms`);
+    },
+  },
+});
 
-```typescript
-uncss?: {
-  enabled?: boolean;          // Enable unused CSS removal
-  htmlFiles?: string[];       // HTML files to analyze for used selectors
-  cssFile?: string;           // CSS file to process (relative to project root)
-  outputDir?: string;         // Output directory for cleaned CSS (fallback)
-  ignore?: string[];          // CSS selectors to ignore during cleanup
-  media?: boolean;            // Include media queries in analysis
-  timeout?: number;           // Processing timeout in milliseconds
-}
-```
-
-**Note**: UnCSS creates `unused.css` files in the same directory as each `index.html` for easy testing with `<link rel="stylesheet" href="unused.css">`.
-
-### Assets Configuration
-
-```typescript
-assets?: {
-  copy?: string[];     // Files/directories to copy to output
-}
-```
-
-## Liquid Features
-
-### Built-in Filters
-
-- `json` - Convert object to JSON string
-- `lowercase` - Convert to lowercase
-- `uppercase` - Convert to uppercase
-
-### Custom Filters
-
-You can extend Liquid with custom filters in your templates.
-
-### Partials
-
-Use `{% include 'path/to/partial.liquid' %}` to include reusable components.
-
-### Layouts
-
-Use frontmatter to specify layouts:
-
-```liquid
----
-layout: custom-layout
----
-
-<!-- Page content -->
+// Use plugin
+orchestrator.use(myPlugin);
 ```
 
 ## API Reference
 
-### Generator Class
+### Main Exports
 
 ```typescript
-import { generator, Generator, GeneratorConfig } from '@ui8kit/generator';
+// High-level API
+export { generate, createGenerator } from './generate';
+export type { GenerateConfig, GenerateResult } from './generate';
 
-// Use singleton instance
-await generator.generate(config);
+// Core
+export { Orchestrator, Pipeline, EventBus, ServiceRegistry, Logger } from './core';
 
-// Or create new instance
-const gen = new Generator();
-await gen.generate(config);
+// Services
+export {
+  LayoutService,
+  RenderService,
+  ViewService,
+  CssService,
+  HtmlService,
+  AssetService,
+  HtmlConverterService,
+} from './services';
+
+// Stages
+export { LayoutStage, ViewStage, CssStage, HtmlStage, AssetStage } from './stages';
+
+// Plugins
+export { PluginManager, createPlugin } from './plugins';
+
+// Types
+export type {
+  IOrchestrator,
+  IService,
+  IServiceContext,
+  IPipeline,
+  IPipelineStage,
+  IPipelineContext,
+  IPlugin,
+  IEventBus,
+  ILogger,
+  GeneratorConfig,
+  RouteConfig,
+} from './core';
 ```
 
-### Types
+### Utility Scripts
 
 ```typescript
-interface GeneratorConfig {
-  app: {
-    name: string;
-    lang?: string;
-  };
-  css: {
-    entryPath: string;      // Path to React entry file (main.tsx)
-    routes: string[];       // Routes to generate CSS for
-    outputDir: string;      // CSS output directory
-    pureCss?: boolean;      // Generate pure CSS3 in addition to @apply
-  };
-  html: {
-    viewsDir: string;       // Directory for Liquid views and templates
-    routes: Record<string, RouteConfig>;  // Route configurations
-    outputDir: string;      // HTML output directory
-  };
-  clientScript?: {
-    enabled?: boolean;      // Enable client script generation
-    outputDir?: string;     // Client script output directory
-    fileName?: string;      // Client script filename
-    darkModeSelector?: string; // Dark mode toggle selector
-  };
-  assets?: {
-    copy?: string[];        // Files/directories to copy
-  };
-}
+// Generate variants.apply.css
+import { emitVariantsApplyCss } from '@ui8kit/generator';
 
-interface RouteConfig {
-  title: string;
-  seo?: {
-    description?: string;
-    keywords?: string[];
-    image?: string;
-  };
-  data?: Record<string, any>;  // Additional template data
-}
-```
-
-### Render Integration
-
-The generator uses `@ui8kit/render` internally:
-
-```typescript
-// Generator calls renderer for each route
-import { renderRoute } from '@ui8kit/render';
-
-const html = await renderRoute({
-  entryPath: config.css.entryPath,  // './src/main.tsx'
-  routePath: '/'                    // Route to render
+const css = await emitVariantsApplyCss({
+  variantsDir: './src/variants',
 });
-// Returns: HTML string with data-class attributes
-```
 
-## Integration
+// Generate typed element components
+import { emitVariantElements } from '@ui8kit/generator';
 
-### With Tailwind CSS
-
-```css
-/* styles.css */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-
-/* Generated semantic styles */
-@import './dist/css/tailwind.apply.css';
-```
-
-### With Build Tools
-
-```javascript
-// vite.config.js
-import { defineConfig } from 'vite';
-
-export default defineConfig({
-  build: {
-    rollupOptions: {
-      input: {
-        main: './index.html',
-        // Include generated HTML pages
-        ...glob('./dist/html/**/*.html')
-      }
-    }
-  }
+const result = await emitVariantElements({
+  variantsDir: './src/variants',
+  outputDir: './src/elements',
+  componentsImportPath: '../components',
 });
 ```
 
-## Troubleshooting
+## Design Principles
 
-### Common Issues
+### SOLID
 
-**Q: CSS files are not generated**
-A: Ensure `css.routes` contains valid routes matching `html.routes` keys, and `css.outputDir` is writable.
+- **S**ingle Responsibility — Each service has one purpose
+- **O**pen/Closed — Extensible via plugins, closed for modification
+- **L**iskov Substitution — Services are interchangeable via interfaces
+- **I**nterface Segregation — Focused interfaces (IService, IStage, etc.)
+- **D**ependency Inversion — Depend on abstractions, not concretions
 
-**Q: HTML pages are empty or missing components**
-A: 
-- Check that React components are properly exported (default or named)
-- Verify router configuration in `main.tsx` uses `createBrowserRouter` with `children` array
-- Ensure components don't require React context (ThemeProvider, RouterProvider) - they won't work in static generation
-- Check console output for rendering errors
+### Clean Architecture
 
-**Q: Components not found during rendering**
-A:
-- Verify import paths in `main.tsx` are correct
-- Ensure `@/` alias resolves to `src/` directory
-- Check that component files exist and have correct extensions (`.tsx`, `.ts`)
+- **Dependency Rule** — Dependencies point inward
+- **Entities** — Core interfaces (IService, IStage)
+- **Use Cases** — Services (CssService, HtmlService)
+- **Interface Adapters** — Stages bridge services to pipeline
+- **Frameworks** — File system, Liquid, React
 
-**Q: Liquid templates not rendering**
-A: 
-- Verify layout template exists at `views/layouts/layout.liquid`
-- Check that `viewsDir` path is correct in configuration
-- Ensure Liquid template uses `{{ content | raw }}` filter to prevent HTML escaping
+### Best Practices
 
-**Q: Partials not found**
-A: Ensure partials are in the correct directory structure under `viewsDir/partials/` and use correct paths in `{% include %}` statements.
-
-**Q: React version conflicts**
-A: The generator uses `peerDependencies` for React. Ensure your app has React installed and versions are compatible (React 18 or 19).
-
-### Debug Mode
-
-Enable verbose logging:
-
-```bash
-bun run generate:css -- --verbose
-bun run generate:html -- --verbose
-```
-
-## Architecture Details
-
-### Rendering Process
-
-1. **Component Discovery**: Renderer parses `main.tsx` to find router configuration
-2. **Route Matching**: Maps route paths to component names from router config
-3. **Component Loading**: Dynamically imports components using resolved paths
-4. **Direct Rendering**: Renders components directly without context providers
-5. **HTML Output**: Returns HTML string with preserved `data-class` attributes
-
-### HTML Processing Modes
-
-UI8Kit supports three HTML processing modes to give you flexibility in how the generated HTML is structured:
-
-#### `tailwind` Mode (Default)
-- **HTML Output**: Preserves both `data-class` and `class` attributes
-- **CSS Usage**: Requires linking to generated CSS files (`tailwind.apply.css`, `ui8kit.local.css`)
-- **Best For**: Projects using Tailwind CSS, development environments, maximum compatibility
-
-```html
-<div data-class="hero-content" class="flex flex-col gap-4 items-center">
-  <h1 data-class="hero-title" class="text-4xl font-bold">Hello</h1>
-</div>
-```
-
-#### `semantic` Mode
-- **HTML Output**: Removes `class` attributes, converts `data-class` to `class` (removes `data-` prefix)
-- **CSS Usage**: Requires linking to generated CSS files (styles applied via semantic selectors)
-- **Best For**: Production sites, semantic HTML, smaller HTML file sizes
-
-```html
-<div class="hero-content">
-  <h1 class="hero-title">Hello</h1>
-</div>
-```
-
-#### `inline` Mode
-- **HTML Output**: Removes `class` attributes, converts `data-class` to `class` (removes `data-` prefix), injects CSS directly into `<head>`
-- **CSS Usage**: Self-contained HTML files, no external CSS dependencies
-- **Best For**: Email templates, static hosting without CSS files, single-file deployment
-
-```html
-<head>
-  <style>.hero-content{display:flex;...}.hero-title{font-size:2.25rem;...}</style>
-</head>
-<body>
-  <div class="hero-content">
-    <h1 class="hero-title">Hello</h1>
-  </div>
-</body>
-```
-
-### CSS Generation Process
-
-1. **View Analysis**: Reads generated `.liquid` view files
-2. **Class Extraction**: Parses HTML to extract classes and `data-class` attributes
-3. **Selector Generation**: Creates semantic selectors using `data-class` values
-4. **Deduplication**: Automatically merges selectors with identical class sets (e.g., from loops)
-5. **CSS Creation**: Generates `@apply` directives and optionally pure CSS3
-6. **HTML Processing**: Applies selected mode (tailwind/semantic/inline)
-7. **File Merging**: Combines CSS from all routes into single files
-
-**Deduplication Example**: If `feature-card-0`, `feature-card-1`, `feature-card-2`, and `feature-card-3` all have the same classes, they are automatically combined into a single group selector: `.feature-card-0, .feature-card-1, .feature-card-2, .feature-card-3 { ... }`
-
-### Key Design Decisions
-
-- **No Context Providers**: Components are rendered directly without ThemeProvider or RouterProvider for simplicity
-- **Semantic Selectors**: Uses `data-class` instead of random class names for better CSS maintainability
-- **Automatic Deduplication**: Merges duplicate class sets to reduce CSS file size (up to 25% reduction)
-- **Configuration-Driven**: All paths and options come from configuration, no hardcoded values
-- **Framework Agnostic**: Generator delegates React rendering to `@ui8kit/render` package
-
-## Contributing
-
-1. Follow the existing code style
-2. Add tests for new features
-3. Update documentation
-4. Ensure TypeScript types are correct
-5. Follow the architecture rules in `.cursor/rules/generator.mdc`
+- **TDD** — Tests written before implementation
+- **DI** — All dependencies injected via context
+- **Immutability** — Readonly interfaces where possible
+- **Error Handling** — Graceful degradation with logging
+- **Documentation** — JSDoc on all public APIs
 
 ## Related Packages
 
-- **`@ui8kit/render`**: React component renderer (see `packages/render/.cursor/rules/render.mdc`)
-- **`@ui8kit/core`**: UI components with utility props
+- **`@ui8kit/mdx-react`** — MDX processing utilities
+- **`react`** / **`react-dom`** — Peer dependencies for rendering
 
 ## License
 
