@@ -4,7 +4,7 @@ import ts from "typescript";
 
 export interface EmitVariantsApplyCssOptions {
   /**
-   * Absolute path to variants directory (e.g. .../apps/local/src/variants)
+   * Absolute path to variants directory (e.g. ./src/variants resolved to absolute)
    */
   variantsDir: string;
 }

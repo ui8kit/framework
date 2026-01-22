@@ -1,0 +1,50 @@
+{
+  "name": "@ui8kit/vite-docs",
+  "description": "Local development environment for UI8Kit components, layouts, and documentation",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:js": "tsc --project tsconfig.build.json",
+    "client:build": "bun build scripts/entry-client.tsx --outdir dist --minify --target=browser --sourcemap=inline --public-path=/",
+    "preview": "vite preview",
+    "generate": "bun run generator.config.ts",
+    "preview:static": "bun run generate && serve dist/html",
+    "serve": "bunx serve dist/html",
+    "unused": "bunx uncss dist/html/index.html --output dist/html/assets/index-uncss.css --ignore ':hover,:focus,:active,:visited,.js-,.is-,.has-,[],::before,::after,::placeholder,:root,html,body,button,*,@layer,@property' --media --no-banner --timeout 10000"
+  },
+  "dependencies": {
+    "@fullhuman/postcss-purgecss": "^7.0.2",
+    "lucide-react": "^0.460.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-resizable-panels": "^3.0.6",
+    "react-router-dom": "^7.0.1"
+  },
+  "devDependencies": {
+    "@mdx-js/react": "^3.1.0",
+    "@mdx-js/rollup": "^3.1.0",
+    "@tailwindcss/cli": "^4.1.9",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/mdx": "^2.0.13",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@ui8kit/generator": "workspace:*",
+    "@ui8kit/mdx-react": "workspace:*",
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "postcss": "^8.5.6",
+    "rehype-slug": "^6.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-mdx-frontmatter": "^5.0.0",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss": "^4.1.9",
+    "typescript": "~5.8.3",
+    "uncss": "^0.17.3",
+    "vite": "^6.3.5"
+  }
+}

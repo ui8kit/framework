@@ -17,6 +17,23 @@ export interface GeneratorConfig {
     name: string;
     lang?: string;
   };
+  
+  /**
+   * Paths to CSS class mapping files for @apply and pure CSS generation.
+   * These files map Tailwind/utility class names to CSS properties.
+   */
+  mappings?: {
+    /**
+     * Path to ui8kit.map.json (relative to cwd or absolute)
+     * @example './src/lib/ui8kit.map.json'
+     */
+    ui8kitMap?: string;
+    /**
+     * Path to shadcn.map.json (optional, defaults to generator's built-in)
+     */
+    shadcnMap?: string;
+  };
+  
   css: {
     entryPath: string;
     routes: string[];
@@ -476,7 +493,11 @@ export class Generator {
         viewPath,
         `${config.css.outputDir}/tailwind.apply.css`,
         config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
-        { verbose: true }
+        { 
+          verbose: true,
+          ui8kitMapPath: config.mappings?.ui8kitMap,
+          shadcnMapPath: config.mappings?.shadcnMap,
+        }
       );
 
       allApplyCss.push(applyCss);
@@ -510,7 +531,11 @@ export class Generator {
           filePath,
           `${config.css.outputDir}/tailwind.apply.css`,
           config.css.pureCss ? `${config.css.outputDir}/ui8kit.local.css` : `${config.css.outputDir}/tailwind.apply.css`,
-          { verbose: true }
+          { 
+            verbose: true,
+            ui8kitMapPath: config.mappings?.ui8kitMap,
+            shadcnMapPath: config.mappings?.shadcnMap,
+          }
         );
 
         allApplyCss.push(applyCss);
@@ -1127,16 +1152,23 @@ export class Generator {
   }
 
   /**
-   * Emit component semantic variants CSS from `apps/local/src/variants/*.ts`.
+   * Emit component semantic variants CSS from variants directory.
+   * Uses config.elements.variantsDir or auto-detects from ./src/variants.
    * Writes `${config.css.outputDir}/variants.apply.css`.
    */
   private async emitVariantsApplyCss(config: GeneratorConfig): Promise<void> {
     try {
       await this.ensureDir(config.css.outputDir);
       const { emitVariantsApplyCss } = await import('./scripts/emit-variants-apply.js');
-      const variantsDir = await this.resolveVariantsDir();
+      
+      // Use configured path or auto-detect
+      const configuredPath = config.elements?.variantsDir 
+        ? join(process.cwd(), config.elements.variantsDir)
+        : null;
+      const variantsDir = configuredPath ?? await this.resolveVariantsDir();
+      
       if (!variantsDir) {
-        console.warn('⚠️ variants directory not found (tried src/variants and apps/local/src/variants), skipping variants.apply.css');
+        console.warn('⚠️ variants directory not found (tried config.elements.variantsDir and ./src/variants), skipping variants.apply.css');
         return;
       }
       const css = await emitVariantsApplyCss({
@@ -1150,21 +1182,17 @@ export class Generator {
   }
 
   private async resolveVariantsDir(): Promise<string | null> {
-    const candidates = [
-      // When generator is executed from an app workspace (e.g. apps/local)
-      join(process.cwd(), 'src', 'variants'),
-      // When executed from monorepo root
-      join(process.cwd(), 'apps', 'local', 'src', 'variants'),
-    ];
-
-    for (const p of candidates) {
-      try {
-        const entries = await readdir(p);
-        if (Array.isArray(entries)) return p;
-      } catch {
-        // try next
-      }
+    // Only try the standard location relative to cwd
+    // Apps should either configure elements.variantsDir or run from their directory
+    const candidate = join(process.cwd(), 'src', 'variants');
+    
+    try {
+      const entries = await readdir(candidate);
+      if (Array.isArray(entries)) return candidate;
+    } catch {
+      // directory doesn't exist
     }
+    
     return null;
   }
 

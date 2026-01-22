@@ -15,6 +15,7 @@ A comprehensive static site generator that converts React components to Liquid t
 📁 packages/generator/
 ├── src/
 │   ├── generator.ts      # Main generation orchestrator
+│   ├── html-converter.ts # HTML to CSS converter
 │   └── index.ts          # Public API
 ├── templates/            # Base Liquid templates
 │   ├── layout.liquid     # Main layout template
@@ -24,7 +25,8 @@ A comprehensive static site generator that converts React components to Liquid t
 │       └── footer.liquid
 └── dist/                 # Compiled package
 
-📁 apps/local/
+📁 apps/web/              # Static site generation (no MDX)
+📁 apps/docs/             # Documentation with MDX
 ├── views/                # Generated Liquid views
 │   ├── layouts/          # App-specific layouts
 │   ├── pages/            # Route-specific views
@@ -98,7 +100,7 @@ bun install
 Create `generator.config.ts` in your app directory:
 
 ```typescript
-// apps/local/generator.config.ts
+// apps/web/generator.config.ts (or apps/docs/generator.config.ts)
 import { generator, type GeneratorConfig } from '@ui8kit/generator';
 
 // Define HTML routes first

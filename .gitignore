@@ -12,5 +12,6 @@ bun.lockb
 package-lock.json
 tsconfig.node.tsbuildinfo
 bash.exe.*
+.chat/
 .manual/
 .cursorignore

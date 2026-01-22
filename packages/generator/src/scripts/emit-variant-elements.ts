@@ -4,11 +4,11 @@ import ts from "typescript";
 
 export interface EmitVariantElementsOptions {
   /**
-   * Absolute path to variants directory (e.g. .../apps/local/src/variants)
+   * Absolute path to variants directory (e.g. ./src/variants resolved to absolute)
    */
   variantsDir: string;
   /**
-   * Output directory for generated elements (e.g. .../apps/local/src/elements)
+   * Output directory for generated elements (e.g. ./src/elements resolved to absolute)
    */
   outputDir: string;
   /**

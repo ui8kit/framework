@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@import "./shadcn.css";
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  button {
+    cursor: pointer;
+  }
+  .prose {
+    @apply !text-[.925rem];
+  }
+}

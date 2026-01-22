@@ -51,6 +51,12 @@ export const config: GeneratorConfig = {
     lang: 'en'
   },
 
+  // CSS class mappings (auto-detected from ./src/lib/ if not specified)
+  mappings: {
+    ui8kitMap: './src/lib/ui8kit.map.json',
+    // shadcnMap uses generator's built-in by default
+  },
+
   // CSS Generation - uses docs/ as source
   css: {
     entryPath: './src/main.tsx',

@@ -13,6 +13,16 @@ interface HtmlConverterOptions {
    * If any pattern matches the selector (data-class value), the element is skipped.
    */
   ignoreSelectors?: Array<string | RegExp>;
+  /**
+   * Path to ui8kit.map.json (relative to cwd or absolute).
+   * If not provided, will try to auto-detect from ./src/lib/ui8kit.map.json
+   */
+  ui8kitMapPath?: string;
+  /**
+   * Path to shadcn.map.json (optional).
+   * If not provided, uses the generator's built-in map.
+   */
+  shadcnMapPath?: string;
 }
 
 /**
@@ -31,17 +41,17 @@ export class HtmlConverter {
     outputPureCss: string,
     options: HtmlConverterOptions = {}
   ): Promise<{ applyCss: string; pureCss: string }> {
-    const { verbose = false, ignoreSelectors = [] } = options;
+    const { verbose = false, ignoreSelectors = [], ui8kitMapPath, shadcnMapPath } = options;
 
     if (verbose) {
       console.log(`🔄 Converting HTML to CSS: ${htmlFilePath}`);
     }
 
-    // Load ui8kit map
-    await this.loadUi8kitMap(htmlFilePath);
+    // Load ui8kit map (from config or auto-detect)
+    await this.loadUi8kitMap(ui8kitMapPath);
 
-    // Load shadcn map
-    await this.loadShadcnMap(htmlFilePath);
+    // Load shadcn map (from config or built-in)
+    await this.loadShadcnMap(shadcnMapPath);
 
     // Extract elements from HTML
     const html = await readFile(htmlFilePath, 'utf-8');
@@ -65,17 +75,25 @@ export class HtmlConverter {
   }
 
   /**
-   * Load ui8kit map for CSS property lookups
+   * Load ui8kit map for CSS property lookups.
+   * @param configuredPath - Path from config.mappings.ui8kitMap (optional)
    */
-  private async loadUi8kitMap(htmlFilePath: string): Promise<void> {
-    // Find ui8kit.map.json - try multiple locations relative to project root
+  private async loadUi8kitMap(configuredPath?: string): Promise<void> {
     const projectRoot = process.cwd();
-    const possiblePaths = [
-      join(projectRoot, '../../../apps/local/src/lib/ui8kit.map.json'), // from packages/generator/dist
-      join(projectRoot, '../../apps/local/src/lib/ui8kit.map.json'),    // from packages/preprocessor/dist
-      join(projectRoot, '../apps/local/src/lib/ui8kit.map.json'),      // from apps/local
-      'apps/local/src/lib/ui8kit.map.json'                            // absolute from project root
-    ];
+    
+    // Build list of paths to try
+    const possiblePaths: string[] = [];
+    
+    // 1. Configured path takes priority
+    if (configuredPath) {
+      const absolutePath = configuredPath.startsWith('/') || configuredPath.match(/^[a-zA-Z]:/)
+        ? configuredPath
+        : join(projectRoot, configuredPath);
+      possiblePaths.push(absolutePath);
+    }
+    
+    // 2. Standard location relative to cwd (app directory)
+    possiblePaths.push(join(projectRoot, 'src', 'lib', 'ui8kit.map.json'));
 
     let jsonContent: string | null = null;
     let foundPath: string | null = null;
@@ -91,7 +109,11 @@ export class HtmlConverter {
     }
 
     if (!jsonContent || !foundPath) {
-      throw new Error(`Could not find ui8kit.map.json. Tried: ${possiblePaths.join(', ')}`);
+      throw new Error(
+        `Could not find ui8kit.map.json.\n` +
+        `Tried: ${possiblePaths.join(', ')}\n` +
+        `Hint: Set config.mappings.ui8kitMap in your generator.config.ts`
+      );
     }
 
     try {
@@ -107,15 +129,26 @@ export class HtmlConverter {
   }
 
   /**
-   * Load shadcn map for CSS property lookups
+   * Load shadcn map for CSS property lookups.
+   * @param configuredPath - Path from config.mappings.shadcnMap (optional)
    */
-  private async loadShadcnMap(htmlFilePath: string): Promise<void> {
-    // Find shadcn.map.json relative to this file's location
-    const pkgDir = dirname(fileURLToPath(import.meta.url));
-    const shadcnMapPath = join(pkgDir, '../src/lib/shadcn.map.json');
+  private async loadShadcnMap(configuredPath?: string): Promise<void> {
+    let mapPath: string;
+    
+    if (configuredPath) {
+      // Use configured path
+      const projectRoot = process.cwd();
+      mapPath = configuredPath.startsWith('/') || configuredPath.match(/^[a-zA-Z]:/)
+        ? configuredPath
+        : join(projectRoot, configuredPath);
+    } else {
+      // Use generator's built-in map
+      const pkgDir = dirname(fileURLToPath(import.meta.url));
+      mapPath = join(pkgDir, 'lib', 'shadcn.map.json');
+    }
 
     try {
-      const jsonContent = await readFile(shadcnMapPath, 'utf-8');
+      const jsonContent = await readFile(mapPath, 'utf-8');
       const shadcnMapObject = JSON.parse(jsonContent);
 
       this.shadcnMap = new Map<string, string>();
@@ -123,7 +156,7 @@ export class HtmlConverter {
         this.shadcnMap.set(key, value as string);
       }
     } catch (error) {
-      console.warn(`Failed to load shadcn.map.json from ${shadcnMapPath}: ${error}. Using empty map.`);
+      console.warn(`Failed to load shadcn.map.json from ${mapPath}: ${error}. Using empty map.`);
       this.shadcnMap = new Map<string, string>();
     }
   }
