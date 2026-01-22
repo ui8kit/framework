@@ -39,12 +39,56 @@ export interface LayoutServiceOptions {
    * File system implementation (for testing)
    */
   fileSystem?: LayoutFileSystem;
+  
+  /**
+   * Layout template configuration
+   */
+  templateConfig?: LayoutTemplateConfig;
 }
 
 /**
- * Default layout templates
+ * Configuration for default layout templates
  */
-const DEFAULT_LAYOUT = `<!DOCTYPE html>
+export interface LayoutTemplateConfig {
+  /** Path to CSS stylesheet (default: '/assets/css/styles.css') */
+  cssPath?: string;
+  /** Path to JS file (default: '/assets/js/main.js') */
+  jsPath?: string;
+  /** Body CSS classes (default: none) */
+  bodyClass?: string;
+  /** Main content wrapper classes (default: none) */
+  mainClass?: string;
+  /** Header partial path (default: 'partials/header.liquid') */
+  headerPartial?: string;
+  /** Footer partial path (default: 'partials/footer.liquid') */
+  footerPartial?: string;
+  /** Include header partial (default: true) */
+  includeHeader?: boolean;
+  /** Include footer partial (default: true) */
+  includeFooter?: boolean;
+}
+
+/**
+ * Build default layout template from configuration
+ */
+function buildDefaultLayout(config: LayoutTemplateConfig = {}): string {
+  const {
+    cssPath = '/assets/css/styles.css',
+    jsPath = '/assets/js/main.js',
+    bodyClass = '',
+    mainClass = '',
+    headerPartial = 'partials/header.liquid',
+    footerPartial = 'partials/footer.liquid',
+    includeHeader = true,
+    includeFooter = true,
+  } = config;
+  
+  const bodyClassAttr = bodyClass ? ` class="${bodyClass}"` : '';
+  const mainClassAttr = mainClass ? ` class="${mainClass}"` : '';
+  const headerInclude = includeHeader ? `  {% include '${headerPartial}' %}\n  \n` : '';
+  const footerInclude = includeFooter ? `  \n  {% include '${footerPartial}' %}` : '';
+  
+  return `<!DOCTYPE html>
 <html lang="{{ lang | default: 'en' }}">
 <head>
   <meta charset="UTF-8">
@@ -59,22 +103,24 @@ const DEFAULT_LAYOUT = `<!DOCTYPE html>
   <meta name="keywords" content="{{ meta.keywords | join: ', ' }}">
   {% endif %}
   
-  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="${cssPath}">
 </head>
-<body class="bg-background text-foreground">
-  {% include 'partials/header.liquid' %}
-  
-  <main class="min-h-screen">
+<body${bodyClassAttr}>
+${headerInclude}  <main${mainClassAttr}>
     {{ content | raw }}
   </main>
+${footerInclude}
   
-  {% include 'partials/footer.liquid' %}
-  
-  <script src="/assets/js/main.js"></script>
+  <script src="${jsPath}"></script>
 </body>
 </html>`;
+}
 
-const DEFAULT_PAGE = `---
+/**
+ * Build default page template
+ */
+function buildDefaultPage(): string {
+  return `---
 layout: layout
 ---
 
@@ -83,6 +129,7 @@ layout: layout
     {{ content | raw }}
   </div>
 </article>`;
+}
 
 /**
  * LayoutService - Ensures layout templates exist.
@@ -98,13 +145,18 @@ export class LayoutService implements IService<LayoutServiceInput, LayoutService
   readonly dependencies: readonly string[] = [];
   
   private context!: IServiceContext;
-  private options: Required<LayoutServiceOptions>;
+  private options: {
+    templatesDir: string;
+    fileSystem: LayoutFileSystem;
+    templateConfig: LayoutTemplateConfig;
+  };
   private fs: LayoutFileSystem;
   
   constructor(options: LayoutServiceOptions = {}) {
     this.options = {
       templatesDir: options.templatesDir ?? '',
       fileSystem: options.fileSystem ?? this.createDefaultFileSystem(),
+      templateConfig: options.templateConfig ?? {},
     };
     this.fs = this.options.fileSystem;
   }
@@ -125,8 +177,8 @@ export class LayoutService implements IService<LayoutServiceInput, LayoutService
     
     // Define templates to check/create
     const templates: Array<{ name: string; content: string }> = [
-      { name: 'layout.liquid', content: DEFAULT_LAYOUT },
-      { name: 'page.liquid', content: DEFAULT_PAGE },
+      { name: 'layout.liquid', content: buildDefaultLayout(this.options.templateConfig) },
+      { name: 'page.liquid', content: buildDefaultPage() },
     ];
     
     // Try to load custom templates from templatesDir

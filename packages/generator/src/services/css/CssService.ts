@@ -2,6 +2,24 @@ import type { IService, IServiceContext, RouteConfig } from '../../core/interfac
 import { join } from 'node:path';
 
 /**
+ * CSS output file names configuration
+ */
+export interface CssOutputFileNames {
+  /** Tailwind @apply CSS file name (default: 'tailwind.apply.css') */
+  applyCss?: string;
+  /** Pure CSS file name (default: 'ui8kit.local.css') */
+  pureCss?: string;
+}
+
+/**
+ * Default CSS output file names
+ */
+const DEFAULT_CSS_OUTPUT_FILES: Required<CssOutputFileNames> = {
+  applyCss: 'tailwind.apply.css',
+  pureCss: 'ui8kit.local.css',
+};
+
+/**
  * Input for CssService.execute()
  */
 export interface CssServiceInput {
@@ -13,6 +31,8 @@ export interface CssServiceInput {
     ui8kitMap?: string;
     shadcnMap?: string;
   };
+  /** Output file names configuration */
+  outputFiles?: CssOutputFileNames;
 }
 
 /**
@@ -88,7 +108,10 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
   }
   
   async execute(input: CssServiceInput): Promise<CssServiceOutput> {
-    const { viewsDir, outputDir, routes, pureCss = false, mappings } = input;
+    const { viewsDir, outputDir, routes, pureCss = false, mappings, outputFiles = {} } = input;
+    
+    // Merge with defaults
+    const cssFileNames: Required<CssOutputFileNames> = { ...DEFAULT_CSS_OUTPUT_FILES, ...outputFiles };
     
     // Ensure output directory exists
     await this.fs.mkdir(outputDir);
@@ -105,8 +128,8 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
       try {
         const { applyCss, pureCss: routePureCss } = await this.converter.convertHtmlToCss(
           viewPath,
-          join(outputDir, 'tailwind.apply.css'),
-          join(outputDir, 'ui8kit.local.css'),
+          join(outputDir, cssFileNames.applyCss),
+          join(outputDir, cssFileNames.pureCss),
           {
             verbose: false,
             ui8kitMapPath: mappings?.ui8kitMap,
@@ -144,8 +167,8 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
           try {
             const { applyCss, pureCss: filePureCss } = await this.converter.convertHtmlToCss(
               filePath,
-              join(outputDir, 'tailwind.apply.css'),
-              join(outputDir, 'ui8kit.local.css'),
+              join(outputDir, cssFileNames.applyCss),
+              join(outputDir, cssFileNames.pureCss),
               {
                 verbose: false,
                 ui8kitMapPath: mappings?.ui8kitMap,
@@ -170,7 +193,7 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
     
     // Merge and write apply CSS
     const mergedApplyCss = this.mergeCssFiles(allApplyCss.filter(Boolean));
-    const applyCssPath = join(outputDir, 'tailwind.apply.css');
+    const applyCssPath = join(outputDir, cssFileNames.applyCss);
     await this.fs.writeFile(applyCssPath, mergedApplyCss);
     
     generatedFiles.push({
@@ -189,7 +212,7 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
     // Write pure CSS if enabled
     if (pureCss) {
       const mergedPureCss = this.mergeCssFiles(allPureCss.filter(Boolean));
-      const pureCssPath = join(outputDir, 'ui8kit.local.css');
+      const pureCssPath = join(outputDir, cssFileNames.pureCss);
       await this.fs.writeFile(pureCssPath, mergedPureCss);
       
       generatedFiles.push({

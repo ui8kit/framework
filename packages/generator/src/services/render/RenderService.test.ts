@@ -223,6 +223,38 @@ describe('RenderService', () => {
     });
   });
   
+  describe('custom router parser', () => {
+    it('should use custom router parser when provided', async () => {
+      const customParser = vi.fn().mockReturnValue(new Map([
+        ['/', 'CustomHome'],
+        ['/custom', 'CustomPage'],
+      ]));
+      
+      const customService = new RenderService({
+        fileSystem: mockFs,
+        reactRenderer: mockReactRenderer,
+        moduleLoader: mockModuleLoader,
+        routerParser: customParser,
+      });
+      
+      // Set up entry file
+      const cwd = process.cwd().replace(/\\/g, '/');
+      mockFs.files.set(`${cwd}/src/custom.tsx`, 'some custom router format');
+      mockFs.readFile = vi.fn(async () => 'some custom router format');
+      mockFs.exists.mockResolvedValue(true);
+      
+      await customService.initialize(createMockContext());
+      
+      await customService.execute({
+        type: 'route',
+        entryPath: './src/custom.tsx',
+        routePath: '/',
+      });
+      
+      expect(customParser).toHaveBeenCalledWith('some custom router format');
+    });
+  });
+  
   describe('resolveImportPath', () => {
     beforeEach(() => {
       // Set up mock files

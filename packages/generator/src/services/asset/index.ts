@@ -4,4 +4,5 @@ export type {
   AssetServiceOutput,
   AssetServiceOptions,
   AssetFileSystem,
+  CssFileNames,
 } from './AssetService';

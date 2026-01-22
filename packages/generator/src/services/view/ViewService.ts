@@ -191,7 +191,7 @@ export class ViewService implements IService<ViewServiceInput, ViewServiceOutput
           const outputFileName = `${componentName.toLowerCase()}.liquid`;
           const outputPath = join(partialsOutputDir, outputFileName);
           
-          const header = `{% comment %} Generated from ${sourceDir}/${entry} by @ui8kit/generator. Do not edit manually. {% endcomment %}\n`;
+          const header = `{% comment %} Auto-generated from ${sourceDir}/${entry}. Do not edit manually. {% endcomment %}\n`;
           await this.fs.writeFile(outputPath, header + html + '\n');
           
           generated.push({

@@ -58,12 +58,23 @@ export interface ModuleLoader {
 }
 
 /**
+ * Custom router parser function type.
+ * Takes the entry file content and returns a map of route paths to component names.
+ */
+export type RouterParser = (source: string) => Map<string, string>;
+
+/**
  * RenderService options
  */
 export interface RenderServiceOptions {
   fileSystem?: RenderFileSystem;
   reactRenderer?: ReactRenderer;
   moduleLoader?: ModuleLoader;
+  /**
+   * Custom router parser for non-standard router configurations.
+   * If not provided, uses default React Router v6+ parser.
+   */
+  routerParser?: RouterParser;
 }
 
 /**
@@ -94,6 +105,7 @@ export class RenderService implements IService<RenderServiceInput, RenderService
   private fs: RenderFileSystem;
   private react: ReactRenderer;
   private loader: ModuleLoader;
+  private customRouterParser?: RouterParser;
   
   // Caches
   private importsCache: Map<string, Map<string, ImportInfo>> = new Map();
@@ -103,6 +115,7 @@ export class RenderService implements IService<RenderServiceInput, RenderService
     this.fs = options.fileSystem ?? this.createDefaultFileSystem();
     this.react = options.reactRenderer ?? this.createDefaultReactRenderer();
     this.loader = options.moduleLoader ?? this.createDefaultModuleLoader();
+    this.customRouterParser = options.routerParser;
   }
   
   async initialize(context: IServiceContext): Promise<void> {
@@ -227,7 +240,9 @@ export class RenderService implements IService<RenderServiceInput, RenderService
     const fileContent = await this.fs.readFile(absEntryPath);
     
     const imports = this.parseImports(fileContent);
-    const routes = this.parseRoutes(fileContent);
+    const routes = this.customRouterParser 
+      ? this.customRouterParser(fileContent) 
+      : this.parseRoutes(fileContent);
     
     // Cache results
     this.importsCache.set(cacheKey, imports);
@@ -267,19 +282,29 @@ export class RenderService implements IService<RenderServiceInput, RenderService
   }
   
   /**
-   * Parse routes from router configuration
+   * Parse routes from router configuration.
+   * 
+   * Supports React Router v6+ format with createBrowserRouter:
+   * - { index: true, element: <Component /> }
+   * - { path: 'route', element: <Component /> }
+   * 
+   * For other router formats, provide a custom router parser via RenderServiceOptions.
    */
   parseRoutes(source: string): Map<string, string> {
     const map = new Map<string, string>();
     
-    // Extract children array from createBrowserRouter
+    // Extract children array from createBrowserRouter (React Router v6+ format)
+    // Pattern matches: children: [ ... ]
     const childrenBlockRegex = /children:\s*\[([\s\S]*?)\]/m;
     const blockMatch = childrenBlockRegex.exec(source);
     if (!blockMatch) return map;
     
     const block = blockMatch[1];
     
-    // Match route entries: { index: true, element: <Home /> } or { path: 'about', element: <About /> }
+    // Match route entries in React Router format:
+    // { index: true, element: <Home /> }
+    // { path: 'about', element: <About /> }
+    // Pattern is flexible with whitespace and optional trailing commas
     const routeEntryRegex = /\{\s*(index:\s*true|path:\s*['"]([^'"]+)['"])\s*,\s*element:\s*<\s*([A-Za-z0-9_]+)\s*\/>/g;
     let match: RegExpExecArray | null;
     while ((match = routeEntryRegex.exec(block)) !== null) {

@@ -2,6 +2,30 @@ import type { IService, IServiceContext } from '../../core/interfaces';
 import { join, basename, dirname, relative } from 'node:path';
 
 /**
+ * CSS file names configuration
+ */
+export interface CssFileNames {
+  /** Tailwind @apply CSS file name (default: 'tailwind.apply.css') */
+  applyCss?: string;
+  /** Pure CSS file name (default: 'ui8kit.local.css') */
+  pureCss?: string;
+  /** Variants CSS file name (default: 'variants.apply.css') */
+  variantsCss?: string;
+  /** Shadcn CSS file name (default: 'shadcn.css') */
+  shadcnCss?: string;
+}
+
+/**
+ * Default CSS file names
+ */
+const DEFAULT_CSS_FILES: Required<CssFileNames> = {
+  applyCss: 'tailwind.apply.css',
+  pureCss: 'ui8kit.local.css',
+  variantsCss: 'variants.apply.css',
+  shadcnCss: 'shadcn.css',
+};
+
+/**
  * Input for AssetService.execute()
  */
 export interface AssetServiceInput {
@@ -15,6 +39,8 @@ export interface AssetServiceInput {
   outputDir: string;
   /** CSS mode: 'tailwind' | 'semantic' */
   cssMode?: 'tailwind' | 'semantic';
+  /** CSS file names configuration */
+  cssFileNames?: CssFileNames;
 }
 
 /**
@@ -80,7 +106,11 @@ export class AssetService implements IService<AssetServiceInput, AssetServiceOut
       publicDir,
       outputDir,
       cssMode = 'tailwind',
+      cssFileNames = {},
     } = input;
+    
+    // Merge with defaults
+    const cssFiles: Required<CssFileNames> = { ...DEFAULT_CSS_FILES, ...cssFileNames };
     
     const copiedFiles: AssetServiceOutput['copiedFiles'] = [];
     let totalSize = 0;
@@ -96,9 +126,9 @@ export class AssetService implements IService<AssetServiceInput, AssetServiceOut
     
     // Copy CSS files
     try {
-      const cssFiles = await this.getCssFilesToCopy(cssSourceDir, cssMode);
+      const cssFilesToCopy = await this.getCssFilesToCopy(cssSourceDir, cssMode, cssFiles);
       
-      for (const file of cssFiles) {
+      for (const file of cssFilesToCopy) {
         const srcPath = join(cssSourceDir, file);
         const destPath = join(cssOutputDir, file);
         
@@ -190,23 +220,22 @@ export class AssetService implements IService<AssetServiceInput, AssetServiceOut
   /**
    * Get CSS files to copy based on mode
    */
-  private async getCssFilesToCopy(cssDir: string, mode: 'tailwind' | 'semantic'): Promise<string[]> {
+  private async getCssFilesToCopy(
+    cssDir: string, 
+    mode: 'tailwind' | 'semantic',
+    cssFiles: Required<CssFileNames>
+  ): Promise<string[]> {
     const files = await this.fs.readdir(cssDir);
+    
+    // Files that are always included
+    const alwaysInclude = [cssFiles.shadcnCss, cssFiles.variantsCss];
+    
+    // Mode-specific main CSS file
+    const modeFile = mode === 'tailwind' ? cssFiles.applyCss : cssFiles.pureCss;
     
     return files.filter(file => {
       if (!file.endsWith('.css')) return false;
-      
-      // Always include these
-      if (file === 'shadcn.css' || file === 'variants.apply.css') {
-        return true;
-      }
-      
-      // Mode-specific files
-      if (mode === 'tailwind') {
-        return file === 'tailwind.apply.css';
-      } else {
-        return file === 'ui8kit.local.css';
-      }
+      return alwaysInclude.includes(file) || file === modeFile;
     });
   }
   

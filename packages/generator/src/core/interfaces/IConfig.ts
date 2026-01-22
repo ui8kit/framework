@@ -28,6 +28,19 @@ export interface GeneratorConfig {
     routes: string[];
     outputDir: string;
     pureCss?: boolean;
+    /**
+     * Output file names (customizable)
+     */
+    outputFiles?: {
+      /** Tailwind @apply CSS file name (default: 'tailwind.apply.css') */
+      applyCss?: string;
+      /** Pure CSS file name (default: 'ui8kit.local.css') */
+      pureCss?: string;
+      /** Variants CSS file name (default: 'variants.apply.css') */
+      variantsCss?: string;
+      /** Shadcn CSS file name (default: 'shadcn.css') */
+      shadcnCss?: string;
+    };
   };
   
   /**
@@ -44,6 +57,15 @@ export interface GeneratorConfig {
       props?: Record<string, Record<string, unknown>>;
     };
     stripDataClassInTailwind?: boolean;
+    /**
+     * Layout configuration
+     */
+    layout?: {
+      /** Main layout template path (default: 'layouts/layout.liquid') */
+      template?: string;
+      /** Custom layout templates directory */
+      templatesDir?: string;
+    };
   };
   
   /**

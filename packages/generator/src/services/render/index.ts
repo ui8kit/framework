@@ -8,4 +8,5 @@ export type {
   RenderFileSystem,
   ReactRenderer,
   ModuleLoader,
+  RouterParser,
 } from './RenderService';
