@@ -61,6 +61,18 @@ export interface GenerateConfig extends GeneratorConfig {
   assets?: {
     copy?: string[];
   };
+  /** Vite bundle configuration - copy Vite build CSS/JS to HTML output */
+  viteBundle?: {
+    enabled?: boolean;
+    /** Vite build output directory (default: './dist/assets') */
+    viteBuildDir?: string;
+    /** CSS output filename (default: 'styles.css') */
+    cssFileName?: string;
+    /** JS output filename (default: 'app.js') */
+    jsFileName?: string;
+    /** Copy JS bundle as well (default: false) */
+    copyJs?: boolean;
+  };
   /** Variant elements generation */
   elements?: {
     enabled?: boolean;
@@ -178,6 +190,12 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
       logger.info('📦 Copying assets...');
       const assetResult = await copyAssets(config, logger);
       generated.assets = assetResult.copied;
+    }
+    
+    // 8.5. Copy Vite build artifacts (CSS/JS with hashes)
+    if (config.viteBundle?.enabled) {
+      logger.info('📎 Copying Vite build artifacts...');
+      await copyViteBuildArtifacts(config, logger);
     }
     
     // 9. Generate client script
@@ -559,6 +577,94 @@ async function copyAssets(
   
   logger.info(`  ✅ Copied ${copied} asset files`);
   return { copied };
+}
+
+/**
+ * Copy Vite build artifacts (CSS/JS with content hashes) to HTML output directory.
+ * 
+ * Vite generates files like `index-D-pnRIbb.css` with content hashes.
+ * This function finds those files and copies them with clean names
+ * (e.g., `styles.css`) to the HTML output directory.
+ */
+async function copyViteBuildArtifacts(
+  config: GenerateConfig,
+  logger: Logger
+): Promise<{ css?: string; js?: string }> {
+  const {
+    viteBuildDir = './dist/assets',
+    cssFileName = 'styles.css',
+    jsFileName = 'app.js',
+    copyJs = false,
+  } = config.viteBundle ?? {};
+  
+  const htmlOutputDir = config.html.outputDir;
+  const result: { css?: string; js?: string } = {};
+  
+  // Check if Vite build directory exists
+  try {
+    await stat(viteBuildDir);
+  } catch {
+    logger.warn(`  ⚠ Vite build directory not found: ${viteBuildDir}`);
+    logger.info('  💡 Run "bun run build" first to create Vite build artifacts');
+    return result;
+  }
+  
+  // List files in Vite build directory
+  const files = await readdir(viteBuildDir);
+  
+  // Find and copy CSS file (pattern: *.css with hash)
+  const cssFile = files.find(f => f.endsWith('.css'));
+  
+  if (cssFile) {
+    const cssOutputDir = join(htmlOutputDir, 'css');
+    await mkdir(cssOutputDir, { recursive: true });
+    
+    const srcPath = join(viteBuildDir, cssFile);
+    const destPath = join(cssOutputDir, cssFileName);
+    
+    await copyFile(srcPath, destPath);
+    
+    const stats = await stat(srcPath);
+    const size = formatBytes(stats.size);
+    
+    result.css = destPath;
+    logger.info(`  ✅ ${cssFile} → ${destPath} (${size})`);
+  } else {
+    logger.debug('  No CSS file found in Vite build directory');
+  }
+  
+  // Find and copy JS file if requested
+  if (copyJs) {
+    // Find main JS file (exclude chunks)
+    const jsFile = files.find(f => f.endsWith('.js') && f.startsWith('index-'));
+    
+    if (jsFile) {
+      const jsOutputDir = join(htmlOutputDir, 'js');
+      await mkdir(jsOutputDir, { recursive: true });
+      
+      const srcPath = join(viteBuildDir, jsFile);
+      const destPath = join(jsOutputDir, jsFileName);
+      
+      await copyFile(srcPath, destPath);
+      
+      const stats = await stat(srcPath);
+      const size = formatBytes(stats.size);
+      
+      result.js = destPath;
+      logger.info(`  ✅ ${jsFile} → ${destPath} (${size})`);
+    }
+  }
+  
+  return result;
+}
+
+/**
+ * Format bytes to human-readable string
+ */
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 async function generateClientScript(

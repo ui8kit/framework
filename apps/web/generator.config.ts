@@ -148,6 +148,14 @@ export const config: GenerateConfig = {
     copy: ['./src/assets/css/**/*']
   },
 
+  // Copy Vite build CSS to HTML output
+  viteBundle: {
+    enabled: true,
+    viteBuildDir: './dist/assets',
+    cssFileName: 'styles.css',
+    copyJs: false,  // We use our own client script
+  },
+
   elements: {
     enabled: true,
     variantsDir: './src/variants',

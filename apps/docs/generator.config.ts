@@ -131,6 +131,13 @@ export const config: GenerateConfig = {
       maxLevel: 3,
     },
   },
+  
+  // Copy Vite build CSS to HTML output
+  viteBundle: {
+    enabled: true,
+    viteBuildDir: './dist/assets',
+    cssFileName: 'styles.css',
+  },
 };
 
 // =============================================================================
