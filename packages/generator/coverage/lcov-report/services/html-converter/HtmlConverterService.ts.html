@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for services/render/RenderService.ts</title>
+    <title>Code coverage report for services/html-converter/HtmlConverterService.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">services/render</a> RenderService.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">services/html-converter</a> HtmlConverterService.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84% </span>
+                <span class="strong">90.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>189/225</span>
+                <span class='fraction'>263/291</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.81% </span>
+                <span class="strong">76.4% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>54/66</span>
+                <span class='fraction'>68/89</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.27% </span>
+                <span class="strong">95.23% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>17/22</span>
+                <span class='fraction'>20/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84% </span>
+                <span class="strong">90.37% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>189/225</span>
+                <span class='fraction'>263/291</span>
             </div>
         
             
@@ -498,7 +498,83 @@
 <a name='L433'></a><a href='#L433'>433</a>
 <a name='L434'></a><a href='#L434'>434</a>
 <a name='L435'></a><a href='#L435'>435</a>
-<a name='L436'></a><a href='#L436'>436</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L436'></a><a href='#L436'>436</a>
+<a name='L437'></a><a href='#L437'>437</a>
+<a name='L438'></a><a href='#L438'>438</a>
+<a name='L439'></a><a href='#L439'>439</a>
+<a name='L440'></a><a href='#L440'>440</a>
+<a name='L441'></a><a href='#L441'>441</a>
+<a name='L442'></a><a href='#L442'>442</a>
+<a name='L443'></a><a href='#L443'>443</a>
+<a name='L444'></a><a href='#L444'>444</a>
+<a name='L445'></a><a href='#L445'>445</a>
+<a name='L446'></a><a href='#L446'>446</a>
+<a name='L447'></a><a href='#L447'>447</a>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a>
+<a name='L454'></a><a href='#L454'>454</a>
+<a name='L455'></a><a href='#L455'>455</a>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a>
+<a name='L459'></a><a href='#L459'>459</a>
+<a name='L460'></a><a href='#L460'>460</a>
+<a name='L461'></a><a href='#L461'>461</a>
+<a name='L462'></a><a href='#L462'>462</a>
+<a name='L463'></a><a href='#L463'>463</a>
+<a name='L464'></a><a href='#L464'>464</a>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a>
+<a name='L467'></a><a href='#L467'>467</a>
+<a name='L468'></a><a href='#L468'>468</a>
+<a name='L469'></a><a href='#L469'>469</a>
+<a name='L470'></a><a href='#L470'>470</a>
+<a name='L471'></a><a href='#L471'>471</a>
+<a name='L472'></a><a href='#L472'>472</a>
+<a name='L473'></a><a href='#L473'>473</a>
+<a name='L474'></a><a href='#L474'>474</a>
+<a name='L475'></a><a href='#L475'>475</a>
+<a name='L476'></a><a href='#L476'>476</a>
+<a name='L477'></a><a href='#L477'>477</a>
+<a name='L478'></a><a href='#L478'>478</a>
+<a name='L479'></a><a href='#L479'>479</a>
+<a name='L480'></a><a href='#L480'>480</a>
+<a name='L481'></a><a href='#L481'>481</a>
+<a name='L482'></a><a href='#L482'>482</a>
+<a name='L483'></a><a href='#L483'>483</a>
+<a name='L484'></a><a href='#L484'>484</a>
+<a name='L485'></a><a href='#L485'>485</a>
+<a name='L486'></a><a href='#L486'>486</a>
+<a name='L487'></a><a href='#L487'>487</a>
+<a name='L488'></a><a href='#L488'>488</a>
+<a name='L489'></a><a href='#L489'>489</a>
+<a name='L490'></a><a href='#L490'>490</a>
+<a name='L491'></a><a href='#L491'>491</a>
+<a name='L492'></a><a href='#L492'>492</a>
+<a name='L493'></a><a href='#L493'>493</a>
+<a name='L494'></a><a href='#L494'>494</a>
+<a name='L495'></a><a href='#L495'>495</a>
+<a name='L496'></a><a href='#L496'>496</a>
+<a name='L497'></a><a href='#L497'>497</a>
+<a name='L498'></a><a href='#L498'>498</a>
+<a name='L499'></a><a href='#L499'>499</a>
+<a name='L500'></a><a href='#L500'>500</a>
+<a name='L501'></a><a href='#L501'>501</a>
+<a name='L502'></a><a href='#L502'>502</a>
+<a name='L503'></a><a href='#L503'>503</a>
+<a name='L504'></a><a href='#L504'>504</a>
+<a name='L505'></a><a href='#L505'>505</a>
+<a name='L506'></a><a href='#L506'>506</a>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a>
+<a name='L511'></a><a href='#L511'>511</a>
+<a name='L512'></a><a href='#L512'>512</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -562,364 +638,265 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -927,446 +904,697 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { IService, IServiceContext } from '../../core/interfaces';
-import { join, dirname, isAbsolute } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 &nbsp;
 /**
- * Input for route rendering
+ * Input for HtmlConverterService.execute()
  */
-export interface RenderRouteInput {
-  type: 'route';
-  entryPath: string;
-  routePath: string;
+export interface HtmlConverterInput {
+  /** Path to HTML/Liquid file to process */
+  htmlPath: string;
+  /** Selectors to ignore during extraction */
+  ignoreSelectors?: Array&lt;string | RegExp&gt;;
+  /** Enable verbose logging */
+  verbose?: boolean;
 }
 &nbsp;
 /**
- * Input for component rendering
+ * Output from HtmlConverterService.execute()
  */
-export interface RenderComponentInput {
-  type: 'component';
-  modulePath: string;
-  exportName?: string;
-  props?: Record&lt;string, unknown&gt;;
+export interface HtmlConverterOutput {
+  /** Generated @apply CSS */
+  applyCss: string;
+  /** Generated pure CSS3 */
+  pureCss: string;
+  /** Number of elements processed */
+  elementsCount: number;
+  /** Number of unique selectors */
+  selectorsCount: number;
 }
 &nbsp;
 /**
- * Combined input type
+ * File system interface for HtmlConverterService
  */
-export type RenderServiceInput = RenderRouteInput | RenderComponentInput;
-&nbsp;
-/**
- * Output from RenderService.execute()
- */
-export interface RenderServiceOutput {
-  html: string;
-  componentName?: string;
-}
-&nbsp;
-/**
- * File system interface for RenderService
- */
-export interface RenderFileSystem {
+export interface HtmlConverterFileSystem {
   readFile(path: string): Promise&lt;string&gt;;
-  exists(path: string): Promise&lt;boolean&gt;;
 }
 &nbsp;
 /**
- * React renderer interface (abstracted for testing)
+ * Element data extracted from HTML
  */
-export interface ReactRenderer {
-  renderToStaticMarkup(element: unknown): string;
-  createElement(component: unknown, props?: Record&lt;string, unknown&gt;): unknown;
+interface ElementData {
+  selector: string;
+  classes: string[];
+  sourceFile: string;
 }
 &nbsp;
 /**
- * Module loader interface (abstracted for testing)
+ * HtmlConverterService options
  */
-export interface ModuleLoader {
-  loadModule(modulePath: string): Promise&lt;Record&lt;string, unknown&gt;&gt;;
+export interface HtmlConverterServiceOptions {
+  /** File system implementation (for testing) */
+  fileSystem?: HtmlConverterFileSystem;
 }
 &nbsp;
 /**
- * Custom router parser function type.
- * Takes the entry file content and returns a map of route paths to component names.
- */
-export type RouterParser = (source: string) =&gt; Map&lt;string, string&gt;;
-&nbsp;
-/**
- * RenderService options
- */
-export interface RenderServiceOptions {
-  fileSystem?: RenderFileSystem;
-  reactRenderer?: ReactRenderer;
-  moduleLoader?: ModuleLoader;
-  /**
-   * Custom router parser for non-standard router configurations.
-   * If not provided, uses default React Router v6+ parser.
-   */
-  routerParser?: RouterParser;
-}
-&nbsp;
-/**
- * Import info structure
- */
-interface ImportInfo {
-  specifier: string;
-  isNamed: boolean;
-}
-&nbsp;
-/**
- * RenderService - Renders React components to static HTML.
- * 
- * Replaces the @ui8kit/render package functionality.
+ * HtmlConverterService - Converts HTML to CSS using class mappings.
  * 
  * Responsibilities:
- * - Parse router configuration from entry files
- * - Render React routes to HTML
- * - Render individual components to HTML
- * - Resolve import paths and load modules
+ * - Load and cache class mappings (ui8kit, shadcn)
+ * - Extract elements with classes from HTML
+ * - Generate @apply CSS for Tailwind
+ * - Generate pure CSS3 with resolved properties
+ * - Merge duplicate selectors for optimization
  */
-export class RenderService implements IService&lt;RenderServiceInput, RenderServiceOutput&gt; {
-  readonly name = 'render';
+export class HtmlConverterService implements IService&lt;HtmlConverterInput, HtmlConverterOutput&gt; {
+  readonly name = 'html-converter';
   readonly version = '1.0.0';
   readonly dependencies: readonly string[] = [];
   
   private context!: IServiceContext;
-  private fs: RenderFileSystem;
-  private react: ReactRenderer;
-  private loader: ModuleLoader;
-  private customRouterParser?: RouterParser;
+  private fs: HtmlConverterFileSystem;
   
-  // Caches
-  private importsCache: Map&lt;string, Map&lt;string, ImportInfo&gt;&gt; = new Map();
-  private routesCache: Map&lt;string, Map&lt;string, string&gt;&gt; = new Map();
+  // Cached maps (loaded once in initialize)
+  private ui8kitMap: Map&lt;string, string&gt; = new Map();
+  private shadcnMap: Map&lt;string, string&gt; = new Map();
   
-  constructor(options: RenderServiceOptions = {}) {
-    this.fs = options.fileSystem ?? this.createDefaultFileSystem();
-    this.react = options.reactRenderer ?? this.createDefaultReactRenderer();
-    this.loader = options.moduleLoader ?? this.createDefaultModuleLoader();
-    this.customRouterParser = options.routerParser;
+  constructor(options: HtmlConverterServiceOptions = {}) {
+    this.fs = options.<span class="branch-0 cbranch-no" title="branch not covered" >fileSystem ?? this.createDefaultFileSystem();</span>
   }
   
   async initialize(context: IServiceContext): Promise&lt;void&gt; {
     this.context = context;
+    
+    // Load maps from config
+    const mappings = context.config?.mappings;
+    
+    if (mappings?.ui8kitMap) {
+      await this.loadUi8kitMap(mappings.ui8kitMap);
+<span class="branch-0 cbranch-no" title="branch not covered" >    } else {</span>
+      // Try default location
+<span class="cstat-no" title="statement not covered" >      await this.loadUi8kitMap();</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+    
+    if (mappings?.shadcnMap) {
+      await this.loadShadcnMap(mappings.shadcnMap);
+    } else {
+      // Try built-in map
+      await this.loadShadcnMap();
+    }
+    
+    this.context.logger.debug(`Loaded ${this.ui8kitMap.size} ui8kit classes, ${this.shadcnMap.size} shadcn classes`);
   }
   
-  async execute(input: RenderServiceInput): Promise&lt;RenderServiceOutput&gt; {
-    if (input.type === 'route') {
-      return this.renderRoute(input);
-    } else {
-      return this.renderComponent(input);
-    }
+  async execute(input: HtmlConverterInput): Promise&lt;HtmlConverterOutput&gt; {
+    const { htmlPath, ignoreSelectors = [], verbose = false } = input;
+    
+    if (verbose) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      this.context.logger.info(`Converting HTML to CSS: ${htmlPath}`);</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+    
+    // Read HTML file
+    const html = await this.fs.readFile(htmlPath);
+    
+    // Extract elements
+    const elements = this.extractElementsFromHtml(html, htmlPath, ignoreSelectors);
+    
+    if (verbose) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      this.context.logger.info(`Found ${elements.length} elements with classes`);</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+    
+    // Group by selectors
+    const groupedElements = this.groupBySelectors(elements);
+    
+    // Merge duplicate class sets
+    const mergedSelectors = this.mergeDuplicateClassSets(groupedElements);
+    
+    // Generate CSS
+    const applyCss = this.generateApplyCss(mergedSelectors);
+    const pureCss = this.generatePureCss(mergedSelectors);
+    
+    // Emit event
+    this.context.eventBus.emit('html-converter:complete', {
+      htmlPath,
+      elementsCount: elements.length,
+      selectorsCount: mergedSelectors.size,
+    });
+    
+    return {
+      applyCss,
+      pureCss,
+      elementsCount: elements.length,
+      selectorsCount: mergedSelectors.size,
+    };
   }
   
   async dispose(): Promise&lt;void&gt; {
-    this.importsCache.clear();
-    this.routesCache.clear();
+    this.ui8kitMap.clear();
+    this.shadcnMap.clear();
   }
   
   /**
-   * Get cache size (for testing)
+   * Get total size of cached maps (for testing)
    */
-  getCacheSize(): number {
-    return this.importsCache.size + this.routesCache.size;
+  getMapsSize(): number {
+    return this.ui8kitMap.size + this.shadcnMap.size;
   }
   
   /**
-   * Render a route to HTML
+   * Check if class is valid for Tailwind @apply
    */
-  private async renderRoute(input: RenderRouteInput): Promise&lt;RenderServiceOutput&gt; {
-    const { entryPath, routePath } = input;
+  isValidTailwindClass(className: string): boolean {
+    // Skip Lucide icon classes
+    if (className === 'lucide' || className.startsWith('lucide-')) {
+      return false;
+    }
+    
+    // Check maps
+    return this.ui8kitMap.has(className) || this.shadcnMap.has(className);
+  }
+  
+  /**
+   * Extract class attribute values (not data-class)
+   */
+  extractClassAttribute(tagContent: string): string[] {
+    const classRegex = /\s+class\s*=\s*["']([^"']*)["']/;
+    const classMatch = tagContent.match(classRegex);
+    if (!classMatch) return [];
+    
+    return classMatch[1].split(/\s+/).filter(cls =&gt; cls.trim());
+  }
+  
+  /**
+   * Extract data-class attribute value
+   */
+  extractDataClassAttribute(tagContent: string): string {
+    const dataClassMatch = tagContent.match(/data-class\s*=\s*["']([^"']*)["']/);
+    return dataClassMatch ? dataClassMatch[1].trim() : '';
+  }
+  
+  // ===========================================================================
+  // Private Methods
+  // ===========================================================================
+  
+  /**
+   * Load ui8kit map from path or default location
+   */
+  private async loadUi8kitMap(configuredPath?: string): Promise&lt;void&gt; {
+    const projectRoot = process.cwd();
+    
+    const possiblePaths: string[] = [];
+    
+    if (configuredPath) {
+      const absolutePath = this.isAbsolutePath(configuredPath<span class="branch-0 cbranch-no" title="branch not covered" >)</span>
+<span class="cstat-no" title="statement not covered" >        ? configuredPath</span>
+        : join(projectRoot, configuredPath);
+      possiblePaths.push(absolutePath);
+    }
+    
+    // Default location
+    possiblePaths.push(join(projectRoot, 'src', 'lib', 'ui8kit.map.json'));
+    
+    for (const mapPath of possiblePaths) {
+      try {
+        const jsonContent = await this.fs.readFile(mapPath);
+        const mapObject = JSON.parse(jsonContent);
+        
+        this.ui8kitMap = new Map(Object.entries(mapObject));
+        return;
+<span class="branch-0 cbranch-no" title="branch not covered" >      } catch {</span>
+        // Try next path
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="branch-0 cbranch-no" title="branch not covered" >    }</span>
+    
+<span class="cstat-no" title="statement not covered" >    this.context.logger.warn(</span>
+<span class="cstat-no" title="statement not covered" >      `Could not find ui8kit.map.json. Tried: ${possiblePaths.join(', ')}. ` +</span>
+      `Set config.mappings.ui8kitMap in your generator.config.ts`
+<span class="cstat-no" title="statement not covered" >    );</span>
+  }
+  
+  /**
+   * Load shadcn map from path or built-in
+   */
+  private async loadShadcnMap(configuredPath?: string): Promise&lt;void&gt; {
+    let mapPath: string;
+    
+    if (configuredPath) {
+      const projectRoot = process.cwd();
+      mapPath = this.isAbsolutePath(configuredPath<span class="branch-0 cbranch-no" title="branch not covered" >)</span>
+<span class="cstat-no" title="statement not covered" >        ? configuredPath</span>
+        : join(projectRoot, configuredPath);
+    } else {
+      // Use built-in map from generator package
+      try {
+        const pkgDir = dirname(fileURLToPath(import.meta.url));
+        mapPath = join(pkgDir, '..', '..', 'lib', 'shadcn.map.json');
+<span class="branch-0 cbranch-no" title="branch not covered" >      } catch {</span>
+        // Fallback for test environment
+<span class="cstat-no" title="statement not covered" >        mapPath = join(process.cwd(), 'src', 'lib', 'shadcn.map.json');</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+    }
     
     try {
-      // Parse router configuration
-      const { imports, routes } = await this.parseRouterConfig(entryPath);
+      const jsonContent = await this.fs.readFile(mapPath);
+      const mapObject = JSON.parse(jsonContent);
       
-      // Get component name for this route
-      const normalizedPath = this.normalizeRoutePath(routePath);
-      const componentName = routes.get(normalizedPath);
+      this.shadcnMap = new Map(Object.entries(mapObject));
+    } catch {
+      this.context.logger.debug(`shadcn.map.json not found at ${mapPath}, using empty map`);
+      this.shadcnMap = new Map();
+    }
+  }
+  
+  /**
+   * Check if path is absolute
+   */
+  private isAbsolutePath(path: string): boolean {
+    return path.startsWith('/') || /^[a-zA-Z]:/.test(path);
+  }
+  
+  /**
+   * Extract elements with classes from HTML
+   */
+  private extractElementsFromHtml(
+    html: string,
+    sourceFile: string,
+    ignoreSelectors: Array&lt;string | RegExp&gt;
+  ): ElementData[] {
+    const elements: ElementData[] = [];
+    
+    const isIgnored = (selector: string): boolean =&gt; {
+      if (!selector) <span class="branch-0 cbranch-no" title="branch not covered" >return false;</span>
+      for (const pattern of ignoreSelectors) {
+        if (!pattern) <span class="branch-0 cbranch-no" title="branch not covered" >continue;</span>
+        if (typeof pattern === 'string') {
+          if (selector === pattern) return true;
+        } else {
+          try {
+            if (pattern.test(selector)) return true;
+<span class="branch-0 cbranch-no" title="branch not covered" >          } catch {</span>
+            // Ignore bad regex
+<span class="cstat-no" title="statement not covered" >          }</span>
+        }
+      }
+      return false;
+    };
+    
+    // Find all HTML tags
+    const tagRegex = /&lt;[^&gt;]+&gt;/g;
+    let match;
+    
+    while ((match = tagRegex.exec(html)) !== null) {
+      const tagContent = match[0];
       
-      if (!componentName) {
-        this.context.logger.warn(`Route ${routePath} not found in router configuration`);
-        return { html: '' };
+      const classes = this.extractClassAttribute(tagContent);
+      const dataClass = this.extractDataClassAttribute(tagContent);
+      
+      if (classes.length &gt; 0 || dataClass) {
+        const selector = dataClass || this.generateSelector(tagContent);
+        
+        if (dataClass &amp;&amp; isIgnored(selector)) {
+          continue;
+        }
+        
+        elements.push({
+          selector,
+          classes: classes.filter(cls =&gt; !cls.includes('data-class')),
+          sourceFile,
+        });
+      }
+    }
+    
+    return elements;
+  }
+  
+  /**
+   * Generate selector for elements without data-class
+   */
+  private generateSelector(tagContent: string): string {
+    const tagMatch = tagContent.match(/^&lt;([a-zA-Z][a-zA-Z0-9]*)/);
+    const tagName = tagMatch ? tagMatch[1<span class="branch-0 cbranch-no" title="branch not covered" >] : 'div';</span>
+    
+    // Generate random suffix
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let suffix = '';
+    for (let i = 0; i &lt; 7; i++) {
+      suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return `${tagName}-${suffix}`;
+  }
+  
+  /**
+   * Group elements by selectors
+   */
+  private groupBySelectors(elements: ElementData[]): Map&lt;string, string[]&gt; {
+    const selectorMap = new Map&lt;string, string[]&gt;();
+    
+    for (const element of elements) {
+      if (element.classes.length === 0) <span class="branch-0 cbranch-no" title="branch not covered" >continue;</span>
+      
+      const existingClasses = selectorMap.get(element.selector) || [];
+      const allClasses = [...existingClasses, ...element.classes];
+      const uniqueClasses = [...new Set(allClasses)];
+      
+      selectorMap.set(element.selector, uniqueClasses);
+    }
+    
+    return selectorMap;
+  }
+  
+  /**
+   * Merge selectors with identical class sets
+   */
+  private mergeDuplicateClassSets(selectorMap: Map&lt;string, string[]&gt;): Map&lt;string, string[]&gt; {
+    const classSetToSelectors = new Map&lt;string, string[]&gt;();
+    
+    for (const [selector, classes] of selectorMap.entries()) {
+      const classSetKey = [...classes].sort().join(' ');
+      
+      const existingSelectors = classSetToSelectors.get(classSetKey) || [];
+      existingSelectors.push(selector);
+      classSetToSelectors.set(classSetKey, existingSelectors);
+    }
+    
+    const mergedMap = new Map&lt;string, string[]&gt;();
+    
+    for (const [classSetKey, selectors] of classSetToSelectors.entries()) {
+      const classes = classSetKey.split(' ');
+      
+      if (selectors.length &gt; 1) {
+        const combinedSelector = selectors.sort().join(', ');
+        mergedMap.set(combinedSelector, classes);
+      } else {
+        mergedMap.set(selectors[0], classes);
+      }
+    }
+    
+    return mergedMap;
+  }
+  
+  /**
+   * Generate @apply CSS
+   */
+  private generateApplyCss(selectorMap: Map&lt;string, string[]&gt;): string {
+    const cssRules: string[] = [];
+    const sortedSelectors = Array.from(selectorMap.keys()).sort();
+    
+    for (const selector of sortedSelectors) {
+      const classes = selectorMap.get(selector<span class="branch-0 cbranch-no" title="branch not covered" >) || [];</span>
+      const validClasses = classes.filter(cls =&gt; this.isValidTailwindClass(cls));
+      
+      if (validClasses.length &gt; 0) {
+        if (selector.includes(', ')) {
+          const selectors = selector.split(', ').map(s =&gt; `.${s.trim()}`).join(', ');
+          cssRules.push(`${selectors} {\n  @apply ${validClasses.join(' ')};\n}`);
+        } else {
+          cssRules.push(`.${selector} {\n  @apply ${validClasses.join(' ')};\n}`);
+        }
+      }
+    }
+    
+    const deduplicatedRules = this.deduplicateCssRules(cssRules);
+    
+    const header = `/*
+ * Generated CSS - @apply directives
+ * Do not edit manually - this file is auto-generated
+ * Generated on: ${new Date().toISOString()}
+ */\n\n`;
+    
+    return header + deduplicatedRules.join('\n\n') + '\n';
+  }
+  
+  /**
+   * Generate pure CSS3
+   */
+  private generatePureCss(selectorMap: Map&lt;string, string[]&gt;): string {
+    const cssRules: string[] = [];
+    const sortedSelectors = Array.from(selectorMap.keys()).sort();
+    
+    for (const selector of sortedSelectors) {
+      const classes = selectorMap.get(selector<span class="branch-0 cbranch-no" title="branch not covered" >) || [];</span>
+      const cssProperties: string[] = [];
+      
+      for (const className of classes) {
+        let cssProperty = this.ui8kitMap.get(className<span class="branch-0 cbranch-no" title="branch not covered" >) ?? this.shadcnMap.get(className);</span>
+        
+        if (cssProperty) {
+          cssProperties.push(`  ${cssProperty}`);
+<span class="branch-0 cbranch-no" title="branch not covered" >        } else if (className !== 'lucide' &amp;&amp; !className.startsWith('lucide-')) {</span>
+<span class="cstat-no" title="statement not covered" >          cssProperties.push(`  /* Unknown class: ${className} */`);</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
       }
       
-      // Load and render component
-      const Component = await this.loadComponent(entryPath, componentName, imports);
-      if (!Component) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >        this.context.logger.warn(`Component ${componentName} could not be loaded`);</span>
-<span class="cstat-no" title="statement not covered" >        return { html: '' };</span>
+      if (cssProperties.length &gt; 0) {
+        if (selector.includes(', ')) {
+          const selectors = selector.split(', ').map(s =&gt; `.${s.trim()}`).join(', ');
+          cssRules.push(`${selectors} {\n${cssProperties.join('\n')}\n}`);
+        } else {
+          cssRules.push(`.${selector} {\n${cssProperties.join('\n')}\n}`);
+        }
+      }
+    }
+    
+    const deduplicatedRules = this.deduplicateCssRules(cssRules);
+    
+    const header = `/*
+ * Generated CSS - Pure CSS3 properties
+ * Do not edit manually - this file is auto-generated
+ * Generated on: ${new Date().toISOString()}
+ */\n\n`;
+    
+    return header + deduplicatedRules.join('\n\n') + '\n';
+  }
+  
+  /**
+   * Deduplicate CSS rules with identical content
+   */
+  private deduplicateCssRules(cssRules: string[]): string[] {
+    const contentToSelectors = new Map&lt;string, string[]&gt;();
+    
+    for (const rule of cssRules) {
+      const match = rule.match(/^(.+?)\s*\{\s*(.+?)\s*\}\s*$/s);
+      if (!match) <span class="branch-0 cbranch-no" title="branch not covered" >continue;</span>
+      
+      const [, selector, content] = match;
+      const trimmedContent = content.trim();
+      
+      if (trimmedContent.includes('/* Unknown class:')) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        continue;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
       
-      // Render component
-      const element = this.react.createElement(Component);
-      const html = this.react.renderToStaticMarkup(element);
-      
-      this.context.eventBus.emit('render:route', {
-        routePath,
-        componentName,
-        htmlSize: html.length,
-      });
-      
-      return { html, componentName };
-    } catch (error) {
-      this.context.logger.error(`Failed to render route ${routePath}:`, error);
-      return { html: '' };
-    }
-  }
-  
-  /**
-   * Render a component to HTML
-   */
-  private async renderComponent(input: RenderComponentInput): Promise&lt;RenderServiceOutput&gt; {
-    const { modulePath, exportName, props = {} } = input;
-    
-    const absModulePath = isAbsolute(modulePath<span class="branch-0 cbranch-no" title="branch not covered" >)</span>
-<span class="cstat-no" title="statement not covered" >      ? modulePath</span>
-      : join(process.cwd(), modulePath);
-    
-    const mod = await this.loader.loadModule(absModulePath);
-    
-    const Component = exportName ? mod[exportName] : mod.default;
-    if (!Component) {
-      const available = Object.keys(mod).sort().join(', '<span class="branch-0 cbranch-no" title="branch not covered" >) || '(none)';</span>
-      throw new Error(
-        `Component export not found. modulePath=${modulePath} exportName=${exportName ?? 'default'} availableExports=${available}`
-      );
+      const existingSelectors = contentToSelectors.get(trimmedContent) || [];
+      existingSelectors.push(selector);
+      contentToSelectors.set(trimmedContent, existingSelectors);
     }
     
-    const element = this.react.createElement(Component as any, props);
-    const html = this.react.renderToStaticMarkup(element);
+    const deduplicatedRules: string[] = [];
     
-    this.context.eventBus.emit('render:component', {
-      modulePath,
-      exportName,
-      htmlSize: html.length,
-    });
-    
-    return { html, componentName: exportName };
-  }
-  
-  /**
-   * Parse router configuration from entry file
-   */
-  private async parseRouterConfig(entryPath: string): Promise&lt;{
-    imports: Map&lt;string, ImportInfo&gt;;
-    routes: Map&lt;string, string&gt;;
-  }&gt; {
-    const cacheKey = entryPath;
-    
-    // Check cache
-    if (this.importsCache.has(cacheKey<span class="branch-0 cbranch-no" title="branch not covered" >) &amp;&amp; this.routesCache.has(cacheKey)) <span class="branch-0 cbranch-no" title="branch not covered" >{</span></span>
-<span class="cstat-no" title="statement not covered" >      return {</span>
-<span class="cstat-no" title="statement not covered" >        imports: this.importsCache.get(cacheKey)!,</span>
-<span class="cstat-no" title="statement not covered" >        routes: this.routesCache.get(cacheKey)!,</span>
-<span class="cstat-no" title="statement not covered" >      };</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-    
-    const absEntryPath = isAbsolute(entryPath<span class="branch-0 cbranch-no" title="branch not covered" >) </span>
-<span class="cstat-no" title="statement not covered" >      ? entryPath </span>
-      : join(process.cwd(), entryPath);
-    const fileContent = await this.fs.readFile(absEntryPath);
-    
-    const imports = this.parseImports(fileContent);
-    const routes = this.customRouterParser 
-      ? this.customRouterParser(fileContent) 
-      : this.parseRoutes(fileContent);
-    
-    // Cache results
-    this.importsCache.set(cacheKey, imports);
-    this.routesCache.set(cacheKey, routes);
-    
-    return { imports, routes };
-  }
-  
-  /**
-   * Parse imports from source code
-   */
-  parseImports(source: string): Map&lt;string, ImportInfo&gt; {
-    const map = new Map&lt;string, ImportInfo&gt;();
-    
-    // Default imports: import Component from 'path'
-    const defaultImportRegex = /import\s+([A-Za-z0-9_]+)\s+from\s+['"]([^'"]+)['"];?/g;
-    let match: RegExpExecArray | null;
-    while ((match = defaultImportRegex.exec(source)) !== null) {
-      map.set(match[1], { specifier: match[2], isNamed: false });
-    }
-    
-    // Named imports: import { Component } from 'path'
-    const namedImportRegex = /import\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"];?/g;
-    while ((match = namedImportRegex.exec(source)) !== null) {
-      const importsList = match[1];
-      const spec = match[2];
-      const componentNames = importsList.split(',').map(name =&gt; name.trim()).filter(name =&gt; name.length &gt; 0);
-      for (const name of componentNames) {
-        // Handle "as" alias: { Foo as Bar }
-        const aliasMatch = name.match(/^(\w+)\s+as\s+(\w+)$/);
-        const finalName = <span class="branch-0 cbranch-no" title="branch not covered" >aliasMatch ? aliasMatch[2] : n</span>ame;
-        map.set(finalName, { specifier: spec, isNamed: true });
+    for (const [content, selectors] of contentToSelectors.entries()) {
+      if (selectors.length &gt; 1) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        const combinedSelector = selectors.sort().join(', ');</span>
+<span class="cstat-no" title="statement not covered" >        deduplicatedRules.push(`${combinedSelector} {\n${content}\n}`);</span>
+      } else {
+        deduplicatedRules.push(`${selectors[0]} {\n${content}\n}`);
       }
     }
     
-    return map;
-  }
-  
-  /**
-   * Parse routes from router configuration.
-   * 
-   * Supports React Router v6+ format with createBrowserRouter:
-   * - { index: true, element: &lt;Component /&gt; }
-   * - { path: 'route', element: &lt;Component /&gt; }
-   * 
-   * For other router formats, provide a custom router parser via RenderServiceOptions.
-   */
-  parseRoutes(source: string): Map&lt;string, string&gt; {
-    const map = new Map&lt;string, string&gt;();
-    
-    // Extract children array from createBrowserRouter (React Router v6+ format)
-    // Pattern matches: children: [ ... ]
-    const childrenBlockRegex = /children:\s*\[([\s\S]*?)\]/m;
-    const blockMatch = childrenBlockRegex.exec(source);
-    if (!blockMatch) return map;
-    
-    const block = blockMatch[1];
-    
-    // Match route entries in React Router format:
-    // { index: true, element: &lt;Home /&gt; }
-    // { path: 'about', element: &lt;About /&gt; }
-    // Pattern is flexible with whitespace and optional trailing commas
-    const routeEntryRegex = /\{\s*(index:\s*true|path:\s*['"]([^'"]+)['"])\s*,\s*element:\s*&lt;\s*([A-Za-z0-9_]+)\s*\/&gt;/g;
-    let match: RegExpExecArray | null;
-    while ((match = routeEntryRegex.exec(block)) !== null) {
-      const isIndex = match[1] &amp;&amp; match[1].includes('index');
-      const pathVal = isIndex ? '/' : `/${match[2]}`;
-      const componentName = match[3];
-      map.set(pathVal, componentName);
-    }
-    
-    return map;
-  }
-  
-  /**
-   * Load component by name
-   */
-  private async loadComponent(
-    entryPath: string,
-    componentName: string,
-    imports: Map&lt;string, ImportInfo&gt;
-  ): Promise&lt;unknown&gt; {
-    const entryDir = dirname(isAbsolute(entryPath<span class="branch-0 cbranch-no" title="branch not covered" >) ? entryPath : j</span>oin(process.cwd(), entryPath));
-    const importInfo = imports.get(componentName);
-    
-    if (!importInfo) {
-      throw new Error(`Import for component ${componentName} not found`);
-    }
-    
-    const absModulePath = await this.resolveImportPath(entryDir, importInfo.specifier);
-    const mod = await this.loader.loadModule(absModulePath);
-    
-    return importInfo.<span class="branch-0 cbranch-no" title="branch not covered" >isNamed ? mod[componentName] : m</span>od.default;
-  }
-  
-  /**
-   * Resolve import path to file
-   */
-  async resolveImportPath(entryDir: string, specifier: string): Promise&lt;string&gt; {
-    let base: string;
-    
-    if (specifier.startsWith('@/')) {
-      // Alias - resolve relative to src directory
-      base = join(entryDir, specifier.slice(2));
-    } else if (specifier.startsWith('./'<span class="branch-0 cbranch-no" title="branch not covered" >) || specifier.startsWith('../')) {</span>
-      base = join(entryDir, specifier);
-<span class="branch-0 cbranch-no" title="branch not covered" >    } else {</span>
-      // External module - return as-is for loader
-<span class="cstat-no" title="statement not covered" >      return specifier;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-    
-    const candidates = [
-      `${base}.tsx`, `${base}.ts`, `${base}.jsx`, `${base}.js`,
-      join(base, 'index.tsx'), join(base, 'index.ts'),
-      join(base, 'index.jsx'), join(base, 'index.js'),
-    ];
-    
-    for (const candidate of candidates) {
-      if (await this.fs.exists(candidate)) {
-        return candidate;
-      }
-    }
-    
-    throw new Error(`Unable to resolve file for import ${specifier}`);
-  }
-  
-  /**
-   * Normalize route path
-   */
-  private normalizeRoutePath(routePath: string): string {
-    return routePath === '/' ? '/' : (routePath.startsWith('/') ? <span class="branch-0 cbranch-no" title="branch not covered" >routePath : `/${routePath}`);</span>
+    return deduplicatedRules.sort();
   }
   
   /**
    * Create default file system
    */
-  private createDefaultFileSystem(): RenderFileSystem {
-    return {
-      readFile: <span class="fstat-no" title="function not covered" >async (path: string) =&gt; {</span>
+  private <span class="fstat-no" title="function not covered" >createDefaultFileSystem(): HtmlConverterFileSystem {</span>
+<span class="cstat-no" title="statement not covered" >    return {</span>
+<span class="cstat-no" title="statement not covered" >      readFile: async (path: string) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        const { readFile } = await import('node:fs/promises');</span>
 <span class="cstat-no" title="statement not covered" >        return readFile(path, 'utf-8');</span>
 <span class="cstat-no" title="statement not covered" >      },</span>
-      exists: <span class="fstat-no" title="function not covered" >async (path: string) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        const { access } = await import('node:fs/promises');</span>
-<span class="cstat-no" title="statement not covered" >        try {</span>
-<span class="cstat-no" title="statement not covered" >          await access(path);</span>
-<span class="cstat-no" title="statement not covered" >          return true;</span>
-<span class="cstat-no" title="statement not covered" >        } catch {</span>
-<span class="cstat-no" title="statement not covered" >          return false;</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >      },</span>
-    };
-  }
-  
-  /**
-   * Create default React renderer
-   */
-  private createDefaultReactRenderer(): ReactRenderer {
-    // Lazy load React to avoid issues in non-React environments
-    let React: any;
-    let ReactDOMServer: any;
-    
-    return {
-      renderToStaticMarkup: <span class="fstat-no" title="function not covered" >(element: unknown) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        if (!ReactDOMServer) {</span>
-<span class="cstat-no" title="statement not covered" >          ReactDOMServer = require('react-dom/server');</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        return ReactDOMServer.renderToStaticMarkup(element);</span>
-<span class="cstat-no" title="statement not covered" >      },</span>
-      createElement: <span class="fstat-no" title="function not covered" >(component: unknown, props?: Record&lt;string, unknown&gt;) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        if (!React) {</span>
-<span class="cstat-no" title="statement not covered" >          React = require('react');</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        return React.createElement(component, props ?? {});</span>
-<span class="cstat-no" title="statement not covered" >      },</span>
-    };
-  }
-  
-  /**
-   * Create default module loader
-   */
-  private createDefaultModuleLoader(): ModuleLoader {
-    return {
-      loadModule: <span class="fstat-no" title="function not covered" >async (modulePath: string) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        const moduleUrl = pathToFileURL(modulePath).href;</span>
-<span class="cstat-no" title="statement not covered" >        return import(moduleUrl);</span>
-<span class="cstat-no" title="statement not covered" >      },</span>
-    };
-  }
+<span class="cstat-no" title="statement not covered" >    };</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -1375,7 +1603,7 @@ export class RenderService implements IService&lt;RenderServiceInput, RenderServ
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T07:38:53.715Z
+                at 2026-01-22T07:38:53.787Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -1,4 +1,5 @@
 import type { IService, IServiceContext, RouteConfig } from '../../core/interfaces';
+import type { HtmlConverterService, HtmlConverterOutput } from '../html-converter';
 import { join } from 'node:path';
 
 /**
@@ -57,7 +58,7 @@ export interface CssFileSystem {
 }
 
 /**
- * CSS converter interface
+ * CSS converter interface (legacy, for backward compatibility)
  */
 export interface CssConverter {
   convertHtmlToCss(
@@ -73,11 +74,19 @@ export interface CssConverter {
 }
 
 /**
+ * Converter mode: 'service' uses HtmlConverterService, 'legacy' uses old converter
+ */
+export type ConverterMode = 'service' | 'legacy';
+
+/**
  * CssService options
  */
 export interface CssServiceOptions {
   fileSystem?: CssFileSystem;
+  /** Legacy converter (deprecated, use converterMode: 'service' instead) */
   converter?: CssConverter;
+  /** Converter mode: 'service' (recommended) or 'legacy' (default for backward compatibility) */
+  converterMode?: ConverterMode;
 }
 
 /**
@@ -96,15 +105,32 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
   
   private context!: IServiceContext;
   private fs: CssFileSystem;
-  private converter: CssConverter;
+  private converter: CssConverter | null;
+  private converterMode: ConverterMode;
+  private htmlConverterService: HtmlConverterService | null = null;
   
   constructor(options: CssServiceOptions = {}) {
     this.fs = options.fileSystem ?? this.createDefaultFileSystem();
-    this.converter = options.converter ?? this.createDefaultConverter();
+    this.converterMode = options.converterMode ?? 'legacy';
+    this.converter = options.converter ?? (this.converterMode === 'legacy' ? this.createDefaultConverter() : null);
   }
   
   async initialize(context: IServiceContext): Promise<void> {
     this.context = context;
+    
+    // Try to get HtmlConverterService from registry if in service mode
+    if (this.converterMode === 'service') {
+      try {
+        // Registry is available on context via eventBus or direct injection
+        const registry = (context as any).registry;
+        if (registry?.has('html-converter')) {
+          this.htmlConverterService = registry.resolve('html-converter');
+        }
+      } catch {
+        this.context.logger.debug('HtmlConverterService not found in registry, using legacy converter');
+        this.converter = this.createDefaultConverter();
+      }
+    }
   }
   
   async execute(input: CssServiceInput): Promise<CssServiceOutput> {
@@ -126,20 +152,11 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
       const viewPath = join(viewsDir, 'pages', viewFileName);
       
       try {
-        const { applyCss, pureCss: routePureCss } = await this.converter.convertHtmlToCss(
-          viewPath,
-          join(outputDir, cssFileNames.applyCss),
-          join(outputDir, cssFileNames.pureCss),
-          {
-            verbose: false,
-            ui8kitMapPath: mappings?.ui8kitMap,
-            shadcnMapPath: mappings?.shadcnMap,
-          }
-        );
+        const result = await this.convertHtml(viewPath, cssFileNames, mappings);
         
-        allApplyCss.push(applyCss);
+        allApplyCss.push(result.applyCss);
         if (pureCss) {
-          allPureCss.push(routePureCss);
+          allPureCss.push(result.pureCss);
         }
         
         this.context.logger.debug(`Processed CSS for route: ${routePath}`);
@@ -165,20 +182,11 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
           const filePath = join(dirPath, entry.name);
           
           try {
-            const { applyCss, pureCss: filePureCss } = await this.converter.convertHtmlToCss(
-              filePath,
-              join(outputDir, cssFileNames.applyCss),
-              join(outputDir, cssFileNames.pureCss),
-              {
-                verbose: false,
-                ui8kitMapPath: mappings?.ui8kitMap,
-                shadcnMapPath: mappings?.shadcnMap,
-              }
-            );
+            const result = await this.convertHtml(filePath, cssFileNames, mappings);
             
-            allApplyCss.push(applyCss);
+            allApplyCss.push(result.applyCss);
             if (pureCss) {
-              allPureCss.push(filePureCss);
+              allPureCss.push(result.pureCss);
             }
             
             this.context.logger.debug(`Processed CSS for template: ${filePath}`);
@@ -234,6 +242,43 @@ export class CssService implements IService<CssServiceInput, CssServiceOutput> {
   
   async dispose(): Promise<void> {
     // No cleanup needed
+  }
+  
+  /**
+   * Convert HTML file using appropriate converter
+   */
+  private async convertHtml(
+    htmlPath: string,
+    cssFileNames: Required<CssOutputFileNames>,
+    mappings?: { ui8kitMap?: string; shadcnMap?: string }
+  ): Promise<{ applyCss: string; pureCss: string }> {
+    // Use HtmlConverterService if available
+    if (this.htmlConverterService) {
+      const result = await this.htmlConverterService.execute({
+        htmlPath,
+        verbose: false,
+      });
+      return {
+        applyCss: result.applyCss,
+        pureCss: result.pureCss,
+      };
+    }
+    
+    // Fall back to legacy converter
+    if (!this.converter) {
+      this.converter = this.createDefaultConverter();
+    }
+    
+    return this.converter.convertHtmlToCss(
+      htmlPath,
+      cssFileNames.applyCss,
+      cssFileNames.pureCss,
+      {
+        verbose: false,
+        ui8kitMapPath: mappings?.ui8kitMap,
+        shadcnMapPath: mappings?.shadcnMap,
+      }
+    );
   }
   
   /**

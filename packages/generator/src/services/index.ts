@@ -53,3 +53,11 @@ export type {
   AssetServiceOptions,
   AssetFileSystem,
 } from './asset';
+
+export { HtmlConverterService } from './html-converter';
+export type {
+  HtmlConverterInput,
+  HtmlConverterOutput,
+  HtmlConverterServiceOptions,
+  HtmlConverterFileSystem,
+} from './html-converter';

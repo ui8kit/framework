@@ -64,6 +64,7 @@ export {
   CssService,
   HtmlService,
   AssetService,
+  HtmlConverterService,
 } from './services';
 
 export type {
@@ -81,6 +82,8 @@ export type {
   HtmlServiceOutput,
   AssetServiceInput,
   AssetServiceOutput,
+  HtmlConverterInput,
+  HtmlConverterOutput,
 } from './services';
 
 // Stages
