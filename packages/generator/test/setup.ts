@@ -43,13 +43,15 @@ afterEach(() => {
  * Create a mock logger for testing
  */
 export function createMockLogger() {
-  return {
+  const mockLogger = {
     debug: vi.fn(),
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
     log: vi.fn(),
+    child: vi.fn((prefix: string) => mockLogger),
   };
+  return mockLogger;
 }
 
 /**

@@ -6,19 +6,21 @@ import { createMockLogger } from '../../../test/setup';
 
 // Mock HtmlConverterService
 function createMockHtmlConverter() {
+  const executeMock = vi.fn().mockResolvedValue({
+    applyCss: '.test { @apply bg-red-500; }',
+    pureCss: '.test { background-color: red; }',
+    elementsCount: 1,
+    selectorsCount: 1,
+  });
+  
   return {
     name: 'html-converter',
     version: '1.0.0',
     dependencies: [],
     initialize: vi.fn().mockResolvedValue(undefined),
-    execute: vi.fn().mockResolvedValue({
-      applyCss: '.test { @apply bg-red-500; }',
-      pureCss: '.test { background-color: red; }',
-      elementsCount: 1,
-      selectorsCount: 1,
-    }),
+    execute: executeMock,
     dispose: vi.fn().mockResolvedValue(undefined),
-  } as unknown as HtmlConverterService;
+  } as unknown as HtmlConverterService & { execute: typeof executeMock };
 }
 
 // Mock file system
@@ -311,7 +313,7 @@ describe('CssService', () => {
       await service.execute(input);
       
       // Should process pages + partials + layouts (3 total)
-      expect(mockHtmlConverter.execute.mock.calls.length).toBeGreaterThanOrEqual(3);
+      expect((mockHtmlConverter.execute as any).mock.calls.length).toBeGreaterThanOrEqual(3);
     });
   });
   

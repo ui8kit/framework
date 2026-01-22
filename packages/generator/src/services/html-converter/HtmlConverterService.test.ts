@@ -46,6 +46,17 @@ function createMockContext(config: Record<string, unknown> = {}) {
       on: vi.fn(() => () => {}),
       off: vi.fn(),
       once: vi.fn(() => () => {}),
+      removeAllListeners: vi.fn(),
+      listenerCount: vi.fn(() => 0),
+    },
+    registry: {
+      has: vi.fn(() => false),
+      resolve: vi.fn(),
+      register: vi.fn(),
+      getServiceNames: vi.fn(() => []),
+      getInitializationOrder: vi.fn(() => []),
+      initializeAll: vi.fn(async () => {}),
+      disposeAll: vi.fn(async () => {}),
     },
   };
 }
