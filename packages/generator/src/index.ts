@@ -59,6 +59,7 @@ export { DEFAULT_CONFIG } from './core';
 // Services
 export {
   LayoutService,
+  RenderService,
   ViewService,
   CssService,
   HtmlService,
@@ -68,6 +69,10 @@ export {
 export type {
   LayoutServiceInput,
   LayoutServiceOutput,
+  RenderServiceInput,
+  RenderRouteInput,
+  RenderComponentInput,
+  RenderServiceOutput,
   ViewServiceInput,
   ViewServiceOutput,
   CssServiceInput,

@@ -7,6 +7,18 @@ export type {
   LayoutFileSystem,
 } from './layout';
 
+export { RenderService } from './render';
+export type {
+  RenderServiceInput,
+  RenderRouteInput,
+  RenderComponentInput,
+  RenderServiceOutput,
+  RenderServiceOptions,
+  RenderFileSystem,
+  ReactRenderer,
+  ModuleLoader,
+} from './render';
+
 export { ViewService } from './view';
 export type {
   ViewServiceInput,

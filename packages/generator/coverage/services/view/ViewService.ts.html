@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.08% </span>
+                <span class="strong">72.25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>121/153</span>
+                <span class='fraction'>125/173</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">58.82% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>10/16</span>
+                <span class='fraction'>10/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.08% </span>
+                <span class="strong">72.25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>121/153</span>
+                <span class='fraction'>125/173</span>
             </div>
         
             
@@ -341,7 +341,31 @@
 <a name='L276'></a><a href='#L276'>276</a>
 <a name='L277'></a><a href='#L277'>277</a>
 <a name='L278'></a><a href='#L278'>278</a>
-<a name='L279'></a><a href='#L279'>279</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a>
+<a name='L298'></a><a href='#L298'>298</a>
+<a name='L299'></a><a href='#L299'>299</a>
+<a name='L300'></a><a href='#L300'>300</a>
+<a name='L301'></a><a href='#L301'>301</a>
+<a name='L302'></a><a href='#L302'>302</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -607,12 +631,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -621,6 +667,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { IService, IServiceContext, RouteConfig } from '../../core/interfaces';
 import { join, dirname } from 'node:path';
+import { RenderService } from '../render';
 &nbsp;
 /**
  * Input for ViewService.execute()
@@ -882,17 +929,39 @@ export class ViewService implements IService&lt;ViewServiceInput, ViewServiceOut
   }
   
   /**
-   * Create default renderer using @ui8kit/render
+   * Create default renderer using internal RenderService
    */
   private createDefaultRenderer(): ViewRenderer {
+    // Create a RenderService instance for use without full DI
+    const renderService = new RenderService();
+    let initialized = false;
+    
+    const ensureInitialized = <span class="fstat-no" title="function not covered" >async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (!initialized &amp;&amp; this.context) {</span>
+<span class="cstat-no" title="statement not covered" >        await renderService.initialize(this.context);</span>
+<span class="cstat-no" title="statement not covered" >        initialized = true;</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    };</span>
+    
     return {
       renderRoute: <span class="fstat-no" title="function not covered" >async (options) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        const { renderRoute } = await import('@ui8kit/render');</span>
-<span class="cstat-no" title="statement not covered" >        return renderRoute(options);</span>
+<span class="cstat-no" title="statement not covered" >        await ensureInitialized();</span>
+<span class="cstat-no" title="statement not covered" >        const result = await renderService.execute({</span>
+<span class="cstat-no" title="statement not covered" >          type: 'route',</span>
+<span class="cstat-no" title="statement not covered" >          entryPath: options.entryPath,</span>
+<span class="cstat-no" title="statement not covered" >          routePath: options.routePath,</span>
+<span class="cstat-no" title="statement not covered" >        });</span>
+<span class="cstat-no" title="statement not covered" >        return result.html;</span>
 <span class="cstat-no" title="statement not covered" >      },</span>
       renderComponent: <span class="fstat-no" title="function not covered" >async (options) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        const { renderComponent } = await import('@ui8kit/render');</span>
-<span class="cstat-no" title="statement not covered" >        return renderComponent(options);</span>
+<span class="cstat-no" title="statement not covered" >        await ensureInitialized();</span>
+<span class="cstat-no" title="statement not covered" >        const result = await renderService.execute({</span>
+<span class="cstat-no" title="statement not covered" >          type: 'component',</span>
+<span class="cstat-no" title="statement not covered" >          modulePath: options.modulePath,</span>
+<span class="cstat-no" title="statement not covered" >          exportName: options.exportName,</span>
+<span class="cstat-no" title="statement not covered" >          props: options.props,</span>
+<span class="cstat-no" title="statement not covered" >        });</span>
+<span class="cstat-no" title="statement not covered" >        return result.html;</span>
 <span class="cstat-no" title="statement not covered" >      },</span>
     };
   }
@@ -904,7 +973,7 @@ export class ViewService implements IService&lt;ViewServiceInput, ViewServiceOut
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T06:44:27.230Z
+                at 2026-01-22T06:58:22.267Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

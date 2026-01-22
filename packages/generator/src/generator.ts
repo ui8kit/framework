@@ -3,10 +3,51 @@ import { writeFile, mkdir, readdir, readFile, copyFile, stat } from 'node:fs/pro
 import { dirname, join, relative, resolve } from 'node:path';
 import { Liquid } from 'liquidjs';
 import { htmlConverter } from './html-converter.js';
-// Import render directly from source to avoid bundling issues
-import { renderRoute, renderComponent } from '@ui8kit/render';
+// Use internal RenderService instead of @ui8kit/render package
+import { RenderService } from './services/render/index.js';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'glob';
+
+// Create singleton render service for legacy generator
+const renderService = new RenderService();
+
+// Wrap RenderService methods for compatibility with legacy generator
+async function renderRoute(options: { entryPath: string; routePath: string }): Promise<string> {
+  // Initialize with a minimal context if not already initialized
+  const minimalContext = {
+    config: { app: { name: 'Legacy' }, css: { entryPath: '', routes: [], outputDir: '' }, html: { viewsDir: '', routes: {}, outputDir: '' } },
+    logger: { info: console.log, warn: console.warn, error: console.error, debug: () => {} },
+    eventBus: { emit: () => {}, on: () => () => {}, once: () => {}, off: () => {}, removeAllListeners: () => {}, listenerCount: () => 0 },
+    registry: null as any,
+  };
+  await renderService.initialize(minimalContext as any);
+  
+  const result = await renderService.execute({
+    type: 'route',
+    entryPath: options.entryPath,
+    routePath: options.routePath,
+  });
+  return result.html;
+}
+
+async function renderComponent(options: { modulePath: string; exportName?: string; props?: Record<string, unknown> }): Promise<string> {
+  // Initialize with a minimal context if not already initialized
+  const minimalContext = {
+    config: { app: { name: 'Legacy' }, css: { entryPath: '', routes: [], outputDir: '' }, html: { viewsDir: '', routes: {}, outputDir: '' } },
+    logger: { info: console.log, warn: console.warn, error: console.error, debug: () => {} },
+    eventBus: { emit: () => {}, on: () => () => {}, once: () => {}, off: () => {}, removeAllListeners: () => {}, listenerCount: () => 0 },
+    registry: null as any,
+  };
+  await renderService.initialize(minimalContext as any);
+  
+  const result = await renderService.execute({
+    type: 'component',
+    modulePath: options.modulePath,
+    exportName: options.exportName,
+    props: options.props,
+  });
+  return result.html;
+}
 
 // @ts-ignore - uncss is CommonJS module without types
 import uncss from 'uncss';

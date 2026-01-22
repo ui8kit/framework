@@ -1,5 +1,6 @@
 import type { IService, IServiceContext, RouteConfig } from '../../core/interfaces';
 import { join, dirname } from 'node:path';
+import { RenderService } from '../render';
 
 /**
  * Input for ViewService.execute()
@@ -261,17 +262,39 @@ export class ViewService implements IService<ViewServiceInput, ViewServiceOutput
   }
   
   /**
-   * Create default renderer using @ui8kit/render
+   * Create default renderer using internal RenderService
    */
   private createDefaultRenderer(): ViewRenderer {
+    // Create a RenderService instance for use without full DI
+    const renderService = new RenderService();
+    let initialized = false;
+    
+    const ensureInitialized = async () => {
+      if (!initialized && this.context) {
+        await renderService.initialize(this.context);
+        initialized = true;
+      }
+    };
+    
     return {
       renderRoute: async (options) => {
-        const { renderRoute } = await import('@ui8kit/render');
-        return renderRoute(options);
+        await ensureInitialized();
+        const result = await renderService.execute({
+          type: 'route',
+          entryPath: options.entryPath,
+          routePath: options.routePath,
+        });
+        return result.html;
       },
       renderComponent: async (options) => {
-        const { renderComponent } = await import('@ui8kit/render');
-        return renderComponent(options);
+        await ensureInitialized();
+        const result = await renderService.execute({
+          type: 'component',
+          modulePath: options.modulePath,
+          exportName: options.exportName,
+          props: options.props,
+        });
+        return result.html;
       },
     };
   }
