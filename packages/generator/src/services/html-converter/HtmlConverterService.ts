@@ -82,7 +82,7 @@ export class HtmlConverterService implements IService<HtmlConverterInput, HtmlCo
     this.context = context;
     
     // Load maps from config
-    const mappings = context.config?.mappings;
+    const mappings = (context.config as any)?.mappings;
     
     if (mappings?.ui8kitMap) {
       await this.loadUi8kitMap(mappings.ui8kitMap);

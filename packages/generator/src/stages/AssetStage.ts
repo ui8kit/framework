@@ -8,12 +8,19 @@ import { AssetService, type AssetServiceOutput } from '../services/asset';
  */
 export class AssetStage implements IPipelineStage {
   readonly name = 'asset';
+  readonly order = 4;
+  readonly enabled = true;
   readonly dependencies: string[] = ['html'];
+  readonly description = 'Copy assets to output directory';
   
   private service: AssetService;
   
   constructor() {
     this.service = new AssetService();
+  }
+  
+  canExecute(): boolean {
+    return true;
   }
   
   async execute(context: IPipelineContext): Promise<void> {
@@ -22,22 +29,23 @@ export class AssetStage implements IPipelineStage {
     // Initialize service
     await this.service.initialize({ config, logger, eventBus, registry: null as any });
     
-    const cssSourceDir = config.css?.outputDir ?? './dist/css';
-    const outputDir = config.html?.outputDir ?? './dist/html';
-    const mode = config.html?.mode ?? 'tailwind';
+    const cfg = config as any;
+    const cssSourceDir = cfg.css?.outputDir ?? './dist/css';
+    const outputDir = cfg.html?.outputDir ?? './dist/html';
+    const mode = cfg.html?.mode ?? 'tailwind';
     
     logger.info('Copying assets...');
     
     const result = await this.service.execute({
       cssSourceDir,
-      jsSourceDir: config.assets?.jsDir,
-      publicDir: config.assets?.publicDir,
+      jsSourceDir: cfg.assets?.jsDir,
+      publicDir: cfg.assets?.publicDir,
       outputDir: `${outputDir}/assets`,
       cssMode: mode === 'semantic' || mode === 'inline' ? 'semantic' : 'tailwind',
     });
     
     // Store result in context
-    context.state.set('asset:result', result);
+    context.setData('asset:result', result);
     
     logger.info(`Copied ${result.copiedFiles.length} asset(s) (${formatSize(result.totalSize)})`);
     

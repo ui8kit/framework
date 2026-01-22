@@ -8,12 +8,19 @@ import { HtmlService, type HtmlServiceOutput } from '../services/html';
  */
 export class HtmlStage implements IPipelineStage {
   readonly name = 'html';
+  readonly order = 3;
+  readonly enabled = true;
   readonly dependencies: string[] = ['css'];
+  readonly description = 'Render Liquid views through layout to final HTML';
   
   private service: HtmlService;
   
   constructor() {
     this.service = new HtmlService();
+  }
+  
+  canExecute(): boolean {
+    return true;
   }
   
   async execute(context: IPipelineContext): Promise<void> {
@@ -22,11 +29,12 @@ export class HtmlStage implements IPipelineStage {
     // Initialize service
     await this.service.initialize({ config, logger, eventBus, registry: null as any });
     
-    const viewsDir = config.html?.viewsDir ?? './views';
-    const outputDir = config.html?.outputDir ?? './dist/html';
-    const routes = config.html?.routes ?? {};
-    const mode = config.html?.mode ?? 'tailwind';
-    const cssOutputDir = config.css?.outputDir ?? './dist/css';
+    const cfg = config as any;
+    const viewsDir = cfg.html?.viewsDir ?? './views';
+    const outputDir = cfg.html?.outputDir ?? './dist/html';
+    const routes = cfg.html?.routes ?? {};
+    const mode = cfg.html?.mode ?? 'tailwind';
+    const cssOutputDir = cfg.css?.outputDir ?? './dist/css';
     
     logger.info('Generating HTML pages...');
     
@@ -35,13 +43,13 @@ export class HtmlStage implements IPipelineStage {
       outputDir,
       routes,
       mode,
-      stripDataClassInTailwind: config.html?.stripDataClass,
+      stripDataClassInTailwind: cfg.html?.stripDataClass,
       cssOutputDir,
-      appConfig: config.app,
+      appConfig: cfg.app,
     });
     
     // Store result in context
-    context.state.set('html:result', result);
+    context.setData('html:result', result);
     
     const totalSize = result.pages.reduce((sum, p) => sum + p.size, 0);
     logger.info(`Generated ${result.pages.length} HTML page(s) (${formatSize(totalSize)})`);

@@ -11,6 +11,7 @@ import { glob } from 'glob';
 
 import { Orchestrator } from './core/orchestrator';
 import { Logger } from './core/logger';
+import type { IServiceContext } from './core/interfaces';
 import { 
   LayoutService,
   ViewService,
@@ -140,7 +141,7 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
     orchestrator.registerService(new RenderService());
     orchestrator.registerService(new HtmlConverterService());
     orchestrator.registerService(new ViewService());
-    orchestrator.registerService(new CssService({ converterMode: 'service' }));
+    orchestrator.registerService(new CssService({ htmlConverter: new HtmlConverterService() }));
     orchestrator.registerService(new HtmlService());
     orchestrator.registerService(new AssetService());
     
@@ -743,7 +744,7 @@ async function generateDocsNav(
 // Helper functions
 // =============================================================================
 
-function createMinimalContext(config: GenerateConfig, logger: Logger) {
+function createMinimalContext(config: GenerateConfig, logger: Logger): IServiceContext {
   return {
     config: config as any,
     logger: logger as any,
@@ -758,8 +759,13 @@ function createMinimalContext(config: GenerateConfig, logger: Logger) {
     registry: {
       has: () => false,
       resolve: () => { throw new Error('Not implemented'); },
+      register: () => {},
+      getServiceNames: () => [],
+      getInitializationOrder: () => [],
+      initializeAll: async () => {},
+      disposeAll: async () => {},
     },
-  };
+  } as any;
 }
 
 function unescapeLiquidTags(html: string): string {

@@ -148,22 +148,26 @@ export interface RouteConfig {
 /**
  * Default configuration values
  */
-export const DEFAULT_CONFIG: Partial<GeneratorConfig> = {
+export const DEFAULT_CONFIG: GeneratorConfig = {
   app: {
+    name: 'UI8Kit Generator',
     lang: 'en',
   },
+  css: {
+    entryPath: './src/main.tsx',
+    routes: ['/'],
+    outputDir: './dist/css',
+    pureCss: false,
+  },
   html: {
+    viewsDir: './views',
+    routes: { '/': { title: 'Home' } },
+    outputDir: './dist/html',
     mode: 'tailwind',
   },
   clientScript: {
     enabled: false,
     outputDir: './dist/assets/js',
     fileName: 'main.js',
-    darkModeSelector: '[data-toggle-dark]',
-  },
-  uncss: {
-    enabled: false,
-    media: true,
-    timeout: 10000,
   },
 };

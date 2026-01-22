@@ -8,12 +8,19 @@ import { ViewService, type ViewServiceOutput } from '../services/view';
  */
 export class ViewStage implements IPipelineStage {
   readonly name = 'view';
+  readonly order = 1;
+  readonly enabled = true;
   readonly dependencies: string[] = ['layout'];
+  readonly description = 'Generate Liquid views from React components';
   
   private service: ViewService;
   
   constructor() {
     this.service = new ViewService();
+  }
+  
+  canExecute(): boolean {
+    return true;
   }
   
   async execute(context: IPipelineContext): Promise<void> {
@@ -22,9 +29,10 @@ export class ViewStage implements IPipelineStage {
     // Initialize service
     await this.service.initialize({ config, logger, eventBus, registry: null as any });
     
-    const entryPath = config.css?.entryPath ?? './src/main.tsx';
-    const viewsDir = config.html?.viewsDir ?? './views';
-    const routes = config.html?.routes ?? {};
+    const cfg = config as any;
+    const entryPath = cfg.css?.entryPath ?? './src/main.tsx';
+    const viewsDir = cfg.html?.viewsDir ?? './views';
+    const routes = cfg.html?.routes ?? {};
     
     logger.info('Generating views...');
     
@@ -32,11 +40,11 @@ export class ViewStage implements IPipelineStage {
       entryPath,
       viewsDir,
       routes,
-      partials: config.html?.partials,
+      partials: cfg.html?.partials,
     });
     
     // Store result in context
-    context.state.set('view:result', result);
+    context.setData('view:result', result);
     
     logger.info(`Generated ${result.views.length} view(s)`);
     

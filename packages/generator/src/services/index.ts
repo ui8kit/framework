@@ -5,6 +5,7 @@ export type {
   LayoutServiceOutput, 
   LayoutServiceOptions,
   LayoutFileSystem,
+  LayoutTemplateConfig,
 } from './layout';
 
 export { RenderService } from './render';
@@ -17,6 +18,7 @@ export type {
   RenderFileSystem,
   ReactRenderer,
   ModuleLoader,
+  RouterParser,
 } from './render';
 
 export { ViewService } from './view';
@@ -34,7 +36,7 @@ export type {
   CssServiceOutput,
   CssServiceOptions,
   CssFileSystem,
-  CssConverter,
+  CssOutputFileNames,
 } from './css';
 
 export { HtmlService } from './html';
@@ -52,6 +54,7 @@ export type {
   AssetServiceOutput,
   AssetServiceOptions,
   AssetFileSystem,
+  CssFileNames,
 } from './asset';
 
 export { HtmlConverterService } from './html-converter';

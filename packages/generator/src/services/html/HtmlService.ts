@@ -106,7 +106,7 @@ export class HtmlService implements IService<HtmlServiceInput, HtmlServiceOutput
     if (mode === 'inline' && cssOutputDir) {
       try {
         // Use configured CSS file name or default
-        const pureCssFileName = this.context.config?.css?.outputFiles?.pureCss ?? 'ui8kit.local.css';
+        const pureCssFileName = this.context.config ? (this.context.config as any)?.css?.outputFiles?.pureCss ?? 'ui8kit.local.css' : 'ui8kit.local.css';
         const cssPath = join(cssOutputDir, pureCssFileName);
         cssContent = await this.fs.readFile(cssPath);
         this.context.logger.debug(`Loaded CSS for inline mode (${cssContent.length} bytes)`);

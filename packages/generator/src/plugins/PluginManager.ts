@@ -20,6 +20,10 @@ export interface PluginHooks {
   afterGenerate?: (context: IPluginContext) => Promise<void> | void;
   /** Called on error */
   onError?: (error: Error, context: IPluginContext) => Promise<void> | void;
+  /** Called during plugin initialization */
+  setup?: (context: IPluginContext) => Promise<void> | void;
+  /** Called during plugin cleanup */
+  teardown?: () => Promise<void> | void;
 }
 
 /**
@@ -78,7 +82,9 @@ export class PluginManager {
     this.context = context;
     
     for (const plugin of this.plugins.values()) {
-      await plugin.setup(context);
+      if (plugin.setup) {
+        await plugin.setup(context);
+      }
     }
   }
   
@@ -161,15 +167,15 @@ export function createPlugin(options: {
     name,
     version,
     
-    setup: async (context) => {
+    setup: async (context: IPluginContext) => {
       // Register stages
       for (const stage of stages) {
-        context.pipeline.addStage(stage);
+        context.addStage(stage);
       }
       
       // Register services
       for (const service of services) {
-        context.registry.register(service);
+        context.registerService(service);
       }
     },
     

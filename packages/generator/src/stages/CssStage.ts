@@ -8,12 +8,19 @@ import { CssService, type CssServiceOutput } from '../services/css';
  */
 export class CssStage implements IPipelineStage {
   readonly name = 'css';
+  readonly order = 2;
+  readonly enabled = true;
   readonly dependencies: string[] = ['view'];
+  readonly description = 'Extract and generate CSS from Liquid views';
   
   private service: CssService;
   
   constructor() {
     this.service = new CssService();
+  }
+  
+  canExecute(): boolean {
+    return true;
   }
   
   async execute(context: IPipelineContext): Promise<void> {
@@ -22,10 +29,11 @@ export class CssStage implements IPipelineStage {
     // Initialize service
     await this.service.initialize({ config, logger, eventBus, registry: null as any });
     
-    const viewsDir = config.html?.viewsDir ?? './views';
-    const outputDir = config.css?.outputDir ?? './dist/css';
-    const routes = config.html?.routes ?? {};
-    const pureCss = config.css?.pureCss ?? false;
+    const cfg = config as any;
+    const viewsDir = cfg.html?.viewsDir ?? './views';
+    const outputDir = cfg.css?.outputDir ?? './dist/css';
+    const routes = cfg.html?.routes ?? {};
+    const pureCss = cfg.css?.pureCss ?? false;
     
     logger.info('Generating CSS...');
     
@@ -34,11 +42,11 @@ export class CssStage implements IPipelineStage {
       outputDir,
       routes,
       pureCss,
-      mappings: config.mappings,
+      mappings: cfg.mappings,
     });
     
     // Store result in context
-    context.state.set('css:result', result);
+    context.setData('css:result', result);
     
     const totalSize = result.files.reduce((sum, f) => sum + f.size, 0);
     logger.info(`Generated ${result.files.length} CSS file(s) (${formatSize(totalSize)})`);
