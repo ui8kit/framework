@@ -95,10 +95,13 @@ function isCvaCall(expr: ts.Expression): expr is ts.CallExpression {
 }
 
 /**
- * Get property key name from AST node
+ * Get property key name from AST node.
+ * Handles identifiers, string literals (including those with hyphens like "top-left"),
+ * and numeric literals.
  */
 function getPropertyKeyName(name: ts.PropertyName): string | undefined {
   if (ts.isIdentifier(name)) return name.text;
+  // String literals are used for keys with hyphens or special characters (e.g., "top-left", "bottom-right")
   if (ts.isStringLiteral(name)) return name.text;
   if (ts.isNumericLiteral(name)) return name.text;
   return undefined;

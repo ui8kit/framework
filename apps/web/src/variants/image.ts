@@ -13,7 +13,7 @@ export const imageBaseVariants = cva("block", {
   },
 });
 
-// Image fit variants
+// Image fit variants 
 export const imageFitVariants = cva("", {
   variants: {
     fit: {
@@ -35,13 +35,13 @@ export const imagePositionVariants = cva("", {
     position: {
       center: "object-center",
       top: "object-top",
-      "top-right": "object-top object-right",
+      "right-top": "object-top object-right",
       right: "object-right",
-      "bottom-right": "object-bottom object-right",
+      "right-bottom": "object-bottom object-right",
       bottom: "object-bottom",
-      "bottom-left": "object-bottom object-left",
+      "left-bottom": "object-bottom object-left",
       left: "object-left",
-      "top-left": "object-top object-left"
+      "left-top": "object-top object-left"
     }
   },
   defaultVariants: {
