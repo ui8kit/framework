@@ -5,7 +5,6 @@
 
 import type { ReactNode, ComponentProps } from "react";
 import { Grid } from "../components";
-import type { GridProps } from "../components";
 
 /**
  * Grid variant elements for documentation and reuse.

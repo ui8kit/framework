@@ -2,14 +2,27 @@ import type { ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "../lib/utils";
 import { resolveUtilityClassName, ux, type UtilityPropBag, type UtilityPropPrefix } from "../lib/utility-props";
-import {
-  cardStyleVariants,
-  cardHeaderVariants,
-  cardTitleVariants,
-  cardDescriptionVariants,
-  cardContentVariants,
-  cardFooterVariants,
-} from "../variants/card";
+import { cva } from "class-variance-authority";
+
+// Simple card variants
+const cardVariantVariants = cva("", {
+  variants: {
+    variant: {
+      default: "",
+      outlined: "border",
+      filled: "bg-muted"
+    }
+  },
+  defaultVariants: {
+    variant: "default"
+  }
+});
+
+const cardHeaderVariants = cva("flex flex-col space-y-1.5 p-6");
+const cardTitleVariants = cva("text-2xl font-semibold leading-none tracking-tight");
+const cardDescriptionVariants = cva("text-sm text-muted-foreground");
+const cardContentVariants = cva("p-6 pt-0");
+const cardFooterVariants = cva("flex items-center p-6 pt-0");
 
 type CardDomProps = Omit<React.HTMLAttributes<HTMLDivElement>, UtilityPropPrefix>;
 
@@ -27,12 +40,21 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     ...props 
   }, ref) => {
     const { utilityClassName, rest } = resolveUtilityClassName(props);
+    const defaultUtilities = ux({
+      p: "4",
+      rounded: "lg",
+      shadow: "sm",
+      bg: "card",
+      // minimal border baseline (no color enforcement here; color comes from tokens/theme)
+      border: "",
+    });
     return (
       <div
         ref={ref}
         data-class="card"
         className={cn(
-          cardStyleVariants({ variant }),
+          cardVariantVariants({ variant }),
+          defaultUtilities,
           utilityClassName,
           className
         )}

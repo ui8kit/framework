@@ -5,7 +5,6 @@
 
 import type { ReactNode, ComponentProps } from "react";
 import { Badge } from "../components";
-import type { BadgeProps } from "../components";
 
 /**
  * Badge variant elements for documentation and reuse.

@@ -5,7 +5,6 @@
 
 import type { ReactNode, ComponentProps } from "react";
 import { Button } from "../components";
-import type { ButtonProps } from "../components";
 
 /**
  * Button variant elements for documentation and reuse.
@@ -17,10 +16,6 @@ export function ButtonElements() {
   {/* Base */}
   <Button data-class="button">Button</Button>
   {/* Variants */}
-  <Button data-class="button-contentAlign-between" contentAlign="between">ButtonContentAlign Between</Button>
-  <Button data-class="button-contentAlign-center" contentAlign="center">ButtonContentAlign Center</Button>
-  <Button data-class="button-contentAlign-end" contentAlign="end">ButtonContentAlign End</Button>
-  <Button data-class="button-contentAlign-start" contentAlign="start">ButtonContentAlign Start</Button>
   <Button data-class="button-size-icon" size="icon">ButtonSize Icon</Button>
   <Button data-class="button-size-lg" size="lg">ButtonSize Lg</Button>
   <Button data-class="button-size-md" size="md">ButtonSize Md</Button>
@@ -44,26 +39,6 @@ export function ButtonElements() {
 /** Base Button with semantic data-class */
 export const ButtonElement = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class"> & { children?: ReactNode }) => (
   <Button data-class="button" {...props}>{children ?? "Button"}</Button>
-);
-
-/** Button with between variant */
-export const ButtonBetween = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-contentAlign-between" contentAlign="between" {...props}>{children ?? "ButtonContentAlign Between"}</Button>
-);
-
-/** Button with center variant */
-export const ButtonCenter = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-contentAlign-center" contentAlign="center" {...props}>{children ?? "ButtonContentAlign Center"}</Button>
-);
-
-/** Button with end variant */
-export const ButtonEnd = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-contentAlign-end" contentAlign="end" {...props}>{children ?? "ButtonContentAlign End"}</Button>
-);
-
-/** Button with start variant */
-export const ButtonStart = ({ children, ...props }: Omit<ComponentProps<typeof Button>, "data-class" | "contentAlign"> & { children?: ReactNode }) => (
-  <Button data-class="button-contentAlign-start" contentAlign="start" {...props}>{children ?? "ButtonContentAlign Start"}</Button>
 );
 
 /** Button with icon variant */
