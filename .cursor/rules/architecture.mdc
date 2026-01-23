@@ -72,6 +72,64 @@ export function MainLayout({ children }) {
 - ✅ **ALLOWED**: Only utility props from utility-props.map.ts
 - ✅ **ALLOWED**: Component-specific variants (Button, Badge, etc.)
 
+### Variants vs Utility Props Decision Rule
+**When to use CVA variants vs ux() utility props**:
+
+Variants (`cva`) should **ONLY** be created when:
+- ✅ Multiple Tailwind classes need to be combined (2+ classes per variant value)
+- ✅ The combination cannot be expressed via a single utility prop
+- ✅ The variant represents a meaningful semantic combination
+
+**DO NOT create variants for**:
+- ❌ Single-class mappings (use `ux()` utility props instead)
+- ❌ Simple one-to-one prop-to-class mappings
+- ❌ Cases where a single utility prop can handle it
+
+**Example - Correct usage**:
+```tsx
+// ✅ CORRECT - Variants for multi-class combinations
+export const imagePositionVariants = cva("", {
+  variants: {
+    position: {
+      "right-top": "object-top object-right",      // 2 classes
+      "right-bottom": "object-bottom object-right", // 2 classes
+      "left-bottom": "object-bottom object-left",   // 2 classes
+      "left-top": "object-top object-left"         // 2 classes
+    }
+  }
+});
+
+// ✅ CORRECT - Simple single-class props via ux()
+const simplePositionProps = {
+  bottom: ux({ object: 'bottom' }),    // 1 class → use ux()
+  center: ux({ object: 'center' }),   // 1 class → use ux()
+  left: ux({ object: 'left' }),        // 1 class → use ux()
+  right: ux({ object: 'right' }),      // 1 class → use ux()
+  top: ux({ object: 'top' })            // 1 class → use ux()
+};
+```
+
+**Example - Incorrect usage**:
+```tsx
+// ❌ INCORRECT - Don't create variants for single classes
+export const imageFitVariants = cva("", {
+  variants: {
+    fit: {
+      contain: "object-contain",  // Single class → should use ux()
+      cover: "object-cover",      // Single class → should use ux()
+      fill: "object-fill"         // Single class → should use ux()
+    }
+  }
+});
+
+// ✅ CORRECT - Use ux() for single-class props
+const fitProps = {
+  contain: ux({ object: 'contain' }),
+  cover: ux({ object: 'cover' }),
+  fill: ux({ object: 'fill' })
+};
+```
+
 ### Composite Components (@apps/local/src/components)
 **Purpose**: Higher-level components with custom logic and styling
 **Rules**:

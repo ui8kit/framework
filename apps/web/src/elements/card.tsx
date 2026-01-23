@@ -5,7 +5,6 @@
 
 import type { ReactNode, ComponentProps } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components";
-import type { CardProps, CardContentProps, CardDescriptionProps, CardFooterProps, CardHeaderProps, CardTitleProps } from "../components";
 
 /**
  * Card variant elements for documentation and reuse.

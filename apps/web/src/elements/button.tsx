@@ -5,7 +5,6 @@
 
 import type { ReactNode, ComponentProps } from "react";
 import { Button } from "../components";
-import type { ButtonProps } from "../components";
 
 /**
  * Button variant elements for documentation and reuse.
