@@ -2,6 +2,9 @@
 
 @import "./shadcn.css";
 
+@source "../../../src/**/*.{ts, tsx}";
+@source "../../../../../packages/ui8kit/src/**/*.{ts,tsx,json}";
+
 @layer base {
   body {
     @apply bg-background text-foreground font-sans;

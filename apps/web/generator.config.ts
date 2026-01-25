@@ -93,7 +93,7 @@ export const config: GenerateConfig = {
 
   // CSS class mappings
   mappings: {
-    ui8kitMap: './src/lib/ui8kit.map.json',
+    ui8kitMap: '../../packages/ui8kit/src/lib/ui8kit.map.json',
   },
 
   css: {

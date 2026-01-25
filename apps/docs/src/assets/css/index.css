@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
-@import "./shadcn.css";
+@import "./modern-minimal.css";
+
+@source "../../../src/**/*.{ts, tsx}";
+@source "../../../../../packages/ui8kit/src/**/*.{ts,tsx,json}";
 
 @layer base {
   body {

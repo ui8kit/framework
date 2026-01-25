@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@ui8kit/core": ["src/components/index"]
+      "@ui8kit/core": ["../../packages/ui8kit/src/index"]
     }
 
   },
