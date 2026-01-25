@@ -53,7 +53,7 @@ export const config: GenerateConfig = {
 
   // CSS class mappings
   mappings: {
-    ui8kitMap: './src/lib/ui8kit.map.json',
+    ui8kitMap: '../../packages/ui8kit/src/lib/ui8kit.map.json',
   },
 
   // CSS Generation
@@ -99,7 +99,7 @@ export const config: GenerateConfig = {
   // Variant elements generation
   elements: {
     enabled: true,
-    variantsDir: './src/variants',
+    variantsDir: '../../packages/ui8kit/src/variants',
     outputDir: './src/elements',
     componentsImportPath: '../components'
   },
@@ -111,20 +111,19 @@ export const config: GenerateConfig = {
     outputDir: './dist/html',
     navOutput: './dist/docs-nav.json',
     basePath: '',
-    rootDir: './src',  // For resolving @ alias (e.g., @/components → ./src/components)
     
     components: {
-      Button: '@/components/ui/Button',
-      Card: '@/components/Card',
-      Badge: '@/components/ui/Badge',
-      Stack: '@/components/ui/Stack',
-      Box: '@/components/ui/Box',
-      Grid: '@/components/Grid',
-      Text: '@/components/ui/Text',
-      Title: '@/components/ui/Title',
+      Button: '@ui8kit/core',
+      Card: '@ui8kit/core',
+      Badge: '@ui8kit/core',
+      Stack: '@ui8kit/core',
+      Box: '@ui8kit/core',
+      Grid: '@ui8kit/core',
+      Text: '@ui8kit/core',
+      Title: '@ui8kit/core',
     },
     
-    propsSource: './src/components',
+    propsSource: '../../packages/ui8kit/src/components',
     
     toc: {
       minLevel: 2,

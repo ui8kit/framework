@@ -777,27 +777,11 @@ async function generateMdxDocs(
   if (!mdxConfig) return { pages: 0 };
   
   try {
-    // Try multiple import paths for MdxService
-    let MdxService: any;
-    
-    // Try package import first
-    try {
-      const module = await import('@ui8kit/mdx-react/service');
-      MdxService = module.MdxService;
-    } catch {
-      // Try relative workspace path (for monorepo development)
-      try {
-        const module = await import('../../mdx-react/src/service/index.js');
-        MdxService = module.MdxService;
-      } catch {
-        // Try source path
-        const module = await import('../../../packages/mdx-react/src/service/MdxService.js');
-        MdxService = module.MdxService;
-      }
-    }
+    const module = await import('@ui8kit/mdx-react/service');
+    const MdxService = module.MdxService;
     
     if (!MdxService) {
-      throw new Error('MdxService class not found');
+      throw new Error('MdxService class not found in @ui8kit/mdx-react/service');
     }
     
     const service = new MdxService();
@@ -837,7 +821,8 @@ async function generateMdxDocs(
     return { pages: result.pages };
   } catch (error) {
     // Fallback: if MdxService is not available, log warning
-    logger.warn(`⚠️ MdxService not available: ${error}`);
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn(`⚠️ MdxService not available: ${message}`);
     logger.info('📚 Skipping MDX generation (install @ui8kit/mdx-react for MDX support)');
     return { pages: 0 };
   }
