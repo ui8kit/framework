@@ -10,14 +10,24 @@
 
 ## TODO: Инструментарий валидации
 
-- [ ] **Создать машиночитаемую карту** `prop → values → class` (JSON) для автокомплита и валидации
-- [ ] **Реализовать автовалидацию whitelist** — скрипт сверяет `ui8kit.map.json` с `utility-props.map.ts`
-- [ ] **Добавить механизм closest_match** — при ошибке выводить ближайшее валидное значение (Levenshtein)
-- [ ] **Реализовать линтер с форматом ошибок** (см. раздел "Формат ошибок")
+- [x] **Создать машиночитаемую карту** `prop → values → class` (JSON) для автокомплита и валидации
+  - Реализовано в `@ui8kit/lint` — используется `utility-props.map.ts` как источник
+- [x] **Реализовать автовалидацию whitelist** — скрипт сверяет `ui8kit.map.json` с `utility-props.map.ts`
+  - CLI: `bun run packages/lint/src/cli/validate-whitelist.ts`
+  - Функция: `syncWhitelist()`, `validateWhitelistSync()`
+- [x] **Добавить механизм closest_match** — при ошибке выводить ближайшее валидное значение (Levenshtein)
+  - Модуль: `packages/lint/src/levenshtein.ts`
+  - Функции: `findClosestMatch()`, `findAllMatches()`, `levenshtein()`
+- [x] **Реализовать линтер с форматом ошибок** (см. раздел "Формат ошибок")
+  - Пакет: `@ui8kit/lint` (packages/lint)
+  - 66 тестов, все проходят
+  - Форматы: JSON, Pretty, Compact, LLM-optimized
 
 ## TODO: Ограничения и правила
 
-- [ ] **Запретить className в primitives** — добавить ESLint-правило или скрипт проверки для `components/ui/*`
+- [x] **Запретить className в primitives** — добавить ESLint-правило или скрипт проверки для `components/ui/*`
+  - Функция: `validateDataClass(hasClassName, hasDataClass, isPrimitive)`
+  - Код ошибки: `CLASSNAME_IN_PRIMITIVE`
 - [ ] **Задокументировать правило "или DSL, или className"** — в одном слое не смешивать подходы
 - [ ] **Разрешить className в Grid** только для responsive-модификаторов (`md:grid-cols-3`)
 
@@ -148,6 +158,7 @@ interface LintError {
 
 ## Запланировано для MCP-сервера (отдельный проект)
 
+- [ ] Опционально для LLM задается режим разработки или DSL или className
 - [ ] Создать компактный reference для промптов (LLM_CHEATSHEET)
 - [ ] Задокументировать предпочтительные значения (`gap` → чаще 4/6/8)
 - [ ] Реализовать макро-шаблоны: `preset="hero"` разворачивается в набор props
