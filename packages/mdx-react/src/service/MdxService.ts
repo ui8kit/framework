@@ -98,7 +98,20 @@ export interface MdxServiceInput {
   navOutput?: string
   
   /**
-   * Components available in MDX scope
+   * Import path aliases for resolving imports in MDX files.
+   * Same format as Vite's resolve.alias.
+   * @example
+   * ```typescript
+   * aliases: {
+   *   '@ui8kit/core': '../../packages/ui8kit/src/index',
+   *   '@': './src',
+   * }
+   * ```
+   */
+  aliases?: Record<string, string>
+  
+  /**
+   * @deprecated Use `aliases` instead. Components are now auto-resolved from MDX imports.
    */
   components?: Record<string, string>
   
@@ -128,9 +141,7 @@ export interface MdxServiceInput {
   verbose?: boolean
   
   /**
-   * Root directory for resolving @ alias paths
-   * If provided, @/ will be replaced with this path
-   * @example './src' or process.cwd() + '/src'
+   * @deprecated Use `aliases` with '@' key instead.
    */
   rootDir?: string
 }
@@ -191,7 +202,14 @@ export interface MdxCompileOptions {
   filePath: string
   docsDir: string
   basePath: string
-  components: Record<string, ComponentType>
+  /**
+   * Import path aliases for resolving imports in MDX files.
+   */
+  aliases?: Record<string, string>
+  /**
+   * @deprecated Use `aliases` instead
+   */
+  components?: Record<string, ComponentType>
   tocConfig?: TocConfig
   htmlMode: 'tailwind' | 'semantic' | 'inline'
 }
@@ -294,8 +312,14 @@ export class MdxService {
       }
     }
     
-    // 2. Resolve components (if provided as paths)
-    const resolvedComponents = await this.resolveComponents(input.components, input.rootDir)
+    // 2. Build aliases from input
+    // Merge explicit aliases with legacy @ alias from rootDir
+    const aliases: Record<string, string> = { ...input.aliases }
+    
+    // Backwards compatibility: convert rootDir to @ alias
+    if (input.rootDir && !aliases['@']) {
+      aliases['@'] = input.rootDir
+    }
     
     // 3. Generate pages
     const generatedPages: MdxServiceOutput['generatedPages'] = []
@@ -311,11 +335,12 @@ export class MdxService {
       
       try {
         // Compile MDX to HTML using the compiler
+        // Compiler now auto-resolves imports via aliases
         const compiled = await this.compiler.compileMdxFile({
           filePath,
           docsDir,
           basePath,
-          components: resolvedComponents,
+          aliases,
           tocConfig: input.toc,
           htmlMode,
         })
@@ -595,52 +620,6 @@ export class MdxService {
     }
   }
   
-  /**
-   * Resolve component paths to actual components
-   */
-  private async resolveComponents(
-    componentPaths?: Record<string, string>,
-    rootDir?: string
-  ): Promise<Record<string, ComponentType>> {
-    if (!componentPaths) return {}
-    
-    const resolved: Record<string, ComponentType> = {}
-    
-    // Convert rootDir to absolute path if provided
-    let absoluteRootDir: string | undefined
-    if (rootDir) {
-      const { resolve } = await import('node:path')
-      absoluteRootDir = resolve(process.cwd(), rootDir)
-    }
-    
-    for (const [name, componentPath] of Object.entries(componentPaths)) {
-      try {
-        // Resolve @ alias to absolute path
-        let resolvedPath = componentPath
-        if (componentPath.startsWith('@/') && absoluteRootDir) {
-          const relativePart = componentPath.slice(2) // Remove '@/'
-          const { join } = await import('node:path')
-          resolvedPath = join(absoluteRootDir, relativePart)
-          
-          // Add .tsx extension if not present
-          if (!resolvedPath.match(/\.(tsx?|jsx?)$/)) {
-            resolvedPath += '.tsx'
-          }
-        }
-        
-        this.log('debug', `Trying to import component ${name} from ${resolvedPath}`)
-        
-        // Try to dynamically import the component
-        const module = await import(resolvedPath)
-        resolved[name] = module.default || module[name]
-        this.log('debug', `Resolved component: ${name}`)
-      } catch (error) {
-        this.log('warn', `Failed to resolve component ${name} from ${componentPath}: ${error}`)
-      }
-    }
-    
-    return resolved
-  }
   
   /**
    * Wrap compiled HTML content in a full page template

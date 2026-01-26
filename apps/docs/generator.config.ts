@@ -112,15 +112,11 @@ export const config: GenerateConfig = {
     navOutput: './dist/docs-nav.json',
     basePath: '',
     
-    components: {
-      Button: '@/components/Button.tsx',
-      Card: '@/components/Card.tsx',
-      Badge: '@/components/Badge.tsx',
-      Stack: '@/components/Stack.tsx',
-      Box: '@/components/Box.tsx',
-      Grid: '@/components/Grid.tsx',
-      Text: '@/components/Text.tsx',
-      Title: '@/components/Title.tsx',
+    // Import path aliases for resolving imports in MDX files
+    // Same format as Vite's resolve.alias in vite.config.ts
+    aliases: {
+      '@ui8kit/core': '../../packages/ui8kit/src/index',
+      '@': './src',
     },
     
     propsSource: './src/components',

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import { basename } from 'node:path'
+import { basename, resolve, dirname } from 'node:path'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { compile, run } from '@mdx-js/mdx'
@@ -16,6 +16,28 @@ import { parseFrontmatter, extractToc } from '../core/parser'
 // ============================================================================
 // MDX Compiler - Compiles MDX to React and renders to HTML
 // ============================================================================
+
+/**
+ * Parsed import statement from MDX
+ */
+interface ParsedImport {
+  /**
+   * Named imports: { Button, Card }
+   */
+  names: string[]
+  /**
+   * Default import name
+   */
+  defaultImport?: string
+  /**
+   * Module path: '@ui8kit/core' or './components/Button'
+   */
+  modulePath: string
+  /**
+   * Original import statement
+   */
+  original: string
+}
 
 export interface CompileOptions {
   /**
@@ -34,9 +56,15 @@ export interface CompileOptions {
   basePath: string
   
   /**
-   * Components to inject into MDX scope
+   * Import path aliases for resolving imports.
+   * @example { '@ui8kit/core': '../../packages/ui8kit/src/index' }
    */
-  components: Record<string, React.ComponentType>
+  aliases?: Record<string, string>
+  
+  /**
+   * @deprecated Use `aliases` instead
+   */
+  components?: Record<string, React.ComponentType>
   
   /**
    * TOC configuration
@@ -53,7 +81,7 @@ export interface CompileOptions {
  * Compile a single MDX file to HTML
  */
 export async function compileMdxFile(options: CompileOptions): Promise<GeneratedMdxPage> {
-  const { filePath, docsDir, basePath, components, tocConfig, htmlMode } = options
+  const { filePath, docsDir, basePath, aliases = {}, components = {}, tocConfig, htmlMode } = options
   
   // Read source
   const source = await readFile(filePath, 'utf-8')
@@ -68,7 +96,16 @@ export async function compileMdxFile(options: CompileOptions): Promise<Generated
   const relativePath = filePath.replace(docsDir, '').replace(/^[\/\\]/, '')
   const urlPath = filePathToUrlPath(relativePath, basePath)
   
-  // Strip import statements from MDX content (we inject components via props)
+  // Parse imports from MDX content
+  const imports = parseImports(content)
+  
+  // Resolve imports to actual components using aliases
+  const resolvedComponents = await resolveImports(imports, aliases, filePath)
+  
+  // Merge with legacy components prop (for backwards compatibility)
+  const allComponents = { ...resolvedComponents, ...components }
+  
+  // Strip import statements from MDX content (components are now resolved)
   const contentWithoutImports = stripImports(content)
   
   // Compile MDX to JavaScript
@@ -85,7 +122,7 @@ export async function compileMdxFile(options: CompileOptions): Promise<Generated
   
   // Create component with injected components
   const WrappedContent = () => {
-    return React.createElement(MdxContent, { components })
+    return React.createElement(MdxContent, { components: allComponents })
   }
   
   // Render to HTML
@@ -111,8 +148,141 @@ export async function compileMdxFile(options: CompileOptions): Promise<Generated
 }
 
 /**
+ * Parse import statements from MDX content
+ */
+function parseImports(content: string): ParsedImport[] {
+  const imports: ParsedImport[] = []
+  
+  // Match import statements
+  // Patterns:
+  //   import { Button, Card } from '@ui8kit/core'
+  //   import Button from '@ui8kit/core'
+  //   import { Button as Btn } from '@ui8kit/core'
+  //   import * as UI from '@ui8kit/core'
+  const importRegex = /^import\s+(?:(?:\{([^}]+)\})|(?:(\w+)))\s+from\s+['"]([^'"]+)['"]\s*;?\s*$/gm
+  
+  let match
+  while ((match = importRegex.exec(content)) !== null) {
+    const [original, namedImportsStr, defaultImport, modulePath] = match
+    
+    const names: string[] = []
+    
+    if (namedImportsStr) {
+      // Parse named imports: { Button, Card as C, Badge }
+      const namedMatches = namedImportsStr.split(',').map(s => s.trim())
+      for (const named of namedMatches) {
+        // Handle "Button as Btn" → use original name "Button"
+        const asMatch = named.match(/^(\w+)(?:\s+as\s+\w+)?$/)
+        if (asMatch) {
+          names.push(asMatch[1])
+        }
+      }
+    }
+    
+    imports.push({
+      names,
+      defaultImport: defaultImport || undefined,
+      modulePath,
+      original,
+    })
+  }
+  
+  return imports
+}
+
+/**
+ * Resolve imports to actual React components using aliases
+ */
+async function resolveImports(
+  imports: ParsedImport[],
+  aliases: Record<string, string>,
+  mdxFilePath: string
+): Promise<Record<string, React.ComponentType>> {
+  const resolved: Record<string, React.ComponentType> = {}
+  const mdxDir = dirname(mdxFilePath)
+  
+  for (const imp of imports) {
+    try {
+      // Resolve module path using aliases
+      const resolvedPath = resolveModulePath(imp.modulePath, aliases, mdxDir)
+      
+      if (!resolvedPath) {
+        console.warn(`[mdx-compiler] Cannot resolve module: ${imp.modulePath}`)
+        continue
+      }
+      
+      // Dynamically import the module
+      const module = await import(resolvedPath)
+      
+      // Handle default import
+      if (imp.defaultImport) {
+        const component = module.default || module[imp.defaultImport]
+        if (component) {
+          resolved[imp.defaultImport] = component
+        }
+      }
+      
+      // Handle named imports
+      for (const name of imp.names) {
+        if (module[name]) {
+          resolved[name] = module[name]
+        } else if (module.default?.[name]) {
+          // Handle case where component is re-exported from default
+          resolved[name] = module.default[name]
+        } else {
+          console.warn(`[mdx-compiler] Component "${name}" not found in ${imp.modulePath}`)
+        }
+      }
+    } catch (error) {
+      console.warn(`[mdx-compiler] Failed to import ${imp.modulePath}: ${error}`)
+    }
+  }
+  
+  return resolved
+}
+
+/**
+ * Resolve module path using aliases
+ */
+function resolveModulePath(
+  modulePath: string,
+  aliases: Record<string, string>,
+  mdxDir: string
+): string | null {
+  // Check for exact alias match first
+  if (aliases[modulePath]) {
+    const aliasValue = aliases[modulePath]
+    // If alias is relative, resolve from cwd
+    if (aliasValue.startsWith('.')) {
+      return resolve(process.cwd(), aliasValue)
+    }
+    return aliasValue
+  }
+  
+  // Check for prefix alias match (e.g., '@/' → './src/')
+  for (const [alias, target] of Object.entries(aliases)) {
+    if (modulePath.startsWith(alias + '/')) {
+      const rest = modulePath.slice(alias.length + 1)
+      const targetBase = target.startsWith('.') 
+        ? resolve(process.cwd(), target)
+        : target
+      return resolve(targetBase, rest)
+    }
+  }
+  
+  // Handle relative imports
+  if (modulePath.startsWith('.')) {
+    return resolve(mdxDir, modulePath)
+  }
+  
+  // For bare module specifiers (e.g., 'react'), return as-is
+  // Node.js will try to resolve from node_modules
+  return modulePath
+}
+
+/**
  * Strip import/export statements from MDX content
- * Components are injected via props instead
+ * Components are resolved and injected via props instead
  */
 function stripImports(content: string): string {
   // Remove import statements

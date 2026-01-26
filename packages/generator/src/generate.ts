@@ -87,7 +87,26 @@ export interface GenerateConfig extends GeneratorConfig {
     outputDir: string;
     navOutput?: string;
     basePath?: string;
+    /**
+     * Import path aliases for resolving imports in MDX files.
+     * Same format as Vite's resolve.alias.
+     * @example
+     * ```typescript
+     * aliases: {
+     *   '@ui8kit/core': '../../packages/ui8kit/src/index',
+     *   '@': './src',
+     * }
+     * ```
+     */
+    aliases?: Record<string, string>;
+    /**
+     * @deprecated Use `aliases` instead. Components are now auto-resolved from MDX imports.
+     */
     components?: Record<string, string>;
+    /**
+     * @deprecated No longer needed. Alias resolution handles component paths.
+     */
+    rootDir?: string;
     propsSource?: string;
     toc?: {
       minLevel?: number;
@@ -805,12 +824,14 @@ async function generateMdxDocs(
       outputDir: mdxConfig.outputDir,
       basePath: mdxConfig.basePath,
       navOutput: mdxConfig.navOutput,
+      aliases: mdxConfig.aliases,
+      // Legacy support: components and rootDir (deprecated)
       components: mdxConfig.components,
+      rootDir: mdxConfig.rootDir,
       propsSource: mdxConfig.propsSource,
       toc: mdxConfig.toc,
       htmlMode: config.html.mode ?? 'tailwind',
       verbose: true,
-      rootDir: (mdxConfig as any).rootDir,  // For resolving @ alias
     });
     
     // Cleanup
