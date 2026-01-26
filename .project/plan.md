@@ -5,7 +5,7 @@
 - ✅ Frontmatter extraction
 - ✅ TOC generation
 - ✅ Navigation JSON
-- 🔄 **Next:** Full MDX rendering (currently placeholder)
+- ✅ Full MDX rendering (currently placeholder)
 
 ### Phase 2: Full SSG
 - [ ] Vite SSG for complete MDX rendering

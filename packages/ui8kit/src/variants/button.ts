@@ -36,6 +36,6 @@ export const buttonStyleVariants = cva("inline-flex items-center justify-center 
   }
 });
 
-export interface ButtonSizeProps extends VariantProps<typeof buttonSizeVariants> {}
-export interface ButtonStyleProps extends VariantProps<typeof buttonStyleVariants> {} 
+export interface ButtonSizeVariantProps extends VariantProps<typeof buttonSizeVariants> {}
+export interface ButtonStyleVariantProps extends VariantProps<typeof buttonStyleVariants> {}
 export type ButtonVariantProps = VariantProps<typeof buttonStyleVariants> & VariantProps<typeof buttonSizeVariants>;

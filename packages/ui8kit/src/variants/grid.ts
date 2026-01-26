@@ -31,4 +31,4 @@ export const gridVariants = cva("", {
 });
 
 // Types for grid props
-export interface VariantGridProps extends VariantProps<typeof gridVariants> {} 
+export interface GridVariantProps extends VariantProps<typeof gridVariants> {}

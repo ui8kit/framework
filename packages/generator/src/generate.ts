@@ -87,7 +87,26 @@ export interface GenerateConfig extends GeneratorConfig {
     outputDir: string;
     navOutput?: string;
     basePath?: string;
+    /**
+     * Import path aliases for resolving imports in MDX files.
+     * Same format as Vite's resolve.alias.
+     * @example
+     * ```typescript
+     * aliases: {
+     *   '@ui8kit/core': '../../packages/ui8kit/src/index',
+     *   '@': './src',
+     * }
+     * ```
+     */
+    aliases?: Record<string, string>;
+    /**
+     * @deprecated Use `aliases` instead. Components are now auto-resolved from MDX imports.
+     */
     components?: Record<string, string>;
+    /**
+     * @deprecated No longer needed. Alias resolution handles component paths.
+     */
+    rootDir?: string;
     propsSource?: string;
     toc?: {
       minLevel?: number;
@@ -777,27 +796,11 @@ async function generateMdxDocs(
   if (!mdxConfig) return { pages: 0 };
   
   try {
-    // Try multiple import paths for MdxService
-    let MdxService: any;
-    
-    // Try package import first
-    try {
-      const module = await import('@ui8kit/mdx-react/service');
-      MdxService = module.MdxService;
-    } catch {
-      // Try relative workspace path (for monorepo development)
-      try {
-        const module = await import('../../mdx-react/src/service/index.js');
-        MdxService = module.MdxService;
-      } catch {
-        // Try source path
-        const module = await import('../../../packages/mdx-react/src/service/MdxService.js');
-        MdxService = module.MdxService;
-      }
-    }
+    const module = await import('@ui8kit/mdx-react/service');
+    const MdxService = module.MdxService;
     
     if (!MdxService) {
-      throw new Error('MdxService class not found');
+      throw new Error('MdxService class not found in @ui8kit/mdx-react/service');
     }
     
     const service = new MdxService();
@@ -821,12 +824,14 @@ async function generateMdxDocs(
       outputDir: mdxConfig.outputDir,
       basePath: mdxConfig.basePath,
       navOutput: mdxConfig.navOutput,
+      aliases: mdxConfig.aliases,
+      // Legacy support: components and rootDir (deprecated)
       components: mdxConfig.components,
+      rootDir: mdxConfig.rootDir,
       propsSource: mdxConfig.propsSource,
       toc: mdxConfig.toc,
       htmlMode: config.html.mode ?? 'tailwind',
       verbose: true,
-      rootDir: (mdxConfig as any).rootDir,  // For resolving @ alias
     });
     
     // Cleanup
@@ -837,7 +842,8 @@ async function generateMdxDocs(
     return { pages: result.pages };
   } catch (error) {
     // Fallback: if MdxService is not available, log warning
-    logger.warn(`⚠️ MdxService not available: ${error}`);
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn(`⚠️ MdxService not available: ${message}`);
     logger.info('📚 Skipping MDX generation (install @ui8kit/mdx-react for MDX support)');
     return { pages: 0 };
   }

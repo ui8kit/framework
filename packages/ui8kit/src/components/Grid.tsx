@@ -1,16 +1,16 @@
 import type { ReactNode } from "react";
 import { forwardRef } from "react";
-import { cn } from "@/lib/utils";
-import { gridVariants, type VariantGridProps } from "@/variants";
+import { cn } from "../lib/utils";
+import { gridVariants, type GridVariantProps } from "../variants";
 
-import { resolveUtilityClassName, type UtilityPropBag, type UtilityPropPrefix } from "@/lib/utility-props";
+import { resolveUtilityClassName, type UtilityPropBag, type UtilityPropPrefix } from "../lib/utility-props";
 
 type GridDomProps = Omit<React.HTMLAttributes<HTMLDivElement>, UtilityPropPrefix>;
 
 export type GridProps
   = GridDomProps &
     UtilityPropBag &
-    VariantGridProps & {
+    GridVariantProps & {
   children: ReactNode;
 };
 

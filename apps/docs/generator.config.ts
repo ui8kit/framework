@@ -53,7 +53,7 @@ export const config: GenerateConfig = {
 
   // CSS class mappings
   mappings: {
-    ui8kitMap: './src/lib/ui8kit.map.json',
+    ui8kitMap: '../../packages/ui8kit/src/lib/ui8kit.map.json',
   },
 
   // CSS Generation
@@ -99,7 +99,7 @@ export const config: GenerateConfig = {
   // Variant elements generation
   elements: {
     enabled: true,
-    variantsDir: './src/variants',
+    variantsDir: '../../packages/ui8kit/src/variants',
     outputDir: './src/elements',
     componentsImportPath: '../components'
   },
@@ -111,17 +111,12 @@ export const config: GenerateConfig = {
     outputDir: './dist/html',
     navOutput: './dist/docs-nav.json',
     basePath: '',
-    rootDir: './src',  // For resolving @ alias (e.g., @/components → ./src/components)
     
-    components: {
-      Button: '@/components/ui/Button',
-      Card: '@/components/Card',
-      Badge: '@/components/ui/Badge',
-      Stack: '@/components/ui/Stack',
-      Box: '@/components/ui/Box',
-      Grid: '@/components/Grid',
-      Text: '@/components/ui/Text',
-      Title: '@/components/ui/Title',
+    // Import path aliases for resolving imports in MDX files
+    // Same format as Vite's resolve.alias in vite.config.ts
+    aliases: {
+      '@ui8kit/core': '../../packages/ui8kit/src/index',
+      '@': './src',
     },
     
     propsSource: './src/components',
