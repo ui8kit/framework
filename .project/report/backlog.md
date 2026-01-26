@@ -1,20 +1,33 @@
 # Backlog
 
-- [x]  Генератор OOP Typescript + отд пакет react зависимый для render static markup (content)
-- [x]  bun run html вместо классов уставляиваются стили прямо в тег
-- [x]  не создаются остальные роуты, только главный
-- [x]  макет имеет не существующий в react тег `<main class="min-h-screen">`
-- [x]  `isValidTailwindClass` валидация по карте `ui8kit.map.json` с вырезанием лишнего, например: preline to ui8kit
-- [x]  дублируются классы в local.css `.feature-description`
-- [x]  дублируются классы в селекторах apply `.feature-card-0`, `.feature-card-1` -> `@apply p-6 border rounded-lg`
-- [x]  добавить в конфиг `generator.config.ts` режимы генерации для `html:tailwind, tailwind --pure, semantic`, `css:tailwind, css3, css3inline`. Чистые классы tw без атрибутов (--pure)
-- [x]  partials генерировать из реакт или пропускать
-- [x]  обработать дизайн токены shadcn для css3
-- [х]  поправить недостоющие классы в картах
-- [x]  grid tw -> css3
-- [ ]  прокинуть базовые стили и добиться идентичного результата tw = css3
-- [ ]  разработать моб версию и darkMode
-- [ ]  реализовать моб меню и sheet
-- [ ]  причесать макеты и блоки до финала
-- [ ]  начать разработку компонентов под семантику
-- [ ]  
+- [x] Генератор OOP Typescript + отд пакет react зависимый для render static markup (content)
+- [x] bun run html вместо классов уставляиваются стили прямо в тег
+- [x] не создаются остальные роуты, только главный
+- [x] макет имеет не существующий в react тег `<main class="min-h-screen">`
+- [x] `isValidTailwindClass` валидация по карте `ui8kit.map.json` с вырезанием лишнего, например: preline to ui8kit
+- [x] дублируются классы в local.css `.feature-description`
+- [x] дублируются классы в селекторах apply `.feature-card-0`, `.feature-card-1` -> `@apply p-6 border rounded-lg`
+- [x] добавить в конфиг `generator.config.ts` режимы генерации для `html:tailwind, tailwind --pure, semantic`, `css:tailwind, css3, css3inline`. Чистые классы tw без атрибутов (--pure)
+- [x] partials генерировать из реакт или пропускать
+- [x] обработать дизайн токены shadcn для css3
+- [х] поправить недостоющие классы в картах
+- [x] grid tw -> css3
+- [x] вынести ui8kit в пакет
+- [x] исправить указанные ошибки и баги такие как tart-1 и др
+- [x] terminal errors 
+- [x] рефачить конфиг доков под алисы после выноса либы в пакет
+- [x] убедиться что в компонентах импортированы варианты и нет дедупов
+- [ ] лог фактических классов проекта списком ui8kit.log.json с дедупом и tw4 только для проекта
+- [ ] протестировать конфиг mjs для tw4 чтобы он ходил в ui8kit.log.json
+- [ ] обработчик карта dsl to ui8kit.map.json прямо в генератор lib/ и синхрон с свойствами css tw doc
+- [ ] shadcn.map.json в работе?
+- [ ] grid md:grid lg:grid что с этим делать??
+- [ ] 
+- [ ] что делать с одиковым пропом из карты
+- [ ] прокинуть базовые стили и добиться идентичного результата tw = css3
+- [ ] разработать моб версию и darkMode
+- [ ] реализовать моб меню и sheet
+- [ ] причесать макеты и блоки до финала
+- [ ] начать разработку компонентов под семантику
+- [ ] изучить html5 input и добавить input с типами включая submit, checkbox, radio, etc
+- [ ] 

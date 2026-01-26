@@ -30,7 +30,6 @@
   "text-foreground": "color: var(--foreground);",
   "text-primary-foreground": "color: var(--primary-foreground);",
   "text-primary": "color: var(--primary);",
-  "text-primary-foreground0": "color: var(--primary-foreground);",
   "text-secondary-foreground": "color: var(--secondary-foreground);",
   "text-muted-foreground": "color: var(--muted-foreground);",
   "text-accent-foreground": "color: var(--accent-foreground);",
