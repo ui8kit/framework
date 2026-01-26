@@ -484,10 +484,6 @@ export const utilityPropsMap = {
     "6",
     "8"
   ],
-  "placeholder": [
-    "foreground",
-    "muted-foreground"
-  ],
   "pointer": [
     "events-auto",
     "events-none"
@@ -540,12 +536,7 @@ export const utilityPropsMap = {
     "1",
     "2",
     "4",
-    "8",
-    "offset-0",
-    "offset-1",
-    "offset-2",
-    "offset-4",
-    "offset-8"
+    "8"
   ],
   "rounded": [
     "",

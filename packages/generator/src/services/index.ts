@@ -81,3 +81,11 @@ export type {
   ClassLogFile,
   ClassLogFileSystem,
 } from './class-log';
+
+export { UiKitMapService } from './uikit-map';
+export type {
+  UiKitMapServiceInput,
+  UiKitMapServiceOutput,
+  UiKitMapServiceOptions,
+  UiKitMapFileSystem,
+} from './uikit-map';
