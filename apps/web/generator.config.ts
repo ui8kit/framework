@@ -161,6 +161,13 @@ export const config: GenerateConfig = {
     variantsDir: '../../packages/ui8kit/src/variants',
     outputDir: './src/elements',
     componentsImportPath: '../components'
+  },
+
+  // Class logging - tracks all used classes
+  classLog: {
+    enabled: true,
+    outputDir: './dist/maps',
+    baseName: 'ui8kit',
   }
 };
 

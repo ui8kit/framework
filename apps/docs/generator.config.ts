@@ -133,6 +133,13 @@ export const config: GenerateConfig = {
     viteBuildDir: './dist/assets',
     cssFileName: 'styles.css',
   },
+
+  // Class logging - tracks all used classes
+  classLog: {
+    enabled: true,
+    outputDir: './dist/maps',
+    baseName: 'ui8kit',
+  },
 };
 
 // =============================================================================

@@ -64,6 +64,7 @@ export {
   HtmlService,
   AssetService,
   HtmlConverterService,
+  ClassLogService,
 } from './services';
 
 export type {
@@ -87,6 +88,9 @@ export type {
   CssFileNames,
   HtmlConverterInput,
   HtmlConverterOutput,
+  ClassLogServiceInput,
+  ClassLogServiceOutput,
+  ClassLogFile,
 } from './services';
 
 // =============================================================================

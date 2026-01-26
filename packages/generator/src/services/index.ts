@@ -72,3 +72,12 @@ export type {
   ViteBundleServiceOptions,
   ViteBundleFileSystem,
 } from './vite-bundle';
+
+export { ClassLogService } from './class-log';
+export type {
+  ClassLogServiceInput,
+  ClassLogServiceOutput,
+  ClassLogServiceOptions,
+  ClassLogFile,
+  ClassLogFileSystem,
+} from './class-log';

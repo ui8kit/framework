@@ -29,6 +29,7 @@ import {
   HtmlStage,
   AssetStage,
 } from './stages';
+import { ClassLogService } from './services/class-log';
 import { emitVariantsApplyCss } from './scripts/emit-variants-apply.js';
 import { emitVariantElements } from './scripts/emit-variant-elements.js';
 import type { GeneratorConfig, RouteConfig } from './core/interfaces';
@@ -79,6 +80,18 @@ export interface GenerateConfig extends GeneratorConfig {
     variantsDir?: string;
     outputDir?: string;
     componentsImportPath?: string;
+  };
+  /** Class logging configuration - tracks all used classes */
+  classLog?: {
+    enabled?: boolean;
+    /** Output directory for class log files (default: './dist/maps') */
+    outputDir?: string;
+    /** Base name for output files (default: 'ui8kit') */
+    baseName?: string;
+    /** Include responsive variants like md:, lg: (default: true) */
+    includeResponsive?: boolean;
+    /** Include state variants like hover:, focus: (default: true) */
+    includeStates?: boolean;
   };
   /** MDX documentation configuration */
   mdx?: {
@@ -193,6 +206,12 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
     const viewResult = await generateViews(config, logger);
     generated.views = viewResult.views;
     generated.partials = viewResult.partials;
+    
+    // 5.5. Generate class log (before CSS, so we have all views ready)
+    if (config.classLog?.enabled) {
+      logger.info('📊 Generating class log...');
+      await generateClassLog(config, logger);
+    }
     
     // 6. Generate CSS
     logger.info('🎨 Generating CSS...');
@@ -401,6 +420,43 @@ async function generateViews(
   }
   
   return { views: viewCount, partials: partialCount };
+}
+
+/**
+ * Generate class log JSON file with all used Tailwind classes.
+ * 
+ * This scans all Liquid views and extracts class names,
+ * outputting them to a JSON file that can be used:
+ * - As a Tailwind safelist
+ * - For validation against whitelist
+ * - To see actual class usage statistics
+ */
+async function generateClassLog(
+  config: GenerateConfig,
+  logger: Logger
+): Promise<void> {
+  const classLogService = new ClassLogService();
+  const minimalContext = createMinimalContext(config, logger);
+  await classLogService.initialize(minimalContext);
+  
+  const {
+    outputDir = './dist/maps',
+    baseName = 'ui8kit',
+    includeResponsive = true,
+    includeStates = true,
+  } = config.classLog ?? {};
+  
+  const result = await classLogService.execute({
+    viewsDir: config.html.viewsDir,
+    outputDir,
+    baseName,
+    includeResponsive,
+    includeStates,
+  });
+  
+  logger.info(`  📊 Found ${result.totalClasses} unique classes`);
+  
+  await classLogService.dispose();
 }
 
 async function generateCss(
