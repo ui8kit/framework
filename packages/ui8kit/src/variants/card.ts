@@ -1,12 +1,12 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
 // Base card variants (style/variant collapses to "card")
-export const cardStyleVariants = cva("rounded-lg border bg-card text-card-foreground shadow-sm", {
+export const cardVariants = cva("rounded-lg border bg-card text-card-foreground shadow-sm", {
   variants: {
     variant: {
       default: "border-border",
       outlined: "border-border shadow-none",
-      filled: "border-transparent bg-muted/50",
+      filled: "border-transparent bg-muted/50"
     },
   },
   defaultVariants: {
@@ -25,10 +25,16 @@ export const cardContentVariants = cva("p-6 pt-0");
 
 export const cardFooterVariants = cva("flex items-center p-6 pt-0");
 
-export interface CardHeaderProps extends VariantProps<typeof cardHeaderVariants> {}
-export interface CardTitleProps extends VariantProps<typeof cardTitleVariants> {}
-export interface CardDescriptionProps extends VariantProps<typeof cardDescriptionVariants> {}
-export interface CardContentProps extends VariantProps<typeof cardContentVariants> {}
-export interface CardFooterProps extends VariantProps<typeof cardFooterVariants> {}
-export type CardVariantProps = VariantProps<typeof cardStyleVariants> & VariantProps<typeof cardHeaderVariants> & VariantProps<typeof cardTitleVariants> & VariantProps<typeof cardDescriptionVariants> & VariantProps<typeof cardContentVariants> & VariantProps<typeof cardFooterVariants>;
-export type CardProps = CardVariantProps & CardHeaderProps & CardTitleProps & CardDescriptionProps & CardContentProps & CardFooterProps;
+export interface CardHeaderVariantProps extends VariantProps<typeof cardHeaderVariants> {}
+export interface CardTitleVariantProps extends VariantProps<typeof cardTitleVariants> {}
+export interface CardDescriptionVariantProps extends VariantProps<typeof cardDescriptionVariants> {}
+export interface CardContentVariantProps extends VariantProps<typeof cardContentVariants> {}
+export interface CardFooterVariantProps extends VariantProps<typeof cardFooterVariants> {}
+export type CardVariantProps = VariantProps<typeof cardVariants>;
+export type CardCompoundVariantProps
+  = CardVariantProps &
+    CardHeaderVariantProps &
+    CardTitleVariantProps &
+    CardDescriptionVariantProps &
+    CardContentVariantProps &
+    CardFooterVariantProps;

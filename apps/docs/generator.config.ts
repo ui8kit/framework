@@ -113,17 +113,17 @@ export const config: GenerateConfig = {
     basePath: '',
     
     components: {
-      Button: '@ui8kit/core',
-      Card: '@ui8kit/core',
-      Badge: '@ui8kit/core',
-      Stack: '@ui8kit/core',
-      Box: '@ui8kit/core',
-      Grid: '@ui8kit/core',
-      Text: '@ui8kit/core',
-      Title: '@ui8kit/core',
+      Button: '@/components/Button.tsx',
+      Card: '@/components/Card.tsx',
+      Badge: '@/components/Badge.tsx',
+      Stack: '@/components/Stack.tsx',
+      Box: '@/components/Box.tsx',
+      Grid: '@/components/Grid.tsx',
+      Text: '@/components/Text.tsx',
+      Title: '@/components/Title.tsx',
     },
     
-    propsSource: '../../packages/ui8kit/src/components',
+    propsSource: './src/components',
     
     toc: {
       minLevel: 2,

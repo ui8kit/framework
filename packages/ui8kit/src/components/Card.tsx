@@ -2,34 +2,13 @@ import type { ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "../lib/utils";
 import { resolveUtilityClassName, ux, type UtilityPropBag, type UtilityPropPrefix } from "../lib/utility-props";
-import { cva } from "class-variance-authority";
-
-// Simple card variants
-const cardVariantVariants = cva("", {
-  variants: {
-    variant: {
-      default: "",
-      outlined: "border",
-      filled: "bg-muted"
-    }
-  },
-  defaultVariants: {
-    variant: "default"
-  }
-});
-
-const cardHeaderVariants = cva("flex flex-col space-y-1.5 p-6");
-const cardTitleVariants = cva("text-2xl font-semibold leading-none tracking-tight");
-const cardDescriptionVariants = cva("text-sm text-muted-foreground");
-const cardContentVariants = cva("p-6 pt-0");
-const cardFooterVariants = cva("flex items-center p-6 pt-0");
+import { cardVariants, cardHeaderVariants, cardTitleVariants, cardDescriptionVariants, cardContentVariants, cardFooterVariants, type CardVariantProps } from "../variants/card";
 
 type CardDomProps = Omit<React.HTMLAttributes<HTMLDivElement>, UtilityPropPrefix>;
 
 // Main Card component interface (CDL utility-props + variant)
-interface CardProps extends CardDomProps, UtilityPropBag {
+interface CardProps extends CardDomProps, UtilityPropBag, CardVariantProps {
   children: ReactNode;
-  variant?: 'default' | 'outlined' | 'filled';
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -53,7 +32,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         data-class="card"
         className={cn(
-          cardVariantVariants({ variant }),
+          cardVariants({ variant }),
           defaultUtilities,
           utilityClassName,
           className

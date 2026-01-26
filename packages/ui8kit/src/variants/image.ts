@@ -13,4 +13,4 @@ export const imagePositionVariants = cva("", {
   }
 });
 
-export interface ImagePositionProps extends VariantProps<typeof imagePositionVariants> {}
+export interface ImagePositionVariantProps extends VariantProps<typeof imagePositionVariants> {}

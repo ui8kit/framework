@@ -158,7 +158,7 @@ export const config: GenerateConfig = {
 
   elements: {
     enabled: true,
-    variantsDir: './src/variants',
+    variantsDir: '../../packages/ui8kit/src/variants',
     outputDir: './src/elements',
     componentsImportPath: '../components'
   }
