@@ -1,42 +1,53 @@
 import type { ElementType, ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "../../lib/utils";
-import { resolveUtilityClassName, ux, type UtilityPropBag, type UtilityPropPrefix } from "../../lib/utility-props";
+import { resolveUtilityClassName, type UtilityPropBag, type UtilityPropPrefix } from "../../lib/utility-props";
+import { typographyVariants, type TypographyVariantProps } from "../../variants/typography";
 
 type TitleDomProps = Omit<React.HTMLAttributes<HTMLHeadingElement>, UtilityPropPrefix>;
 
-export type TitleProps
-  = TitleDomProps &
-    UtilityPropBag & {
-  children: ReactNode;
-  component?: ElementType;
-  order?: 1 | 2 | 3 | 4 | 5 | 6;
-};
-
-const defaultProps = ux({
-  text: 'xl',       // font-size: xl (20px)
-  font: 'bold',     // font-weight: bold
-  leading: 'normal' // line-height: normal
-});
+export type TitleProps = TitleDomProps &
+  UtilityPropBag &
+  TypographyVariantProps & {
+    children: ReactNode;
+    order?: 1 | 2 | 3 | 4 | 5 | 6;
+  };
 
 export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
-  ({
-    children,
-    className,
-    order = 1,
-    ...props
-  }, ref) => {
+  (
+    {
+      children,
+      className,
+      order = 1,
+      // Typography variants with Title-specific defaults
+      fontSize = "xl",
+      textColor,
+      textAlign,
+      fontWeight = "bold",
+      lineHeight = "normal",
+      letterSpacing,
+      truncate,
+      ...props
+    },
+    ref
+  ) => {
     const { utilityClassName, rest } = resolveUtilityClassName(props);
-    const headingTag = `h${order}` as ElementType;
-
-    const Heading = headingTag as ElementType;
+    const Heading = `h${order}` as ElementType;
 
     return (
       <Heading
         ref={ref}
         data-class="title"
         className={cn(
-          defaultProps,
+          typographyVariants({
+            fontSize,
+            textColor,
+            textAlign,
+            fontWeight,
+            lineHeight,
+            letterSpacing,
+            truncate,
+          }),
           utilityClassName,
           className
         )}

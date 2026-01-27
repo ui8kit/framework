@@ -1,5 +1,6 @@
 // Base variants
 export * from "./grid";
+export * from "./typography";
 
 // Component-specific variants
 export * from "./button";

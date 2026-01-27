@@ -33,10 +33,13 @@
 
 ## TODO: Семантика и алиасы
 
-- [ ] **Добавить семантические алиасы** для `text-*` prop:
+- [x] **Добавить семантические алиасы** для `text-*` prop:
   - `fontSize` → `text-{size}` (xs, sm, base, lg, xl, 2xl...)
   - `textColor` → `text-{color}` (foreground, muted-foreground, primary...)
   - `textAlign` → `text-{align}` (left, center, right, justify)
+  - Реализовано через CVA variants в `packages/ui8kit/src/variants/typography.ts`
+  - Компоненты `Text` и `Title` используют `typographyVariants`
+  - Дополнительно: `fontWeight`, `lineHeight`, `letterSpacing`, `truncate`
 
 ## TODO: Генерация и оптимизация
 

@@ -1,30 +1,36 @@
 import type { ElementType, ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "../../lib/utils";
-import { resolveUtilityClassName, ux, type UtilityPropBag, type UtilityPropPrefix } from "../../lib/utility-props";
+import { resolveUtilityClassName, type UtilityPropBag, type UtilityPropPrefix } from "../../lib/utility-props";
+import { typographyVariants, type TypographyVariantProps } from "../../variants/typography";
 
 type TextDomProps = Omit<React.HTMLAttributes<HTMLElement>, UtilityPropPrefix>;
 
-export type TextProps
-  = TextDomProps &
-    UtilityPropBag & {
-  children: ReactNode;
-  component?: ElementType;
-};
-
-const defaultProps = ux({
-  text: 'base',     // font-size: base (16px)
-  font: 'normal',   // font-weight: normal
-  leading: 'normal' // line-height: normal
-});
+export type TextProps = TextDomProps &
+  UtilityPropBag &
+  TypographyVariantProps & {
+    children: ReactNode;
+    component?: ElementType;
+  };
 
 export const Text = forwardRef<HTMLElement, TextProps>(
-  ({
-    children,
-    className,
-    component = 'p',
-    ...props
-  }, ref) => {
+  (
+    {
+      children,
+      className,
+      component = "p",
+      // Typography variants
+      fontSize = "base",
+      textColor,
+      textAlign,
+      fontWeight = "normal",
+      lineHeight = "normal",
+      letterSpacing,
+      truncate,
+      ...props
+    },
+    ref
+  ) => {
     const { utilityClassName, rest } = resolveUtilityClassName(props);
     const Element = component as ElementType;
 
@@ -33,7 +39,15 @@ export const Text = forwardRef<HTMLElement, TextProps>(
         ref={ref}
         data-class="text"
         className={cn(
-          defaultProps,
+          typographyVariants({
+            fontSize,
+            textColor,
+            textAlign,
+            fontWeight,
+            lineHeight,
+            letterSpacing,
+            truncate,
+          }),
           utilityClassName,
           className
         )}
