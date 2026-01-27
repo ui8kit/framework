@@ -1,5 +1,5 @@
 import type { IService, IServiceContext } from '../../core/interfaces';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 
 /**
  * Input for ClassLogService.execute()
@@ -9,6 +9,8 @@ export interface ClassLogServiceInput {
   viewsDir: string;
   /** Output directory for class log files */
   outputDir: string;
+  /** Path to ui8kit.map.json for filtering valid classes */
+  uikitMapPath?: string;
   /** Base name for output files (default: 'ui8kit') */
   baseName?: string;
   /** Include responsive variants (md:, lg:, etc.) */
@@ -21,14 +23,14 @@ export interface ClassLogServiceInput {
  * Output from ClassLogService.execute()
  */
 export interface ClassLogServiceOutput {
-  /** Path to generated JSON file */
+  /** Path to generated JSON file (all classes) */
   jsonPath: string;
-  /** Path to generated TXT file (space-separated) */
-  txtPath: string;
-  /** Path to generated LIST file (newline-separated) */
-  listPath: string;
+  /** Path to filtered JSON file (only ui8kit classes) */
+  filteredJsonPath: string;
   /** Total number of unique classes */
   totalClasses: number;
+  /** Number of classes matching ui8kit.map.json */
+  validClasses: number;
 }
 
 /**
@@ -62,27 +64,22 @@ export interface ClassLogServiceOptions {
 /**
  * ClassLogService - Logs all classes used in Liquid views.
  * 
- * Outputs three files:
- * - ui8kit.log.json  - { total: N, classes: [...] }
- * - ui8kit.classes.txt  - space-separated classes (for Tailwind --content)
- * - ui8kit.classes.list - newline-separated classes (one per line)
+ * Outputs two JSON files:
+ * - ui8kit.log.json          - All classes found in views
+ * - ui8kit.tailwind.log.json - Only classes from ui8kit.map.json (for CSS source)
  * 
  * Usage in generator.config.ts:
  * ```typescript
  * classLog: {
  *   enabled: true,
  *   outputDir: './dist/maps',
+ *   uikitMapPath: './packages/generator/src/lib/ui8kit.map.json',
  * }
- * ```
- * 
- * Then run Tailwind to filter only valid classes:
- * ```bash
- * npx tailwindcss --content "./dist/maps/ui8kit.classes.txt" -o ./dist/maps/tailwind.css
  * ```
  */
 export class ClassLogService implements IService<ClassLogServiceInput, ClassLogServiceOutput> {
   readonly name = 'class-log';
-  readonly version = '2.0.0';
+  readonly version = '3.0.0';
   readonly dependencies: readonly string[] = ['view'];
   
   private context!: IServiceContext;
@@ -100,6 +97,7 @@ export class ClassLogService implements IService<ClassLogServiceInput, ClassLogS
     const { 
       viewsDir, 
       outputDir,
+      uikitMapPath,
       baseName = 'ui8kit',
       includeResponsive = true, 
       includeStates = true 
@@ -129,40 +127,60 @@ export class ClassLogService implements IService<ClassLogServiceInput, ClassLogS
     
     // Generate file paths
     const jsonPath = join(outputDir, `${baseName}.log.json`);
-    const txtPath = join(outputDir, `${baseName}.classes.txt`);
-    const listPath = join(outputDir, `${baseName}.classes.list`);
+    const filteredJsonPath = join(outputDir, `${baseName}.tailwind.log.json`);
     
-    // Write JSON file
+    // Write JSON file with all classes
     const classLog: ClassLogFile = {
       total: sortedClasses.length,
       classes: sortedClasses,
     };
     await this.fs.writeFile(jsonPath, JSON.stringify(classLog, null, 2));
     
-    // Write TXT file (space-separated, single line)
-    await this.fs.writeFile(txtPath, sortedClasses.join(' '));
+    // Filter by ui8kit.map.json if provided
+    let validClasses: string[] = [];
     
-    // Write LIST file (newline-separated)
-    await this.fs.writeFile(listPath, sortedClasses.join('\n'));
+    if (uikitMapPath) {
+      try {
+        const mapContent = await this.fs.readFile(uikitMapPath);
+        const uikitMap: Record<string, string> = JSON.parse(mapContent);
+        const validSet = new Set(Object.keys(uikitMap));
+        
+        validClasses = sortedClasses.filter(cls => validSet.has(cls));
+        
+        const filteredLog: ClassLogFile = {
+          total: validClasses.length,
+          classes: validClasses,
+        };
+        await this.fs.writeFile(filteredJsonPath, JSON.stringify(filteredLog, null, 2));
+        
+        this.context.logger.info(`✅ Filtered ${validClasses.length}/${sortedClasses.length} valid ui8kit classes`);
+      } catch (error) {
+        this.context.logger.warn(`Failed to load ui8kit.map.json: ${error}`);
+        validClasses = sortedClasses;
+      }
+    } else {
+      validClasses = sortedClasses;
+      // Write same content if no filter
+      await this.fs.writeFile(filteredJsonPath, JSON.stringify(classLog, null, 2));
+    }
     
-    this.context.logger.info(`✅ Generated class logs (${sortedClasses.length} classes):`);
-    this.context.logger.info(`   ${jsonPath}`);
-    this.context.logger.info(`   ${txtPath}`);
-    this.context.logger.info(`   ${listPath}`);
+    this.context.logger.info(`✅ Generated class logs:`);
+    this.context.logger.info(`   ${jsonPath} (${sortedClasses.length} total)`);
+    this.context.logger.info(`   ${filteredJsonPath} (${validClasses.length} valid)`);
     
     // Emit event
     this.context.eventBus.emit('class-log:generated', {
       jsonPath,
-      txtPath,
-      listPath,
+      filteredJsonPath,
       totalClasses: sortedClasses.length,
+      validClasses: validClasses.length,
     });
     
     return {
       jsonPath,
-      txtPath,
-      listPath,
+      filteredJsonPath,
       totalClasses: sortedClasses.length,
+      validClasses: validClasses.length,
     };
   }
   

@@ -78,6 +78,15 @@ function createMockContext() {
   };
 }
 
+// Sample ui8kit.map.json for filtering
+const SAMPLE_UIKIT_MAP = JSON.stringify({
+  'flex': 'display: flex;',
+  'gap-4': 'gap: 1rem;',
+  'p-2': 'padding: 0.5rem;',
+  'sticky': 'position: sticky;',
+  'top-0': 'top: 0px;',
+});
+
 describe('ClassLogService', () => {
   let service: ClassLogService;
   let mockFs: ClassLogFileSystem & { _written: Record<string, string> };
@@ -91,11 +100,11 @@ describe('ClassLogService', () => {
 
   it('has correct service metadata', () => {
     expect(service.name).toBe('class-log');
-    expect(service.version).toBe('2.0.0');
+    expect(service.version).toBe('3.0.0');
     expect(service.dependencies).toContain('view');
   });
 
-  it('extracts classes and generates all output files', async () => {
+  it('extracts classes and generates JSON output files', async () => {
     const files = {
       '/views/pages/index.liquid': '<div class="flex gap-4 p-2">Content</div>',
     };
@@ -118,17 +127,34 @@ describe('ClassLogService', () => {
     expect(json.classes).toContain('gap-4');
     expect(json.classes).toContain('p-2');
     
-    // Check TXT file (space-separated)
-    expect(mockFs._written['/dist/maps/ui8kit.classes.txt']).toBeDefined();
-    const txt = mockFs._written['/dist/maps/ui8kit.classes.txt'];
-    expect(txt).toContain('flex');
-    expect(txt).toContain('gap-4');
-    expect(txt).not.toContain('\n');
+    // Check filtered JSON file exists
+    expect(mockFs._written['/dist/maps/ui8kit.tailwind.log.json']).toBeDefined();
+  });
+
+  it('filters classes by ui8kit.map.json', async () => {
+    const files = {
+      '/views/pages/index.liquid': '<div class="flex gap-4 custom-class invalid-class">Content</div>',
+      '/uikit.map.json': SAMPLE_UIKIT_MAP,
+    };
+    mockFs = createMockFs(files);
+    service = new ClassLogService({ fileSystem: mockFs });
     
-    // Check LIST file (newline-separated)
-    expect(mockFs._written['/dist/maps/ui8kit.classes.list']).toBeDefined();
-    const list = mockFs._written['/dist/maps/ui8kit.classes.list'];
-    expect(list.split('\n').length).toBe(3);
+    await service.initialize(mockContext as any);
+    const result = await service.execute({
+      viewsDir: '/views',
+      outputDir: '/dist/maps',
+      uikitMapPath: '/uikit.map.json',
+    });
+    
+    expect(result.totalClasses).toBe(4); // All classes found
+    expect(result.validClasses).toBe(2); // Only flex, gap-4 are valid
+    
+    const filteredJson: ClassLogFile = JSON.parse(mockFs._written['/dist/maps/ui8kit.tailwind.log.json']);
+    expect(filteredJson.total).toBe(2);
+    expect(filteredJson.classes).toContain('flex');
+    expect(filteredJson.classes).toContain('gap-4');
+    expect(filteredJson.classes).not.toContain('custom-class');
+    expect(filteredJson.classes).not.toContain('invalid-class');
   });
 
   it('deduplicates classes', async () => {
@@ -263,9 +289,9 @@ describe('ClassLogService', () => {
     });
     
     expect(result.jsonPath).toContain('custom.log.json');
-    expect(result.txtPath).toContain('custom.classes.txt');
-    expect(result.listPath).toContain('custom.classes.list');
+    expect(result.filteredJsonPath).toContain('custom.tailwind.log.json');
     expect(mockFs._written['/dist/maps/custom.log.json']).toBeDefined();
+    expect(mockFs._written['/dist/maps/custom.tailwind.log.json']).toBeDefined();
   });
 
   it('emits event on completion', async () => {
@@ -283,6 +309,7 @@ describe('ClassLogService', () => {
     
     expect(mockContext.eventBus.emit).toHaveBeenCalledWith('class-log:generated', expect.objectContaining({
       totalClasses: 1,
+      validClasses: 1,
     }));
   });
 
@@ -301,5 +328,25 @@ describe('ClassLogService', () => {
     
     const json: ClassLogFile = JSON.parse(mockFs._written['/dist/maps/ui8kit.log.json']);
     expect(json.classes).toEqual(['absolute', 'flex', 'mt-4', 'z-10']);
+  });
+
+  it('handles missing ui8kit.map.json gracefully', async () => {
+    const files = {
+      '/views/pages/index.liquid': '<div class="flex gap-4">Content</div>',
+    };
+    mockFs = createMockFs(files);
+    service = new ClassLogService({ fileSystem: mockFs });
+    
+    await service.initialize(mockContext as any);
+    const result = await service.execute({
+      viewsDir: '/views',
+      outputDir: '/dist/maps',
+      uikitMapPath: '/nonexistent/uikit.map.json',
+    });
+    
+    // Should still work, just use all classes
+    expect(result.totalClasses).toBe(2);
+    expect(result.validClasses).toBe(2);
+    expect(mockContext.logger.warn).toHaveBeenCalled();
   });
 });

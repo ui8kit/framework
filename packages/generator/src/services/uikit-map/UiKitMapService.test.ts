@@ -3,9 +3,14 @@ import { UiKitMapService, type UiKitMapFileSystem, type UiKitMapServiceInput } f
 import type { IServiceContext, IEventBus, ILogger } from '../../core/interfaces';
 
 /**
+ * Mock file system type with getWrittenFiles
+ */
+type MockFileSystem = UiKitMapFileSystem & { getWrittenFiles: () => Record<string, string> };
+
+/**
  * Create mock file system
  */
-function createMockFileSystem(files: Record<string, string> = {}): UiKitMapFileSystem {
+function createMockFileSystem(files: Record<string, string> = {}): MockFileSystem {
   const writtenFiles: Record<string, string> = {};
   
   return {
@@ -20,7 +25,7 @@ function createMockFileSystem(files: Record<string, string> = {}): UiKitMapFileS
     }),
     exists: vi.fn(async (path: string) => path in files),
     getWrittenFiles: () => writtenFiles,
-  } as UiKitMapFileSystem & { getWrittenFiles: () => Record<string, string> };
+  };
 }
 
 /**
@@ -215,17 +220,17 @@ describe('UiKitMapService', () => {
         '"custom": ["nonexistent"],\n  "gap": ['
       );
       
-      mockFs = createMockFileSystem({
+      const testFs = createMockFileSystem({
         '/path/to/utility-props.map.ts': propsWithMissing,
         '/path/to/tw-css-extended.json': SAMPLE_TAILWIND_MAP,
         '/path/to/shadcn.map.json': SAMPLE_SHADCN_MAP,
         '/path/to/grid.map.json': SAMPLE_GRID_MAP,
       });
       
-      service = new UiKitMapService({ fileSystem: mockFs });
-      await service.initialize(mockContext);
+      const testService = new UiKitMapService({ fileSystem: testFs });
+      await testService.initialize(mockContext);
       
-      const result = await service.execute(defaultInput);
+      const result = await testService.execute(defaultInput);
       
       expect(result.missingClasses).toContain('custom-nonexistent');
     });
@@ -277,31 +282,31 @@ describe('UiKitMapService', () => {
     });
     
     it('should throw if props map file not found', async () => {
-      mockFs = createMockFileSystem({
+      const testFs = createMockFileSystem({
         // Missing props map
         '/path/to/tw-css-extended.json': SAMPLE_TAILWIND_MAP,
         '/path/to/shadcn.map.json': SAMPLE_SHADCN_MAP,
         '/path/to/grid.map.json': SAMPLE_GRID_MAP,
       });
       
-      service = new UiKitMapService({ fileSystem: mockFs });
-      await service.initialize(mockContext);
+      const testService = new UiKitMapService({ fileSystem: testFs });
+      await testService.initialize(mockContext);
       
-      await expect(service.execute(defaultInput)).rejects.toThrow('File not found');
+      await expect(testService.execute(defaultInput)).rejects.toThrow('File not found');
     });
     
     it('should throw if props map has invalid format', async () => {
-      mockFs = createMockFileSystem({
+      const testFs = createMockFileSystem({
         '/path/to/utility-props.map.ts': 'invalid content',
         '/path/to/tw-css-extended.json': SAMPLE_TAILWIND_MAP,
         '/path/to/shadcn.map.json': SAMPLE_SHADCN_MAP,
         '/path/to/grid.map.json': SAMPLE_GRID_MAP,
       });
       
-      service = new UiKitMapService({ fileSystem: mockFs });
-      await service.initialize(mockContext);
+      const testService = new UiKitMapService({ fileSystem: testFs });
+      await testService.initialize(mockContext);
       
-      await expect(service.execute(defaultInput)).rejects.toThrow('Could not parse utilityPropsMap');
+      await expect(testService.execute(defaultInput)).rejects.toThrow('Could not parse utilityPropsMap');
     });
   });
 });

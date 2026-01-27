@@ -7,7 +7,6 @@
 import type {
   LintError,
   LintResult,
-  LintErrorCode,
   PropsMap,
   ValidateOptions,
 } from "./types";

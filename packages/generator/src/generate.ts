@@ -88,6 +88,8 @@ export interface GenerateConfig extends GeneratorConfig {
     outputDir?: string;
     /** Base name for output files (default: 'ui8kit') */
     baseName?: string;
+    /** Path to ui8kit.map.json for filtering valid classes */
+    uikitMapPath?: string;
     /** Include responsive variants like md:, lg: (default: true) */
     includeResponsive?: boolean;
     /** Include state variants like hover:, focus: (default: true) */
@@ -442,6 +444,7 @@ async function generateClassLog(
   const {
     outputDir = './dist/maps',
     baseName = 'ui8kit',
+    uikitMapPath,
     includeResponsive = true,
     includeStates = true,
   } = config.classLog ?? {};
@@ -450,11 +453,12 @@ async function generateClassLog(
     viewsDir: config.html.viewsDir,
     outputDir,
     baseName,
+    uikitMapPath,
     includeResponsive,
     includeStates,
   });
   
-  logger.info(`  📊 Found ${result.totalClasses} unique classes`);
+  logger.info(`  📊 Found ${result.totalClasses} unique classes (${result.validClasses} valid)`);
   
   await classLogService.dispose();
 }

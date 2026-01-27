@@ -125,6 +125,75 @@ interface IService<TInput, TOutput> {
 | `HtmlService` | Render final HTML pages |
 | `AssetService` | Copy static assets |
 | `HtmlConverterService` | HTML → CSS conversion |
+| `ClassLogService` | Track and filter used CSS classes |
+| `UiKitMapService` | Generate unified class → CSS mapping |
+
+### ClassLogService
+
+Tracks all CSS classes used in Liquid views and outputs filtered logs.
+
+```typescript
+import { ClassLogService } from '@ui8kit/generator';
+
+const service = new ClassLogService();
+await service.initialize(context);
+
+const result = await service.execute({
+  viewsDir: './views',
+  outputDir: './dist/maps',
+  baseName: 'ui8kit',
+  uikitMapPath: './lib/ui8kit.map.json', // Optional: filter by whitelist
+  includeResponsive: true,
+  includeStates: true,
+});
+
+console.log(`Total: ${result.totalClasses}, Valid: ${result.validClasses}`);
+```
+
+**Output files:**
+- `ui8kit.log.json` — All classes found in views
+- `ui8kit.tailwind.log.json` — Only classes from `ui8kit.map.json` whitelist
+
+**Usage with Tailwind CSS v4:**
+
+```css
+@import "tailwindcss";
+@source "../maps/ui8kit.tailwind.log.json";
+```
+
+### UiKitMapService
+
+Generates a unified `ui8kit.map.json` by merging:
+- Classes from `utility-props.map.ts` (DSL props)
+- CSS values from `tw-css-extended.json` (Tailwind)
+- Design tokens from `shadcn.map.json` (semantic colors)
+- Responsive grid classes from `grid.map.json`
+
+```typescript
+import { UiKitMapService } from '@ui8kit/generator';
+
+const service = new UiKitMapService();
+await service.initialize(context);
+
+const result = await service.execute({
+  propsMapPath: './packages/ui8kit/src/lib/utility-props.map.ts',
+  tailwindMapPath: './assets/tailwind/tw-css-extended.json',
+  shadcnMapPath: './lib/shadcn.map.json',
+  gridMapPath: './lib/grid.map.json',
+  outputPath: './lib/ui8kit.map.json',
+});
+
+console.log(`Generated ${result.totalClasses} classes`);
+console.log(`  Tailwind: ${result.tailwindClasses}`);
+console.log(`  Shadcn: ${result.shadcnClasses}`);
+console.log(`  Grid: ${result.gridClasses}`);
+```
+
+**CLI usage:**
+
+```bash
+bun run scripts/generate-uikit-map.ts
+```
 
 ### Pipeline Stages
 
@@ -265,6 +334,16 @@ const config: GenerateConfig = {
     componentsImportPath: '../components',
   },
 
+  // Class logging (tracks CSS classes used in views)
+  classLog: {
+    enabled: true,
+    outputDir: './dist/maps',
+    baseName: 'ui8kit',
+    uikitMapPath: './lib/ui8kit.map.json', // Filter by whitelist
+    includeResponsive: true,
+    includeStates: true,
+  },
+
   // MDX documentation (optional)
   mdx: {
     enabled: true,
@@ -328,8 +407,12 @@ src/
 │   │   └── HtmlService.test.ts   # 13 tests
 │   ├── asset/
 │   │   └── AssetService.test.ts  # 12 tests
-│   └── html-converter/
-│       └── HtmlConverterService.test.ts # 22 tests
+│   ├── html-converter/
+│   │   └── HtmlConverterService.test.ts # 22 tests
+│   ├── class-log/
+│   │   └── ClassLogService.test.ts    # 13 tests
+│   └── uikit-map/
+│       └── UiKitMapService.test.ts    # 16 tests
 ├── stages/
 │   └── stages.test.ts            # 6 tests
 └── plugins/
@@ -476,6 +559,8 @@ export {
   HtmlService,
   AssetService,
   HtmlConverterService,
+  ClassLogService,
+  UiKitMapService,
 } from './services';
 
 // Stages

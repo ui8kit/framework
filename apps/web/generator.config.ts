@@ -168,6 +168,7 @@ export const config: GenerateConfig = {
     enabled: true,
     outputDir: './dist/maps',
     baseName: 'ui8kit',
+    uikitMapPath: '../../packages/generator/src/lib/ui8kit.map.json',
   }
 };
 
