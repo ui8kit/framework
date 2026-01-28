@@ -31,16 +31,18 @@ export function FeaturesBlock() {
       <Stack gap="8" py="16">
         <Stack gap="4" items="center" data-class="features-header">
           <Title
-            text="3xl"
-            font="bold"
+            fontSize="3xl"
+            fontWeight="bold"
+            textAlign="center"
             data-class="features-title"
           >
             Why Choose UI8Kit?
           </Title>
 
           <Text
-            text="lg"
-            bg="muted-foreground"
+            fontSize="lg"
+            textColor="muted-foreground"
+            textAlign="center"
             max="w-xl"
             data-class="features-description"
           >
@@ -56,27 +58,26 @@ export function FeaturesBlock() {
               p="6"
               rounded="lg"
               bg="card"
-              border="border"
+              border=""
               data-class={`feature-card-${index}`}
             >
               <Icon
-                component="div"
                 lucideIcon={feature.icon}
-                text="3xl"
-                bg="primary"
+                size="lg"
                 data-class="feature-icon"
               />
 
               <Title
-                text="xl"
-                font="semibold"
+                fontSize="xl"
+                fontWeight="semibold"
                 data-class="feature-title"
               >
                 {feature.title}
               </Title>
 
               <Text
-                bg="muted-foreground"
+                fontSize="sm"
+                textColor="muted-foreground"
                 data-class="feature-description"
               >
                 {feature.description}

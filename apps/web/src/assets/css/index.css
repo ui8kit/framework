@@ -2,7 +2,11 @@
 
 @import "./shadcn.css";
 
-@source "../../../src/**/*.{ts,tsx,json}";
+@source "../maps/ui8kit.txt";
+
+@source "../../../src/**/*.{ts,tsx}";
+
+@source "../../../../../packages/ui8kit/src/**/*.{ts,tsx}";
 
 @layer base {
   body {

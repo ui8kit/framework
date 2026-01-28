@@ -1,5 +1,7 @@
 # DSL UI8Kit — План улучшений для LLM
 
+CLOSED RESOLVED 100%
+
 ## Выполнено
 
 - [x] Устранить опечатки в whitelist (`col-tart` → `col-start`)
@@ -28,8 +30,8 @@
 - [x] **Запретить className в primitives** — добавить ESLint-правило или скрипт проверки для `components/ui/*`
   - Функция: `validateDataClass(hasClassName, hasDataClass, isPrimitive)`
   - Код ошибки: `CLASSNAME_IN_PRIMITIVE`
-- [ ] **Задокументировать правило "или DSL, или className"** — в одном слое не смешивать подходы
-- [ ] **Разрешить className в Grid** только для responsive-модификаторов (`md:grid-cols-3`)
+- [x] **Задокументировать правило "или DSL, или className"** — в одном слое не смешивать подходы
+- [x] **Разрешить className в Grid** только для responsive-модификаторов (`md:grid-cols-3`)
 
 ## TODO: Семантика и алиасы
 
@@ -37,14 +39,11 @@
   - `fontSize` → `text-{size}` (xs, sm, base, lg, xl, 2xl...)
   - `textColor` → `text-{color}` (foreground, muted-foreground, primary...)
   - `textAlign` → `text-{align}` (left, center, right, justify)
-  - Реализовано через CVA variants в `packages/ui8kit/src/variants/typography.ts`
-  - Компоненты `Text` и `Title` используют `typographyVariants`
-  - Дополнительно: `fontWeight`, `lineHeight`, `letterSpacing`, `truncate`
 
 ## TODO: Генерация и оптимизация
 
-- [ ] **Реализовать compact mode** — вывод `gap=6` вместо `gap="6"` для экономии токенов
-- [ ] **Создать preset-шаблоны** в `blocks/` (hero, card, pricing, testimonial)
+- [x] **Реализовать compact mode** — вывод `gap=6` вместо `gap="6"` для экономии токенов
+- [x] **Создать preset-шаблоны** в `blocks/` (hero, card, pricing, testimonial)
 
 ---
 
@@ -158,10 +157,3 @@ interface LintError {
 - `severity` — если нужны warnings
 
 ---
-
-## Запланировано для MCP-сервера (отдельный проект)
-
-- [ ] Опционально для LLM задается режим разработки или DSL или className
-- [ ] Создать компактный reference для промптов (LLM_CHEATSHEET)
-- [ ] Задокументировать предпочтительные значения (`gap` → чаще 4/6/8)
-- [ ] Реализовать макро-шаблоны: `preset="hero"` разворачивается в набор props

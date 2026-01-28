@@ -8,21 +8,23 @@ Blocks are the building blocks of your pages. Each block represents a semantic s
 
 ## Best Practices
 
-### Parent Container Alignment
+### Typography Variants
 ```tsx
-// ✅ CORRECT - use parent container for alignment
-<Block component="section" data-class="hero-section">
-  <Stack gap="6" items="center"> {/* Parent handles centering */}
-    <Title text="2xl">Centered Title</Title>
-    <Text bg="muted-foreground">Centered text</Text>
-  </Stack>
-</Block>
+// ✅ CORRECT - use semantic typography variants
+<Title fontSize="2xl" fontWeight="bold" textAlign="center">
+  Centered Title
+</Title>
+<Text fontSize="lg" textColor="muted-foreground" textAlign="center">
+  Centered text with muted color
+</Text>
 
-// ❌ AVOID - duplicate props (HTML limitation)
-<Title text="2xl" text="center">Title</Title> // Won't work!
-
-// 🆘 FALLBACK - style only when absolutely necessary
-<Title text="2xl" style={{ textAlign: 'center' }}>Title</Title>
+// Available variants:
+// fontSize: xs, sm, base, lg, xl, 2xl, 3xl, 4xl, 5xl
+// textColor: foreground, muted-foreground, primary, secondary, destructive
+// textAlign: left, center, right, justify
+// fontWeight: normal, medium, semibold, bold
+// lineHeight: tight, normal, relaxed
+// letterSpacing: tighter, tight, normal, wide, wider, widest
 ```
 
 ## Structure
@@ -31,8 +33,8 @@ Blocks are the building blocks of your pages. Each block represents a semantic s
 // Block component with semantic HTML5 tag
 <Block component="section" data-class="hero-section">
   <Stack gap="6">
-    <Title text="2xl">Block Content</Title>
-    <Text>Block description</Text>
+    <Title fontSize="2xl" fontWeight="bold">Block Content</Title>
+    <Text fontSize="base" textColor="muted-foreground">Block description</Text>
   </Stack>
 </Block>
 ```
@@ -46,14 +48,25 @@ Blocks are the building blocks of your pages. Each block represents a semantic s
 
 ## Available Blocks
 
-- `DashboardBlock` - Dashboard content section
-- `HeroBlock` - Page hero/introduction section
-- `FeaturesBlock` - Features showcase section
+| Block | Purpose | Key Components |
+|-------|---------|----------------|
+| `HeroBlock` | Page hero/introduction | Title, Text, Button Group |
+| `FeaturesBlock` | Features showcase grid | Grid, Icon, Card pattern |
+| `PricingBlock` | Pricing plans comparison | Grid, Badge, Button variants |
+| `TestimonialsBlock` | Customer testimonials | Grid, Image, Quote pattern |
+| `CTABlock` | Call-to-action section | Centered Stack, Button Group |
+| `DashboardBlock` | Dashboard content | Grid layout, mixed content |
 
 ## Usage
 
 ```tsx
-import { HeroBlock, FeaturesBlock } from '@/blocks';
+import { 
+  HeroBlock, 
+  FeaturesBlock, 
+  PricingBlock,
+  TestimonialsBlock,
+  CTABlock 
+} from '@/blocks';
 
 // In route component
 export function HomePage() {
@@ -61,18 +74,51 @@ export function HomePage() {
     <>
       <HeroBlock />
       <FeaturesBlock />
+      <PricingBlock />
+      <TestimonialsBlock />
+      <CTABlock />
     </>
   );
 }
+```
+
+## Block Patterns
+
+### Hero Pattern
+```tsx
+<Block component="section" data-class="hero-section">
+  <Stack gap="6" items="center" py="16">
+    <Title fontSize="4xl" fontWeight="bold" textAlign="center">...</Title>
+    <Text fontSize="xl" textColor="muted-foreground" textAlign="center" max="w-2xl">...</Text>
+    <Group gap="4">
+      <Button size="lg">Primary</Button>
+      <Button variant="outline" size="lg">Secondary</Button>
+    </Group>
+  </Stack>
+</Block>
+```
+
+### Card Grid Pattern
+```tsx
+<Grid grid="cols-3" gap="6">
+  <Stack p="6" rounded="lg" bg="card" border="" gap="4" data-class="card">
+    <Icon lucideIcon={Star} size="lg" />
+    <Title fontSize="xl" fontWeight="semibold">...</Title>
+    <Text fontSize="sm" textColor="muted-foreground">...</Text>
+  </Stack>
+</Grid>
 ```
 
 ## File Structure
 
 ```
 blocks/
-├── HeroBlock.tsx        # Hero/intro sections
-├── FeaturesBlock.tsx    # Feature showcases
-├── DashboardBlock.tsx   # Dashboard content
-└── index.ts            # Block exports
+├── HeroBlock.tsx         # Hero/intro sections
+├── FeaturesBlock.tsx     # Feature showcases
+├── PricingBlock.tsx      # Pricing comparison
+├── TestimonialsBlock.tsx # Customer quotes
+├── CTABlock.tsx          # Call-to-action
+├── DashboardBlock.tsx    # Dashboard content
+└── index.ts              # Block exports
 ```</contents>
 </xai:function_call">Created new file apps/local/src/blocks/README.md
