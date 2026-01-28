@@ -1,0 +1,141 @@
+---
+description: project structure, architecture, codebase, monorepo, packages, apps, folder structure
+alwaysApply: false
+---
+# Project Structure Overview
+
+## Monorepo Layout
+
+```
+e-Bun-ui8kit-framework/
+├── apps/                           # Applications (consumption layer)
+│   ├── web/                        # Main web app with block examples
+│   │   ├── src/
+│   │   │   ├── blocks/            ← PAGE SECTIONS (Hero, Features, CTA, etc.)
+│   │   │   ├── elements/          ← Individual UI components
+│   │   │   ├── layouts/           ← Page layouts
+│   │   │   ├── routes/            ← Page routes
+│   │   │   ├── partials/          ← Reusable fragments (Header, Footer, etc.)
+│   │   │   ├── providers/         ← Context providers
+│   │   │   ├── exceptions/        ← Error boundaries
+│   │   │   └── App.tsx
+│   │   └── package.json
+│   └── docs/                       # Documentation site
+│
+├── packages/                       # Reusable packages (library layer)
+│   ├── ui8kit/                    ← CORE LIBRARY (Components, variants, props)
+│   │   ├── src/
+│   │   │   ├── components/        ← Semantic UI components
+│   │   │   │   ├── ui/           ← Primitives: Block, Stack, Group, Title, Text, Button, etc.
+│   │   │   │   ├── Accordion.tsx
+│   │   │   │   ├── Card.tsx
+│   │   │   │   ├── Grid.tsx
+│   │   │   │   └── Sheet.tsx
+│   │   │   ├── variants/          ← CVA (Component Variant Analysis) configs
+│   │   │   │   ├── button.ts
+│   │   │   │   ├── badge.ts
+│   │   │   │   └── typography.ts
+│   │   │   ├── lib/
+│   │   │   │   ├── utility-props.ts       ← Prop validation
+│   │   │   │   ├── utility-props.map.ts   ← Tailwind mapping
+│   │   │   │   └── utils.ts
+│   │   │   └── index.ts           ← Main exports
+│   │   ├── AGENTS.md              ← FULL LLM DEVELOPMENT GUIDE
+│   │   ├── LLM_CHEATSHEET.md      ← Quick reference
+│   │   └── package.json
+│   │
+│   ├── generator/                 ← Static generation & CSS extraction
+│   │   ├── src/
+│   │   │   ├── core/             ← Core generation logic
+│   │   │   ├── services/         ← HTML, CSS, Layout, Render services
+│   │   │   ├── stages/           ← Generation stages (Asset, CSS, HTML, etc.)
+│   │   │   └── plugins/
+│   │   └── package.json
+│   │
+│   ├── lint/                      ← Props validation tool
+│   │   ├── src/
+│   │   │   ├── validator.ts       ← Validate props against whitelist
+│   │   │   ├── formatter.ts       ← Format props for LLM
+│   │   │   ├── levenshtein.ts     ← Find closest valid props
+│   │   │   └── index.ts
+│   │   └── package.json
+│   │
+│   └── mdx-react/                 ← MDX compilation & rendering
+│       └── package.json
+│
+├── .project/                      ← Project metadata
+│   └── report/                    ← Documentation & planning
+│       ├── backlog.md
+│       ├── method-seen-llm.md
+│       └── _mcp-plan.md
+│
+├── scripts/                       ← Global build scripts
+│   ├── build-props-classlist.ts
+│   ├── compare-whitelist-keys.ts
+│   └── generate-uikit-map.ts
+│
+├── .cursor/                       ← Cursor IDE configuration
+│   └── rules/                     ← AI Rules for this project
+│       ├── ui8kit-architecture.mdc
+│       └── project-structure.mdc
+│
+├── package.json                   ← Root workspace config
+├── turbo.json                     ← Turborepo pipeline
+├── tsconfig.json                  ← Shared TypeScript config
+├── .gitignore
+├── LICENSE.md
+├── README.md
+└── SECURITY.md
+```
+
+## Key Directories for Development
+
+### When Building UI Components
+→ Location: `packages/ui8kit/src/components/ui/`
+→ Export in: `packages/ui8kit/src/index.ts`
+
+### When Creating Page Sections
+→ Location: `apps/web/src/blocks/`
+→ Pattern: `[NameBlock].tsx`
+→ Export in: `apps/web/src/blocks/index.ts`
+
+### When Creating Individual Elements
+→ Location: `apps/web/src/elements/`
+→ Use for: Small, single-responsibility components
+
+### When Adding Variants/Styles
+→ Location: `packages/ui8kit/src/variants/`
+→ Pattern: Use CVA (class-variance-authority)
+
+## Development Workflow
+
+1. **Component Design** → Edit in `packages/ui8kit/src/components/`
+2. **Add Variants** → Create `.ts` file in `packages/ui8kit/src/variants/`
+3. **Build/Test** → Run tests in `packages/ui8kit/`
+4. **Use in Blocks** → Import in `apps/web/src/blocks/`
+5. **Demo Pages** → Create routes in `apps/web/src/routes/`
+
+## Important Files for LLM
+
+| File | Purpose |
+|------|---------|
+| `packages/ui8kit/AGENTS.md` | Full development guide |
+| `packages/ui8kit/LLM_CHEATSHEET.md` | Quick reference |
+| `apps/web/src/blocks/README.md` | Block patterns & best practices |
+| `.cursor/rules/ui8kit-architecture.mdc` | This rule (UI8Kit primer) |
+| `packages/ui8kit/src/lib/utility-props.map.ts` | Prop validation mappings |
+
+## Package.json Scripts
+
+```bash
+npm run build      # Build all packages
+npm run dev        # Development mode
+npm run lint       # Validate props
+npm run test       # Run tests
+npm run types      # Type check
+```
+
+## Monorepo Tool: Turborepo
+
+Uses `turbo.json` for caching and parallel builds.
+Edit tasks in `turbo.json` to modify build pipeline.

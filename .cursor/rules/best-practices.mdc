@@ -1,0 +1,330 @@
+---
+description: best practices, code standards, patterns, conventions, do's and don'ts, coding style
+alwaysApply: false
+---
+# UI8Kit Development Best Practices
+
+## Code Standards
+
+### English Only
+All comments, variable names, and documentation must be in English.
+
+### Component Naming
+```tsx
+// ✅ Correct
+export function HeroBlock() { }
+export function FeatureCard() { }
+export function ButtonGroup() { }
+
+// ❌ Wrong
+export function hero() { }
+export function feature_card() { }
+export function BtnGrp() { }
+```
+
+### Props Pattern
+```tsx
+// ✅ Correct - semantic props
+<Block component="section" data-class="hero-section">
+  <Stack gap="6" items="center" py="16">
+    <Title fontSize="4xl" fontWeight="bold">Title</Title>
+  </Stack>
+</Block>
+
+// ❌ Wrong - inline styles, hardcoded classes
+<div className="flex flex-col gap-6">
+  <h1 style={{ fontSize: "48px" }}>Title</h1>
+</div>
+```
+
+### data-class Convention
+Every semantic element must have `data-class` for styling:
+```tsx
+// ✅ Correct
+<Block component="section" data-class="hero-section">
+<Stack data-class="hero-content">
+<Title data-class="hero-title">
+<Button data-class="hero-cta">
+
+// ❌ Wrong
+<Block component="section">
+<Stack>
+<Title>
+<Button>
+```
+
+### Data-class Naming Pattern
+```
+[block-name]-[element-type]
+[block-name]-[element-type]-[state]
+
+Examples:
+- hero-section
+- hero-title
+- hero-subtitle
+- hero-content
+- hero-actions
+- hero-cta-primary (button with role)
+- feature-card
+- feature-card-image
+- feature-card-title
+- feature-card-actions
+```
+
+## Props Best Practices
+
+### Spacing
+```tsx
+// ✅ Correct
+<Stack gap="6" p="4" py="16" px="8">
+
+// ❌ Wrong
+<Stack className="gap-6 p-4 py-16 px-8">
+<Stack style={{ gap: "24px", padding: "16px" }}>
+```
+
+### Responsive Design
+```tsx
+// ✅ Correct - use Grid or Stack with adjustments
+<Grid grid="cols-1" gap="4" data-class="card-grid">
+  {/* Grid system handles responsive */}
+</Grid>
+
+// ❌ Wrong - no responsive modifiers in props
+<Stack gap="4 md:gap-6" p="2 md:p-4">
+```
+
+### Typography
+```tsx
+// ✅ Correct - use semantic variants
+<Title fontSize="3xl" fontWeight="bold" textAlign="center" textColor="foreground">
+  Heading
+</Title>
+<Text fontSize="lg" textColor="muted-foreground" lineHeight="relaxed">
+  Paragraph text
+</Text>
+
+// ❌ Wrong - no direct tailwind props for text
+<div className="text-3xl font-bold text-center">
+  Heading
+</div>
+```
+
+### Colors
+```tsx
+// ✅ Correct - semantic tokens
+<Block bg="primary" data-class="hero">
+<Button variant="primary">
+<Badge variant="secondary">
+<Text textColor="muted-foreground">
+
+// ❌ Wrong - hardcoded colors
+<Block bg="blue-500">
+<Button className="bg-[#3b82f6]">
+<Text className="text-gray-400">
+```
+
+### Button Variants
+```tsx
+// ✅ Correct - use semantic variants
+<Button variant="primary" size="lg">Primary</Button>
+<Button variant="outline" size="lg">Outline</Button>
+<Button variant="secondary" size="md">Secondary</Button>
+<Button variant="ghost" size="sm">Ghost</Button>
+<Button variant="destructive" size="lg">Delete</Button>
+
+// ❌ Wrong
+<Button className="bg-blue-500">
+<Button className="border border-gray-200">
+```
+
+## Component Architecture
+
+### Blocks (Location: `apps/web/src/blocks/`)
+- Represent full page sections
+- Wrap in `<Block component="section">`
+- Single responsibility principle
+- Export from `index.ts`
+
+```tsx
+// ✅ Correct
+export function HeroBlock() {
+  return (
+    <Block component="section" data-class="hero-section">
+      <Stack gap="6" items="center" py="16">
+        <Title fontSize="4xl" fontWeight="bold" data-class="hero-title">
+          Welcome
+        </Title>
+        <Text fontSize="xl" textColor="muted-foreground" data-class="hero-description">
+          Description
+        </Text>
+        <Group gap="4" data-class="hero-actions">
+          <Button size="lg">Get Started</Button>
+          <Button variant="outline" size="lg">Learn More</Button>
+        </Group>
+      </Stack>
+    </Block>
+  );
+}
+```
+
+### Reusable Patterns
+```tsx
+// ✅ Card Pattern
+<Stack p="6" rounded="lg" bg="card" border="" shadow="sm" gap="4" data-class="card">
+  <Image src="..." aspect="video" rounded="md" fit="cover" data-class="card-image" />
+  <Title fontSize="lg" fontWeight="semibold" data-class="card-title">Title</Title>
+  <Text fontSize="sm" textColor="muted-foreground" data-class="card-description">
+    Description
+  </Text>
+  <Group gap="2" data-class="card-actions">
+    <Button size="sm">Action</Button>
+    <Badge variant="secondary">Tag</Badge>
+  </Group>
+</Stack>
+
+// ✅ Feature Grid
+<Grid grid="cols-3" gap="6" data-class="features-grid">
+  {features.map(feature => (
+    <Stack key={feature.id} p="6" rounded="lg" bg="card" gap="4" data-class="feature-card">
+      <Icon lucideIcon={feature.icon} size="lg" />
+      <Title fontSize="xl" fontWeight="semibold">{feature.title}</Title>
+      <Text fontSize="sm" textColor="muted-foreground">{feature.description}</Text>
+    </Stack>
+  ))}
+</Grid>
+```
+
+## Common Props Defaults
+
+| Component | Default Props |
+|-----------|---|
+| `Stack` | `flex="col" gap="4" items="start"` |
+| `Group` | `flex="row" gap="4" items="center"` |
+| `Title` | `fontSize="xl" fontWeight="bold"` |
+| `Text` | `fontSize="base" fontWeight="normal"` |
+| `Grid` | `grid="" gap="4"` |
+| `Button` | `variant="default" size="default"` |
+
+## Anti-Patterns to Avoid
+
+### ❌ Using HTML Elements Directly
+```tsx
+// Wrong
+<div className="flex gap-4">
+<h1>Heading</h1>
+<p>Paragraph</p>
+<span>Label</span>
+
+// Correct
+<Group gap="4">
+<Title>Heading</Title>
+<Text>Paragraph</Text>
+<Box data-class="label">Label</Box>
+```
+
+### ❌ Inline Styles
+```tsx
+// Wrong
+<Box style={{ display: "flex", gap: "24px", padding: "16px" }}>
+
+// Correct
+<Stack gap="6" p="4">
+```
+
+### ❌ Hardcoded Colors
+```tsx
+// Wrong
+<Box bg="blue-500" textColor="white">
+<Button className="bg-[#3b82f6]">
+
+// Correct
+<Box bg="primary" textColor="primary-foreground">
+<Button variant="primary">
+```
+
+### ❌ Mixing Utilities
+```tsx
+// Wrong
+<Stack gap="6" className="gap-4">
+<Title className="text-3xl font-bold">
+
+// Correct
+<Stack gap="6">
+<Title fontSize="3xl" fontWeight="bold">
+```
+
+### ❌ Missing data-class
+```tsx
+// Wrong
+<Block component="section">
+<Box>
+<Stack>
+
+// Correct
+<Block component="section" data-class="hero-section">
+<Box data-class="hero-content">
+<Stack data-class="hero-text">
+```
+
+## File Organization
+
+### Block File Structure
+```
+HeroBlock.tsx
+├── Imports
+├── Component definition
+├── Return JSX
+└── Export
+```
+
+### Comments
+```tsx
+// Use for block-level documentation
+export function HeroBlock() {
+  // Use for complex logic only
+  // Explain WHY, not WHAT (code is self-documenting)
+  return (
+    <Block component="section" data-class="hero-section">
+      {/* JSX comments for layout clarity */}
+    </Block>
+  );
+}
+```
+
+## Testing & Validation
+
+### Props Validation
+```bash
+npm run lint
+# Validates all props against whitelist
+# Suggests closest match if prop invalid
+```
+
+### Common Errors
+```
+Error: gap="5" invalid, closest: "4" or "6"
+→ Fix: Use gap="4" or gap="6"
+
+Error: fontSize="huge" invalid
+→ Fix: Use fontSize="4xl" instead
+
+Error: bg="red" invalid, closest: "destructive"
+→ Fix: Use bg="destructive"
+```
+
+## Performance Tips
+
+1. **Use Grid for large lists** instead of nested Stacks
+2. **Memoize large blocks** if they don't need frequent updates
+3. **Extract repeated patterns** into reusable block components
+4. **Lazy load** heavy image blocks
+5. **Use semantic HTML** for SEO (Block, Title, Text, etc.)
+
+## When in Doubt
+
+1. Check `packages/ui8kit/AGENTS.md` for full reference
+2. Look at existing blocks in `apps/web/src/blocks/`
+3. Use `data-class` for ALL semantic elements
+4. Prefer semantic props over className/style
+5. Keep blocks focused and reusable

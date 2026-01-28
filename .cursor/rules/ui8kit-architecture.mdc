@@ -1,0 +1,185 @@
+---
+description: ui8kit, design system, buildy, @ui8kit, ui, design, component, block, styling, layout, theme
+alwaysApply: false
+---
+# UI8Kit Architecture — LLM Quick Reference
+
+When mentioned: "design", "UI", "ui8kit", "component", "block", "styling", "layout", "theme", "@ui8kit" — use this guide.
+
+## Core Principles
+
+1. **Props = Tailwind Classes**: `gap="6"` → `gap-6`, `bg="primary"` → `bg-primary`
+2. **Semantic Components**: Use `Block`, `Stack`, `Group`, `Grid` for layout
+3. **data-class Required**: Every element needs `data-class` for CSS generation
+4. **No Inline Styles**: Use semantic props only (no `className`, `style={}`)
+5. **Semantic Colors**: Use tokens like `primary`, `secondary`, `muted`, `destructive`, not hex values
+
+## Components (Import from `@ui8kit/core`)
+
+### Layout
+- **Block** — Semantic section (`component="section|article|aside"`)
+- **Stack** — Vertical flex (default: `flex="col" gap="4"`)
+- **Group** — Horizontal flex (default: `flex="row" gap="4" items="center"`)
+- **Grid** — CSS Grid (`grid="cols-1|2|3|4|6|12"`)
+- **Container** — Centered max-width (`max="w-6xl" mx="auto"`)
+- **Box** — Generic container
+
+### Content
+- **Title** — Headings (`fontSize`, `fontWeight`, `textColor`, `textAlign`)
+- **Text** — Paragraphs (same props as Title)
+- **Image** — Pictures (`aspect="video|square"`, `fit="cover"`)
+- **Icon** — Icons (`lucideIcon`, `size="sm|md|lg"`)
+- **Badge** — Labels (`variant="default|secondary|destructive|outline"`)
+- **Button** — Actions (`variant="default|primary|destructive|outline|secondary|ghost|link"`, `size="xs|sm|default|md|lg|xl|icon"`)
+
+## Common Props Reference
+
+### Spacing
+```
+p="0|1|2|4|6|8|12"        padding
+px="0|1|2|4|6|8|12"       padding-x (left+right)
+py="0|2|4|8|16|32|48"     padding-y (top+bottom)
+m="0|1|2|4|6|8|12|auto"   margin
+gap="0|1|2|4|6|8|10|12"   gap between children
+```
+
+### Layout
+```
+flex=""               display: flex
+flex="col|row|wrap"   flex-direction / flex-wrap
+items="start|center|end|stretch"    align-items
+justify="start|center|end|between|around"  justify-content
+grid=""               display: grid
+grid="cols-1|2|3|4|6|12"           grid-template-columns
+col="span-1..12|span-full"         grid-column
+```
+
+### Sizing
+```
+w="full|auto|fit|screen|3|4|5|6|8"
+h="full|auto|fit|screen|3|4|5|6|8|10|11|12"
+max="w-sm|w-md|w-lg|w-xl|w-2xl|w-4xl|w-6xl"
+```
+
+### Typography (Title & Text ONLY)
+```
+fontSize="xs|sm|base|lg|xl|2xl|3xl|4xl|5xl"
+textColor="foreground|muted-foreground|primary|secondary|destructive|accent-foreground"
+textAlign="left|center|right|justify"
+fontWeight="normal|medium|semibold|bold"
+lineHeight="tight|normal|relaxed"
+letterSpacing="tighter|tight|normal|wide|wider|widest"
+```
+
+### Visual
+```
+bg="primary|secondary|muted|card|background|transparent"
+rounded="none|sm|md|lg|xl|2xl|3xl|full"
+shadow="none|sm|md|lg|xl|2xl"
+border=""             border-1px
+border="0|2|4"        border-width
+```
+
+### Position
+```
+relative="" / absolute="" / fixed="" / sticky=""
+top="0|auto"  right="0|auto"  bottom="0|auto"  left="0|auto"
+z="0|10|20|30|40|50|auto"
+```
+
+## Block Patterns (Location: `apps/web/src/blocks/`)
+
+### Hero Block Pattern
+```tsx
+<Block component="section" data-class="hero-section">
+  <Stack gap="6" items="center" py="16">
+    <Title fontSize="4xl" fontWeight="bold" textAlign="center" data-class="hero-title">
+      Welcome
+    </Title>
+    <Text fontSize="xl" textColor="muted-foreground" textAlign="center" max="w-2xl" data-class="hero-subtitle">
+      Description text
+    </Text>
+    <Group gap="4" data-class="hero-actions">
+      <Button size="lg">Primary</Button>
+      <Button variant="outline" size="lg">Secondary</Button>
+    </Group>
+  </Stack>
+</Block>
+```
+
+### Feature Grid Pattern
+```tsx
+<Block component="section" data-class="features-section">
+  <Grid grid="cols-3" gap="6" data-class="features-grid">
+    <Stack p="6" rounded="lg" bg="card" border="" gap="4" data-class="feature-card">
+      <Icon lucideIcon={Star} size="lg" />
+      <Title fontSize="xl" fontWeight="semibold">Feature</Title>
+      <Text fontSize="sm" textColor="muted-foreground">Description</Text>
+    </Stack>
+  </Grid>
+</Block>
+```
+
+### Card Pattern
+```tsx
+<Stack p="6" rounded="lg" bg="card" border="" shadow="sm" gap="4" data-class="card">
+  <Image src="..." aspect="video" rounded="md" fit="cover" data-class="card-image" />
+  <Title fontSize="lg" fontWeight="semibold" data-class="card-title">Title</Title>
+  <Text fontSize="sm" textColor="muted-foreground" data-class="card-description">Description</Text>
+  <Group gap="2" data-class="card-actions">
+    <Button size="sm">Action</Button>
+    <Badge variant="secondary">Tag</Badge>
+  </Group>
+</Stack>
+```
+
+## Anti-Patterns ❌
+
+| ❌ Don't | ✅ Do Instead |
+|----------|---------------|
+| `className="bg-red-500"` | `bg="destructive"` |
+| `gap="4 md:gap-6"` | Use `<Grid>` with responsive grid |
+| `<Box>` without `data-class` | Always add `data-class="name"` |
+| Hardcoded colors | Use semantic tokens only |
+| `style={{ ... }}` | Use semantic props |
+| `<div>`, `<span>` | Use `<Box>`, `<Stack>`, `<Group>` |
+| `<h1>`, `<p>` | Use `<Title>`, `<Text>` |
+
+## File Structure
+
+```
+apps/web/src/
+├── blocks/              ← Page sections (Hero, Features, CTA, etc.)
+│   ├── HeroBlock.tsx
+│   ├── FeaturesBlock.tsx
+│   ├── CTABlock.tsx
+│   ├── PricingBlock.tsx
+│   ├── TestimonialsBlock.tsx
+│   ├── DashboardBlock.tsx
+│   ├── index.ts        ← Re-exports all blocks
+│   └── README.md
+└── ...
+
+packages/ui8kit/
+├── src/components/ui/  ← Core UI primitives
+│   ├── Block.tsx
+│   ├── Stack.tsx
+│   ├── Group.tsx
+│   ├── Title.tsx
+│   ├── Text.tsx
+│   ├── Button.tsx
+│   ├── Badge.tsx
+│   └── ...
+└── AGENTS.md          ← Full development guide
+```
+
+## When to Create a New Block
+
+1. **Is it a reusable page section?** → Create Block
+2. **Location**: `apps/web/src/blocks/[NameBlock].tsx`
+3. **Export**: Add to `apps/web/src/blocks/index.ts`
+4. **Use**: Import and compose in routes
+
+## Validation
+
+Run `npm run lint` to validate props against whitelist.
