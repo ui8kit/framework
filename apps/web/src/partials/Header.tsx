@@ -4,6 +4,7 @@ import { Sun, Moon, Menu } from 'lucide-react'
 import { useTheme } from '@/providers/theme'
 import { Sheet } from '@ui8kit/core'
 import { SearchBar } from '@/components/SearchBar'
+import { useMobile } from '@/hooks/useMobile'
 
 type NavItem = {
   id: string
@@ -24,18 +25,18 @@ export function Header({
 }: HeaderProps) {
   const { toggleDarkMode, isDarkMode } = useTheme()
   const navigate = useNavigate()
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const isMobile = useMobile()
 
   return (
     <Block 
       component="nav" 
       py="4" 
       bg="background" 
-      border="b"
+      border=""
       shadow="sm"
       data-class="header"
     >
-      <Container data-class="header-container">
+      <Container max="w-6xl" mx="auto" px="4" data-class="header-container">
         <Group justify="between" items="center" gap="8" data-class="header-content">
           {/* Brand */}
           <Link to="/" data-class="header-brand">
@@ -60,7 +61,7 @@ export function Header({
 
           {/* Desktop Navigation + Theme Toggle + Mobile Menu (right side) */}
           <Group gap="4" items="center" data-class="header-right-section">
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - visible only on md and above */}
             {!isMobile && navItems.length > 0 && (
               <Group gap="2" items="center" data-class="header-nav">
                 {navItems.map(item => (
@@ -89,6 +90,7 @@ export function Header({
                 <Icon lucideIcon={isDarkMode ? Sun : Moon} size="md" />
               </Button>
 
+              {/* Mobile Menu - visible only on mobile */}
               {isMobile && navItems.length > 0 && (
                 <Sheet 
                   id="header-menu-sheet" 
@@ -105,6 +107,7 @@ export function Header({
                         variant="ghost"
                         size="sm"
                         onClick={() => navigate(item.url)}
+                        w="full"
                         data-class="header-mobile-nav-item"
                       >
                         {item.title}
