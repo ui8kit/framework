@@ -51,7 +51,7 @@ export function MainLayout({
   const hasSidebar = (mode === 'with-sidebar' || mode === 'sidebar-left') && sidebar
 
   return (
-    <Stack gap="0" h="full" data-class="main-layout">
+    <Block data-class="main-layout">
       {/* Header */}
       {showHeader && (
         <Header 
@@ -111,6 +111,6 @@ export function MainLayout({
           data-class="main-layout-footer"
         />
       )}
-    </Stack>
+    </Block>
   )
 }

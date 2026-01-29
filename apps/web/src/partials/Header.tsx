@@ -28,14 +28,14 @@ export function Header({
 
   return (
     <Block 
-      component="header" 
+      component="nav" 
       py="4" 
       bg="background" 
-      border=""
+      border="b"
       shadow="sm"
       data-class="header"
     >
-      <Container max="w-6xl" mx="auto" px="4" data-class="header-container">
+      <Container data-class="header-container">
         <Group justify="between" items="center" gap="8" data-class="header-content">
           {/* Brand */}
           <Link to="/" data-class="header-brand">
