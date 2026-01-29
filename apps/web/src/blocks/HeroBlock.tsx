@@ -5,8 +5,8 @@ import { Block, Stack, Group, Title, Text, Button } from "@ui8kit/core";
 export function HeroBlock() {
   return (
     <Block component="section" data-class="hero-section">
-      <Stack gap="6" items="center" py="16">
-        <Stack gap="4" items="center" data-class="hero-content">
+      <Stack gap="6" items="center" py="16" data-class="hero-stack">
+        <Stack gap="4" flex="col" py="8" items="center" data-class="hero-content">
           <Title
             fontSize="4xl"
             fontWeight="bold"
@@ -28,7 +28,7 @@ export function HeroBlock() {
           </Text>
         </Stack>
 
-        <Group gap="4" data-class="hero-actions">
+        <Group gap="4" items="center" justify="center" data-class="hero-actions">
           <Button size="lg" data-class="hero-cta-primary">
             Get Started
           </Button>

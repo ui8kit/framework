@@ -30,7 +30,7 @@ const testimonials = [
 export function TestimonialsBlock() {
   return (
     <Block component="section" data-class="testimonials-section">
-      <Stack gap="8" py="16" items="center">
+      <Stack gap="8" py="16" items="center" data-class="testimonials-container">
         <Stack gap="4" items="center" data-class="testimonials-header">
           <Title fontSize="3xl" fontWeight="bold" textAlign="center" data-class="testimonials-title">
             Loved by Developers

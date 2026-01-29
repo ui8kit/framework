@@ -36,7 +36,7 @@ export function Header({
       data-class="header"
     >
       <Container max="w-6xl" mx="auto" px="4" data-class="header-container">
-        <Group justify="between" items="center" gap="4" data-class="header-content">
+        <Group justify="between" items="center" gap="8" data-class="header-content">
           {/* Brand */}
           <Link to="/" data-class="header-brand">
             <Group gap="2" items="center" data-class="header-brand-content">
@@ -58,59 +58,62 @@ export function Header({
             </Group>
           </Link>
 
-          {/* Desktop Navigation */}
-          {!isMobile && navItems.length > 0 && (
-            <Group gap="2" items="center" data-class="header-nav">
-              {navItems.map(item => (
-                <Button 
-                  key={item.id}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate(item.url)}
-                  data-class="header-nav-item"
-                >
-                  {item.title}
-                </Button>
-              ))}
-            </Group>
-          )}
-
-          {/* Theme Toggle & Mobile Menu */}
-          <Group gap="2" items="center" data-class="header-controls">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={toggleDarkMode}
-              aria-label="Toggle dark mode"
-              data-class="header-theme-toggle"
-            >
-              <Icon lucideIcon={isDarkMode ? Sun : Moon} size="md" />
-            </Button>
-
-            {isMobile && navItems.length > 0 && (
-              <Sheet 
-                id="header-menu-sheet" 
-                side="left" 
-                title="Menu"
-                triggerIcon={Menu}
-                data-class="header-mobile-menu"
-              >
-                <Group gap="2" flex="col" data-class="header-mobile-nav">
-                  <SearchBar />
-                  {navItems.map(item => (
-                    <Button 
-                      key={item.id}
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => navigate(item.url)}
-                      data-class="header-mobile-nav-item"
-                    >
-                      {item.title}
-                    </Button>
-                  ))}
-                </Group>
-              </Sheet>
+          {/* Desktop Navigation + Theme Toggle + Mobile Menu (right side) */}
+          <Group gap="4" items="center" data-class="header-right-section">
+            {/* Desktop Navigation */}
+            {!isMobile && navItems.length > 0 && (
+              <Group gap="2" items="center" data-class="header-nav">
+                {navItems.map(item => (
+                  <Button 
+                    key={item.id}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(item.url)}
+                    data-class="header-nav-item"
+                  >
+                    {item.title}
+                  </Button>
+                ))}
+              </Group>
             )}
+
+            {/* Theme Toggle & Mobile Menu */}
+            <Group gap="2" items="center" data-class="header-controls">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={toggleDarkMode}
+                aria-label="Toggle dark mode"
+                data-class="header-theme-toggle"
+              >
+                <Icon lucideIcon={isDarkMode ? Sun : Moon} size="md" />
+              </Button>
+
+              {isMobile && navItems.length > 0 && (
+                <Sheet 
+                  id="header-menu-sheet" 
+                  side="left" 
+                  title="Menu"
+                  triggerIcon={Menu}
+                  data-class="header-mobile-menu"
+                >
+                  <Group gap="2" flex="col" data-class="header-mobile-nav">
+                    <SearchBar />
+                    {navItems.map(item => (
+                      <Button 
+                        key={item.id}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate(item.url)}
+                        data-class="header-mobile-nav-item"
+                      >
+                        {item.title}
+                      </Button>
+                    ))}
+                  </Group>
+                </Sheet>
+              )}
+            </Group>
           </Group>
         </Group>
       </Container>

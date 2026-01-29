@@ -28,7 +28,7 @@ export function Footer({
       bg="card"
       data-class="footer"
     >
-      <Container max="w-6xl" mx="auto" px="4" data-class="footer-container">
+      <Container data-class="footer-container">
         <Stack gap="8" data-class="footer-content">
           {/* Footer Sections */}
           {sections.length > 0 && (

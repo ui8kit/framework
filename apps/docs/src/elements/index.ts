@@ -8,3 +8,4 @@ export * from "./button";
 export * from "./card";
 export * from "./grid";
 export * from "./image";
+export * from "./typography";

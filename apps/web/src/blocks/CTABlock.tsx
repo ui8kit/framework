@@ -30,7 +30,7 @@ export function CTABlock() {
           </Text>
         </Stack>
 
-        <Group gap="4" data-class="cta-actions">
+        <Group gap="4" items="center" justify="center" data-class="cta-actions">
           <Button variant="secondary" size="lg" data-class="cta-primary-button">
             Start Free Trial
           </Button>

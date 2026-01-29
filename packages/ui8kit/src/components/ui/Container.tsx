@@ -11,6 +11,7 @@ export type ContainerProps = ContainerDomProps & UtilityPropBag & {
 };
 
 const defaultProps = ux({
+  max: 'w-7xl',
   mx: 'auto',
   px: '4'
 });

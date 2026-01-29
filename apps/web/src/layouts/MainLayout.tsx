@@ -64,7 +64,7 @@ export function MainLayout({
 
       {/* Main Content */}
       <Block component="main" flex="1" py="8" data-class="main-layout-content">
-        <Container max="w-6xl" mx="auto" px="4" data-class="main-layout-container">
+        <Container data-class="main-layout-container">
           {hasSidebar ? (
             <Grid 
               grid="cols-3" 

@@ -34,7 +34,7 @@ const plans = [
 export function PricingBlock() {
   return (
     <Block component="section" data-class="pricing-section">
-      <Stack gap="8" py="16" items="center">
+      <Stack gap="8" py="16" items="center" data-class="pricing-container">
         <Stack gap="4" items="center" data-class="pricing-header">
           <Badge variant="secondary" data-class="pricing-badge">
             Pricing
@@ -76,7 +76,7 @@ export function PricingBlock() {
               </Stack>
 
               <Stack gap="1" data-class="pricing-price">
-                <Box flex="" items="end" gap="1">
+                <Box flex="" items="end" gap="1" data-class="pricing-price-wrapper">
                   <Title fontSize="4xl" fontWeight="bold" data-class="pricing-amount">
                     {plan.price}
                   </Title>
