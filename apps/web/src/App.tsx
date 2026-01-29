@@ -1,54 +1,74 @@
 import { Outlet } from 'react-router-dom'
-import { DashLayout } from '@/layouts/DashLayout'
-import { useTheme } from '@/providers/theme'
-import {
-  Button,
-  Stack,
-  Title
-} from '@ui8kit/core'
+import { MainLayout } from '@/layouts/MainLayout'
+import { Stack } from '@ui8kit/core'
+import { 
+  SearchBar, 
+  CategoryList, 
+  TagList, 
+  PopularPosts, 
+  NewsletterSignup 
+} from '@/components'
+import { menu } from '@/~data/wpfasty/context'
 
-// Sidebar Navigation Component
-export const Sidebar = () => {
-  const menuItems = [
-    { label: 'Dashboard', icon: '📊', active: true },
-    { label: 'Users', icon: '👥', active: false },
-    { label: 'Products', icon: '📦', active: false },
-    { label: 'Orders', icon: '🛒', active: false },
-    { label: 'Analytics', icon: '📈', active: false },
-    { label: 'Settings', icon: '⚙️', active: false },
-  ]
+// Transform menu items for header
+const navItems = menu.primary.items.map(item => ({
+  id: `nav-${item.id}`,
+  title: item.title,
+  url: item.url,
+}))
 
-  return (
-    <Stack gap="4" p="4">
-      <Title order={4} mb="4">Admin Panel</Title>
-      <Stack gap="2">
-        {menuItems.map((item) => (
-          <Button
-            key={item.label}
-            variant={item.active ? 'primary' : 'ghost'}
-            w="full"
-          >
-            {item.label}
-          </Button>
-        ))}
-      </Stack>
-    </Stack>
-  )
-}
+const footerSections = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Features', href: '#' },
+      { label: 'Pricing', href: '#' },
+      { label: 'Security', href: '#' },
+      { label: 'Enterprise', href: '#' },
+    ]
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Blog', href: '/blog' },
+      { label: 'Careers', href: '#' },
+      { label: 'Press', href: '#' },
+    ]
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy', href: '#' },
+      { label: 'Terms', href: '#' },
+      { label: 'License', href: '#' },
+      { label: 'Contact', href: '/contact' },
+    ]
+  },
+]
+
+// Sidebar content with dynamic data
+const SidebarContent = () => (
+  <Stack gap="6" data-class="sidebar-widgets">
+    <SearchBar />
+    <CategoryList items={[]} />
+    <TagList items={[]} />
+    <PopularPosts />
+    <NewsletterSignup />
+  </Stack>
+)
 
 export default function App() {
-  const { isDarkMode, toggleDarkMode } = useTheme()
-
   return (
-    <DashLayout
-      navbarProps={{
-        isDarkMode,
-        toggleDarkMode,
-        brand: 'Admin Dashboard'
-      }}
-      sidebar={<Sidebar />}
+    <MainLayout
+      mode="with-sidebar"
+      navItems={navItems}
+      footerSections={footerSections}
+      sidebar={<SidebarContent />}
+      headerTitle="UI8Kit"
+      headerSubtitle="Design System"
     >
-      <Outlet /> {/* DashboardContent */}
-    </DashLayout>
+      <Outlet />
+    </MainLayout>
   )
 }

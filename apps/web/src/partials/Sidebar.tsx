@@ -1,31 +1,20 @@
-import type { ReactNode } from "react";
-import { Block, Box, Stack, Text } from "@ui8kit/core";
+import { Block, Stack } from '@ui8kit/core'
+import { ReactNode } from 'react'
 
-export interface SidebarProps {
-  children?: ReactNode;
-  className?: string;
-  dataClass?: string;
-  title?: string;
+type SidebarProps = {
+  children: ReactNode
+  position?: 'left' | 'right'
 }
 
-export function Sidebar({ children, className, dataClass, title }: SidebarProps) {
+export function Sidebar({ children, position = 'right' }: SidebarProps) {
   return (
-    <Block
-      component="aside"
-      className={className}
-      data-class={dataClass || "sidebar"}
+    <Block 
+      component="aside" 
+      data-class={`sidebar sidebar-${position}`}
     >
-      <Box p="4" data-role="dash-sidebar-box">
-        <Stack gap="4" data-role="dash-sidebar-stack" data-class="sidebar-stack">
-          {title && (
-            <Text bg="muted-foreground" data-role="dash-sidebar-title">
-              {title}
-            </Text>
-          )}
-          {children}
-        </Stack>
-      </Box>
+      <Stack gap="6" data-class="sidebar-content">
+        {children}
+      </Stack>
     </Block>
-  );
+  )
 }
-

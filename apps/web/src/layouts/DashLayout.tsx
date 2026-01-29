@@ -1,6 +1,5 @@
 import type { ComponentType, ReactNode } from "react";
 import { Block, Box, Container } from "@ui8kit/core";
-import { Navbar, NavbarProps } from "@/partials/Navbar";
 import { Sidebar } from "@/partials/Sidebar";
 import { Header } from "@/partials/Header";
 import { Footer } from "@/partials/Footer";
@@ -12,19 +11,11 @@ export interface DashboardProps {
   children?: ReactNode;
   /** Optional sidebar content */
   sidebar?: ReactNode;
-  /** Navbar props */
-  navbarProps?: Omit<NavbarProps, "toggleDarkMode" | "isDarkMode"> &
-    Partial<Pick<NavbarProps, "isDarkMode" | "toggleDarkMode">>;
 }
 
-export function Dashboard({ page: Page, children, sidebar, navbarProps }: DashboardProps) {
-  const toggle = typeof navbarProps?.toggleDarkMode === "function" ? navbarProps.toggleDarkMode : () => {};
-  const isDark = navbarProps?.isDarkMode ?? false;
-
+export function Dashboard({ page: Page, children, sidebar }: DashboardProps) {
   return (
     <>
-      <Navbar isDarkMode={isDark} toggleDarkMode={toggle} brand={navbarProps?.brand} />
-
       <Block component="main" data-role="dash-main" w="full" flex="" data-class="main">
         {/* Desktop Sidebar - hidden on mobile (hidden md:flex) */}
         <aside data-class="sidebar-desktop" className="hidden md:flex w-64 shrink-0 border-r border-border">
@@ -52,5 +43,4 @@ export function Dashboard({ page: Page, children, sidebar, navbarProps }: Dashbo
 export function DashLayout(props: DashboardProps) {
   return <Dashboard {...props} />;
 }
-
 

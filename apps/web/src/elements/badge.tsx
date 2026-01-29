@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode, ComponentProps } from "react";
-import { Badge } from "../components";
+import { Badge } from "@ui8kit/core";
 
 /**
  * Badge variant elements for documentation and reuse.

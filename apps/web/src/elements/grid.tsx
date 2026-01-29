@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode, ComponentProps } from "react";
-import { Grid } from "../components";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Grid, Image } from "@ui8kit/core";
 
 /**
  * Grid variant elements for documentation and reuse.

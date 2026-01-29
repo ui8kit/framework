@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode, ComponentProps } from "react";
-import { Image } from "../components";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Grid, Image } from "@ui8kit/core";
 
 /**
  * Image variant elements for documentation and reuse.

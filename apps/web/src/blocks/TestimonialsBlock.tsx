@@ -60,10 +60,11 @@ export function TestimonialsBlock() {
                 <Image
                   src={testimonial.avatar}
                   alt={testimonial.author}
-                  w="12"
-                  h="12"
+                  w="auto"
+                  h="auto"
                   rounded="full"
                   fit="cover"
+                  aspect="square"
                   data-class="testimonial-avatar"
                 />
 
