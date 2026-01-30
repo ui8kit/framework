@@ -108,3 +108,315 @@ html: {
 3. **Сделать layout.liquid гибким** — Использовать условные includes
 
 Хотите, чтобы я переключился в Agent mode и реализовал эти улучшения?
+
+---
+
+**User**
+
+давай вначале поговорим, потому что это еще и нужно контролировать в конфиге 
+
+```
+      props: {
+        Header: { name: "{{ name | default: 'UI8Kit' }}" },
+        Footer: { name: "{{ name | default: 'UI8Kit' }}" },
+        Navbar: { brand: "{{ brand | default: name | default: 'App' }}" },
+        Sidebar: { title: "{{ sidebarTitle | default: '' }}" }
+      }
+```
+
+контроль с трех сторон конфиг + шаблон + код генератора уже довольно ощутимо для когнетивной нагрузки 
+
+попробуй отдалиться от текущей реализации и поразмышляй как старший программист селиконовой долины в целом о такой системе генерации какие могли бы быть подходы
+
+---
+
+**Cursor**
+
+Отличный вопрос. Давайте отступим и посмотрим на проблему фундаментально.
+
+```go
+Пользователь просит меня отойти от текущей реализации и поразмышлять о более элегантных архитектурных подходах к системе генерации статических сайтов. Он отмечает проблему когнитивной нагрузки из-за необходимости синхронизировать три источника: конфиг, шаблоны и код генератора.
+Давайте подумаем как senior инженер из Silicon Valley о фундаментальных подходах к этой проблеме.
+Проблема
+Текущая архитектура имеет три "источника правды":
+React компоненты (src/partials/Header.tsx) — реальный код
+Конфиг (generator.config.ts) — декларация props для liquid
+Liquid шаблоны (layout.liquid) — использование через {% include %}
+Это классическая проблема "fragile coupling" — изменение в одном месте требует изменений в двух других.
+Альтернативные подходы
+1. Convention over Configuration (Rails-стиль)
+Вместо явного перечисления — соглашения:
+src/partials/Header.tsx → автоматически partials/header.liquid
+Props извлекаются из TypeScript типов
+Layout автоматически включает все найденные partials в определённом порядке
+2. Single Source of Truth — React
+React компонент — единственный источник правды. Всё остальное генерируется:
+Layout.tsx → layout.liquid
+Header.tsx → header.liquid + определение props
+Конфиг только для "внешних" настроек (пути, режимы)
+Вместо Liquid можно компилировать React напрямую в HTML, убирая промежуточный слой шаблонизации
+Или использовать единую схему (YAML или TypeScript), которая описывает структуру layout с компонентами и их props, а генератор создаёт всё необходимое из этого описания
+Третий подход — сделать компоненты самодокументирующимися, где каждый компонент содержит информацию о своих props, слотах и месте в layout
+Теперь нужно сравнить, какой из этих подходов даст наибольшие преимущества и какие проблемы может создать каждый.
+```
+
+## Проблема: Три источника правды
+
+Сейчас у вас:
+
+```
+React Component     →    Config Props    →    Liquid Template
+(Header.tsx)            (generator.config)     (layout.liquid)
+     ↑                       ↑                      ↑
+  Код логики         Маппинг переменных      Где включить
+```
+
+Изменение в одном месте требует синхронизации с двумя другими. Это **fragile coupling**.
+
+---
+
+## Альтернативные подходы
+
+### 1. Convention over Configuration (Rails-подход)
+
+**Идея:** Никаких явных деклараций. Конвенции определяют всё.
+
+```
+src/
+├── layouts/
+│   └── MainLayout.tsx     → auto-generates layout.liquid
+├── partials/
+│   ├── Header.tsx         → auto-includes as {% include 'partials/header' %}
+│   └── Footer.tsx         → auto-includes as {% include 'partials/footer' %}
+└── pages/
+    └── index.tsx          → auto-generates pages/index.liquid
+```
+
+**Props:** Извлекаются из TypeScript типов:
+```tsx
+interface HeaderProps {
+  name?: string;  // → {{ name | default: '' }}
+}
+```
+
+**Плюсы:** Нулевой конфиг. Добавил файл — работает.
+**Минусы:** Меньше контроля. Магия может путать.
+
+---
+
+### 2. Single Source of Truth — Component Metadata
+
+**Идея:** Компонент сам описывает своё место в системе.
+
+```tsx
+// Header.tsx
+export function Header({ name = 'UI8Kit' }: Props) {
+  return <header>...</header>;
+}
+
+// Метаданные для генератора
+Header.generator = {
+  slot: 'header',           // Где в layout
+  order: 1,                 // Порядок среди слотов
+  liquidProps: {            // Маппинг на Liquid
+    name: "{{ name | default: 'UI8Kit' }}"
+  }
+};
+```
+
+**Генератор:**
+- Сканирует все компоненты
+- Читает `.generator` metadata
+- Автоматически строит layout
+- Никакого конфига для partials
+
+**Плюсы:** Всё в одном файле. Refactor-friendly.
+**Минусы:** Смешивает runtime и build-time код.
+
+---
+
+### 3. Schema-First (GraphQL-подход)
+
+**Идея:** Отдельная схема — единственный источник правды.
+
+```yaml
+# site.schema.yml
+layout:
+  slots:
+    - name: header
+      component: Header
+      props:
+        name: { type: string, default: 'UI8Kit', liquid: "{{ name }}" }
+    - name: content
+      component: null  # Заполняется страницей
+    - name: footer
+      component: Footer
+      props:
+        name: { type: string, default: 'UI8Kit' }
+
+pages:
+  - path: /
+    title: Home
+    component: HomePage
+  - path: /about
+    title: About
+```
+
+**Генератор:**
+- Читает схему
+- Генерирует TypeScript типы
+- Генерирует Liquid templates
+- Валидирует соответствие
+
+**Плюсы:** Явно. Одно место для всего. Легко визуализировать.
+**Минусы:** Ещё один файл. Дублирование структуры.
+
+---
+
+### 4. No Liquid — Direct React SSG (Astro/Next-подход)
+
+**Идея:** Убрать Liquid вообще. React → HTML напрямую.
+
+```tsx
+// layouts/MainLayout.tsx
+export function MainLayout({ children, name }: Props) {
+  return (
+    <html>
+      <head>...</head>
+      <body>
+        <Header name={name} />
+        {children}
+        <Footer name={name} />
+      </body>
+    </html>
+  );
+}
+
+// pages/index.tsx
+export function HomePage() {
+  return (
+    <MainLayout name="UI8Kit">
+      <main>Content here</main>
+    </MainLayout>
+  );
+}
+
+// Генератор просто делает:
+renderToStaticMarkup(<HomePage />)
+```
+
+**Плюсы:** 
+- React = единственный источник правды
+- Никаких промежуточных форматов
+- TypeScript проверяет всё
+
+**Минусы:** 
+- Нет динамических Liquid-переменных
+- Каждое изменение = полная регенерация
+
+---
+
+### 5. Hybrid: React + Slots (Web Components-подход)
+
+**Идея:** Layout определяет "слоты", компоненты заполняют их.
+
+```tsx
+// layouts/MainLayout.tsx
+export function MainLayout() {
+  return (
+    <html>
+      <body>
+        <Slot name="header" />
+        <Slot name="content" />
+        <Slot name="footer" />
+      </body>
+    </html>
+  );
+}
+
+// Регистрация слотов (автоматически или явно)
+MainLayout.slots = {
+  header: () => import('./partials/Header'),
+  footer: () => import('./partials/Footer'),
+};
+```
+
+**Генератор:**
+- Рендерит Layout
+- `<Slot name="header">` → `{% include 'partials/header.liquid' %}`
+- Props извлекаются автоматически
+
+---
+
+## Моя рекомендация
+
+Для **вашего случая** (генератор статических сайтов с Liquid) я бы выбрал **гибрид подходов 1 + 2**:
+
+### Принципы:
+
+1. **Zero-config по умолчанию** — Convention over Configuration
+2. **Escape hatch через metadata** — для сложных случаев
+3. **Один файл = один компонент** — Props в том же файле
+4. **Валидация на старте** — Генератор проверяет согласованность
+
+### Как это выглядит:
+
+```tsx
+// src/partials/Header.tsx
+export interface HeaderProps {
+  name?: string;
+  showNav?: boolean;
+}
+
+export function Header({ name = 'UI8Kit', showNav = true }: HeaderProps) {
+  return (
+    <header data-class="site-header">
+      <h1>{name}</h1>
+      {showNav && <nav>...</nav>}
+    </header>
+  );
+}
+
+// Опционально: кастомный Liquid маппинг
+Header.liquid = {
+  name: "{{ site.name | default: 'UI8Kit' }}",
+  showNav: "{{ showNav | default: true }}",
+};
+```
+
+```typescript
+// generator.config.ts — минимальный
+export const config = {
+  app: { name: 'My App' },
+  // partials: автоматически из src/partials/
+  // layouts: автоматически из src/layouts/
+  // Только если нужно переопределить:
+  overrides: {
+    partials: {
+      Header: { slot: 'before-content' }  // Нестандартное размещение
+    }
+  }
+};
+```
+
+### Генератор делает:
+
+1. **Scan** — Находит все `.tsx` в `src/partials/`, `src/layouts/`
+2. **Extract** — Читает TypeScript типы → генерирует Liquid props
+3. **Validate** — Проверяет что layout slots = найденные partials
+4. **Generate** — Создаёт `.liquid` файлы
+5. **Report** — Показывает warnings о несоответствиях
+
+---
+
+## Резюме
+
+| Подход | Когнитивная нагрузка | Гибкость | Сложность реализации |
+|--------|---------------------|----------|---------------------|
+| Текущий (3 источника) | Высокая | Высокая | Уже есть |
+| Convention over Config | Низкая | Низкая | Средняя |
+| Component Metadata | Низкая | Средняя | Средняя |
+| Schema-First | Средняя | Высокая | Высокая |
+| No Liquid | Низкая | Низкая | Низкая |
+
+Для баланса "простота + контроль" рекомендую **Convention + Metadata escape hatch**.
