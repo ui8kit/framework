@@ -149,7 +149,15 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
     // Process each source directory
     for (const sourceDir of sourceDirs) {
       try {
+        if (verbose) {
+          this.context.logger.info(`Scanning: ${sourceDir}`);
+        }
+        
         const componentFiles = await this.findComponentFiles(sourceDir, include, exclude);
+        
+        if (verbose) {
+          this.context.logger.info(`  Found ${componentFiles.length} files`);
+        }
         
         for (const filePath of componentFiles) {
           try {
@@ -204,12 +212,14 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
       }
     }
     
-    // Emit event
-    this.context.eventBus.emit('template:complete', {
-      filesGenerated: files.length,
-      engine,
-      outputDir,
-    });
+    // Emit event (if eventBus is available)
+    if (this.context.eventBus) {
+      this.context.eventBus.emit('template:complete', {
+        filesGenerated: files.length,
+        engine,
+        outputDir,
+      });
+    }
     
     const duration = Date.now() - startTime;
     
@@ -300,15 +310,19 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
    * Simple glob-like pattern matching
    */
   private simpleMatch(path: string, pattern: string): boolean {
-    // Convert glob to regex
-    const regexPattern = pattern
+    // Normalize path separators
+    const normalizedPath = path.replace(/\\/g, '/');
+    
+    // Handle **/ at start - matches any path prefix including none
+    let regexPattern = pattern
+      .replace(/\\/g, '/')
       .replace(/\./g, '\\.')
-      .replace(/\*\*/g, '<<<GLOBSTAR>>>')
-      .replace(/\*/g, '[^/]*')
-      .replace(/<<<GLOBSTAR>>>/g, '.*');
+      .replace(/\*\*\//g, '(?:.*/)?')  // **/ matches zero or more directories
+      .replace(/\*\*/g, '.*')           // ** matches anything
+      .replace(/\*/g, '[^/]*');         // * matches non-slash chars
     
     const regex = new RegExp(`^${regexPattern}$`);
-    return regex.test(path);
+    return regex.test(normalizedPath);
   }
   
   /**

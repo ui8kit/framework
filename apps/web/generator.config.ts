@@ -169,6 +169,17 @@ export const config: GenerateConfig = {
     outputDir: './dist/maps',
     baseName: 'ui8kit',
     uikitMapPath: '../../packages/generator/src/lib/ui8kit.map.json',
+  },
+  
+  // Template generation from React components
+  template: {
+    enabled: true,
+    engine: 'liquid',
+    sourceDirs: ['./src/blocks', './src/layouts'],
+    outputDir: './dist/templates',
+    include: ['**/*.tsx'],
+    exclude: ['**/*.test.tsx', '**/*.spec.tsx'],
+    verbose: true,
   }
 };
 

@@ -968,10 +968,26 @@ async function generateTemplates(
     verbose = false,
   } = templateConfig;
   
+  // Resolve relative paths to absolute
+  const cwd = process.cwd();
+  const resolvedSourceDirs = sourceDirs.map(dir => 
+    dir.startsWith('/') || /^[a-zA-Z]:/.test(dir) 
+      ? dir 
+      : join(cwd, dir.replace(/^\.\//, ''))
+  );
+  const resolvedOutputDir = outputDir.startsWith('/') || /^[a-zA-Z]:/.test(outputDir)
+    ? outputDir
+    : join(cwd, outputDir.replace(/^\.\//, ''));
+  
+  if (verbose) {
+    logger.debug(`Template source dirs: ${resolvedSourceDirs.join(', ')}`);
+    logger.debug(`Template output dir: ${resolvedOutputDir}`);
+  }
+  
   try {
     const result = await templateService.execute({
-      sourceDirs,
-      outputDir,
+      sourceDirs: resolvedSourceDirs,
+      outputDir: resolvedOutputDir,
       engine,
       include,
       exclude,
