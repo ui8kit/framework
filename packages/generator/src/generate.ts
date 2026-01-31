@@ -28,7 +28,9 @@ import {
   CssStage,
   HtmlStage,
   AssetStage,
+  TemplateStage,
 } from './stages';
+import { TemplateService, type TemplateServiceOutput } from './services/template';
 import { ClassLogService } from './services/class-log';
 import { emitVariantsApplyCss } from './scripts/emit-variants-apply.js';
 import { emitVariantElements } from './scripts/emit-variant-elements.js';
@@ -128,6 +130,28 @@ export interface GenerateConfig extends GeneratorConfig {
       maxLevel?: number;
     };
   };
+  
+  /**
+   * Template generation configuration.
+   * 
+   * Transforms React components to template files (Liquid, Handlebars, Twig, Latte).
+   */
+  template?: {
+    /** Enable template generation */
+    enabled?: boolean;
+    /** Template engine to use */
+    engine?: 'liquid' | 'handlebars' | 'twig' | 'latte';
+    /** Source directories for components */
+    sourceDirs?: string[];
+    /** Output directory for templates */
+    outputDir?: string;
+    /** File patterns to include */
+    include?: string[];
+    /** File patterns to exclude */
+    exclude?: string[];
+    /** Verbose logging */
+    verbose?: boolean;
+  };
 }
 
 /**
@@ -144,6 +168,7 @@ export interface GenerateResult {
     htmlPages: number;
     assets: number;
     elements: number;
+    templates: number;
   };
 }
 
@@ -175,6 +200,7 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
     htmlPages: 0,
     assets: 0,
     elements: 0,
+    templates: 0,
   };
   
   try {
@@ -261,6 +287,13 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
     if (config.mdx?.enabled) {
       logger.info('📚 Generating MDX documentation...');
       await generateMdxDocs(config, logger);
+    }
+    
+    // 13. Generate templates from React components (optional)
+    if (config.template?.enabled) {
+      logger.info('🔧 Generating templates from React components...');
+      const templateResult = await generateTemplates(config, logger);
+      generated.templates = templateResult.generated;
     }
     
     const duration = performance.now() - startTime;
@@ -906,6 +939,75 @@ async function generateMdxDocs(
     logger.warn(`⚠️ MdxService not available: ${message}`);
     logger.info('📚 Skipping MDX generation (install @ui8kit/mdx-react for MDX support)');
     return { pages: 0 };
+  }
+}
+
+/**
+ * Generate template files from React components.
+ * 
+ * Uses the TemplateService to transform React components into template files
+ * for various template engines (Liquid, Handlebars, Twig, Latte).
+ */
+async function generateTemplates(
+  config: GenerateConfig,
+  logger: Logger
+): Promise<{ generated: number }> {
+  const templateConfig = config.template;
+  if (!templateConfig) return { generated: 0 };
+  
+  const templateService = new TemplateService();
+  const minimalContext = createMinimalContext(config, logger);
+  await templateService.initialize(minimalContext);
+  
+  const {
+    engine = 'liquid',
+    sourceDirs = ['./src/components', './src/blocks', './src/layouts', './src/partials'],
+    outputDir = './dist/templates',
+    include = ['**/*.tsx'],
+    exclude = ['**/*.test.tsx', '**/*.spec.tsx', '**/node_modules/**'],
+    verbose = false,
+  } = templateConfig;
+  
+  try {
+    const result = await templateService.execute({
+      sourceDirs,
+      outputDir,
+      engine,
+      include,
+      exclude,
+      verbose,
+    });
+    
+    // Log errors
+    if (result.errors.length > 0) {
+      for (const error of result.errors) {
+        logger.error(`  ❌ ${error}`);
+      }
+    }
+    
+    // Log warnings if verbose
+    if (verbose && result.warnings.length > 0) {
+      for (const warning of result.warnings) {
+        logger.warn(`  ⚠️ ${warning}`);
+      }
+    }
+    
+    logger.info(`  ✅ Generated ${result.files.length} ${engine} templates in ${result.duration}ms`);
+    
+    // Log individual files if verbose
+    if (verbose) {
+      for (const file of result.files) {
+        logger.info(`    → ${file.output} (${file.componentName})`);
+      }
+    }
+    
+    await templateService.dispose();
+    
+    return { generated: result.files.length };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error(`  ❌ Template generation failed: ${message}`);
+    return { generated: 0 };
   }
 }
 
