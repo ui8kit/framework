@@ -146,7 +146,7 @@ export type {
   TemplatePluginFeatures,
   TemplatePluginContext,
   TemplatePluginConfig,
-  TransformResult,
+  TransformResult as TemplateTransformResult,
   FilterDefinition,
   StandardFilter,
   TemplatePluginFactory,
@@ -243,6 +243,33 @@ export type {
   // Output types
   TemplateOutput,
 } from './hast';
+
+// =============================================================================
+// JSX Transformer
+// =============================================================================
+
+export {
+  transformJsx,
+  transformJsxFile,
+  transformJsxFiles,
+  parseJsx,
+  buildHast,
+  analyzeExpression,
+  extractVariables,
+  DEFAULT_PARSER_OPTIONS,
+  DEFAULT_COMPONENT_PATTERNS,
+} from './transformer';
+
+export type {
+  TransformOptions,
+  TransformResult,
+  ComponentPatterns,
+  ExpressionType,
+  AnalyzedExpression,
+  AnalyzedComponent,
+  AnalyzedProp,
+  AnalyzedImport,
+} from './transformer';
 
 // =============================================================================
 // Utilities

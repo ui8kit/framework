@@ -89,3 +89,10 @@ export type {
   UiKitMapServiceOptions,
   UiKitMapFileSystem,
 } from './uikit-map';
+
+export { TemplateService } from './template';
+export type {
+  TemplateServiceInput,
+  TemplateServiceOutput,
+  GeneratedFile,
+} from './template';
