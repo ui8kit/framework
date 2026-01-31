@@ -538,6 +538,70 @@ const myPlugin = createPlugin({
 orchestrator.use(myPlugin);
 ```
 
+## Template Plugins
+
+Generate templates for various template engines from HAST trees.
+
+### Supported Engines
+
+| Engine | Runtime | Extension | Use Case |
+|--------|---------|-----------|----------|
+| Liquid | JS | `.liquid` | Shopify, Jekyll, Eleventy |
+| Handlebars | JS | `.hbs` | Express.js, static sites |
+| Twig | PHP | `.twig` | Symfony, PHP applications |
+| Latte | PHP | `.latte` | Nette Framework |
+
+### Quick Start
+
+```typescript
+import {
+  PluginRegistry,
+  LiquidPlugin,
+  registerBuiltInPlugins,
+  root,
+  element,
+  text,
+  annotate,
+} from '@ui8kit/generator';
+
+// Create registry and register plugins
+const registry = new PluginRegistry();
+registerBuiltInPlugins(registry);
+
+// Get plugin and initialize
+const plugin = registry.get('liquid');
+await plugin.initialize({
+  logger: console,
+  config: { fileExtension: '.liquid', outputDir: './dist' },
+  outputDir: './dist',
+});
+
+// Create HAST tree with annotations
+const tree = root([
+  annotate(
+    element('ul', {}, [element('li', {}, [text('Item')])]),
+    { loop: { item: 'product', collection: 'products' } }
+  ),
+]);
+
+// Transform to template
+const output = await plugin.transform(tree);
+console.log(output.content);
+// {% for product in products %}
+//   <ul><li>Item</li></ul>
+// {% endfor %}
+```
+
+### Annotations
+
+- **Loop**: `{ loop: { item: 'x', collection: 'items' } }` → `{% for x in items %}`
+- **Condition**: `{ condition: { expression: 'isActive' } }` → `{% if isActive %}`
+- **Variable**: `{ variable: { name: 'title', default: 'Untitled' } }` → `{{ title | default: "Untitled" }}`
+- **Include**: `{ include: { partial: 'header', props: { x: 'y' } } }` → `{% include 'header' %}`
+- **Slot**: `{ slot: { name: 'content' } }` → Block/yield in templates
+
+See [Template Plugins Documentation](./docs/template-plugins.md) for complete guide.
+
 ## API Reference
 
 ### Main Exports

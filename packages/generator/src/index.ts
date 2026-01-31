@@ -121,6 +121,130 @@ export type {
 } from './plugins';
 
 // =============================================================================
+// Template Plugins
+// =============================================================================
+
+export {
+  // Base
+  BasePlugin,
+  // Registry
+  PluginRegistry,
+  defaultRegistry,
+  registerTemplatePlugin,
+  getTemplatePlugin,
+  // Built-in Plugins
+  LiquidPlugin,
+  HandlebarsPlugin,
+  TwigPlugin,
+  LattePlugin,
+  builtInPlugins,
+  registerBuiltInPlugins,
+} from './plugins';
+
+export type {
+  ITemplatePlugin,
+  TemplatePluginFeatures,
+  TemplatePluginContext,
+  TemplatePluginConfig,
+  TransformResult,
+  FilterDefinition,
+  StandardFilter,
+  TemplatePluginFactory,
+  TemplatePluginMetadata,
+} from './plugins';
+
+// =============================================================================
+// HAST (Hypertext Abstract Syntax Tree)
+// =============================================================================
+
+export {
+  // Type guards
+  isElement,
+  isText,
+  isComment,
+  isRoot,
+  hasAnnotations,
+  hasAnnotation,
+  getAnnotations,
+  // Traversal
+  visit,
+  visitMatch,
+  visitElements,
+  visitText,
+  // Transformation
+  map,
+  filter,
+  remove,
+  // Querying
+  find,
+  findAll,
+  findByTag,
+  findAllByTag,
+  findById,
+  findByClass,
+  findByAnnotation,
+  // Statistics
+  countNodes,
+  countByType,
+  getDepth,
+  // Variable collection
+  collectVariables,
+  collectDependencies,
+  // Building
+  text,
+  element,
+  root,
+  annotate,
+  // Schemas
+  GenLoopSchema,
+  GenConditionSchema,
+  GenVariableSchema,
+  GenSlotSchema,
+  GenIncludeSchema,
+  GenBlockSchema,
+  GenAnnotationsSchema,
+  GenRootSchema,
+  GenElementSchema,
+  TemplateOutputSchema,
+  validateRoot,
+  validateElement,
+  validateAnnotations,
+  validateTemplateOutput,
+} from './hast';
+
+export type {
+  // Node types
+  GenNodeType,
+  GenNode,
+  GenElement,
+  GenText,
+  GenComment,
+  GenDoctype,
+  GenChild,
+  GenRoot,
+  // Annotation types
+  GenAnnotations,
+  GenLoop,
+  GenCondition,
+  GenVariable,
+  GenSlot,
+  GenInclude,
+  GenBlock,
+  // Property types
+  GenProperties,
+  GenElementProperties,
+  // Metadata types
+  GenComponentMeta,
+  GenPropDefinition,
+  // Traversal types
+  GenVisitor,
+  GenVisitorObject,
+  GenNodePredicate,
+  // Output types
+  TemplateOutput,
+} from './hast';
+
+// =============================================================================
 // Utilities
 // =============================================================================
 
