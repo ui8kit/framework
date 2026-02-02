@@ -1,0 +1,26 @@
+{
+  "name": "@ui8kit/engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Test application for template generation",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "generate": "bun run generator.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ui8kit/core": "workspace:*",
+    "@ui8kit/template": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@ui8kit/generator": "workspace:*",
+    "typescript": "^5.8.0",
+    "vite": "^6.3.5"
+  }
+}

@@ -22,7 +22,8 @@
     "lint": "bunx turbo run lint",
     "generate": "bunx turbo run generate --filter=./apps/docs --filter=./apps/web",
     "generate:docs": "bunx turbo run generate --filter=./apps/docs",
-    "generate:web": "bunx turbo run generate --filter=./apps/web"
+    "generate:web": "bunx turbo run generate --filter=./apps/web",
+    "generate:engine": "bunx turbo run generate --filter=./apps/engine"
 
   },
   "packageManager": "bun@1.3.3",

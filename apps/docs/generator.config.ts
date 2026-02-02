@@ -53,7 +53,7 @@ export const config: GenerateConfig = {
 
   // CSS class mappings
   mappings: {
-    ui8kitMap: '../../packages/ui8kit/src/lib/ui8kit.map.json',
+    ui8kitMap: '../../packages/core/src/lib/ui8kit.map.json',
   },
 
   // CSS Generation
@@ -99,7 +99,7 @@ export const config: GenerateConfig = {
   // Variant elements generation
   elements: {
     enabled: true,
-    variantsDir: '../../packages/ui8kit/src/variants',
+    variantsDir: '../../packages/core/src/variants',
     outputDir: './src/elements',
     componentsImportPath: '../components'
   },
@@ -115,7 +115,7 @@ export const config: GenerateConfig = {
     // Import path aliases for resolving imports in MDX files
     // Same format as Vite's resolve.alias in vite.config.ts
     aliases: {
-      '@ui8kit/core': '../../packages/ui8kit/src/index',
+      '@ui8kit/core': '../../packages/core/src/index',
       '@': './src',
     },
     

@@ -3,7 +3,7 @@
 @import "./modern-minimal.css";
 
 @source "../../../src/**/*.{ts, tsx}";
-@source "../../../../../packages/ui8kit/src/**/*.{ts,tsx,json}";
+@source "../../../../../packages/core/src/**/*.{ts,tsx,json}";
 
 @layer base {
   body {

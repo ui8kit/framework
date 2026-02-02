@@ -5,7 +5,7 @@
 @source "../../../src/**/*.{ts,tsx}";
 /* @source "../../../src/assets/maps/ui8kit.tailwind.log.json"; */
 @source "../../../../../packages/generator/src/lib/ui8kit.map.json";
-@source "../../../../../packages/ui8kit/src/**/*.{ts,tsx}";
+@source "../../../../../packages/core/src/**/*.{ts,tsx}";
 
 @layer base {
   body {

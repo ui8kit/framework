@@ -65,6 +65,7 @@ export {
   AssetService,
   HtmlConverterService,
   ClassLogService,
+  TemplateService,
 } from './services';
 
 export type {
@@ -91,6 +92,9 @@ export type {
   ClassLogServiceInput,
   ClassLogServiceOutput,
   ClassLogFile,
+  TemplateServiceInput,
+  TemplateServiceOutput,
+  GeneratedFile,
 } from './services';
 
 // =============================================================================
@@ -119,6 +123,157 @@ export type {
   PluginDefinition,
   PluginHooks,
 } from './plugins';
+
+// =============================================================================
+// Template Plugins
+// =============================================================================
+
+export {
+  // Base
+  BasePlugin,
+  // Registry
+  PluginRegistry,
+  defaultRegistry,
+  registerTemplatePlugin,
+  getTemplatePlugin,
+  // Built-in Plugins
+  LiquidPlugin,
+  HandlebarsPlugin,
+  TwigPlugin,
+  LattePlugin,
+  builtInPlugins,
+  registerBuiltInPlugins,
+} from './plugins';
+
+export type {
+  ITemplatePlugin,
+  TemplatePluginFeatures,
+  TemplatePluginContext,
+  TemplatePluginConfig,
+  TransformResult as TemplateTransformResult,
+  FilterDefinition,
+  StandardFilter,
+  TemplatePluginFactory,
+  TemplatePluginMetadata,
+} from './plugins';
+
+// =============================================================================
+// HAST (Hypertext Abstract Syntax Tree)
+// =============================================================================
+
+export {
+  // Type guards
+  isElement,
+  isText,
+  isComment,
+  isRoot,
+  hasAnnotations,
+  hasAnnotation,
+  getAnnotations,
+  // Traversal
+  visit,
+  visitMatch,
+  visitElements,
+  visitText,
+  // Transformation
+  map,
+  filter,
+  remove,
+  // Querying
+  find,
+  findAll,
+  findByTag,
+  findAllByTag,
+  findById,
+  findByClass,
+  findByAnnotation,
+  // Statistics
+  countNodes,
+  countByType,
+  getDepth,
+  // Variable collection
+  collectVariables,
+  collectDependencies,
+  // Building
+  text,
+  element,
+  root,
+  annotate,
+  // Schemas
+  GenLoopSchema,
+  GenConditionSchema,
+  GenVariableSchema,
+  GenSlotSchema,
+  GenIncludeSchema,
+  GenBlockSchema,
+  GenAnnotationsSchema,
+  GenRootSchema,
+  GenElementSchema,
+  TemplateOutputSchema,
+  validateRoot,
+  validateElement,
+  validateAnnotations,
+  validateTemplateOutput,
+} from './hast';
+
+export type {
+  // Node types
+  GenNodeType,
+  GenNode,
+  GenElement,
+  GenText,
+  GenComment,
+  GenDoctype,
+  GenChild,
+  GenRoot,
+  // Annotation types
+  GenAnnotations,
+  GenLoop,
+  GenCondition,
+  GenVariable,
+  GenSlot,
+  GenInclude,
+  GenBlock,
+  // Property types
+  GenProperties,
+  GenElementProperties,
+  // Metadata types
+  GenComponentMeta,
+  GenPropDefinition,
+  // Traversal types
+  GenVisitor,
+  GenVisitorObject,
+  GenNodePredicate,
+  // Output types
+  TemplateOutput,
+} from './hast';
+
+// =============================================================================
+// JSX Transformer
+// =============================================================================
+
+export {
+  transformJsx,
+  transformJsxFile,
+  transformJsxFiles,
+  parseJsx,
+  buildHast,
+  analyzeExpression,
+  extractVariables,
+  DEFAULT_PARSER_OPTIONS,
+  DEFAULT_COMPONENT_PATTERNS,
+} from './transformer';
+
+export type {
+  TransformOptions,
+  TransformResult,
+  ComponentPatterns,
+  ExpressionType,
+  AnalyzedExpression,
+  AnalyzedComponent,
+  AnalyzedProp,
+  AnalyzedImport,
+} from './transformer';
 
 // =============================================================================
 // Utilities

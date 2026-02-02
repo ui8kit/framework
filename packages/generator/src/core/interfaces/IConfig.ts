@@ -127,6 +127,35 @@ export interface GeneratorConfig {
   };
   
   /**
+   * Template generation configuration
+   * 
+   * Transforms React components to template files (Liquid, Handlebars, Twig, Latte)
+   */
+  template?: {
+    /** Enable template generation */
+    enabled?: boolean;
+    /** Template engine to use */
+    engine?: 'liquid' | 'handlebars' | 'twig' | 'latte';
+    /** Source directories for components (relative to root) */
+    sourceDirs?: string[];
+    /** Output directory for generated templates (relative to root) */
+    outputDir?: string;
+    /** File patterns to include (default: ['**\/*.tsx']) */
+    include?: string[];
+    /** File patterns to exclude */
+    exclude?: string[];
+    /** Enable verbose logging */
+    verbose?: boolean;
+    /** Plugin-specific configuration */
+    pluginConfig?: {
+      /** Prepend text to every template */
+      prependComment?: string;
+      /** Enable pretty printing */
+      prettyPrint?: boolean;
+    };
+  };
+  
+  /**
    * Plugin-specific configuration
    */
   plugins?: Record<string, unknown>;

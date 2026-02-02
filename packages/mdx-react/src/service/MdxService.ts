@@ -103,7 +103,7 @@ export interface MdxServiceInput {
    * @example
    * ```typescript
    * aliases: {
-   *   '@ui8kit/core': '../../packages/ui8kit/src/index',
+   *   '@ui8kit/core': '../../packages/core/src/index',
    *   '@': './src',
    * }
    * ```

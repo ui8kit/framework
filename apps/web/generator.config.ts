@@ -93,7 +93,7 @@ export const config: GenerateConfig = {
 
   // CSS class mappings
   mappings: {
-    ui8kitMap: '../../packages/ui8kit/src/lib/ui8kit.map.json',
+    ui8kitMap: '../../packages/core/src/lib/ui8kit.map.json',
   },
 
   css: {
@@ -158,7 +158,7 @@ export const config: GenerateConfig = {
 
   elements: {
     enabled: true,
-    variantsDir: '../../packages/ui8kit/src/variants',
+    variantsDir: '../../packages/core/src/variants',
     outputDir: './src/elements',
     componentsImportPath: '../components'
   },
@@ -169,6 +169,17 @@ export const config: GenerateConfig = {
     outputDir: './dist/maps',
     baseName: 'ui8kit',
     uikitMapPath: '../../packages/generator/src/lib/ui8kit.map.json',
+  },
+  
+  // Template generation from React components
+  template: {
+    enabled: true,
+    engine: 'liquid',
+    sourceDirs: ['./src/blocks', './src/layouts'],
+    outputDir: './dist/templates',
+    include: ['**/*.tsx'],
+    exclude: ['**/*.test.tsx', '**/*.spec.tsx'],
+    verbose: true,
   }
 };
 

@@ -57,7 +57,7 @@ export interface CompileOptions {
   
   /**
    * Import path aliases for resolving imports.
-   * @example { '@ui8kit/core': '../../packages/ui8kit/src/index' }
+   * @example { '@ui8kit/core': '../../packages/core/src/index' }
    */
   aliases?: Record<string, string>
   
