@@ -1,117 +1,96 @@
-## 🎯 **UI8Kit Framework - Project Road Map**
+## 🎯 UI8Kit Framework — Roadmap
 
-### **Vision & Mission**
-**UI8Kit** - A zero-overhead UI system for rapid prototyping and static site generation that combines React DX with semantic HTML5/CSS3 output, following the principle: *"Every line of code must justify its existence"*
+### Vision & Mission
+**UI8Kit** — zero-overhead UI framework for rapid prototyping and static generation: React DX + semantic HTML5/CSS3. Принцип: *every line must justify its existence*.
 
 ---
 
-### **🏗️ Current Architecture**
+### 🧭 Цели проекта (единые источники)
+- **React — источник правды**: компоненты определяют структуру и данные.
+- **Генерация без хардкода**: динамическая структура приложений и шаблонов.
+- **SSG + шаблонизаторы**: HTML по умолчанию, плагины для Liquid/Handlebars/Twig/Latte.
+- **Schema-first валидация**: Zod-схемы и контракты между ядром и плагинами.
+- **DX и качество**: тесты, документация, минимальная когнитивная нагрузка.
+
+---
+
+### 🏗️ Целевая архитектура (обновлено)
 ```
-UI8Kit Monorepo
-├── Apps/
-│   ├── web/          - Static site generator demo
-│   ├── docs/         - MDX documentation (Vite HMR)
-│   └── engine/       - Template engine converter (Templetor)
-├── Packages/
-│   ├── @ui8kit/core/     - React components with utility props
-│   ├── @ui8kit/generator/ - Static site generator (83% coverage)
-│   ├── @ui8kit/template/  - DSL components
-│   ├── @ui8kit/mdx-react/ - MDX processing
-│   └── @ui8kit/lint/     - Design system validation
+Apps/
+├── web/        - Production сайт (использует @ui8kit/blocks + @ui8kit/data)
+├── docs/       - Документация
+└── engine/     - Playground генерации шаблонов
+
+Packages/
+├── @ui8kit/core       - UI примитивы
+├── @ui8kit/template   - DSL компоненты
+├── @ui8kit/generator  - Генератор + Plugin System
+├── @ui8kit/blocks     - Бизнес-блоки (NEW)
+└── @ui8kit/data       - Общие fixtures (NEW)
 ```
 
 ---
 
-### **📋 Completed Milestones** ✅
-- Core generator architecture with OOP design
-- React → HTML static generation pipeline
-- CSS class mapping and validation system
-- Grid system conversion (Tailwind → CSS3)
-- Design tokens (shadcn-style)
-- Mobile components (menu, sheet)
-- Template plugin system architecture
-- DSL components for template conversion
+### ✅ Сделано (ключевое)
+- Архитектура генератора и React → HTML pipeline
+- Карты классов + валидация + конверсия Tailwind → CSS3
+- Дизайн-токены, mobile компоненты, DSL компоненты
+- Пакетизация UI8Kit, базовые режимы генерации
 
 ---
 
-### **🚧 Active Development (Q1 2026)**
+### 🚧 Активная разработка (Q1 2026)
 
-#### **Phase 1: Core Completeness (Feb 2026)**
-- **Template Engine Plugins** - Complete Liquid, Handlebars, Twig, Latte implementations
-- **React→HTML Direct Mode** - Replace Liquid as default generation method
-- **CSS-Only Components** - Accordion, Tabs, Dropdown, Modal, Tooltip
-- **Schema-Driven Architecture** - Zod validation integration
-- **MCP Server Package** - AI/LLM integration capabilities
+#### Phase 1: Core & Plugins (Feb 2026)
+- Плагины шаблонизаторов: **Liquid, Handlebars, Twig, Latte**
+- **React → HTML** как default mode
+- **Schema-driven** (Zod) для конфигов и плагинов
+- **Template Plugin Manager** без хардкода
+- **MCP Server** (отдельный пакет)
 
-#### **Phase 2: Component Expansion (Mar 2026)**
-- **shadcn-style Examples**:
-  - Dashboard layouts
-  - Authentication forms  
-  - Data tables
-  - Marketing sections
-  - E-commerce components
-- **Enhanced Component Library** - More variants and states
-- **Performance Optimization** - CSS reduction and build optimization
+#### Phase 2: DX & Components (Mar 2026)
+- CSS-only интерактивные компоненты (Accordion, Tabs, Dropdown, Modal, Tooltip)
+- Примеры/шаблоны shadcn-style (dashboard, auth, data, marketing, e‑commerce)
+- Оптимизация CSS и сборки (UnCSS, reduction)
 
 ---
 
-### **🎯 Strategic Goals**
-
-#### **Short-term (0-3 months)**
-- Complete template plugin implementations
-- Achieve 90%+ test coverage
-- Launch MCP server for AI integration
-- Expand CSS-only interactive component library
-- Create comprehensive component examples
-
-#### **Medium-term (3-6 months)**
-- Next.js/Remix integration packages
-- Community plugin ecosystem
-- Advanced static generation features
-- Accessibility compliance automation
-- Advanced CSS optimization tools
-
-#### **Long-term (6-12 months)**
-- Integration with major React frameworks
-- Template engine marketplace
-- Community-driven development
-- Production-ready component ecosystem
-- Enterprise adoption and support
+### 📦 Архитектурные инициативы
+- **Packages/blocks**: перенос блоков из `apps/web`
+- **Packages/data**: shared fixtures + типы
+- **Engine tests**: snapshots для Liquid/Handlebars
+- **Sync web ↔ engine**: единые блоки/данные
 
 ---
 
-### **🔧 Technical Priorities**
-
-#### **Core Technologies**
-- **Zero JavaScript Interactivity** - CSS-first approach using `:checked`, `:target`, `:focus-within`
-- **Constrained Design System** - ~500 Tailwind classes vs 1000+, no arbitrary values
-- **Semantic HTML Output** - `data-class` attributes for meaningful selectors
-- **Dual CSS Output** - Supports both `@apply` and pure CSS3 modes
-- **78% CSS Reduction** - UnCSS integration for optimization
-
-#### **Key Features**
-- TypeScript-validated utility props
-- Live development with Vite HMR  
-- Multiple generation modes (tailwind, semantic, inline)
-- Design tokens with dark mode support
-- Curated class whitelist for brand consistency
+### 🧪 Качество и стабильность
+- 90%+ тестов в генераторе
+- Валидация шаблонов перед генерацией
+- Контроль соответствия layout/partials/props
 
 ---
 
-### **🎉 Success Metrics**
-- **Developer Experience** - React DX with static output
-- **Performance** - Optimized CSS with semantic markup
-- **Maintainability** - TypeScript validation and testing
-- **Flexibility** - Multiple output formats and integrations
-- **Adoption** - Framework-agnostic static generation
+### 📌 Backlog (приоритет)
+- Исправить terminal error `@ui8kit/template#dev`
+- Удалить GraphQL из `apps/web`
+- Рефактор `apps/engine` (переименование и структура)
+- Управление шаблонами + разметка DSL
+- Документация уровня 101 + LLM cheatsheet
+- Интеграция 11ty + тесты шаблонов (JS/PHP)
 
 ---
 
-### **📈 Next Actions**
-1. Finalize template plugin implementations
-2. Launch React→HTML direct mode as default
-3. Expand CSS-only component library
-4. Create comprehensive documentation and examples
-5. Deploy MCP server for AI/LLM integration
+### 🎯 Метрики успеха
+- **DX**: минимальная когнитивная нагрузка
+- **Performance**: оптимизированный CSS + семантический HTML
+- **Maintainability**: схемы + тесты
+- **Extensibility**: плагины и внешние шаблонизаторы
 
-The project is actively developed with a clear vision to bridge the gap between React development experience and production-ready static site generation with semantic HTML5/CSS3 output.
+---
+
+### 📈 Next Actions
+1. Завершить плагины шаблонизаторов и PluginManager
+2. Сделать React → HTML default
+3. Поднять packages/blocks и packages/data
+4. Включить schema validation и тесты генератора
+5. Запустить MCP server пакет
