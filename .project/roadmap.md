@@ -86,6 +86,35 @@ packages/
 
 ---
 
+## MDX React (`@ui8kit/mdx-react`)
+
+> Подробный план: `.project/mdx-react/ROADMAP.md`
+
+### Completed
+- [x] Project setup + MDX v3.1.1 pipeline
+- [x] Vite plugin integration
+- [x] TypeScript + testing infra
+
+### In Progress (Feb 2026)
+- [ ] `ComponentExample` + `CodeBlock` (syntax highlighting)
+- [ ] `PropsTable` auto-generation
+- [ ] `Tabs`, `Callout` components
+- [ ] Component integration tests
+
+### Next (Mar 2026)
+- [ ] MDX compilation utilities + caching
+- [ ] Theme integration
+- [ ] Browser-safe runtime (`/runtime` entry)
+- [ ] LiveDemo, ComponentGrid, ThemeSwitcher
+
+### Future
+- [ ] Framework bridges (Next.js, Astro, Remix)
+- [ ] Auto-generated API docs
+- [ ] VS Code / IntelliSense integration
+- [ ] i18n support
+
+---
+
 ## Architectural Tasks
 
 | Task | Description | Priority |
@@ -112,7 +141,7 @@ packages/
 
 ### Low Priority
 - [ ] PHP runtime tests (Twig/Latte)
-- [ ] Next.js/Remix integration packages
+- [ ] MD files parser and tiptap integration packages
 
 ---
 
