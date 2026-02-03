@@ -66,23 +66,23 @@ packages/
 ### Phase 1: Plugin System (Feb 2026)
 | Task | Status | Priority |
 |------|--------|----------|
-| React → HTML as default mode | 🔄 | P0 |
-| PluginManager без хардкода | 🔄 | P0 |
-| Liquid plugin | 🔄 | P1 |
-| Handlebars plugin | ⏳ | P1 |
-| Twig plugin (PHP) | ⏳ | P2 |
-| Latte plugin (PHP) | ⏳ | P2 |
-| Zod schemas для config/output | ⏳ | P1 |
-| MCP Server package | ⏳ | P2 |
+| [ ] React → HTML as default mode | 🔄 | P0 |
+| [ ] PluginManager без хардкода | 🔄 | P0 |
+| [ ] Liquid plugin | 🔄 | P1 |
+| [ ] Handlebars plugin | 🔄 | P1 |
+| [ ] Zod schemas для config/output | 🔄 | P1 |
+| [ ] Twig plugin (PHP) | ⏳ | P2 |
+| [ ] Latte plugin (PHP) | ⏳ | P2 |
+| [ ] MCP Server package | ⏳ | P2 |
 
 ### Phase 2: Components & DX (Mar 2026)
 | Task | Status | Priority |
 |------|--------|----------|
-| CSS-only: Accordion, Tabs | ⏳ | P1 |
-| CSS-only: Dropdown, Modal, Tooltip | ⏳ | P1 |
-| shadcn examples: dashboard, auth | ⏳ | P2 |
-| shadcn examples: data tables, marketing | ⏳ | P2 |
-| UnCSS optimization | ⏳ | P2 |
+| [ ] CSS-only: Accordion, Tabs | 🔄 | P1 |
+| [ ] CSS-only: Dropdown, Modal, Tooltip | 🔄 | P1 |
+| [ ] shadcn examples: dashboard, auth | 🔄 | P2 |
+| [ ] shadcn examples: data tables, marketing | 🔄 | P2 |
+| [ ] UnCSS optimization | 🔄 | P2 |
 
 ---
 
@@ -123,7 +123,15 @@ packages/
 | `packages/data` | Shared fixtures + TypeScript types | P1 |
 | Sync web ↔ engine | Единые блоки и данные для обоих apps | P1 |
 | Engine snapshot tests | Liquid/Handlebars output validation | P2 |
-| 11ty integration | Тестирование сгенерированных шаблонов | P3 |
+| Engine JS templates | Тестирование сгенерированных шаблонов | P3 |
+
+## Migration Plan
+
+- [ ] Create `packages/blocks` - move blocks from apps/web
+- [ ] Create `packages/data` - extract fixtures
+- [ ] Update apps/web - use @ui8kit/blocks
+- [ ] Update apps/engine - generate from packages/blocks
+- [ ] Configure tests - test/apps/liquid and test/apps/handlebars
 
 ---
 
