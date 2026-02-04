@@ -3,7 +3,7 @@ import { site, menu } from './wpfasty/context';
 import { about } from './pages/about';
 import { home } from './pages/home';
 import { blog } from './pages/blog';
-import { getPosts, getCategories, getTags, getAuthors, getPages, getHomePage, getAboutPage } from './posts';
+import { getPosts, getCategories, getTags, getAuthors, getPages, getHomePage, getAboutPage } from './posts/index-static';
 
 // Normalize and aggregate derived data so counts are consistent
 async function normalize() {

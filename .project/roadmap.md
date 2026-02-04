@@ -138,9 +138,9 @@ packages/
 ## Backlog
 
 ### High Priority
-- [ ] Fix terminal error `@ui8kit/template#dev`
-- [ ] Remove GraphQL from `apps/web`
-- [ ] Refactor `apps/engine` (structure + naming)
+- [x] Fix terminal error `@ui8kit/template#dev`
+- [x] Remove GraphQL from `apps/web`
+- [ ] Refactor `apps/engine` [structure + naming](./report/_sync_web_engine.md)
 
 ### Medium Priority
 - [ ] DSL template management docs

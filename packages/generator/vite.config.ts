@@ -36,47 +36,25 @@ export default defineConfig({
     // Rollup options
     rollupOptions: {
       // External dependencies (don't bundle these)
-      external: [
+      // Mark all dependencies as external (don't bundle them)
+      external: (id, parentId, isResolved) => {
+        // Never externalize entry points or local source files
+        if (id.includes('/src/') || id.endsWith('/src')) return false;
+        if (id.startsWith('.') || id.startsWith('@/')) return false;
+        
         // Node.js built-ins
-        'node:fs',
-        'node:fs/promises',
-        'node:path',
-        'node:url',
-        'node:crypto',
-        'node:stream',
-        'node:util',
-        'node:events',
-        'node:buffer',
-        'node:child_process',
-        'fs',
-        'fs/promises',
-        'path',
-        'url',
-        'crypto',
-        'stream',
-        'util',
-        'events',
-        'buffer',
-        'child_process',
+        if (id.startsWith('node:')) return true;
+        if (['fs', 'fs/promises', 'path', 'url', 'crypto', 'stream', 'util', 'events', 'buffer', 'child_process'].includes(id)) {
+          return true;
+        }
         
-        // Peer dependencies
-        'react',
-        'react-dom',
-        'react/jsx-runtime',
+        // External: any bare import (npm packages)
+        if (/^[a-z@]/.test(id) && !id.startsWith('@/')) {
+          return true;
+        }
         
-        // Dependencies (should be installed by consumer)
-        'glob',
-        'liquidjs',
-        'uncss',
-        'typescript',
-        
-        // Workspace packages
-        '@ui8kit/render',
-        '@ui8kit/mdx-react',
-        '@ui8kit/mdx-react/service',
-        '@ui8kit/mdx-react/server',
-        /^@ui8kit\/mdx-react\/.*/,
-      ],
+        return false;
+      },
       
       output: {
         // Preserve module structure
