@@ -9,7 +9,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@ui8kit/core': path.resolve(__dirname, '../../packages/core/src/index')
+      '@ui8kit/core': path.resolve(__dirname, '../../packages/core/src/index'),
+      '@ui8kit/data': path.resolve(__dirname, '../../packages/data/src/index'),
+      '@ui8kit/blocks': path.resolve(__dirname, '../../packages/blocks/src/index')
     }
   },
 })

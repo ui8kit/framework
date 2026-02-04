@@ -175,10 +175,10 @@ export const config: GenerateConfig = {
   template: {
     enabled: true,
     engine: 'liquid',
-    sourceDirs: ['./src/blocks', './src/layouts'],
+    sourceDirs: ['../../packages/blocks/src'],
     outputDir: './dist/templates',
     include: ['**/*.tsx'],
-    exclude: ['**/*.test.tsx', '**/*.spec.tsx'],
+    exclude: ['**/*.test.tsx', '**/*.spec.tsx', '**/*.meta.ts', '**/index.ts'],
     verbose: true,
   }
 };

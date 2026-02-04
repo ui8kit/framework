@@ -27,10 +27,10 @@ interface TempletorConfig {
 
 const config: TempletorConfig = {
   engine: 'handlebars',
-  sourceDirs: ['./src/components'],
+  sourceDirs: ['../../packages/blocks/src'],
   outputDir: './dist/templates',
   include: ['**/*.tsx'],
-  exclude: ['**/*.test.tsx', '**/index.ts'],
+  exclude: ['**/*.test.tsx', '**/*.meta.ts', '**/index.ts'],
   verbose: true,
 };
 
