@@ -59,14 +59,16 @@ export function Header({
             <If test="navItems" value={navItems.length > 0}>
               <Group gap="2" items="center" data-class="header-nav">
                 <Loop each="navItems" as="item" data={navItems}>
-                  <Button 
-                    variant="ghost"
-                    size="sm"
-                    href="#"
-                    data-class="header-nav-item"
-                  >
-                    <Var name="item.title" />
-                  </Button>
+                  {(item: NavItem) => (
+                    <Button 
+                      variant="ghost"
+                      size="sm"
+                      href={item.url}
+                      data-class="header-nav-item"
+                    >
+                      <Var name="item.title" value={item.title} />
+                    </Button>
+                  )}
                 </Loop>
               </Group>
             </If>

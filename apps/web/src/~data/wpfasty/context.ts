@@ -39,6 +39,15 @@ export const menu: WPFastyContext['menu'] = {
         classes: [],
         current: false,
       },
+      {
+        title: 'Contact',
+        url: '/contact',
+        id: 4,
+        order: 4,
+        parent: null,
+        classes: [],
+        current: false,
+      },
     ]
   }
 };

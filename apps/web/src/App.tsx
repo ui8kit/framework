@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { MainLayout } from '@/layouts/MainLayout'
+import { MainLayout } from '@ui8kit/blocks'
 import { Stack } from '@ui8kit/core'
 import { 
   SearchBar, 

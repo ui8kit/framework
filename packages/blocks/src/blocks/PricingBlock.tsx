@@ -49,60 +49,64 @@ export function PricingBlock({
 
         <Grid grid="cols-3" gap="6" data-class="pricing-grid">
           <Loop each="plans" as="plan" data={plans}>
-            <Stack
-              gap="6"
-              p="6"
-              rounded="xl"
-              bg="card"
-              border=""
-              data-class="pricing-card"
-            >
-              <If test="plan.featured" value={plans[0]?.featured}>
-                <Badge variant="secondary" data-class="pricing-featured-badge">
-                  Most Popular
-                </Badge>
-              </If>
-
-              <Stack gap="2" data-class="pricing-plan-header">
-                <Title fontSize="xl" fontWeight="semibold" data-class="pricing-plan-name">
-                  <Var name="plan.name" />
-                </Title>
-                <If test="plan.description" value={!!plans[0]?.description}>
-                  <Text fontSize="sm" textColor="muted-foreground" data-class="pricing-plan-description">
-                    <Var name="plan.description" />
-                  </Text>
+            {(plan: PricingPlan) => (
+              <Stack
+                gap="6"
+                p="6"
+                rounded="xl"
+                bg="card"
+                border=""
+                data-class="pricing-card"
+              >
+                <If test="plan.featured" value={!!plan.featured}>
+                  <Badge variant="secondary" data-class="pricing-featured-badge">
+                    Most Popular
+                  </Badge>
                 </If>
-              </Stack>
 
-              <Stack gap="1" data-class="pricing-price">
-                <Box flex="" items="end" gap="1" data-class="pricing-price-wrapper">
-                  <Title fontSize="4xl" fontWeight="bold" data-class="pricing-amount">
-                    <Var name="plan.price" />
+                <Stack gap="2" data-class="pricing-plan-header">
+                  <Title fontSize="xl" fontWeight="semibold" data-class="pricing-plan-name">
+                    <Var name="plan.name" value={plan.name} />
                   </Title>
-                  <If test="plan.period" value={!!plans[0]?.period}>
-                    <Text fontSize="sm" textColor="muted-foreground" data-class="pricing-period">
-                      <Var name="plan.period" />
+                  <If test="plan.description" value={!!plan.description}>
+                    <Text fontSize="sm" textColor="muted-foreground" data-class="pricing-plan-description">
+                      <Var name="plan.description" value={plan.description} />
                     </Text>
                   </If>
-                </Box>
-              </Stack>
+                </Stack>
 
-              <Stack gap="2" data-class="pricing-features">
-                <Loop each="plan.features" as="feature" data={plans[0]?.features}>
-                  <Text fontSize="sm" data-class="pricing-feature">
-                    ✓ <Var name="feature" />
-                  </Text>
-                </Loop>
-              </Stack>
+                <Stack gap="1" data-class="pricing-price">
+                  <Box flex="" items="end" gap="1" data-class="pricing-price-wrapper">
+                    <Title fontSize="4xl" fontWeight="bold" data-class="pricing-amount">
+                      <Var name="plan.price" value={plan.price} />
+                    </Title>
+                    <If test="plan.period" value={!!plan.period}>
+                      <Text fontSize="sm" textColor="muted-foreground" data-class="pricing-period">
+                        <Var name="plan.period" value={plan.period} />
+                      </Text>
+                    </If>
+                  </Box>
+                </Stack>
 
-              <Button
-                variant="outline"
-                w="full"
-                data-class="pricing-cta"
-              >
-                Get Started
-              </Button>
-            </Stack>
+                <Stack gap="2" data-class="pricing-features">
+                  <Loop each="plan.features" as="feature" data={plan.features}>
+                    {(feature: string) => (
+                      <Text fontSize="sm" data-class="pricing-feature">
+                        ✓ <Var name="feature" value={feature} />
+                      </Text>
+                    )}
+                  </Loop>
+                </Stack>
+
+                <Button
+                  variant="outline"
+                  w="full"
+                  data-class="pricing-cta"
+                >
+                  Get Started
+                </Button>
+              </Stack>
+            )}
           </Loop>
         </Grid>
       </Stack>

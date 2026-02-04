@@ -40,44 +40,46 @@ export function TestimonialsBlock({
 
         <Grid grid="cols-3" gap="6" data-class="testimonials-grid">
           <Loop each="testimonials" as="testimonial" data={testimonials}>
-            <Stack
-              gap="4"
-              p="6"
-              rounded="lg"
-              bg="card"
-              border=""
-              data-class="testimonial-card"
-            >
-              <Text fontSize="base" data-class="testimonial-quote">
-                "<Var name="testimonial.content" />"
-              </Text>
+            {(testimonial: Testimonial) => (
+              <Stack
+                gap="4"
+                p="6"
+                rounded="lg"
+                bg="card"
+                border=""
+                data-class="testimonial-card"
+              >
+                <Text fontSize="base" data-class="testimonial-quote">
+                  "<Var name="testimonial.content" value={testimonial.content} />"
+                </Text>
 
-              <Box flex="" items="center" gap="4" data-class="testimonial-author">
-                <If test="testimonial.avatar" value={!!testimonials[0]?.avatar}>
-                  <Image
-                    src={testimonials[0]?.avatar}
-                    alt={testimonials[0]?.name}
-                    w="auto"
-                    h="auto"
-                    rounded="full"
-                    fit="cover"
-                    aspect="square"
-                    data-class="testimonial-avatar"
-                  />
-                </If>
-
-                <Stack gap="0" data-class="testimonial-info">
-                  <Title fontSize="sm" fontWeight="semibold" data-class="testimonial-name">
-                    <Var name="testimonial.name" />
-                  </Title>
-                  <If test="testimonial.role" value={!!testimonials[0]?.role}>
-                    <Text fontSize="xs" textColor="muted-foreground" data-class="testimonial-role">
-                      <Var name="testimonial.role" /> at <Var name="testimonial.company" />
-                    </Text>
+                <Box flex="" items="center" gap="4" data-class="testimonial-author">
+                  <If test="testimonial.avatar" value={!!testimonial.avatar}>
+                    <Image
+                      src={testimonial.avatar || ''}
+                      alt={testimonial.name}
+                      w="auto"
+                      h="auto"
+                      rounded="full"
+                      fit="cover"
+                      aspect="square"
+                      data-class="testimonial-avatar"
+                    />
                   </If>
-                </Stack>
-              </Box>
-            </Stack>
+
+                  <Stack gap="0" data-class="testimonial-info">
+                    <Title fontSize="sm" fontWeight="semibold" data-class="testimonial-name">
+                      <Var name="testimonial.name" value={testimonial.name} />
+                    </Title>
+                    <If test="testimonial.role" value={!!testimonial.role}>
+                      <Text fontSize="xs" textColor="muted-foreground" data-class="testimonial-role">
+                        <Var name="testimonial.role" value={testimonial.role} /> at <Var name="testimonial.company" value={testimonial.company} />
+                      </Text>
+                    </If>
+                  </Stack>
+                </Box>
+              </Stack>
+            )}
           </Loop>
         </Grid>
       </Stack>

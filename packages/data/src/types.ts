@@ -68,10 +68,8 @@ export interface ProductsFixture {
 }
 
 export interface DashboardFixture {
-  widgets?: Array<{
-    id: string;
-    type: string;
-    title: string;
-    data?: Record<string, unknown>;
-  }>;
+  title?: string;
+  description?: string;
+  ctaText?: string;
+  ctaUrl?: string;
 }

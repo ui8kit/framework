@@ -13,7 +13,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@ui8kit/core": ["../../packages/core/src/index"]
+      "@ui8kit/core": ["../../packages/core/src/index.ts"],
+      "@ui8kit/template": ["../../packages/template/src/index.ts"],
+      "@ui8kit/blocks": ["../../packages/blocks/src/index.ts"],
+      "@ui8kit/data": ["../../packages/data/src/index.ts"]
     }
 
   },

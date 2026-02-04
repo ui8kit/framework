@@ -1,26 +1,9 @@
 import { ReactNode } from 'react'
 import { Block, Container, Grid, Stack } from '@ui8kit/core'
-import { Header } from '@/partials/Header'
-import { Footer } from '@/partials/Footer'
-import { Sidebar } from '@/partials/Sidebar'
+import { Header, Footer, Sidebar } from '@ui8kit/blocks'
+import type { NavItem, FooterSection } from '@ui8kit/blocks'
 
 export type LayoutMode = 'full' | 'with-sidebar' | 'sidebar-left'
-
-type NavItem = {
-  id: string
-  title: string
-  url: string
-}
-
-type FooterLink = {
-  label: string
-  href: string
-}
-
-type FooterSection = {
-  title: string
-  links: FooterLink[]
-}
 
 type MainLayoutProps = {
   children: ReactNode

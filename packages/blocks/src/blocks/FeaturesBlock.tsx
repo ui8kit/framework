@@ -1,4 +1,4 @@
-import { Block, Grid, Stack, Title, Text, Icon } from '@ui8kit/core';
+import { Block, Grid, Stack, Title, Text } from '@ui8kit/core';
 import { If, Var, Loop } from '@ui8kit/template';
 
 export interface Feature {
@@ -49,39 +49,32 @@ export function FeaturesBlock({
 
         <Grid cols="1-2-4" gap="6" data-class="features-grid">
           <Loop each="features" as="feature" data={features}>
-            <Stack
-              gap="4"
-              p="6"
-              rounded="lg"
-              bg="card"
-              border=""
-              data-class="feature-card"
-            >
-              <If test="feature.icon" value={!!features[0]?.icon}>
-                <Icon
-                  lucideIcon={undefined}
-                  size="lg"
-                  data-class="feature-icon"
-                />
-                {/* Note: Icon component needs lucideIcon prop, icon string would need mapping */}
-              </If>
-
-              <Title
-                fontSize="xl"
-                fontWeight="semibold"
-                data-class="feature-title"
+            {(feature: Feature) => (
+              <Stack
+                gap="4"
+                p="6"
+                rounded="lg"
+                bg="card"
+                border=""
+                data-class="feature-card"
               >
-                <Var name="feature.title" />
-              </Title>
+                <Title
+                  fontSize="xl"
+                  fontWeight="semibold"
+                  data-class="feature-title"
+                >
+                  <Var name="feature.title" value={feature.title} />
+                </Title>
 
-              <Text
-                fontSize="sm"
-                textColor="muted-foreground"
-                data-class="feature-description"
-              >
-                <Var name="feature.description" />
-              </Text>
-            </Stack>
+                <Text
+                  fontSize="sm"
+                  textColor="muted-foreground"
+                  data-class="feature-description"
+                >
+                  <Var name="feature.description" value={feature.description} />
+                </Text>
+              </Stack>
+            )}
           </Loop>
         </Grid>
       </Stack>
