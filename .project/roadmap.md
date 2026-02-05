@@ -2,9 +2,9 @@
 
 ## Vision
 
-**Template Factory**: React DSL → 18 production lines (6 engines × 3 modes).
+**Template Factory**: React DSL → 15 production lines (5 engines × 3 modes) → HTML + CSS.
 
-*Один источник → любой формат: веб, email, PDF, социальные сети, печать.*
+*Шаблоны — это исходники. HTML + CSS — это результат.*
 
 ---
 
@@ -12,25 +12,47 @@
 
 - **React = Source of Truth** — компоненты определяют структуру, props, slots
 - **DSL Syntax** — `<If>`, `<Loop>`, `<Var>`, `<Slot>` для условной логики
+- **Web Standards** — HTML5 semantic, W3C CSS, ARIA accessibility
 - **Minimal Tailwind** — 90% покрытие дизайна без компилятора
 - **Design Tokens** — shadcn для брендирования
-- **Every Line Valid** — 18 линий всегда возвращают валидный синтаксис
+- **Every Line Valid** — 15 линий всегда возвращают валидный синтаксис
 - **Three Sources = Refactor** — рефакторинг при обнаружении дублирования
 
 ---
 
 ## Production Matrix
 
+### 5 Template Engines
+
+```
+React    — JSX components
+Liquid   — Shopify, Jekyll
+HBS      — universal
+Twig     — Symfony, PHP
+Latte    — Nette, PHP
+```
+
+### 3 Output Modes
+
+```
+tailwind — utility classes as-is
+css3     — mapped to CSS properties
+inline   — style attribute
+```
+
+### 15 Lines = 5 × 3
+
 ```
          │ tailwind │ css3   │ inline │
 ─────────┼──────────┼────────┼────────┤
 React    │    ✓     │   ✓    │   ✓    │
-HTML     │    ✓     │   ✓    │   ✓    │
 Liquid   │    ✓     │   ✓    │   ✓    │
 HBS      │    ✓     │   ✓    │   ✓    │
 Twig     │    ✓     │   ✓    │   ✓    │
 Latte    │    ✓     │   ✓    │   ✓    │
 ```
+
+**HTML + CSS** генерируется из любого engine в любом mode.
 
 ---
 
@@ -41,15 +63,15 @@ packages/
 ├── core/         @ui8kit/core      — UI примитивы
 ├── template/     @ui8kit/template  — DSL компоненты
 ├── blocks/       @ui8kit/blocks    — Business blocks
-├── generator/    @ui8kit/generator — SSG + Plugin System
+├── generator/    @ui8kit/generator — SSG (будет standalone)
 ├── lint/         @ui8kit/lint      — Whitelist validation
 ├── mdx-react/    @ui8kit/mdx-react — MDX docs
 └── registry/     @ui8kit/registry  — [PLANNED] CDN + CLI
 
 apps/
-├── engine/   — Source of Truth: React DSL
-├── web/      — Generated: production site
-└── docs/     — Generated: documentation
+├── engine/   — Source of Truth: React DSL + fixtures
+├── web/      — Generated: React (no DSL) + own data
+└── docs/     — Generated: React (no DSL) + own data
 ```
 
 ---
@@ -67,55 +89,71 @@ apps/
 
 ---
 
-## Phase 1: Production Lines Foundation (Feb 2026)
+## Phase 1: Generator Refactor (Feb 2026)
 
-### Core Infrastructure
+### Current Focus: apps/web + apps/docs → HTML + CSS
+
+- [ ] Refactor generator для работы с чистым React (без DSL)
+- [ ] apps/web → static HTML + CSS generation
+- [ ] apps/docs → static HTML + CSS generation
+- [ ] Support static context и API data sources
+- [ ] Build script для full site generation
+- [ ] Asset handling (images, fonts, icons)
+
+### Generator Architecture
 
 - [ ] PluginManager без хардкода
 - [ ] Zod schemas для config/output
 - [ ] Base plugin interface
+- [ ] Mode strategies (tailwind, css3, inline)
 
-### 6 Engine Plugins
+### Web Standards Validation
 
-- [ ] **HTML plugin** — static HTML output
-- [ ] **React plugin** — JSX components
-- [ ] **Liquid plugin** — Shopify/Jekyll
-- [ ] **Handlebars plugin** — универсальный
-- [ ] **Twig plugin** — Symfony/PHP
-- [ ] **Latte plugin** — Nette/PHP
+- [ ] HTML5 semantic output validation
+- [ ] W3C CSS validation в CI
+- [ ] ARIA attributes checking
+- [ ] Lighthouse accessibility audit
 
-### 3 Mode Strategies
+---
 
-- [ ] **tailwind mode** — utility classes as-is
-- [ ] **css3 mode** — mapped to CSS properties
-- [ ] **inline mode** — style attribute
+## Phase 2: 5 Template Plugins (Mar 2026)
+
+### Engine Plugins
+
+- [ ] **React plugin** — JSX → HTML + CSS
+- [ ] **Liquid plugin** — Liquid → HTML + CSS
+- [ ] **Handlebars plugin** — HBS → HTML + CSS
+- [ ] **Twig plugin** — Twig → HTML + CSS (PHP runtime)
+- [ ] **Latte plugin** — Latte → HTML + CSS (PHP runtime)
 
 ### Validation
 
-- [ ] Snapshot tests для всех 18 линий
+- [ ] Snapshot tests для всех 15 линий
 - [ ] CI: каждый PR проверяет все линии
 - [ ] Output syntax validation per engine
 
 ---
 
-## Phase 2: apps/web + apps/docs HTML Generation (Feb-Mar 2026)
+## Phase 3: Standalone Generator (Apr 2026)
 
-### Static HTML Pipeline
+### @ui8kit/generator as Isolated Package
 
-- [ ] apps/web → static HTML (css3 mode)
-- [ ] apps/docs → static HTML (css3 mode)
-- [ ] Build script для full site generation
-- [ ] Asset handling (images, fonts)
+- [ ] Extract to separate repository
+- [ ] Zero dependencies on apps/*
+- [ ] Works with any of 5 template engines
+- [ ] NPM publish as standalone package
 
-### Integration
+### Integration Example
 
-- [ ] HTML output в `dist/` folder
-- [ ] Preview server для static files
-- [ ] Diff tool: React render vs HTML output
+```bash
+# In any Handlebars app:
+npm install @ui8kit/generator
+npx ui8kit generate --engine=hbs --mode=css3
+```
 
 ---
 
-## Phase 3: Components & Blocks (Mar 2026)
+## Phase 4: Components & Blocks (Apr-May 2026)
 
 ### CSS-only Components
 
@@ -133,7 +171,7 @@ apps/
 
 ---
 
-## Phase 4: Registry CDN (Apr 2026)
+## Phase 5: Registry CDN (May 2026)
 
 ### packages/registry
 
@@ -151,7 +189,7 @@ apps/
 
 ---
 
-## Phase 5: MCP Server (May 2026)
+## Phase 6: MCP Server (Jun 2026)
 
 ### packages/mcp
 
@@ -168,13 +206,12 @@ apps/
 
 ---
 
-## Phase 6: Beyond Web (Q3 2026)
+## Phase 7: Beyond Web (Q3 2026)
 
 ### Email Templates
 
 - [ ] Inline mode optimization
 - [ ] Email client compatibility
-- [ ] MJML integration (optional)
 
 ### Print/PDF
 
@@ -186,7 +223,6 @@ apps/
 
 - [ ] OG image generation
 - [ ] Story/post templates
-- [ ] Fixed aspect ratios
 
 ---
 
@@ -218,11 +254,13 @@ apps/
 - [ ] DSL template guide
 - [ ] Getting Started (101)
 - [ ] Production lines reference
+- [ ] Generator standalone usage guide
 
 ### Testing
 
-- [ ] 18-line snapshot suite
+- [ ] 15-line snapshot suite
 - [ ] PHP runtime tests
+- [ ] HTML/CSS validators in CI
 - [ ] Visual regression (optional)
 
 ### Future Ideas
@@ -235,7 +273,8 @@ apps/
 
 ## Success Metrics
 
-- **18 production lines**: all valid syntax
+- **15 production lines**: all valid syntax
+- **Web standards**: HTML5 + W3C CSS + ARIA
 - **Test coverage**: 90%+
 - **Source of truth**: 1 (apps/engine)
 - **CSS reduction**: 78%+ (UnCSS)
@@ -246,8 +285,8 @@ apps/
 
 ## Next Actions
 
-1. **PluginManager** — архитектура без хардкода
-2. **HTML plugin** — первая линия production
-3. **Snapshot tests** — валидация всех линий
-4. **apps/web → HTML** — static site generation
-5. **CI pipeline** — 18 линий в каждом PR
+1. **Generator refactor** — работа с чистым React (apps/web, apps/docs)
+2. **HTML + CSS generation** — static site из apps/web
+3. **Web standards validation** — HTML5, W3C CSS, ARIA в CI
+4. **Snapshot tests** — валидация output
+5. **PluginManager** — архитектура без хардкода

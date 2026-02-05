@@ -8,6 +8,19 @@
 
 ---
 
+## Web Standards First
+
+UI8Kit строится на **фундаментальных веб-стандартах**:
+
+- **HTML5** — семантические теги (`<article>`, `<section>`, `<nav>`, `<header>`, `<footer>`)
+- **W3C CSS** — валидный CSS3 без vendor hacks
+- **ARIA** — доступность для screen readers и assistive technologies
+- **Progressive Enhancement** — работает без JavaScript где возможно
+
+Это не опция, а **инженерный фундамент**. Каждый сгенерированный файл должен проходить валидацию.
+
+---
+
 ## Почему это работает
 
 ### Минимальный Tailwind = Максимальный охват
@@ -27,22 +40,81 @@
 - Корпоративный уровень консистентности
 - Один источник правды для цветов/типографики
 
-### Modes × Engines = Production Lines
+---
+
+## Production Matrix
+
+### Templates (5 engines)
+
+```
+React DSL → React    (JSX components)
+React DSL → Liquid   (Shopify, Jekyll)
+React DSL → HBS      (universal)
+React DSL → Twig     (Symfony, PHP)
+React DSL → Latte    (Nette, PHP)
+```
+
+### Output Modes (3 styles)
+
+```
+tailwind  — utility classes as-is
+css3      — mapped to CSS properties  
+inline    — style attribute
+```
+
+### 15 Production Lines
 
 ```
          │ tailwind │ css3   │ inline │
 ─────────┼──────────┼────────┼────────┤
 React    │    ✓     │   ✓    │   ✓    │
-HTML     │    ✓     │   ✓    │   ✓    │
 Liquid   │    ✓     │   ✓    │   ✓    │
 HBS      │    ✓     │   ✓    │   ✓    │
 Twig     │    ✓     │   ✓    │   ✓    │
 Latte    │    ✓     │   ✓    │   ✓    │
 ─────────┴──────────┴────────┴────────┘
-         = 18 production lines
+         = 15 production lines
 ```
 
-Каждая линия должна возвращать **валидный синтаксис** независимо от рефакторов.
+### HTML + CSS = Result, Not Template
+
+**Шаблон** — это исходник с логикой (`{% if %}`, `{{ var }}`).  
+**HTML + CSS** — это результат рендера, готовый сайт.
+
+Каждый из 5 template engines может генерировать HTML + CSS в трёх режимах.
+
+---
+
+## Архитектура генерации
+
+### Текущий этап
+
+```
+React DSL (apps/engine)
+    ↓
+5 Template Engines (React, Liquid, HBS, Twig, Latte)
+    ↓
+apps/web, apps/docs (React templates without DSL)
+    ↓
+@ui8kit/generator
+    ↓
+HTML + CSS (static site)
+```
+
+### Целевая архитектура
+
+```
+Any Template Engine App (React, Liquid, HBS, Twig, Latte)
+    ↓
+@ui8kit/generator (standalone package)
+    ↓
+HTML + CSS (3 modes: tailwind, css3, inline)
+```
+
+**@ui8kit/generator** станет **изолированным пакетом** в отдельном репозитории:
+- Можно поставить в любое приложение
+- Работает с любым из 5 template engines
+- Генерирует HTML + CSS в трёх режимах
 
 ---
 
@@ -70,14 +142,37 @@ Latte    │    ✓     │   ✓    │   ✓    │
 
 ---
 
+## apps/web и apps/docs
+
+### Характеристики
+
+- **Чистый React** без DSL синтаксиса
+- **Без fixtures** — собственные источники данных
+- **Static context** или **API** для данных
+- **Готовы к генерации** HTML + CSS через @ui8kit/generator
+
+### Workflow
+
+```
+apps/engine (React DSL + fixtures)
+    ↓ generates
+apps/web, apps/docs (React + own data sources)
+    ↓ @ui8kit/generator
+dist/ (HTML + CSS static site)
+```
+
+---
+
 ## Выходные форматы
 
 ### Web (apps/web, apps/docs)
 
 ```
-React DSL → React components
-React DSL → Static HTML
-React DSL → Liquid/HBS/Twig/Latte templates
+React → HTML + CSS (static site)
+Liquid → HTML + CSS (via Liquid runtime)
+HBS → HTML + CSS (via Handlebars runtime)
+Twig → HTML + CSS (via PHP runtime)
+Latte → HTML + CSS (via PHP runtime)
 ```
 
 ### Beyond Web
@@ -141,18 +236,21 @@ AI Agent → настраивает props через JSON
 
 ### Каждая линия валидна
 
-Независимо от рефакторов, **18 production lines** должны возвращать:
+Независимо от рефакторов, **15 production lines** должны возвращать:
 
-- Валидный синтаксис (HTML, Liquid, HBS, Twig, Latte, React)
+- Валидный синтаксис (Liquid, HBS, Twig, Latte, React)
+- HTML5 semantic markup
+- W3C valid CSS
+- ARIA attributes где необходимо
 - Консистентный визуал (одинаковый результат рендера)
 - Проходящие snapshot tests
 
 ### Как обеспечить
 
 1. **Snapshot tests** для каждой линии
-2. **Visual regression** (опционально)
+2. **HTML/CSS validators** в CI
 3. **Zod schemas** для input/output
-4. **CI pipeline** — все 18 линий в каждом PR
+4. **CI pipeline** — все 15 линий в каждом PR
 
 ---
 
