@@ -2,9 +2,9 @@
 
 ## Vision
 
-**React-to-All-Engines Framework**: единая кодовая база на React DSL → генерация в любой шаблонизатор.
+**Template Factory**: React DSL → 18 production lines (6 engines × 3 modes).
 
-*Разработка в `apps/engine` (React DSL) → генерация для `apps/web`, `apps/docs` (React) + Liquid, Handlebars, Twig, Latte → публикация в Registry CDN → установка через `npx ui8kit add "url.json"` → MCP для AI-агентов.*
+*Один источник → любой формат: веб, email, PDF, социальные сети, печать.*
 
 ---
 
@@ -12,10 +12,25 @@
 
 - **React = Source of Truth** — компоненты определяют структуру, props, slots
 - **DSL Syntax** — `<If>`, `<Loop>`, `<Var>`, `<Slot>` для условной логики
-- **No Hardcode** — динамическое обнаружение layout/partials/blocks
-- **SSG First** — React → HTML по умолчанию, шаблонизаторы через плагины
-- **Schema-Driven** — Zod-контракты между ядром и расширениями
-- **App Isolation** — каждое приложение полностью изолировано
+- **Minimal Tailwind** — 90% покрытие дизайна без компилятора
+- **Design Tokens** — shadcn для брендирования
+- **Every Line Valid** — 18 линий всегда возвращают валидный синтаксис
+- **Three Sources = Refactor** — рефакторинг при обнаружении дублирования
+
+---
+
+## Production Matrix
+
+```
+         │ tailwind │ css3   │ inline │
+─────────┼──────────┼────────┼────────┤
+React    │    ✓     │   ✓    │   ✓    │
+HTML     │    ✓     │   ✓    │   ✓    │
+Liquid   │    ✓     │   ✓    │   ✓    │
+HBS      │    ✓     │   ✓    │   ✓    │
+Twig     │    ✓     │   ✓    │   ✓    │
+Latte    │    ✓     │   ✓    │   ✓    │
+```
 
 ---
 
@@ -23,18 +38,18 @@
 
 ```
 packages/
-├── core/         @ui8kit/core      — UI примитивы (Box, Stack, Button...)
-├── template/     @ui8kit/template  — DSL компоненты (If, Loop, Var, Slot...)
-├── blocks/       @ui8kit/blocks    — Shared business blocks (Hero, CTA, Features...)
+├── core/         @ui8kit/core      — UI примитивы
+├── template/     @ui8kit/template  — DSL компоненты
+├── blocks/       @ui8kit/blocks    — Business blocks
 ├── generator/    @ui8kit/generator — SSG + Plugin System
-├── lint/         @ui8kit/lint      — Валидация whitelist классов
-├── mdx-react/    @ui8kit/mdx-react — MDX processing + docs
-└── registry/     @ui8kit/registry  — [PLANNED] CDN registry + CLI
+├── lint/         @ui8kit/lint      — Whitelist validation
+├── mdx-react/    @ui8kit/mdx-react — MDX docs
+└── registry/     @ui8kit/registry  — [PLANNED] CDN + CLI
 
 apps/
-├── engine/   — Source of Truth: React DSL разработка
-├── web/      — Generated: React templates (from engine)
-└── docs/     — Generated: React templates (from engine)
+├── engine/   — Source of Truth: React DSL
+├── web/      — Generated: production site
+└── docs/     — Generated: documentation
 ```
 
 ---
@@ -42,47 +57,65 @@ apps/
 ## Completed
 
 - [x] Generator OOP architecture + React → HTML pipeline
-- [x] Class mapping + validation (Tailwind → CSS3)
-- [x] Design tokens (shadcn-style) + dark mode
-- [x] Mobile components (menu, sheet)
+- [x] Class mapping (Tailwind → CSS3)
+- [x] Design tokens (shadcn) + dark mode
 - [x] DSL components: `If`, `Loop`, `Var`, `Slot`, `Include`, `Block`
-- [x] Grid conversion (Tailwind → CSS3)
-- [x] Multiple generation modes: tailwind, semantic, inline
+- [x] Multiple modes: tailwind, semantic, inline
 - [x] Lint package with whitelist sync
-- [x] Create `packages/blocks` — moved blocks from apps/web
-- [x] Create `packages/data` — extracted fixtures
-- [x] Fix terminal error `@ui8kit/template#dev`
-- [x] Remove GraphQL from `apps/web`
-- [x] Refactor `apps/engine`
+- [x] `packages/blocks` — extracted from apps/web
+- [x] `packages/data` — extracted fixtures
 
 ---
 
-## Phase 1: Plugin System (Feb 2026)
+## Phase 1: Production Lines Foundation (Feb 2026)
 
-### Core Generator
+### Core Infrastructure
 
-- [ ] React → HTML as default mode
 - [ ] PluginManager без хардкода
 - [ ] Zod schemas для config/output
+- [ ] Base plugin interface
 
-### Template Plugins (5 официальных)
+### 6 Engine Plugins
 
-- [ ] **React plugin** — для apps/web, apps/docs
-- [ ] Liquid plugin
-- [ ] Handlebars plugin
-- [ ] Twig plugin (PHP)
-- [ ] Latte plugin (PHP)
+- [ ] **HTML plugin** — static HTML output
+- [ ] **React plugin** — JSX components
+- [ ] **Liquid plugin** — Shopify/Jekyll
+- [ ] **Handlebars plugin** — универсальный
+- [ ] **Twig plugin** — Symfony/PHP
+- [ ] **Latte plugin** — Nette/PHP
 
-### apps/engine Setup
+### 3 Mode Strategies
 
-- [ ] Настроить apps/engine как Source of Truth
-- [ ] DSL синтаксис для всех блоков
-- [ ] Генерация React шаблонов для apps/web
-- [ ] Генерация React шаблонов для apps/docs
+- [ ] **tailwind mode** — utility classes as-is
+- [ ] **css3 mode** — mapped to CSS properties
+- [ ] **inline mode** — style attribute
+
+### Validation
+
+- [ ] Snapshot tests для всех 18 линий
+- [ ] CI: каждый PR проверяет все линии
+- [ ] Output syntax validation per engine
 
 ---
 
-## Phase 2: Components & Blocks (Mar 2026)
+## Phase 2: apps/web + apps/docs HTML Generation (Feb-Mar 2026)
+
+### Static HTML Pipeline
+
+- [ ] apps/web → static HTML (css3 mode)
+- [ ] apps/docs → static HTML (css3 mode)
+- [ ] Build script для full site generation
+- [ ] Asset handling (images, fonts)
+
+### Integration
+
+- [ ] HTML output в `dist/` folder
+- [ ] Preview server для static files
+- [ ] Diff tool: React render vs HTML output
+
+---
+
+## Phase 3: Components & Blocks (Mar 2026)
 
 ### CSS-only Components
 
@@ -90,54 +123,70 @@ apps/
 - [ ] Dropdown, Modal, Tooltip
 - [ ] Toast, Popover
 
-### Business Blocks (shadcn-style coverage)
+### Business Blocks (shadcn parity)
 
 - [ ] Dashboard blocks
-- [ ] Auth blocks (login, register, forgot password)
+- [ ] Auth blocks
 - [ ] Data tables
-- [ ] Marketing blocks (pricing, testimonials, FAQ)
-- [ ] E-commerce blocks (product card, cart, checkout)
-
-### Optimization
-
-- [ ] UnCSS optimization
-- [ ] Build time < 5s
+- [ ] Marketing blocks
+- [ ] E-commerce blocks
 
 ---
 
-## Phase 3: Registry CDN (Apr 2026)
+## Phase 4: Registry CDN (Apr 2026)
 
 ### packages/registry
 
 - [ ] CLI: `npx ui8kit add "url.json"`
 - [ ] Registry JSON schema
-- [ ] CDN hosting setup
+- [ ] CDN hosting
 - [ ] Version management
 
-### Integration
+### Proof of Concept
 
-- [ ] Публикация всех блоков в registry
-- [ ] Тест: удалить локальные шаблоны из apps/web
-- [ ] Тест: установить через `npx ui8kit add` из CDN
-- [ ] Документация по установке
+- [ ] Publish all blocks to registry
+- [ ] Remove local templates from apps/web
+- [ ] Install via CLI from CDN
+- [ ] Verify identical result
 
 ---
 
-## Phase 4: MCP Server (May 2026)
+## Phase 5: MCP Server (May 2026)
 
 ### packages/mcp
 
 - [ ] MCP Server package
-- [ ] Tool: list available blocks
-- [ ] Tool: add block via CLI
-- [ ] Tool: configure block props
-- [ ] LLM cheatsheet
+- [ ] Tool: list blocks
+- [ ] Tool: add block
+- [ ] Tool: configure props
 
 ### AI Integration
 
-- [ ] Тест с Cursor Agent
-- [ ] Тест с Claude Desktop
-- [ ] Автоматическая установка блоков через MCP
+- [ ] Test with Cursor Agent
+- [ ] Test with Claude Desktop
+- [ ] LLM cheatsheet
+
+---
+
+## Phase 6: Beyond Web (Q3 2026)
+
+### Email Templates
+
+- [ ] Inline mode optimization
+- [ ] Email client compatibility
+- [ ] MJML integration (optional)
+
+### Print/PDF
+
+- [ ] Fixed dimensions support
+- [ ] Print CSS
+- [ ] PDF generation pipeline
+
+### Social Media
+
+- [ ] OG image generation
+- [ ] Story/post templates
+- [ ] Fixed aspect ratios
 
 ---
 
@@ -145,30 +194,20 @@ apps/
 
 ### Completed
 
-- [x] Project setup + MDX v3.1.1 pipeline
-- [x] Vite plugin integration
-- [x] TypeScript + testing infra
+- [x] MDX v3.1.1 pipeline
+- [x] Vite plugin
+- [x] TypeScript + tests
 
 ### In Progress
 
-- [ ] `ComponentExample` + `CodeBlock` (syntax highlighting)
-- [ ] `PropsTable` auto-generation
-- [ ] `Tabs`, `Callout` components
-- [ ] Component integration tests
-
-### Next
-
-- [ ] MDX compilation utilities + caching
-- [ ] Theme integration
-- [ ] Browser-safe runtime (`/runtime` entry)
-- [ ] LiveDemo, ComponentGrid, ThemeSwitcher
+- [ ] ComponentExample + CodeBlock
+- [ ] PropsTable auto-generation
+- [ ] Tabs, Callout
 
 ### Future
 
-- [ ] Framework bridges (Next.js, Astro, Remix)
+- [ ] Framework bridges (Next.js, Astro)
 - [ ] Auto-generated API docs
-- [ ] VS Code / IntelliSense integration
-- [ ] i18n support
 
 ---
 
@@ -176,40 +215,39 @@ apps/
 
 ### Documentation
 
-- [ ] DSL template management docs
-- [ ] Getting Started guide (101 level)
-- [ ] LLM cheatsheet for MCP
-- [ ] Registry usage guide
+- [ ] DSL template guide
+- [ ] Getting Started (101)
+- [ ] Production lines reference
 
 ### Testing
 
-- [ ] Engine snapshot tests (Liquid/Handlebars output validation)
-- [ ] PHP runtime tests (Twig/Latte)
-- [ ] E2E tests for CLI
+- [ ] 18-line snapshot suite
+- [ ] PHP runtime tests
+- [ ] Visual regression (optional)
 
 ### Future Ideas
 
-- [ ] MD files parser and tiptap integration
 - [ ] Visual block editor
 - [ ] Figma plugin
+- [ ] Tiptap integration
 
 ---
 
 ## Success Metrics
 
-- Test coverage (generator): 90%+
-- Cognitive load: 1 source of truth (apps/engine)
-- CSS reduction: 78%+ (UnCSS)
-- Plugin extensibility: 5 built-in (React, Liquid, HBS, Twig, Latte) + custom API
-- Build time: < 5s for typical site
-- Registry blocks: 50+ (shadcn parity)
+- **18 production lines**: all valid syntax
+- **Test coverage**: 90%+
+- **Source of truth**: 1 (apps/engine)
+- **CSS reduction**: 78%+ (UnCSS)
+- **Build time**: < 5s
+- **Registry blocks**: 50+
 
 ---
 
 ## Next Actions
 
-1. **apps/engine** — настроить как Source of Truth с DSL
-2. **React plugin** — генерация для apps/web и apps/docs
-3. **PluginManager** — завершить архитектуру без хардкода
-4. **Zod schemas** — валидация config и output
-5. **Registry planning** — спроектировать JSON schema и CLI
+1. **PluginManager** — архитектура без хардкода
+2. **HTML plugin** — первая линия production
+3. **Snapshot tests** — валидация всех линий
+4. **apps/web → HTML** — static site generation
+5. **CI pipeline** — 18 линий в каждом PR
