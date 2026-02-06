@@ -327,7 +327,7 @@ export abstract class BasePlugin implements ITemplatePlugin {
 
       if (key === 'className' && Array.isArray(value)) {
         attributes['class'] = value.join(' ');
-      } else if (key === 'style' && typeof value === 'object') {
+      } else if (key === 'style' && typeof value === 'object' && value !== null && !('__expression' in (value as object))) {
         attributes['style'] = this.formatStyleObject(value as Record<string, string>);
       } else {
         attributes[key] = value;
@@ -347,8 +347,14 @@ export abstract class BasePlugin implements ITemplatePlugin {
       if (value === true) {
         parts.push(key);
       } else if (value !== false && value !== undefined && value !== null) {
-        const escaped = this.escapeAttributeValue(String(value));
-        parts.push(`${key}="${escaped}"`);
+        // Dynamic expression: use engine-specific expression syntax
+        if (typeof value === 'object' && value !== null && '__expression' in (value as object)) {
+          const expr = (value as { __expression: string }).__expression;
+          parts.push(`${key}="${this.formatExpression(expr)}"`);
+        } else {
+          const escaped = this.escapeAttributeValue(String(value));
+          parts.push(`${key}="${escaped}"`);
+        }
       }
     }
 

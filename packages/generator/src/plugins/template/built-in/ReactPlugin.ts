@@ -287,8 +287,8 @@ export class ReactPlugin extends BasePlugin {
       if (key === 'className' && Array.isArray(value)) {
         // React uses className, not class
         attributes['className'] = value.join(' ');
-      } else if (key === 'style' && typeof value === 'object') {
-        // React uses style as object
+      } else if (key === 'style' && typeof value === 'object' && value !== null && !('__expression' in (value as object))) {
+        // React uses style as object (skip expression markers)
         attributes['style'] = value;
       } else if (key === 'for') {
         // React uses htmlFor
@@ -317,6 +317,9 @@ export class ReactPlugin extends BasePlugin {
         parts.push(key);
       } else if (value === false || value === undefined || value === null) {
         continue;
+      } else if (typeof value === 'object' && value !== null && '__expression' in (value as object)) {
+        // Dynamic expression → JSX expression binding: prop={expr}
+        parts.push(`${key}={${(value as { __expression: string }).__expression}}`);
       } else if (key === 'style' && typeof value === 'object') {
         const styleStr = this.formatStyleJsx(value as Record<string, string>);
         parts.push(`style={${styleStr}}`);
@@ -577,5 +580,143 @@ export class ReactPlugin extends BasePlugin {
       .replace(/"/g, '&quot;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
+  }
+
+  // ===========================================================================
+  // Pretty-Print (JSX Formatter)
+  // ===========================================================================
+
+  /**
+   * Override: always pretty-print React output for readability.
+   */
+  protected override formatOutput(content: string): string {
+    return this.indentJsx(content);
+  }
+
+  /**
+   * Tokenize flat JSX and re-indent with proper nesting depth.
+   *
+   * Token types:
+   * - open:      <Tag ...>         → depth++
+   * - close:     </Tag>            → depth--
+   * - selfClose: <Tag ... />       → same depth
+   * - expression: {... }           → same depth (multi-line: preserve relative indent)
+   * - text:      plain text        → same depth
+   */
+  private indentJsx(input: string): string {
+    const lines: string[] = [];
+    let depth = 0;
+    const indent = '  ';
+    let pos = 0;
+
+    while (pos < input.length) {
+      // Skip whitespace between tokens
+      while (pos < input.length && ' \t\r\n'.includes(input[pos])) pos++;
+      if (pos >= input.length) break;
+
+      if (input[pos] === '<' && pos + 1 < input.length && input[pos + 1] === '/') {
+        // ── Closing tag: </Tag> ──
+        const end = input.indexOf('>', pos);
+        if (end === -1) break;
+        depth = Math.max(0, depth - 1);
+        lines.push(indent.repeat(depth) + input.substring(pos, end + 1));
+        pos = end + 1;
+      } else if (input[pos] === '<') {
+        // ── Opening or self-closing tag ──
+        const end = this.findTagEndPos(input, pos);
+        if (end === -1) break;
+        const tag = input.substring(pos, end + 1);
+        const isSelfClosing = tag.endsWith('/>');
+        lines.push(indent.repeat(depth) + tag);
+        if (!isSelfClosing) depth++;
+        pos = end + 1;
+      } else if (input[pos] === '{') {
+        // ── JSX expression ──
+        const end = this.findMatchingBracePos(input, pos);
+        if (end === -1) break;
+        const expr = input.substring(pos, end + 1);
+        const exprLines = expr.split('\n');
+
+        if (exprLines.length === 1) {
+          lines.push(indent.repeat(depth) + expr);
+        } else {
+          // Multi-line: first line at depth, rest preserve relative indent
+          lines.push(indent.repeat(depth) + exprLines[0]);
+          for (let i = 1; i < exprLines.length; i++) {
+            const line = exprLines[i];
+            if (line.trim()) {
+              lines.push(indent.repeat(depth) + line);
+            }
+          }
+        }
+        pos = end + 1;
+      } else {
+        // ── Text content ──
+        let end = pos;
+        while (end < input.length && input[end] !== '<' && input[end] !== '{') end++;
+        const textContent = input.substring(pos, end).trim();
+        if (textContent) {
+          lines.push(indent.repeat(depth) + textContent);
+        }
+        pos = end;
+      }
+    }
+
+    return lines.join('\n') + '\n';
+  }
+
+  /**
+   * Find the closing `>` of a tag, skipping over `{}` and quoted strings
+   * inside attribute values.
+   */
+  private findTagEndPos(input: string, start: number): number {
+    let pos = start + 1;
+    let braceDepth = 0;
+    let inString: string | null = null;
+
+    while (pos < input.length) {
+      const ch = input[pos];
+      if (inString) {
+        if (ch === inString) inString = null;
+      } else if (ch === '"' || ch === "'") {
+        inString = ch;
+      } else if (ch === '{') {
+        braceDepth++;
+      } else if (ch === '}') {
+        braceDepth--;
+      } else if (ch === '>' && braceDepth === 0) {
+        return pos;
+      }
+      pos++;
+    }
+
+    return -1;
+  }
+
+  /**
+   * Find the matching `}` for a JSX expression `{...}`,
+   * handling nested braces and quoted strings.
+   */
+  private findMatchingBracePos(input: string, start: number): number {
+    let depth = 0;
+    let pos = start;
+    let inString: string | null = null;
+
+    while (pos < input.length) {
+      const ch = input[pos];
+      if (inString) {
+        if (ch === inString && input[pos - 1] !== '\\') inString = null;
+      } else if (ch === '"' || ch === "'" || ch === '`') {
+        inString = ch;
+      } else if (ch === '{') {
+        depth++;
+      } else if (ch === '}') {
+        depth--;
+        if (depth === 0) return pos;
+      }
+      pos++;
+    }
+
+    return -1;
   }
 }

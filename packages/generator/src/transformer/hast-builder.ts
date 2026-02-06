@@ -407,6 +407,16 @@ class HastBuilder {
     
     const handler = this.dslRegistry.get(tagName)!;
     
+    // For Loop: extract render-function body as children
+    // Handles {(item) => (<JSX/>)} pattern that transformChildren can't parse
+    let effectiveChildren = children;
+    if (tagName === 'Loop') {
+      const loopBody = this.extractLoopBody(node);
+      if (loopBody.length > 0) {
+        effectiveChildren = loopBody;
+      }
+    }
+    
     const context: DslHandlerContext = {
       source: this.source,
       warnings: this.warnings,
@@ -415,7 +425,7 @@ class HastBuilder {
       options: this.options,
     };
     
-    return handler.handle(node, children, context);
+    return handler.handle(node, effectiveChildren, context);
   }
   
   /**
@@ -553,8 +563,8 @@ class HastBuilder {
         return expr.value;
       }
       
-      // Dynamic value - return as template expression
-      return getNodeSource(this.source, expr);
+      // Dynamic value - mark as expression for template rendering
+      return { __expression: getNodeSource(this.source, expr) };
     }
     
     return undefined;
