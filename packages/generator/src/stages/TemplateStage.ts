@@ -14,7 +14,7 @@ import { TemplateService, type TemplateServiceInput, type TemplateServiceOutput 
 
 export interface TemplateStageOptions {
   /** Template engine to use */
-  engine?: 'liquid' | 'handlebars' | 'twig' | 'latte';
+  engine?: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
   
   /** Source directories (relative to root) */
   sourceDirs?: string[];

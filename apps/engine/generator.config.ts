@@ -14,7 +14,9 @@ import { resolve } from 'path';
 // Configuration
 // =============================================================================
 
-type Engine = 'liquid' | 'handlebars' | 'twig' | 'latte';
+type Engine = 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
+
+const VALID_ENGINES: Engine[] = ['react', 'liquid', 'handlebars', 'twig', 'latte'];
 
 interface TempletorConfig {
   engine: Engine;
@@ -26,7 +28,7 @@ interface TempletorConfig {
 }
 
 const config: TempletorConfig = {
-  engine: 'handlebars',
+  engine: 'react',
   sourceDirs: ['../../packages/blocks/src'],
   outputDir: './dist/templates',
   include: ['**/*.tsx'],
@@ -55,9 +57,9 @@ function parseArgs(): { engine?: string } {
 const { engine: engineArg } = parseArgs();
 
 if (engineArg) {
-  if (!['liquid', 'handlebars', 'twig', 'latte'].includes(engineArg)) {
+  if (!VALID_ENGINES.includes(engineArg as Engine)) {
     console.error(`Invalid engine: ${engineArg}`);
-    console.error('Valid engines: liquid, handlebars, twig, latte');
+    console.error(`Valid engines: ${VALID_ENGINES.join(', ')}`);
     process.exit(1);
   }
   config.engine = engineArg as Engine;

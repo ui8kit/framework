@@ -173,17 +173,54 @@ HTML + CSS (3 modes: tailwind, css3, inline)
 
 ---
 
-## apps/engine — Development Factory
+## Separation of Concerns
 
-### Сейчас
+### apps/engine — Template Factory
 
-`apps/engine` — playground для генерации шаблонов из React DSL.
+**Задача**: генерация шаблонов из React DSL. Не строит сайты. Не генерирует HTML + CSS.
 
-### Эволюция
+**Что это**: типичный сайт-витрина с двумя макетами:
+- **Website layout** — сайдбары или full-width с контейнером
+- **Dashboard layout** — резиновый макет с сайдбаром слева (документация, кабинеты)
 
-1. **Playground** → отдельная программа
-2. **Программа** → CLI утилита
-3. **CLI** → development factory
+**Что содержит**: полный набор блоков, виджетов, элементов в стиле framework showcases — можно скопировать любой шаблон и построить сайт или приложение.
+
+**Output**: готовые файлы шаблонов в `dist/{engine}/`
+- `dist/react/` — JSX компоненты
+- `dist/liquid/` — Liquid шаблоны
+- `dist/handlebars/` — HBS шаблоны
+- `dist/twig/` — Twig шаблоны
+- `dist/latte/` — Latte шаблоны
+
+**CLI**: `--engine react` (default), `--engine liquid`, `--engine all` (planned)
+
+### apps/web, apps/docs — Site Builders
+
+**Задача**: строить сайты из шаблонов. Генерировать HTML + CSS в трёх modes.
+
+**Характеристики**:
+- **Чистый React** без DSL синтаксиса
+- **Без fixtures** — собственные источники данных (static context, API)
+- Шаблоны копируются из `engine/dist/react/`
+- Генерация HTML + CSS через `@ui8kit/generator`
+
+### Полный Workflow
+
+```
+packages/blocks (React DSL + fixtures)
+    ↓ apps/engine generates
+dist/react/    — ready templates (for apps/web, apps/docs)
+dist/liquid/   — ready templates (for Shopify, Jekyll projects)
+dist/hbs/      — ready templates (for Express.js projects)
+dist/twig/     — ready templates (for Symfony projects)
+dist/latte/    — ready templates (for Nette projects)
+    ↓ copy templates from dist/
+apps/web, apps/docs (React + own data sources)
+    ↓ @ui8kit/generator
+HTML + CSS (static site, 3 modes)
+    ↓ dist/ files also go to
+BuildY (separate project) → Registry JSON → CDN
+```
 
 ### Принцип развития
 
@@ -193,26 +230,50 @@ HTML + CSS (3 modes: tailwind, css3, inline)
 - `packages/blocks` — блоки были в apps/web
 - `packages/data` — fixtures были разбросаны
 
+### Эволюция Engine
+
+1. **Playground** → типичный сайт-витрина с showcase блоков
+2. **Витрина** → CLI утилита (`--engine react`, `--engine all`)
+3. **CLI** → standalone программа (отдельный репозиторий)
+
 ---
 
-## apps/web и apps/docs
+## Типичный workflow разработки
 
-### Характеристики
+### Создание нового блока
 
-- **Чистый React** без DSL синтаксиса
-- **Без fixtures** — собственные источники данных
-- **Static context** или **API** для данных
-- **Готовы к генерации** HTML + CSS через @ui8kit/generator
+1. Разработать блок в `packages/blocks` с React DSL
+2. Запустить `apps/engine` → генерация в `dist/react/`
+3. Скопировать шаблон из `dist/react/` в `apps/web`
+4. Подключить данные (static context или API)
+5. Генерировать HTML + CSS
 
-### Workflow
+### Нехватает компонента?
 
-```
-apps/engine (React DSL + fixtures)
-    ↓ generates
-apps/web, apps/docs (React + own data sources)
-    ↓ @ui8kit/generator
-dist/ (HTML + CSS static site)
-```
+1. Добавить в `packages/blocks`
+2. Перегенерировать через `apps/engine`
+3. Скопировать в `apps/web`
+
+Так мы создаём набор самых востребованных и популярных шаблонов.
+
+---
+
+## BuildY Integration
+
+### Что делает BuildY
+
+BuildY — **отдельный проект** который:
+1. Забирает готовые файлы из `engine/dist/`
+2. Регистрирует в Registry JSON schema
+3. Публикует в CDN
+
+### Что НЕ делает UI8Kit Framework
+
+- Не реализует registry JSON schema (это BuildY)
+- Не публикует в CDN (это BuildY)
+- Не реализует CLI `npx ui8kit add` (будет позже, или через BuildY)
+
+UI8Kit Framework **производит шаблоны**. BuildY **доставляет их**.
 
 ---
 

@@ -135,7 +135,7 @@ export interface GeneratorConfig {
     /** Enable template generation */
     enabled?: boolean;
     /** Template engine to use */
-    engine?: 'liquid' | 'handlebars' | 'twig' | 'latte';
+    engine?: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
     /** Source directories for components (relative to root) */
     sourceDirs?: string[];
     /** Output directory for generated templates (relative to root) */

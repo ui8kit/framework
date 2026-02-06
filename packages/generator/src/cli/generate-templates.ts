@@ -28,7 +28,7 @@ import { Logger } from '../core/logger';
 // =============================================================================
 
 interface CliArgs {
-  engine: 'liquid' | 'handlebars' | 'twig' | 'latte';
+  engine: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
   sourceDirs: string[];
   outputDir: string;
   include: string[];
@@ -57,7 +57,7 @@ function parseArgs(): CliArgs {
     switch (arg) {
       case '--engine':
       case '-e':
-        if (nextArg && ['liquid', 'handlebars', 'twig', 'latte'].includes(nextArg)) {
+        if (nextArg && ['react', 'liquid', 'handlebars', 'twig', 'latte'].includes(nextArg)) {
           result.engine = nextArg as typeof result.engine;
           i++;
         }

@@ -69,9 +69,9 @@ packages/
 └── registry/     @ui8kit/registry  — [PLANNED] CDN + CLI
 
 apps/
-├── engine/   — Source of Truth: React DSL + fixtures
-├── web/      — Generated: React (no DSL) + own data
-└── docs/     — Generated: React (no DSL) + own data
+├── engine/   — Template Factory: DSL → dist/{engine}/ templates
+├── web/      — Site Builder: templates → HTML + CSS (3 modes)
+└── docs/     — Site Builder: templates → HTML + CSS (3 modes)
 ```
 
 ---
@@ -86,25 +86,34 @@ apps/
 - [x] Lint package with whitelist sync
 - [x] `packages/blocks` — extracted from apps/web
 - [x] `packages/data` — extracted fixtures
+- [x] **ReactPlugin** — 5th official template plugin (DSL → React JSX)
+- [x] Engine default changed: `--engine react` (was handlebars)
 
 ---
 
-## Phase 1: Generator Refactor (Feb 2026)
+## Phase 1: React Template Pipeline (Feb 2026)
 
-### Current Focus: apps/web + apps/docs → HTML + CSS
+### Engine: DSL → React Templates
 
-- [ ] Refactor generator для работы с чистым React (без DSL)
+- [x] ReactPlugin implementation
+- [ ] Achieve ideal React output for all blocks
+- [ ] Engine generates to `dist/react/`
+- [ ] Snapshot tests for React output
+- [ ] Validate all blocks produce valid JSX
+
+### apps/web + apps/docs: Templates → HTML + CSS
+
+- [ ] Copy React templates from `engine/dist/react/`
 - [ ] apps/web → static HTML + CSS generation
 - [ ] apps/docs → static HTML + CSS generation
-- [ ] Support static context и API data sources
-- [ ] Build script для full site generation
+- [ ] Support static context and API data sources
+- [ ] Build script for full site generation
 - [ ] Asset handling (images, fonts, icons)
 
 ### Generator Architecture
 
 - [ ] PluginManager без хардкода
 - [ ] Zod schemas для config/output
-- [ ] Base plugin interface
 - [ ] Mode strategies (tailwind, css3, inline)
 
 ### Web Standards Validation
@@ -112,24 +121,29 @@ apps/
 - [ ] HTML5 semantic output validation
 - [ ] W3C CSS validation в CI
 - [ ] ARIA attributes checking
-- [ ] Lighthouse accessibility audit
 
 ---
 
-## Phase 2: 5 Template Plugins (Mar 2026)
+## Phase 2: All 5 Engines + `--engine all` (Mar 2026)
 
-### Engine Plugins
+### Engine: Parallel Generation
 
-- [ ] **React plugin** — JSX → HTML + CSS
-- [ ] **Liquid plugin** — Liquid → HTML + CSS
-- [ ] **Handlebars plugin** — HBS → HTML + CSS
-- [ ] **Twig plugin** — Twig → HTML + CSS (PHP runtime)
-- [ ] **Latte plugin** — Latte → HTML + CSS (PHP runtime)
+- [ ] `--engine all` — generate all 5 engines in parallel
+- [ ] Output to `dist/react/`, `dist/liquid/`, `dist/handlebars/`, `dist/twig/`, `dist/latte/`
+- [ ] Validate all 5 engines produce correct syntax
+
+### Engine Plugins (HTML + CSS from templates)
+
+- [x] **React plugin** — DSL → JSX
+- [ ] **Liquid plugin** — validate Liquid → HTML + CSS
+- [ ] **Handlebars plugin** — validate HBS → HTML + CSS
+- [ ] **Twig plugin** — validate Twig → HTML + CSS (PHP runtime)
+- [ ] **Latte plugin** — validate Latte → HTML + CSS (PHP runtime)
 
 ### Validation
 
-- [ ] Snapshot tests для всех 15 линий
-- [ ] CI: каждый PR проверяет все линии
+- [ ] Snapshot tests for all 15 lines
+- [ ] CI: every PR checks all lines
 - [ ] Output syntax validation per engine
 
 ---
@@ -171,21 +185,20 @@ npx ui8kit generate --engine=hbs --mode=css3
 
 ---
 
-## Phase 5: Registry CDN (May 2026)
+## Phase 5: BuildY Integration + Registry (May 2026)
 
-### packages/registry
+### BuildY Connection
 
-- [ ] CLI: `npx ui8kit add "url.json"`
-- [ ] Registry JSON schema
-- [ ] CDN hosting
-- [ ] Version management
+- [ ] Copy `engine/dist/` to BuildY
+- [ ] BuildY registers files in Registry JSON
+- [ ] BuildY publishes to CDN
+- [ ] Verify templates available via CDN
 
-### Proof of Concept
+### CLI (future)
 
-- [ ] Publish all blocks to registry
-- [ ] Remove local templates from apps/web
-- [ ] Install via CLI from CDN
-- [ ] Verify identical result
+- [ ] Script to copy from `dist/` to apps/ (proto-CLI)
+- [ ] CLI: `npx ui8kit add "url.json"` (via BuildY)
+- [ ] Proof of concept: remove local → install from CDN → identical result
 
 ---
 
@@ -285,8 +298,8 @@ npx ui8kit generate --engine=hbs --mode=css3
 
 ## Next Actions
 
-1. **Generator refactor** — работа с чистым React (apps/web, apps/docs)
-2. **HTML + CSS generation** — static site из apps/web
-3. **Web standards validation** — HTML5, W3C CSS, ARIA в CI
-4. **Snapshot tests** — валидация output
-5. **PluginManager** — архитектура без хардкода
+1. **React output quality** — добиться идеального JSX для всех блоков
+2. **Engine → dist/react/** — генерация React шаблонов в dist/
+3. **apps/web** — копировать из dist/, строить HTML + CSS
+4. **Snapshot tests** — валидация React output
+5. **`--engine all`** — параллельная генерация 5 engines (planned)

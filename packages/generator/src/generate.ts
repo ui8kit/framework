@@ -140,7 +140,7 @@ export interface GenerateConfig extends GeneratorConfig {
     /** Enable template generation */
     enabled?: boolean;
     /** Template engine to use */
-    engine?: 'liquid' | 'handlebars' | 'twig' | 'latte';
+    engine?: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
     /** Source directories for components */
     sourceDirs?: string[];
     /** Output directory for templates */

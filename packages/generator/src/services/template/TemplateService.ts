@@ -33,7 +33,7 @@ export interface TemplateServiceInput {
   outputDir: string;
   
   /** Template engine to use */
-  engine: 'liquid' | 'handlebars' | 'twig' | 'latte';
+  engine: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
   
   /** File patterns to include (default: all .tsx files) */
   include?: string[];
