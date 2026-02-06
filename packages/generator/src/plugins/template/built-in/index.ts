@@ -2,18 +2,21 @@
  * Built-in Template Plugins
  *
  * Official plugins for common template engines:
+ * - ReactPlugin: For apps/web, apps/docs (JS runtime)
  * - LiquidPlugin: For Shopify, Jekyll, Eleventy (JS runtime)
  * - HandlebarsPlugin: For Express.js, static sites (JS runtime)
  * - TwigPlugin: For Symfony, PHP applications (PHP runtime)
  * - LattePlugin: For Nette Framework (PHP runtime)
  */
 
+export { ReactPlugin } from './ReactPlugin';
 export { LiquidPlugin } from './LiquidPlugin';
 export { HandlebarsPlugin } from './HandlebarsPlugin';
 export { TwigPlugin } from './TwigPlugin';
 export { LattePlugin } from './LattePlugin';
 
 // Re-export for convenience
+import { ReactPlugin } from './ReactPlugin';
 import { LiquidPlugin } from './LiquidPlugin';
 import { HandlebarsPlugin } from './HandlebarsPlugin';
 import { TwigPlugin } from './TwigPlugin';
@@ -27,6 +30,16 @@ export const builtInPlugins: Array<{
   metadata: TemplatePluginMetadata;
   factory: TemplatePluginFactory;
 }> = [
+  {
+    metadata: {
+      name: 'react',
+      version: '1.0.0',
+      runtime: 'js',
+      fileExtension: '.tsx',
+      description: 'React JSX template plugin for apps/web, apps/docs',
+    },
+    factory: (config) => new ReactPlugin(),
+  },
   {
     metadata: {
       name: 'liquid',

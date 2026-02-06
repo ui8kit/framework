@@ -4,10 +4,11 @@ This guide explains how to use and extend the template plugin system for generat
 
 ## Built-in Plugins
 
-The generator includes built-in plugins for popular template engines:
+The generator includes 5 official plugins for popular template engines:
 
 | Plugin | Engine | Runtime | Extension | Use Case |
 |--------|--------|---------|-----------|----------|
+| `react` | React JSX | JS | `.tsx` | apps/web, apps/docs |
 | `liquid` | Liquid | JS | `.liquid` | Shopify, Jekyll, Eleventy |
 | `handlebars` | Handlebars | JS | `.hbs` | Express.js, static sites |
 | `twig` | Twig | PHP | `.twig` | Symfony, PHP applications |
@@ -32,7 +33,7 @@ await service.initialize({
 const result = await service.execute({
   sourceDirs: ['../../packages/blocks/src'],
   outputDir: './dist/templates',
-  engine: 'liquid', // or 'handlebars', 'twig', 'latte'
+  engine: 'react', // or 'liquid', 'handlebars', 'twig', 'latte'
   include: ['**/*.tsx'],
   exclude: ['**/*.test.tsx', '**/index.ts'],
   verbose: true,
@@ -44,13 +45,13 @@ const result = await service.execute({
 To generate templates for multiple engines, call the service multiple times:
 
 ```typescript
-const engines = ['liquid', 'handlebars'];
+const engines = ['react', 'liquid', 'handlebars'];
 
 for (const engine of engines) {
   const result = await service.execute({
     sourceDirs: ['../../packages/blocks/src'],
     outputDir: `./dist/templates/${engine}`,
-    engine: engine as 'liquid' | 'handlebars',
+    engine: engine as 'react' | 'liquid' | 'handlebars',
     include: ['**/*.tsx'],
     exclude: ['**/*.test.tsx', '**/index.ts'],
   });
@@ -63,13 +64,57 @@ for (const engine of engines) {
 
 The generator automatically transforms DSL components from `@ui8kit/template` to template syntax:
 
-### If Component
+### Var Component
+
+**DSL:**
+```tsx
+<Var name="title" value={title} />
+```
 
 **React:**
+```tsx
+{title}
+```
+
+**Liquid:**
+```liquid
+{{ title }}
+```
+
+**Handlebars:**
+```handlebars
+{{ title }}
+```
+
+### Var with Default
+
+**DSL:**
+```tsx
+<Var name="title" value={title} default="Untitled" />
+```
+
+**React:**
+```tsx
+{title ?? "Untitled"}
+```
+
+**Liquid:**
+```liquid
+{{ title | default: "Untitled" }}
+```
+
+### If Component (simple)
+
+**DSL:**
 ```tsx
 <If test="isActive" value={isActive}>
   <span>Active</span>
 </If>
+```
+
+**React:**
+```tsx
+{isActive ? (<><span>Active</span></>) : null}
 ```
 
 **Liquid:**
@@ -86,30 +131,83 @@ The generator automatically transforms DSL components from `@ui8kit/template` to
 {{/if}}
 ```
 
-### Var Component
+### If/Else
+
+**DSL:**
+```tsx
+<If test="isActive" value={isActive}>
+  <span>Active</span>
+  <Else>
+    <span>Inactive</span>
+  </Else>
+</If>
+```
 
 **React:**
 ```tsx
-<Var name="title" value={title} />
+{isActive ? (<><span>Active</span></>) : (<><span>Inactive</span></>)}
 ```
 
 **Liquid:**
 ```liquid
-{{ title }}
+{% if isActive %}
+  <span>Active</span>
+{% else %}
+  <span>Inactive</span>
+{% endif %}
 ```
 
-**Handlebars:**
-```handlebars
-{{ title }}
+### If/ElseIf/Else (IIFE pattern)
+
+**DSL:**
+```tsx
+<If test="status === 'active'" value={status === 'active'}>
+  <span>Active</span>
+  <ElseIf test="status === 'pending'" value={status === 'pending'}>
+    <span>Pending</span>
+  </ElseIf>
+  <Else>
+    <span>Unknown</span>
+  </Else>
+</If>
+```
+
+**React (IIFE — teaches real JS patterns):**
+```tsx
+{(() => {
+  if (status === "active") return (<><span>Active</span></>);
+  if (status === "pending") return (<><span>Pending</span></>);
+  return (<><span>Unknown</span></>);
+})()}
+```
+
+**Liquid:**
+```liquid
+{% if status == "active" %}
+  <span>Active</span>
+{% elsif status == "pending" %}
+  <span>Pending</span>
+{% else %}
+  <span>Unknown</span>
+{% endif %}
 ```
 
 ### Loop Component
 
-**React:**
+**DSL:**
 ```tsx
 <Loop each="items" as="item" data={items}>
   <div><Var name="item.name" /></div>
 </Loop>
+```
+
+**React (auto key: item.id → index):**
+```tsx
+{items.map((item, index) => (
+<React.Fragment key={item.id ?? index}>
+  <div>{item.name}</div>
+</React.Fragment>
+))}
 ```
 
 **Liquid:**
@@ -128,22 +226,91 @@ The generator automatically transforms DSL components from `@ui8kit/template` to
 
 ### Slot Component
 
-**React:**
+**DSL:**
 ```tsx
 <Slot name="header">
-  {children}
+  <header>Default Header</header>
 </Slot>
+```
+
+**React:**
+```tsx
+{header ?? (<><header>Default Header</header></>)}
 ```
 
 **Liquid:**
 ```liquid
-{{ header }}
+{% if header_content %}{{ header_content }}{% else %}<header>Default Header</header>{% endif %}
+```
+
+### Include Component
+
+**DSL:**
+```tsx
+<Include src="partials/header" />
+```
+
+**React:**
+```tsx
+<Header />
+```
+
+**Liquid:**
+```liquid
+{% include 'partials/header.liquid' %}
 ```
 
 **Handlebars:**
 ```handlebars
-{{ header }}
+{{> partials/header}}
 ```
+
+## React Plugin: Condition Strategy
+
+The React plugin uses three patterns for conditional rendering, selected automatically:
+
+| Scenario | Pattern | Complexity |
+|----------|---------|------------|
+| `If` only | Ternary with null | Junior level |
+| `If` + `Else` | Ternary | Junior level |
+| `If` + `ElseIf` [+ `Else`] | IIFE | Mid-level (growth) |
+
+This progression is intentional: juniors learn ternaries first, then discover IIFE as they encounter more complex branching.
+
+## React Plugin: Key Strategy for Loops
+
+The React plugin automatically resolves `key` for `.map()` iterations:
+
+1. **Explicit key** (from DSL `key` prop) → `item.slug`
+2. **Auto-detect** `id` field → `item.id`
+3. **Fallback** → `index`
+
+```tsx
+// With explicit key="slug"
+{items.map((item, index) => (
+<React.Fragment key={item.slug}>
+
+// Default (auto id → index fallback)
+{items.map((item, index) => (
+<React.Fragment key={item.id ?? index}>
+```
+
+## React Plugin: Filters as JS Methods
+
+React doesn't use template filters. Instead, filters map to native JS methods:
+
+| Filter | React (JS) | Liquid |
+|--------|-----------|--------|
+| `uppercase` | `.toUpperCase()` | `\| upcase` |
+| `lowercase` | `.toLowerCase()` | `\| downcase` |
+| `trim` | `.trim()` | `\| strip` |
+| `length` | `.length` | `\| size` |
+| `json` | `JSON.stringify()` | `\| json` |
+| `first` | `[0]` | `\| first` |
+| `last` | `[arr.length - 1]` | `\| last` |
+| `join` | `.join(sep)` | `\| join` |
+| `reverse` | `[...arr].reverse()` | `\| reverse` |
+| `sort` | `[...arr].sort()` | `\| sort` |
 
 ## Creating Custom Plugins
 
