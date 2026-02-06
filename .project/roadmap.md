@@ -100,10 +100,9 @@ apps/
 
 - [x] ReactPlugin implementation
 - [x] Layouts/partials moved to apps/engine
-- [ ] Achieve ideal React output for all blocks
-- [ ] Engine generates to `dist/react/`
-- [ ] Snapshot tests for React output
-- [ ] Validate all blocks produce valid JSX
+- [x] Achieve ideal React output for all blocks
+- [x] Engine generates to `dist/react/`
+- [x] Validate all blocks produce valid JSX
 
 ### apps/web + apps/docs: Templates → HTML + CSS
 
@@ -125,6 +124,7 @@ apps/
 - [ ] HTML5 semantic output validation
 - [ ] W3C CSS validation в CI
 - [ ] ARIA attributes checking
+- [ ] Snapshot tests for DSL vs React output
 
 ---
 
