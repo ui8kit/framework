@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { Block, Container, Grid, Stack } from '@ui8kit/core'
-import { Header, Footer, Sidebar } from '@ui8kit/blocks'
-import type { NavItem, FooterSection } from '@ui8kit/blocks'
+import { Header, Footer, Sidebar } from '../partials'
+import type { NavItem, FooterSection } from '../partials'
 
 export type LayoutMode = 'full' | 'with-sidebar' | 'sidebar-left'
 

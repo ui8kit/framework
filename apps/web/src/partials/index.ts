@@ -1,4 +1,4 @@
-// Partial Components (Header, Footer, Sidebar, etc.)
+// Local partials for apps/web (clean React, no DSL)
 export { Header } from './Header';
 export type { HeaderProps, NavItem } from './Header';
 

@@ -69,7 +69,7 @@ packages/
 └── registry/     @ui8kit/registry  — [PLANNED] CDN + CLI
 
 apps/
-├── engine/   — Template Factory: DSL → dist/{engine}/ templates
+├── engine/   — Template Engine: DSL → dist/{engine}/ templates
 ├── web/      — Site Builder: templates → HTML + CSS (3 modes)
 └── docs/     — Site Builder: templates → HTML + CSS (3 modes)
 ```
@@ -88,6 +88,9 @@ apps/
 - [x] `packages/data` — extracted fixtures
 - [x] **ReactPlugin** — 5th official template plugin (DSL → React JSX)
 - [x] Engine default changed: `--engine react` (was handlebars)
+- [x] **Refactor**: layouts/partials moved from packages/blocks → apps/engine
+- [x] **Refactor**: packages/blocks = only DSL blocks (no layouts/partials)
+- [x] **Refactor**: apps/web uses local partials (clean React, no DSL)
 
 ---
 
@@ -96,6 +99,7 @@ apps/
 ### Engine: DSL → React Templates
 
 - [x] ReactPlugin implementation
+- [x] Layouts/partials moved to apps/engine
 - [ ] Achieve ideal React output for all blocks
 - [ ] Engine generates to `dist/react/`
 - [ ] Snapshot tests for React output

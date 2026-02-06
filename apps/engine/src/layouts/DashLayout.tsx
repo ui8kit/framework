@@ -39,7 +39,7 @@ export function Dashboard({ page: Page, children, sidebar }: DashboardProps) {
   );
 }
 
-// Default export: factory alias
+// Factory alias
 export function DashLayout(props: DashboardProps) {
   return <Dashboard {...props} />;
 }

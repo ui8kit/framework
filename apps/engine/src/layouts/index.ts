@@ -1,4 +1,4 @@
-// Layout Components
+// Factory Layout Components
 export { MainLayout } from './MainLayout';
 export type { MainLayoutProps, LayoutMode } from './MainLayout';
 

@@ -1,7 +1,7 @@
 import { Block, Stack } from '@ui8kit/core';
 import { ReactNode } from 'react';
 
-type SidebarProps = {
+export type SidebarProps = {
   children: ReactNode;
   position?: 'left' | 'right';
 };

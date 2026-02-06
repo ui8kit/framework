@@ -145,14 +145,14 @@ Latte    │    ✓     │   ✓    │   ✓    │
 ### Текущий этап
 
 ```
-React DSL (apps/engine)
+packages/blocks (DSL blocks library)
     ↓
-5 Template Engines (React, Liquid, HBS, Twig, Latte)
-    ↓
-apps/web, apps/docs (React templates without DSL)
-    ↓
-@ui8kit/generator
-    ↓
+apps/engine (layouts + partials + showcase)
+    ↓ generates
+dist/{engine}/ (ready templates)
+    ↓ copy
+apps/web, apps/docs (clean React + own data)
+    ↓ @ui8kit/generator
 HTML + CSS (static site)
 ```
 
@@ -173,9 +173,31 @@ HTML + CSS (3 modes: tailwind, css3, inline)
 
 ---
 
+## packages/blocks vs apps/engine
+
+### packages/blocks — DSL Block Library
+
+**Что содержит**: только переиспользуемые DSL блоки.
+- HeroBlock, CTABlock, FeaturesBlock, PricingBlock, TestimonialsBlock, DashboardBlock...
+- Со временем — сотни блоков (marketing, auth, e-commerce, dashboard...)
+
+**Что НЕ содержит**: layouts, partials, pages. Это уровень приложения.
+
+### apps/engine — Template Engine (Assembly)
+
+**Что содержит**: layouts, partials, pages, showcase.
+- MainLayout (website: sidebar / full-width)
+- DashLayout (dashboard: fixed sidebar left)
+- Header, Footer, Sidebar (partials)
+- Showcase pages with all blocks
+
+Разные engine installations = разные сборки. Одни и те же блоки, разные layouts.
+
+---
+
 ## Separation of Concerns
 
-### apps/engine — Template Factory
+### apps/engine — Template Engine
 
 **Задача**: генерация шаблонов из React DSL. Не строит сайты. Не генерирует HTML + CSS.
 
@@ -183,7 +205,7 @@ HTML + CSS (3 modes: tailwind, css3, inline)
 - **Website layout** — сайдбары или full-width с контейнером
 - **Dashboard layout** — резиновый макет с сайдбаром слева (документация, кабинеты)
 
-**Что содержит**: полный набор блоков, виджетов, элементов в стиле framework showcases — можно скопировать любой шаблон и построить сайт или приложение.
+**Что содержит**: layouts, partials, showcase pages + импортирует блоки из `packages/blocks`.
 
 **Output**: готовые файлы шаблонов в `dist/{engine}/`
 - `dist/react/` — JSX компоненты
@@ -207,15 +229,15 @@ HTML + CSS (3 modes: tailwind, css3, inline)
 ### Полный Workflow
 
 ```
-packages/blocks (React DSL + fixtures)
-    ↓ apps/engine generates
-dist/react/    — ready templates (for apps/web, apps/docs)
-dist/liquid/   — ready templates (for Shopify, Jekyll projects)
-dist/hbs/      — ready templates (for Express.js projects)
-dist/twig/     — ready templates (for Symfony projects)
-dist/latte/    — ready templates (for Nette projects)
+packages/blocks (DSL block library)
+    ↓ apps/factory imports + assembles
+engine/dist/react/    — ready React templates
+engine/dist/liquid/   — ready Liquid templates
+engine/dist/hbs/      — ready HBS templates
+engine/dist/twig/     — ready Twig templates
+engine/dist/latte/    — ready Latte templates
     ↓ copy templates from dist/
-apps/web, apps/docs (React + own data sources)
+apps/web, apps/docs (clean React + own data sources)
     ↓ @ui8kit/generator
 HTML + CSS (static site, 3 modes)
     ↓ dist/ files also go to
@@ -229,6 +251,7 @@ BuildY (separate project) → Registry JSON → CDN
 Примеры уже сделанных рефакторов:
 - `packages/blocks` — блоки были в apps/web
 - `packages/data` — fixtures были разбросаны
+- `layouts/partials` — перенесены из packages/blocks в apps/engine
 
 ### Эволюция Engine
 
@@ -248,7 +271,7 @@ BuildY (separate project) → Registry JSON → CDN
 4. Подключить данные (static context или API)
 5. Генерировать HTML + CSS
 
-### Нехватает компонента?
+### Не хватает компонента?
 
 1. Добавить в `packages/blocks`
 2. Перегенерировать через `apps/engine`
