@@ -15,6 +15,7 @@
  */
 
 import { TemplateService, Logger } from '../../packages/generator/src/index';
+import { getFallbackCoreComponents, findUnknownComponents } from '../../packages/generator/src/core/scanner/core-component-scanner';
 import { resolve } from 'path';
 
 // =============================================================================
@@ -24,6 +25,12 @@ import { resolve } from 'path';
 type Engine = 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
 
 const VALID_ENGINES: Engine[] = ['react', 'liquid', 'handlebars', 'twig', 'latte'];
+
+/**
+ * Auto-load passthrough components from @ui8kit/core
+ * Falls back to hardcoded list if import fails
+ */
+const PASSTHROUGH_COMPONENTS = getFallbackCoreComponents();
 
 interface EngineConfig {
   engine: Engine;
@@ -68,7 +75,7 @@ const config: EngineConfig = {
   include: ['**/*.tsx'],
   exclude: ['**/*.test.tsx', '**/*.test.ts', '**/*.meta.ts', '**/index.ts'],
   verbose: true,
-  passthroughComponents: CORE_COMPONENTS,
+  passthroughComponents: PASSTHROUGH_COMPONENTS,
 };
 
 // =============================================================================

@@ -17,6 +17,8 @@ import {
   type TemplatePluginConfig,
 } from '../../plugins/template';
 import type { TemplateOutput } from '../../hast';
+import type { IFileSystem } from '../../core/filesystem';
+import { createNodeFileSystem } from '../../core/filesystem';
 
 // =============================================================================
 // Service Types
@@ -107,10 +109,12 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
   private context!: IServiceContext;
   private registry: PluginRegistry;
   private plugin: ITemplatePlugin | null = null;
+  private fs: IFileSystem;
   
-  constructor() {
+  constructor(fs?: IFileSystem) {
     this.registry = new PluginRegistry();
     registerBuiltInPlugins(this.registry);
+    this.fs = fs || createNodeFileSystem();
   }
   
   async initialize(context: IServiceContext): Promise<void> {
@@ -152,7 +156,7 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
     });
     
     // Ensure output directory exists
-    await mkdir(outputDir, { recursive: true });
+    await this.fs.mkdir(outputDir, { recursive: true });
     
     // Process each source directory
     for (const sourceDir of sourceDirs) {
@@ -278,11 +282,11 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
     const files: string[] = [];
     
     const walk = async (currentDir: string): Promise<void> => {
-      const entries = await readdir(currentDir, { withFileTypes: true });
+      const entries = await this.fs.readdir(currentDir, { withFileTypes: true });
       
       for (const entry of entries) {
-        const fullPath = join(currentDir, entry.name);
-        const relativePath = relative(dir, fullPath);
+        const fullPath = this.fs.join(currentDir, entry.name);
+        const relativePath = this.fs.relative(dir, fullPath);
         
         if (entry.isDirectory()) {
           // Check if excluded
@@ -345,18 +349,18 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
     outputDir: string,
     extension: string
   ): string {
-    const relativePath = relative(sourceDir, sourcePath);
-    const baseName = basename(relativePath, extname(relativePath));
-    const dir = join(outputDir, relativePath.replace(basename(relativePath), ''));
-    return join(dir, baseName + extension);
+    const relativePath = this.fs.relative(sourceDir, sourcePath);
+    const baseName = this.fs.basename(relativePath, this.fs.extname(relativePath));
+    const dir = this.fs.join(outputDir, this.fs.dirname(relativePath));
+    return this.fs.join(dir, baseName + extension);
   }
   
   /**
    * Write template file
    */
-  private async writeTemplateFile(path: string, content: string): Promise<void> {
-    const dir = join(path, '..');
-    await mkdir(dir, { recursive: true });
-    await writeFile(path, content, 'utf-8');
+  private async writeTemplateFile(filePath: string, content: string): Promise<void> {
+    const dir = this.fs.dirname(filePath);
+    await this.fs.mkdir(dir, { recursive: true });
+    await this.fs.writeFile(filePath, content);
   }
 }

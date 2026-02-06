@@ -26,6 +26,8 @@ import {
 } from '../hast';
 import { analyzeExpression, extractVariables } from './expression-analyzer';
 import { getNodeSource } from './jsx-parser';
+import { DslRegistry, type DslHandlerContext, type IDslComponentHandler } from './dsl-handler';
+import { BUILT_IN_DSL_HANDLERS } from './dsl-handlers';
 import type { TransformOptions, AnalyzedComponent, DEFAULT_COMPONENT_PATTERNS } from './types';
 
 // =============================================================================
@@ -56,11 +58,18 @@ class HastBuilder {
   private dependencies = new Set<string>();
   private warnings: string[] = [];
   private componentInfo: AnalyzedComponent | null = null;
+  private dslRegistry: DslRegistry;
   
   constructor(ast: File, source: string, options: TransformOptions) {
     this.ast = ast;
     this.source = source;
     this.options = options;
+    
+    // Initialize DSL registry
+    this.dslRegistry = new DslRegistry();
+    for (const handler of BUILT_IN_DSL_HANDLERS) {
+      this.dslRegistry.register(handler);
+    }
   }
   
   build(): GenRoot {
@@ -382,273 +391,31 @@ class HastBuilder {
     
     return element(tagName, properties, children);
   }
-  
-  /**
-   * Get string attribute value safely
-   */
-  private getStringAttr(attrs: Record<string, string | boolean>, key: string): string | undefined {
-    const value = attrs[key];
-    return typeof value === 'string' ? value : undefined;
-  }
 
   /**
-   * Handle DSL components (Loop, If, Var, etc.)
+   * Handle DSL components using registry
    */
   private handleDslComponent(
     tagName: string,
     node: t.JSXElement,
     children: GenChild[]
   ): GenElement | null {
-    const attrs = this.getJsxAttributeMap(node.openingElement.attributes);
-    
-    switch (tagName) {
-      case 'Loop': {
-        const each = this.getStringAttr(attrs, 'each');
-        const as = this.getStringAttr(attrs, 'as');
-        const keyExpr = this.getStringAttr(attrs, 'keyExpr');
-        const index = this.getStringAttr(attrs, 'index');
-        
-        if (!each || !as) {
-          this.warnings.push(`Loop requires 'each' and 'as' props`);
-          return element('div', {}, children);
-        }
-        
-        // Loop children may use render-function pattern: {(item) => (<JSX/>)}
-        // Extract JSX body from the arrow function if present
-        let loopChildren = children;
-        if (loopChildren.length === 0) {
-          loopChildren = this.extractLoopBody(node);
-        }
-        
-        return annotate(
-          element('div', {}, loopChildren),
-          {
-            loop: {
-              item: as,
-              collection: each,
-              key: keyExpr,
-              index: index,
-            },
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'If': {
-        const test = this.getStringAttr(attrs, 'test');
-        if (!test) {
-          this.warnings.push(`If requires 'test' prop`);
-          return element('div', {}, children);
-        }
-        
-        this.variables.add(test.split(/[.\s]/)[0]);
-        
-        return annotate(
-          element('div', {}, children),
-          {
-            condition: { expression: test },
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'Else': {
-        return annotate(
-          element('div', {}, children),
-          {
-            condition: { expression: '', isElse: true },
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'ElseIf': {
-        const test = this.getStringAttr(attrs, 'test');
-        if (!test) {
-          this.warnings.push(`ElseIf requires 'test' prop`);
-          return element('div', {}, children);
-        }
-        
-        return annotate(
-          element('div', {}, children),
-          {
-            condition: { expression: test, isElseIf: true },
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'Var': {
-        const name = this.getStringAttr(attrs, 'name');
-        const defaultVal = this.getStringAttr(attrs, 'default');
-        const filter = this.getStringAttr(attrs, 'filter');
-        const raw = attrs.raw === 'true' || attrs.raw === true;
-        
-        // Get variable name from 'name' prop or children
-        let varName = name;
-        if (!varName && children.length === 1) {
-          const child = children[0];
-          if (child.type === 'text') {
-            varName = child.value.trim();
-          }
-        }
-        
-        if (!varName) {
-          this.warnings.push(`Var requires 'name' prop or text children`);
-          return element('span', {}, []);
-        }
-        
-        this.variables.add(varName.split('.')[0]);
-        
-        return annotate(
-          element('span', {}, []),
-          {
-            variable: {
-              name: varName,
-              default: defaultVal,
-              filter: filter,
-            },
-            raw: raw,
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'Slot': {
-        const name = this.getStringAttr(attrs, 'name') || 'content';
-        
-        return annotate(
-          element('div', {}, children),
-          {
-            slot: { name },
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'Include': {
-        const partial = this.getStringAttr(attrs, 'partial');
-        const propsStr = this.getStringAttr(attrs, 'props');
-        
-        if (!partial) {
-          this.warnings.push(`Include requires 'partial' prop`);
-          return element('div', {}, []);
-        }
-        
-        let props: Record<string, string> = {};
-        if (propsStr) {
-          try {
-            props = JSON.parse(propsStr);
-          } catch {
-            // Try to parse as object expression
-          }
-        }
-        
-        this.dependencies.add(partial);
-        
-        return annotate(
-          element('div', {}, []),
-          {
-            include: {
-              partial,
-              props,
-            },
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'DefineBlock': {
-        const name = this.getStringAttr(attrs, 'name');
-        if (!name) {
-          this.warnings.push(`DefineBlock requires 'name' prop`);
-          return element('div', {}, children);
-        }
-        
-        return annotate(
-          element('div', {}, children),
-          {
-            block: { name },
-            unwrap: true,
-          }
-        );
-      }
-      
-      case 'Extends': {
-        const layout = this.getStringAttr(attrs, 'layout');
-        if (!layout) {
-          this.warnings.push(`Extends requires 'layout' prop`);
-          return element('div', {}, []);
-        }
-        
-        return annotate(
-          element('div', {}, []),
-          {
-            block: { name: '__extends__', extends: layout },
-          }
-        );
-      }
-      
-      case 'Raw': {
-        let varName = '';
-        if (children.length === 1) {
-          const child = children[0];
-          if (child.type === 'text') {
-            varName = child.value.trim();
-          }
-        }
-        
-        return annotate(
-          element('span', {}, []),
-          {
-            variable: { name: varName },
-            raw: true,
-            unwrap: true,
-          }
-        );
-      }
-      
-      default:
-        return null;
-    }
-  }
-  
-  /**
-   * Get JSX attributes as a simple key-value map
-   */
-  private getJsxAttributeMap(
-    attributes: (t.JSXAttribute | t.JSXSpreadAttribute)[]
-  ): Record<string, string | boolean> {
-    const map: Record<string, string | boolean> = {};
-    
-    for (const attr of attributes) {
-      if (attr.type !== 'JSXAttribute') continue;
-      if (attr.name.type !== 'JSXIdentifier') continue;
-      
-      const name = attr.name.name;
-      const value = attr.value;
-      
-      if (!value) {
-        map[name] = true;
-        continue;
-      }
-      
-      if (value.type === 'StringLiteral') {
-        map[name] = value.value;
-      } else if (value.type === 'JSXExpressionContainer') {
-        const expr = value.expression;
-        if (expr.type === 'StringLiteral') {
-          map[name] = expr.value;
-        } else if (expr.type === 'BooleanLiteral') {
-          map[name] = expr.value;
-        } else {
-          // For complex expressions, get source
-          map[name] = getNodeSource(this.source, expr);
-        }
-      }
+    // Check if handler exists for this DSL component
+    if (!this.dslRegistry.has(tagName)) {
+      return null; // Not a DSL component, handled elsewhere
     }
     
-    return map;
+    const handler = this.dslRegistry.get(tagName)!;
+    
+    const context: DslHandlerContext = {
+      source: this.source,
+      warnings: this.warnings,
+      variables: this.variables,
+      dependencies: this.dependencies,
+      options: this.options,
+    };
+    
+    return handler.handle(node, children, context);
   }
   
   /**

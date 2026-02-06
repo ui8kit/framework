@@ -33,9 +33,19 @@ Branch detection uses magic strings: `___REACT_ELSE___`, `___REACT_ELSEIF___`, `
 
 If user content contains these strings — parsing breaks. String manipulation in `buildIIFE()` and `buildTernary()` is error-prone.
 
-- [ ] Replace string markers with structured data (AST nodes or typed objects)
-- [ ] Pass branch info through HAST annotations instead of string injection
-- [ ] Add safety checks/escaping for marker collision
+**Status:** Deferred to Phase 2
+
+Current implementation works correctly (all 13 templates generate successfully).
+Refactoring to structured branch objects requires:
+1. Modify BasePlugin.transformChildren to preserve branch annotations during traversal
+2. Pass `GenCondition[]` array instead of string-injected markers
+3. Update ReactPlugin to consume branch array instead of parsing strings
+4. Add branch context stacks for nested conditions
+
+- [ ] Refactor branch annotations to use array of `GenCondition` objects
+- [ ] Update BasePlugin to track branch context during transformation
+- [ ] Modify ReactPlugin to read from branch array instead of parsing strings
+- [ ] Add safety checks for branch scoping and nesting
 
 ---
 

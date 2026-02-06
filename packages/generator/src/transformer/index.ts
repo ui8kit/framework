@@ -44,6 +44,10 @@ export {
 // Parser
 export { DEFAULT_PARSER_OPTIONS, getNodeSource, getPosition } from './jsx-parser';
 
+// DSL Handler System
+export { DslRegistry, type IDslComponentHandler, type DslHandlerContext } from './dsl-handler';
+export { BUILT_IN_DSL_HANDLERS } from './dsl-handlers';
+
 // Types
 export type {
   TransformOptions,
