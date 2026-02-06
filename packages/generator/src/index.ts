@@ -292,3 +292,16 @@ export {
   type EmitVariantElementsOptions,
   type EmitVariantElementsResult,
 } from './scripts/emit-variant-elements.js';
+
+// =============================================================================
+// Registry Generator
+// =============================================================================
+
+export {
+  generateRegistry,
+  type Registry,
+  type RegistryItem,
+  type RegistryItemType,
+  type RegistryConfig,
+  type RegistrySourceDir,
+} from './scripts';

@@ -34,6 +34,7 @@
   "scripts": {
     "build": "vite build && tsc -p tsconfig.build.json --emitDeclarationOnly --declaration --outDir dist",
     "dev": "vite build --watch",
+    "generate:registry": "bun run generator.config.ts",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },

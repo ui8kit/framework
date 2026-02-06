@@ -1,6 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
-import { WebsitePage } from './pages/WebsitePage';
-import { DashboardPage } from './pages/DashboardPage';
+import { WebsitePage } from './routes/WebsitePage';
+import { DashboardPage } from './routes/DashboardPage';
 
 export function App() {
   return (

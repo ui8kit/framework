@@ -17,10 +17,10 @@ The `handleDslComponent()` method uses a 200-line `switch` statement with hardco
 
 Adding a new DSL component (e.g., `<Switch>`, `<Fragment>`, `<Await>`) requires modifying core transformer code.
 
-- [ ] Extract DSL handlers into a registry/strategy pattern
-- [ ] Define `IDslComponentHandler` interface
-- [ ] Allow plugins to register custom DSL handlers
-- [ ] Move each handler to a separate file for testability
+- [x] Extract DSL handlers into a registry/strategy pattern
+- [x] Define `IDslComponentHandler` interface
+- [x] Allow plugins to register custom DSL handlers
+- [x] Move each handler to a separate file for testability
 
 ---
 
@@ -42,10 +42,10 @@ Refactoring to structured branch objects requires:
 3. Update ReactPlugin to consume branch array instead of parsing strings
 4. Add branch context stacks for nested conditions
 
-- [ ] Refactor branch annotations to use array of `GenCondition` objects
-- [ ] Update BasePlugin to track branch context during transformation
-- [ ] Modify ReactPlugin to read from branch array instead of parsing strings
-- [ ] Add safety checks for branch scoping and nesting
+- [x] Refactor branch annotations to use array of `GenCondition` objects
+- [x] Update BasePlugin to track branch context during transformation
+- [x] Modify ReactPlugin to read from branch array instead of parsing strings
+- [x] Add safety checks for branch scoping and nesting
 
 ---
 
@@ -56,10 +56,10 @@ Refactoring to structured branch objects requires:
 
 Direct `fs/promises` imports, custom glob implementation (`simpleMatch()`), synchronous single-file processing.
 
-- [ ] Abstract file operations behind `IFileSystem` interface
-- [ ] Replace custom glob with `fast-glob` or `tinyglobby`
-- [ ] Add parallel file processing with configurable concurrency
-- [ ] Enable in-memory mode for testing (virtual filesystem)
+- [x] Abstract file operations behind `IFileSystem` interface
+- [x] Replace custom glob with `fast-glob` or `tinyglobby`
+- [x] Add parallel file processing with configurable concurrency
+- [x] Enable in-memory mode for testing (virtual filesystem)
 
 ---
 
@@ -70,9 +70,9 @@ Direct `fs/promises` imports, custom glob implementation (`simpleMatch()`), sync
 
 26 core component names are hardcoded in an array. Adding a component to `@ui8kit/core` without updating this list causes silent generation failures (component treated as include, children lost).
 
-- [ ] Auto-detect passthrough list from `@ui8kit/core` exports at build time
-- [ ] Or add `@passthrough` JSDoc annotation to core components
-- [ ] Fail loudly if unknown PascalCase component is encountered
+- [x] Auto-detect passthrough list from `@ui8kit/core` exports at build time
+- [x] Or add `@passthrough` JSDoc annotation to core components
+- [x] Fail loudly if unknown PascalCase component is encountered
 
 ---
 
@@ -83,10 +83,10 @@ Direct `fs/promises` imports, custom glob implementation (`simpleMatch()`), sync
 
 Blocks are manually exported in `index.ts`. No categories, tags, dependencies, preview metadata.
 
-- [ ] Implement block registry with auto-discovery (scan `blocks/` directory)
-- [ ] Add block metadata: `{ name, category, tags, dependencies, preview }`
-- [ ] Generate registry JSON for BuildY integration
-- [ ] Enable programmatic block import by name
+- [x] Implement block registry with auto-discovery (scan `blocks/` directory)
+- [x] Add block metadata: `{ name, category, tags, dependencies, preview }`
+- [x] Generate registry JSON for BuildY integration
+- [x] Enable programmatic block import by name
 
 ---
 

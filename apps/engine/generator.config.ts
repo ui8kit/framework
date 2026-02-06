@@ -14,8 +14,10 @@
  *   bun run generate -e handlebars
  */
 
-import { TemplateService, Logger } from '../../packages/generator/src/index';
-import { getFallbackCoreComponents, findUnknownComponents } from '../../packages/generator/src/core/scanner/core-component-scanner';
+import { TemplateService } from '../../packages/generator/src/services/template/TemplateService';
+import { Logger } from '../../packages/generator/src/core';
+import { getFallbackCoreComponents } from '../../packages/generator/src/core/scanner/core-component-scanner';
+import { generateRegistry, type RegistryConfig } from '../../packages/generator/src/scripts';
 import { resolve } from 'path';
 
 // =============================================================================
@@ -66,10 +68,10 @@ const config: EngineConfig = {
   sourceDirs: [
     // DSL blocks from shared library
     '../../packages/blocks/src/blocks',
-    // Engine-specific layouts, partials, pages
+    // Engine-specific layouts, partials, routes
     './src/layouts',
     './src/partials',
-    './src/pages',
+    './src/routes',
   ],
   outputDir: './dist',
   include: ['**/*.tsx'],
@@ -201,6 +203,50 @@ async function main() {
   console.log(`  Templates:  ${result.files.length}`);
   console.log(`  Duration:   ${result.duration}ms`);
   console.log(result.errors.length === 0 ? '  Status:     OK' : '  Status:     FAILED');
+  console.log('');
+
+  // ==========================================================================
+  // Registry Generation
+  // ==========================================================================
+
+  const registryConfig: RegistryConfig = {
+    sourceDirs: [
+      {
+        path: resolve(appRoot, '../../packages/blocks/src/blocks'),
+        type: 'registry:block',
+        target: 'blocks',
+      },
+      {
+        path: resolve(appRoot, './src/layouts'),
+        type: 'registry:layout',
+        target: 'layouts',
+      },
+      {
+        path: resolve(appRoot, './src/partials'),
+        type: 'registry:partial',
+        target: 'partials',
+      },
+      {
+        path: resolve(appRoot, './src/routes'),
+        type: 'registry:route',
+        target: 'routes',
+      },
+    ],
+    outputPath: resolve(appRoot, './dist/registry.json'),
+    registryName: 'ui8kit',
+    version: '0.1.0',
+  };
+
+  console.log('  Registry Generation');
+  console.log('  ─────────────────────────────────');
+
+  const registry = await generateRegistry(registryConfig);
+
+  console.log(`  Items:   ${registry.items.length}`);
+  for (const item of registry.items) {
+    console.log(`    ${item.type.replace('registry:', '')}  ${item.name}`);
+  }
+  console.log(`  Output:  ${registryConfig.outputPath.replace(appRoot, '.')}`);
   console.log('');
 
   process.exit(result.errors.length > 0 ? 1 : 0);
