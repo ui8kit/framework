@@ -141,6 +141,7 @@ export {
   HandlebarsPlugin,
   TwigPlugin,
   LattePlugin,
+  ReactPlugin,
   builtInPlugins,
   registerBuiltInPlugins,
 } from './plugins';

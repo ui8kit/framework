@@ -153,7 +153,20 @@ export abstract class BasePlugin implements ITemplatePlugin {
    */
   protected async processElement(element: GenElement): Promise<string> {
     const annotations = getAnnotations(element);
-    let content = await this.renderElementContent(element);
+
+    // For unwrapped elements, only render children (skip the wrapper tag).
+    // This avoids generating extra <div> wrappers from DSL annotation nodes.
+    let content: string;
+    if (annotations?.unwrap) {
+      // Variable and include annotations don't need children content
+      if (annotations.variable || annotations.include) {
+        content = '';
+      } else {
+        content = await this.transformChildren(element.children);
+      }
+    } else {
+      content = await this.renderElementContent(element);
+    }
 
     // Apply annotations in order
     if (annotations) {
@@ -187,7 +200,7 @@ export abstract class BasePlugin implements ITemplatePlugin {
         content = this.renderBlock(annotations.block, content);
       }
 
-      // Unwrap (remove element, keep children)
+      // Unwrap: return content without wrapping element tag
       if (annotations.unwrap) {
         return content;
       }

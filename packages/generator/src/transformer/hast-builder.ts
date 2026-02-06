@@ -362,6 +362,11 @@ class HastBuilder {
     
     // Check if this is a component reference
     if (this.isComponentTag(tagName)) {
+      // Passthrough components: keep as elements with children
+      if (this.isPassthroughComponent(tagName)) {
+        return element(tagName, properties, children);
+      }
+
       // Add include annotation
       const annotations: GenAnnotations = {
         include: {
@@ -408,8 +413,15 @@ class HastBuilder {
           return element('div', {}, children);
         }
         
+        // Loop children may use render-function pattern: {(item) => (<JSX/>)}
+        // Extract JSX body from the arrow function if present
+        let loopChildren = children;
+        if (loopChildren.length === 0) {
+          loopChildren = this.extractLoopBody(node);
+        }
+        
         return annotate(
-          element('div', {}, children),
+          element('div', {}, loopChildren),
           {
             loop: {
               item: as,
@@ -684,6 +696,17 @@ class HastBuilder {
   private isComponentTag(tagName: string): boolean {
     return /^[A-Z]/.test(tagName);
   }
+
+  /**
+   * Check if component should be preserved as an element (passthrough)
+   * rather than converted to an include annotation.
+   * Used for UI primitives (Block, Stack, Container, etc.)
+   */
+  private isPassthroughComponent(tagName: string): boolean {
+    const passthrough = this.options.passthroughComponents;
+    if (!passthrough || passthrough.length === 0) return false;
+    return passthrough.includes(tagName);
+  }
   
   /**
    * Convert component name to partial path
@@ -950,24 +973,11 @@ class HastBuilder {
       const consequent = expr.consequent;
       const alternate = expr.alternate;
       
-      const ifContent = consequent.type === 'JSXElement' 
-        ? [this.transformJsxElement(consequent)]
-        : [];
+      const ifContent = this.transformJsxChild(consequent);
+      const elseContent = this.transformJsxChild(alternate);
       
-      const elseContent = alternate.type === 'JSXElement'
-        ? [this.transformJsxElement(alternate)]
-        : [];
-      
-      // Create if element
-      const ifElement = annotate(
-        element('div', {}, ifContent),
-        {
-          condition: { expression: analyzed.condition! },
-          unwrap: true,
-        }
-      );
-      
-      // Create else element
+      // Else element nested inside if — so the plugin can detect
+      // branch markers within the if element's content
       const elseElement = annotate(
         element('div', {}, elseContent),
         {
@@ -976,19 +986,19 @@ class HastBuilder {
         }
       );
       
-      return [ifElement, elseElement];
+      // Single if element containing both branches
+      return annotate(
+        element('div', {}, [...ifContent, elseElement]),
+        {
+          condition: { expression: analyzed.condition! },
+          unwrap: true,
+        }
+      );
     }
     
     // Logical AND: condition && content
     if (expr.type === 'LogicalExpression' && expr.operator === '&&') {
-      const right = expr.right;
-      let content: GenChild[] = [];
-      
-      if (right.type === 'JSXElement') {
-        content = [this.transformJsxElement(right)];
-      } else if (right.type === 'JSXFragment') {
-        content = this.transformJsxFragment(right);
-      }
+      const content = this.transformJsxChild(expr.right);
       
       return annotate(
         element('div', {}, content),
@@ -1000,6 +1010,70 @@ class HastBuilder {
     }
     
     return element('div', {}, []);
+  }
+  
+  /**
+   * Extract JSX body from Loop's render-function children.
+   * Handles: {(item) => (<Button>...</Button>)}
+   * and: {(item) => { return (<Button>...</Button>); }}
+   */
+  private extractLoopBody(node: t.JSXElement): GenChild[] {
+    for (const child of node.children) {
+      if (child.type !== 'JSXExpressionContainer') continue;
+      const expr = child.expression;
+      if (expr.type !== 'ArrowFunctionExpression' && expr.type !== 'FunctionExpression') continue;
+      
+      const body = expr.body;
+      
+      // Implicit return: (item) => (<JSX/>)
+      if (body.type === 'JSXElement') {
+        return [this.transformJsxElement(body)];
+      }
+      if (body.type === 'JSXFragment') {
+        return this.transformJsxFragment(body);
+      }
+      if (body.type === 'ParenthesizedExpression') {
+        const inner = body.expression;
+        if (inner.type === 'JSXElement') return [this.transformJsxElement(inner)];
+        if (inner.type === 'JSXFragment') return this.transformJsxFragment(inner);
+      }
+      
+      // Block body: (item) => { return (<JSX/>) }
+      if (body.type === 'BlockStatement') {
+        for (const stmt of body.body) {
+          if (stmt.type !== 'ReturnStatement' || !stmt.argument) continue;
+          const arg = stmt.argument;
+          if (arg.type === 'JSXElement') return [this.transformJsxElement(arg)];
+          if (arg.type === 'JSXFragment') return this.transformJsxFragment(arg);
+          if (arg.type === 'ParenthesizedExpression') {
+            const inner = arg.expression;
+            if (inner.type === 'JSXElement') return [this.transformJsxElement(inner)];
+            if (inner.type === 'JSXFragment') return this.transformJsxFragment(inner);
+          }
+        }
+      }
+    }
+    return [];
+  }
+
+  /**
+   * Transform a JSX expression node to GenChild array
+   * Handles JSXElement, JSXFragment, and parenthesized expressions
+   */
+  private transformJsxChild(node: t.Expression): GenChild[] {
+    if (node.type === 'JSXElement') {
+      return [this.transformJsxElement(node)];
+    }
+    if (node.type === 'JSXFragment') {
+      return this.transformJsxFragment(node);
+    }
+    if (node.type === 'ParenthesizedExpression') {
+      return this.transformJsxChild(node.expression);
+    }
+    if (node.type === 'NullLiteral') {
+      return [];
+    }
+    return [];
   }
   
   /**

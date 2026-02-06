@@ -46,6 +46,13 @@ export interface TemplateServiceInput {
   
   /** Verbose logging */
   verbose?: boolean;
+
+  /**
+   * Component names to preserve as elements (not converted to includes).
+   * Useful for UI primitives that should remain as component references
+   * with their children intact in the generated output.
+   */
+  passthroughComponents?: string[];
 }
 
 /**
@@ -121,6 +128,7 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
       exclude = ['**/*.test.tsx', '**/*.spec.tsx', '**/node_modules/**'],
       pluginConfig = {},
       verbose = false,
+      passthroughComponents,
     } = input;
     
     const files: GeneratedFile[] = [];
@@ -166,7 +174,9 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
             }
             
             // Transform JSX to HAST
-            const transformResult = await transformJsxFile(filePath);
+            const transformResult = await transformJsxFile(filePath, {
+              passthroughComponents,
+            });
             
             if (transformResult.errors.length > 0) {
               errors.push(...transformResult.errors.map(e => `${filePath}: ${e}`));
@@ -248,6 +258,7 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
    */
   private getFileExtension(engine: string): string {
     const extensions: Record<string, string> = {
+      react: '.tsx',
       liquid: '.liquid',
       handlebars: '.hbs',
       twig: '.twig',

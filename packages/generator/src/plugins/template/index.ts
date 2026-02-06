@@ -52,6 +52,7 @@ export {
   HandlebarsPlugin,
   TwigPlugin,
   LattePlugin,
+  ReactPlugin,
   builtInPlugins,
   registerBuiltInPlugins,
 } from './built-in';

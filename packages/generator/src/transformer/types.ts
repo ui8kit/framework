@@ -29,6 +29,15 @@ export interface TransformOptions {
   
   /** Include source locations in annotations */
   includeSourceLocations?: boolean;
+
+  /**
+   * Component names that should be preserved as elements (not converted to includes).
+   * Useful for UI primitives (Block, Stack, Container, etc.) that should remain
+   * as component references in the generated output with their children intact.
+   *
+   * @example ['Block', 'Stack', 'Container', 'Grid', 'Box', 'Text', 'Title', 'Button']
+   */
+  passthroughComponents?: string[];
 }
 
 /**
