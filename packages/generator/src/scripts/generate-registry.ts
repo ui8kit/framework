@@ -45,10 +45,13 @@ export interface RegistryItem {
   dependencies: string[];
   devDependencies: string[];
   files: Array<{
+    /** Path relative to dist (e.g. "blocks/DashSidebar.tsx") — where to unpack the generated file */
     path: string;
     target: string;
   }>;
   props?: string[];
+  /** Absolute path to source .tsx file; used by template generator in registry→dist pipeline */
+  sourcePath?: string;
 }
 
 /** Full registry output */
@@ -86,6 +89,12 @@ export interface RegistryConfig {
   include?: string[];
   /** File patterns to exclude */
   exclude?: string[];
+  /**
+   * Package names to exclude from each item's dependencies.
+   * Used for DSL/build-only deps (e.g. @ui8kit/template) that are not needed
+   * in consuming apps. If absent or empty, dependencies are left as-is.
+   */
+  excludeDependencies?: string[];
 }
 
 // =============================================================================
@@ -360,11 +369,18 @@ export async function generateRegistry(config: RegistryConfig): Promise<Registry
 
       const relPath = relative(resolve(sourceDir.path, '..'), filePath).replace(/\\/g, '/');
 
+      const deps =
+        config.excludeDependencies && config.excludeDependencies.length > 0
+          ? info.dependencies.filter(
+              (dep) => !config.excludeDependencies!.includes(dep)
+            )
+          : info.dependencies;
+
       const item: RegistryItem = {
         name: info.name,
         type: resolveType(info.typeOverride, sourceDir.type),
         description: info.description,
-        dependencies: info.dependencies,
+        dependencies: deps,
         devDependencies: [],
         files: [
           {
@@ -372,6 +388,7 @@ export async function generateRegistry(config: RegistryConfig): Promise<Registry
             target: sourceDir.target,
           },
         ],
+        sourcePath: resolve(filePath),
       };
 
       // Only add optional fields if present

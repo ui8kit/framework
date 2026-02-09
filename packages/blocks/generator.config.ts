@@ -29,6 +29,8 @@ const config: RegistryConfig = {
   version: '0.1.0',
   include: ['**/*.tsx'],
   exclude: ['**/*.test.tsx', '**/*.test.ts', '**/*.meta.ts', '**/index.ts'],
+  /** DSL/build-only: not used in consuming apps; exclude from registry deps */
+  excludeDependencies: ['@ui8kit/template'],
 };
 
 async function main() {

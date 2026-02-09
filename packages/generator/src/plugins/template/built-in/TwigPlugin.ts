@@ -185,7 +185,7 @@ export class TwigPlugin extends BasePlugin {
    * {% include 'partials/header.twig' %}
    * {% include 'partials/card.twig' with {title: cardTitle} %}
    */
-  renderInclude(include: GenInclude): string {
+  renderInclude(include: GenInclude, _childrenContent?: string): string {
     const { partial, props } = include;
 
     // Add extension if not present

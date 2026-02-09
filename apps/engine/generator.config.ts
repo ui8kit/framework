@@ -17,7 +17,7 @@
 import { TemplateService } from '../../packages/generator/src/services/template/TemplateService';
 import { Logger } from '../../packages/generator/src/core';
 import { getFallbackCoreComponents } from '../../packages/generator/src/core/scanner/core-component-scanner';
-import { generateRegistry, type RegistryConfig } from '../../packages/generator/src/scripts';
+import { generateRegistry, type RegistryConfig, type RegistrySourceDir } from '../../packages/generator/src/scripts';
 import { resolve } from 'path';
 
 // =============================================================================
@@ -34,14 +34,24 @@ const VALID_ENGINES: Engine[] = ['react', 'liquid', 'handlebars', 'twig', 'latte
  */
 const PASSTHROUGH_COMPONENTS = getFallbackCoreComponents();
 
+/** Single source of truth for registry (and thus template) sources. Paths relative to app root. */
+const REGISTRY_SOURCE_DIRS: Array<{ path: string; type: RegistrySourceDir['type']; target: string }> = [
+  { path: './src/blocks', type: 'registry:block', target: 'blocks' },
+  { path: '../../packages/blocks/src/blocks', type: 'registry:block', target: 'blocks' },
+  { path: './src/layouts', type: 'registry:layout', target: 'layouts' },
+  { path: './src/partials', type: 'registry:partial', target: 'partials' },
+  { path: './src/routes', type: 'registry:route', target: 'routes' },
+];
+
 interface EngineConfig {
   engine: Engine;
-  sourceDirs: string[];
   outputDir: string;
   include: string[];
   exclude: string[];
   verbose: boolean;
   passthroughComponents: string[];
+  /** Exclude these modules from generated template imports (e.g. @ui8kit/template) */
+  excludeDependencies: string[];
 }
 
 /**
@@ -65,19 +75,12 @@ const CORE_COMPONENTS = [
 
 const config: EngineConfig = {
   engine: 'react',
-  sourceDirs: [
-    // DSL blocks from shared library
-    '../../packages/blocks/src/blocks',
-    // Engine-specific layouts, partials, routes
-    './src/layouts',
-    './src/partials',
-    './src/routes',
-  ],
   outputDir: './dist',
   include: ['**/*.tsx'],
   exclude: ['**/*.test.tsx', '**/*.test.ts', '**/*.meta.ts', '**/index.ts'],
   verbose: true,
-  passthroughComponents: PASSTHROUGH_COMPONENTS,
+  passthroughComponents: [...PASSTHROUGH_COMPONENTS, 'Link'],
+  excludeDependencies: ['@ui8kit/template'],
 };
 
 // =============================================================================
@@ -122,14 +125,43 @@ async function main() {
   console.log('  ─────────────────────────────────');
   console.log(`  Engine:  ${config.engine}`);
   console.log(`  Output:  ${engineOutputDir.replace(appRoot, '.')}`);
-  console.log(`  Sources: ${config.sourceDirs.length} directories`);
+  console.log(`  Pipeline:  registry → ${engineOutputDir.replace(appRoot, '.')}`);
   console.log('');
 
   const logger = new Logger({ level: config.verbose ? 'debug' : 'info' });
 
-  // Create and initialize template service
-  const service = new TemplateService();
+  // -------------------------------------------------------------------------
+  // Step 1: Generate registry into dist/react (single source of truth)
+  // -------------------------------------------------------------------------
 
+  const registryPath = resolve(engineOutputDir, 'registry.json');
+  const registryConfig: RegistryConfig = {
+    sourceDirs: REGISTRY_SOURCE_DIRS.map(({ path: p, type, target }) => ({
+      path: resolve(appRoot, p),
+      type,
+      target,
+    })),
+    outputPath: registryPath,
+    registryName: 'ui8kit',
+    version: '0.1.0',
+    excludeDependencies: ['@ui8kit/template'],
+  };
+
+  console.log('  Registry (step 1)');
+  console.log('  ─────────────────────────────────');
+  const registry = await generateRegistry(registryConfig);
+  console.log(`  Items:   ${registry.items.length}`);
+  for (const item of registry.items) {
+    console.log(`    ${item.type.replace('registry:', '')}  ${item.name}`);
+  }
+  console.log(`  Output:  ${registryPath.replace(appRoot, '.')}`);
+  console.log('');
+
+  // -------------------------------------------------------------------------
+  // Step 2: Generate templates from registry (path = dist/react/{item.files[0].path})
+  // -------------------------------------------------------------------------
+
+  const service = new TemplateService();
   await service.initialize({
     config: {},
     logger: logger as any,
@@ -144,109 +176,42 @@ async function main() {
     registry: null as any,
   });
 
-  // Execute template generation
   const result = await service.execute({
-    sourceDirs: config.sourceDirs.map(dir => resolve(appRoot, dir)),
+    registryPath,
     outputDir: engineOutputDir,
     engine: config.engine,
-    include: config.include,
-    exclude: config.exclude,
     verbose: config.verbose,
     passthroughComponents: config.passthroughComponents,
+    excludeDependencies: config.excludeDependencies,
   });
 
-  // Dispose service
   await service.dispose();
 
-  // ==========================================================================
-  // Report
-  // ==========================================================================
-
+  console.log('  Templates (step 2)');
   console.log('  ─────────────────────────────────');
-
   if (result.files.length > 0) {
-    console.log('  Generated:');
     for (const file of result.files) {
       const relativePath = file.output.replace(appRoot, '.').replace(/\\/g, '/');
       console.log(`    + ${file.componentName} → ${relativePath}`);
-
       if (config.verbose) {
-        if (file.variables.length > 0) {
-          console.log(`      vars: ${file.variables.join(', ')}`);
-        }
-        if (file.dependencies.length > 0) {
-          console.log(`      deps: ${file.dependencies.join(', ')}`);
-        }
+        if (file.variables.length > 0) console.log(`      vars: ${file.variables.join(', ')}`);
+        if (file.dependencies.length > 0) console.log(`      deps: ${file.dependencies.join(', ')}`);
       }
     }
   }
-
   if (result.warnings.length > 0) {
     console.log('');
-    console.log('  Warnings:');
-    for (const warning of result.warnings) {
-      console.log(`    ! ${warning}`);
-    }
+    for (const warning of result.warnings) console.log(`    ! ${warning}`);
   }
-
   if (result.errors.length > 0) {
     console.log('');
-    console.log('  Errors:');
-    for (const error of result.errors) {
-      console.log(`    x ${error}`);
-    }
+    for (const error of result.errors) console.log(`    x ${error}`);
   }
-
   console.log('');
-  console.log('  ─────────────────────────────────');
   console.log(`  Components: ${result.componentsProcessed}`);
   console.log(`  Templates:  ${result.files.length}`);
   console.log(`  Duration:   ${result.duration}ms`);
   console.log(result.errors.length === 0 ? '  Status:     OK' : '  Status:     FAILED');
-  console.log('');
-
-  // ==========================================================================
-  // Registry Generation
-  // ==========================================================================
-
-  const registryConfig: RegistryConfig = {
-    sourceDirs: [
-      {
-        path: resolve(appRoot, '../../packages/blocks/src/blocks'),
-        type: 'registry:block',
-        target: 'blocks',
-      },
-      {
-        path: resolve(appRoot, './src/layouts'),
-        type: 'registry:layout',
-        target: 'layouts',
-      },
-      {
-        path: resolve(appRoot, './src/partials'),
-        type: 'registry:partial',
-        target: 'partials',
-      },
-      {
-        path: resolve(appRoot, './src/routes'),
-        type: 'registry:route',
-        target: 'routes',
-      },
-    ],
-    outputPath: resolve(appRoot, './dist/registry.json'),
-    registryName: 'ui8kit',
-    version: '0.1.0',
-  };
-
-  console.log('  Registry Generation');
-  console.log('  ─────────────────────────────────');
-
-  const registry = await generateRegistry(registryConfig);
-
-  console.log(`  Items:   ${registry.items.length}`);
-  for (const item of registry.items) {
-    console.log(`    ${item.type.replace('registry:', '')}  ${item.name}`);
-  }
-  console.log(`  Output:  ${registryConfig.outputPath.replace(appRoot, '.')}`);
   console.log('');
 
   process.exit(result.errors.length > 0 ? 1 : 0);

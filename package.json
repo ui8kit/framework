@@ -23,7 +23,8 @@
     "generate": "bunx turbo run generate --filter=./apps/docs --filter=./apps/web",
     "generate:docs": "bunx turbo run generate --filter=./apps/docs",
     "generate:web": "bunx turbo run generate --filter=./apps/web",
-    "generate:engine": "bunx turbo run generate --filter=./apps/engine"
+    "generate:engine": "bunx turbo run generate --filter=./apps/engine",
+    "copy-templates-to-dev": "bun run scripts/copy-templates-to-dev.ts"
 
   },
   "packageManager": "bun@1.3.3",

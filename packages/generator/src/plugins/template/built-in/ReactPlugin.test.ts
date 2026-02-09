@@ -493,7 +493,8 @@ describe('ReactPlugin', () => {
 
       expect(output.filename).toBe('TestComponent.tsx');
       expect(output.content).toContain('<div className="container">');
-      expect(output.content).toContain('<h1>Hello</h1>');
+      expect(output.content).toContain('<h1>');
+      expect(output.content).toContain('Hello');
     });
 
     it('transforms tree with loop annotation', async () => {
@@ -574,6 +575,76 @@ describe('ReactPlugin', () => {
       const output = await plugin.transform(tree);
 
       expect(output.dependencies).toContain('partials/header');
+    });
+
+    it('emits full file with imports and export function when meta.imports is set', async () => {
+      const tree: GenRoot = root(
+        [element('div', { className: ['container'] }, [element('h1', {}, [text('Hello')])])],
+        {
+          sourceFile: 'page.tsx',
+          componentName: 'HomePage',
+          exports: ['HomePage'],
+          dependencies: [],
+          imports: [
+            {
+              source: 'react',
+              defaultImport: 'React',
+              namedImports: [],
+              isTypeOnly: false,
+            },
+            {
+              source: '@ui8kit/core',
+              defaultImport: undefined,
+              namedImports: ['Block', 'Text'],
+              isTypeOnly: false,
+            },
+          ],
+        },
+      );
+
+      const output = await plugin.transform(tree);
+
+      expect(output.content).toContain("import React from 'react';");
+      expect(output.content).toContain("import { Block, Text } from '@ui8kit/core';");
+      expect(output.content).toContain('export function HomePage() {');
+      expect(output.content).toContain('  return (');
+      expect(output.content).toContain('<div className="container">');
+      expect(output.content).toContain('<h1>');
+      expect(output.content).toContain('Hello');
+      expect(output.content).toContain('  );');
+      expect(output.content).toContain('}\n');
+    });
+
+    it('skips type-only imports in full-file emission', async () => {
+      const tree: GenRoot = root(
+        [element('div', {}, [text('x')])],
+        {
+          sourceFile: 'comp.tsx',
+          componentName: 'Comp',
+          exports: ['Comp'],
+          dependencies: [],
+          imports: [
+            {
+              source: './types',
+              defaultImport: undefined,
+              namedImports: ['Props'],
+              isTypeOnly: true,
+            },
+            {
+              source: 'react',
+              defaultImport: undefined,
+              namedImports: ['useState'],
+              isTypeOnly: false,
+            },
+          ],
+        },
+      );
+
+      const output = await plugin.transform(tree);
+
+      expect(output.content).not.toContain("from './types'");
+      expect(output.content).toContain("import { useState } from 'react';");
+      expect(output.content).toContain('export function Comp() {');
     });
   });
 

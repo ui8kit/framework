@@ -185,9 +185,11 @@ export abstract class BasePlugin implements ITemplatePlugin {
         content = this.renderVariable(annotations.variable);
       }
 
-      // Include replacement
+      // Include replacement (pass transformed children when present for React <Comp>{children}</Comp>)
       if (annotations.include) {
-        content = this.renderInclude(annotations.include);
+        const includeChildren =
+          element.children.length > 0 ? await this.transformChildren(element.children) : undefined;
+        content = this.renderInclude(annotations.include, includeChildren);
       }
 
       // Slot handling
@@ -246,7 +248,7 @@ export abstract class BasePlugin implements ITemplatePlugin {
   abstract renderElse(condition?: string): string;
   abstract renderVariable(variable: GenVariable): string;
   abstract renderSlot(slot: GenSlot, defaultContent: string): string;
-  abstract renderInclude(include: GenInclude): string;
+  abstract renderInclude(include: GenInclude, childrenContent?: string): string;
   abstract renderBlock(block: GenBlock, content: string): string;
   abstract renderExtends(parent: string): string;
   abstract renderComment(comment: string): string;

@@ -192,7 +192,7 @@ export class LiquidPlugin extends BasePlugin {
    * {% include 'partials/header.liquid' %}
    * {% include 'partials/card.liquid', title: cardTitle, image: cardImage %}
    */
-  renderInclude(include: GenInclude): string {
+  renderInclude(include: GenInclude, _childrenContent?: string): string {
     const { partial, props } = include;
 
     // Add extension if not present

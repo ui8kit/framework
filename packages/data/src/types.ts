@@ -1,4 +1,29 @@
-// Type definitions for fixtures
+// Type definitions for fixtures and context
+
+// -----------------------------------------------------------------------------
+// Context: site, menu, sidebar (unified for engine + apps)
+// -----------------------------------------------------------------------------
+
+export interface NavItem {
+  id: string;
+  title: string;
+  url: string;
+}
+
+export interface SidebarLink {
+  label: string;
+  href: string;
+}
+
+export interface DashboardSidebarLink extends SidebarLink {
+  active?: boolean;
+}
+
+export interface SiteInfo {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+}
 
 export interface HeroFixture {
   title?: string;
@@ -72,4 +97,21 @@ export interface DashboardFixture {
   description?: string;
   ctaText?: string;
   ctaUrl?: string;
+}
+
+// -----------------------------------------------------------------------------
+// Unified context shape (for copy-paste apps: install @ui8kit/data, use context)
+// -----------------------------------------------------------------------------
+
+export interface AppContext {
+  site: SiteInfo;
+  navItems: NavItem[];
+  sidebarLinks: SidebarLink[];
+  dashboardSidebarLinks: DashboardSidebarLink[];
+  hero: HeroFixture;
+  features: FeaturesFixture;
+  pricing: PricingFixture;
+  testimonials: TestimonialsFixture;
+  cta: CTAFixture;
+  dashboard: DashboardFixture;
 }

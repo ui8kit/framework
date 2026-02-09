@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { basename, extname } from 'node:path';
 import { parseJsxFile } from './jsx-parser';
 import { buildHast } from './hast-builder';
-import type { TransformOptions, TransformResult } from './types';
+import type { TransformOptions, TransformResult, AnalyzedImport } from './types';
 import type { GenRoot } from '../hast';
 import { collectVariables, collectDependencies } from '../hast';
 
@@ -64,7 +64,6 @@ export function transformJsx(
     // Add imports as dependencies
     for (const imp of imports) {
       if (!imp.isTypeOnly && imp.source.startsWith('.')) {
-        // Local import
         for (const name of imp.namedImports) {
           if (/^[A-Z]/.test(name)) {
             dependencies.push(name);
@@ -75,6 +74,19 @@ export function transformJsx(
         }
       }
     }
+
+    // Attach imports to tree.meta for React plugin (full-file emission)
+    if (imports.length > 0 && tree.meta) {
+      tree.meta.imports = imports.map(
+        (imp): import('../hast').GenSourceImport => ({
+          source: imp.source,
+          defaultImport: imp.defaultImport,
+          namedImports: imp.namedImports,
+          namespaceImport: imp.namespaceImport,
+          isTypeOnly: imp.isTypeOnly,
+        })
+      );
+    }
     
     return {
       tree,
@@ -82,6 +94,7 @@ export function transformJsx(
       dependencies: [...new Set(dependencies)],
       warnings,
       errors,
+      imports,
     };
   } catch (error) {
     errors.push(error instanceof Error ? error.message : String(error));
@@ -92,6 +105,7 @@ export function transformJsx(
       dependencies: [],
       warnings,
       errors,
+      imports: [],
     };
   }
 }

@@ -133,10 +133,12 @@ export interface GenSlot {
  * Twig: {% include 'partials/header.twig' with {siteName: siteName} %}
  */
 export interface GenInclude {
-  /** Partial/component path: "partials/header", "components/Button" */
+  /** Partial/component path: "partials/header", "components/cta-block" */
   partial: string;
   /** Props to pass to the partial */
   props?: Record<string, string>;
+  /** Original component name (preserves casing: "CTABlock", "DashSidebar") */
+  originalName?: string;
 }
 
 /**
@@ -240,6 +242,18 @@ export type GenChild = GenElement | GenText | GenComment;
 // =============================================================================
 
 /**
+ * Source import for emission (e.g. React full-file output).
+ * Used by React plugin only; other engines ignore.
+ */
+export interface GenSourceImport {
+  source: string;
+  defaultImport?: string;
+  namedImports: string[];
+  namespaceImport?: string;
+  isTypeOnly: boolean;
+}
+
+/**
  * Component metadata extracted from source
  */
 export interface GenComponentMeta {
@@ -255,6 +269,8 @@ export interface GenComponentMeta {
   componentType?: 'layout' | 'partial' | 'page' | 'block' | 'component';
   /** Props interface/type if extractable */
   props?: GenPropDefinition[];
+  /** Imports from source (for React full-file emission) */
+  imports?: GenSourceImport[];
 }
 
 /**

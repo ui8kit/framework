@@ -117,7 +117,7 @@ class HastBuilder {
         }
       },
       
-      // Variable declaration: const MyComponent = () => {}
+      // Variable declaration: const MyComponent = () => {} or ({ a, b }) => {}
       VariableDeclarator: (path) => {
         if (path.node.id.type === 'Identifier') {
           const name = path.node.id.name;
@@ -125,10 +125,11 @@ class HastBuilder {
             const init = path.node.init;
             if (init && (init.type === 'ArrowFunctionExpression' || init.type === 'FunctionExpression')) {
               foundComponent = init;
+              const params = init.params;
               this.componentInfo = {
                 name,
                 type: this.detectComponentType(name),
-                props: [],
+                props: this.extractPropsFromParams(params as t.FunctionDeclaration['params']),
                 exportType: 'named',
                 isFunctionComponent: true,
                 usesForwardRef: false,
@@ -149,10 +150,11 @@ class HastBuilder {
           path.stop();
         } else if (decl.type === 'ArrowFunctionExpression' || decl.type === 'FunctionExpression') {
           foundComponent = decl;
+          const params = decl.params;
           this.componentInfo = {
             name: this.options.componentName || 'Component',
             type: 'component',
-            props: [],
+            props: this.extractPropsFromParams(params as t.FunctionDeclaration['params']),
             exportType: 'default',
             isFunctionComponent: true,
             usesForwardRef: false,
@@ -232,34 +234,100 @@ class HastBuilder {
   }
   
   /**
-   * Extract props from function parameters
+   * Extract props from function parameters.
+   * Resolves TypeScript types when a type annotation references an interface/type in the same file.
    */
   private extractPropsFromParams(params: t.FunctionDeclaration['params']): AnalyzedComponent['props'] {
     const props: AnalyzedComponent['props'] = [];
-    
+
     if (params.length === 0) return props;
-    
+
     const firstParam = params[0];
-    
-    if (firstParam.type === 'ObjectPattern') {
-      for (const prop of firstParam.properties) {
-        if (prop.type === 'ObjectProperty' && prop.key.type === 'Identifier') {
-          const name = prop.key.name;
-          const hasDefault = prop.value.type === 'AssignmentPattern';
-          
-          props.push({
-            name,
-            type: 'unknown',
-            required: !hasDefault,
-            defaultValue: hasDefault && prop.value.type === 'AssignmentPattern'
-              ? getNodeSource(this.source, prop.value.right)
-              : undefined,
-          });
-        }
+
+    if (firstParam.type !== 'ObjectPattern') return props;
+
+    // Try to resolve the TS type annotation to an interface/type in the file
+    const typeMap = this.resolvePropsTypeAnnotation(firstParam);
+
+    for (const prop of firstParam.properties) {
+      if (prop.type !== 'ObjectProperty') continue;
+      let name: string | undefined;
+      if (prop.key.type === 'Identifier') {
+        name = prop.key.name;
+      } else if (prop.key.type === 'StringLiteral' && prop.value.type === 'Identifier') {
+        name = prop.value.name;
+      } else if (prop.key.type === 'StringLiteral' && prop.value.type === 'AssignmentPattern' && prop.value.left.type === 'Identifier') {
+        name = prop.value.left.name;
       }
+      if (!name) continue;
+      const hasDefault = prop.value.type === 'AssignmentPattern';
+
+      // Look up TS type from interface (use original key name for lookup)
+      const keyName = prop.key.type === 'Identifier' ? prop.key.name
+        : prop.key.type === 'StringLiteral' ? prop.key.value
+        : name;
+      const tsType = typeMap.get(keyName) ?? 'unknown';
+
+      props.push({
+        name,
+        type: tsType,
+        required: !hasDefault && !typeMap.get(`__optional_${keyName}`),
+        defaultValue: hasDefault && prop.value.type === 'AssignmentPattern'
+          ? getNodeSource(this.source, prop.value.right)
+          : undefined,
+      });
     }
-    
+
     return props;
+  }
+
+  /**
+   * Resolve the TypeAnnotation on an ObjectPattern parameter to a Map<propName, tsType>.
+   * Walks the AST to find the referenced interface/type alias.
+   */
+  private resolvePropsTypeAnnotation(param: t.ObjectPattern): Map<string, string> {
+    const map = new Map<string, string>();
+    const ann = (param as any).typeAnnotation;
+    if (!ann || ann.type !== 'TSTypeAnnotation') return map;
+
+    const typeRef = ann.typeAnnotation;
+    if (!typeRef || typeRef.type !== 'TSTypeReference') return map;
+    if (typeRef.typeName.type !== 'Identifier') return map;
+
+    const typeName = typeRef.typeName.name;
+
+    // Walk AST to find the interface/type declaration with this name
+    traverse(this.ast, {
+      TSInterfaceDeclaration: (path) => {
+        if (path.node.id.name !== typeName) return;
+        for (const member of path.node.body.body) {
+          if (member.type !== 'TSPropertySignature') continue;
+          const key = member.key.type === 'Identifier' ? member.key.name
+            : member.key.type === 'StringLiteral' ? member.key.value
+            : null;
+          if (!key) continue;
+          map.set(key, member.typeAnnotation ? getNodeSource(this.source, member.typeAnnotation.typeAnnotation) : 'unknown');
+          if (member.optional) map.set(`__optional_${key}`, 'true');
+        }
+      },
+      TSTypeAliasDeclaration: (path) => {
+        if (path.node.id.name !== typeName) return;
+        const node = path.node.typeAnnotation;
+        if (node.type !== 'TSTypeLiteral') return;
+        for (const member of node.members) {
+          if (member.type !== 'TSPropertySignature') continue;
+          const key = member.key.type === 'Identifier' ? member.key.name
+            : member.key.type === 'StringLiteral' ? member.key.value
+            : null;
+          if (!key) continue;
+          map.set(key, member.typeAnnotation ? getNodeSource(this.source, member.typeAnnotation.typeAnnotation) : 'unknown');
+          if (member.optional) map.set(`__optional_${key}`, 'true');
+        }
+      },
+      noScope: true,
+    });
+
+    return map;
   }
   
   // ===========================================================================
@@ -376,17 +444,18 @@ class HastBuilder {
         return element(tagName, properties, children);
       }
 
-      // Add include annotation
+      // Add include annotation; keep children so React can emit <Component>{children}</Component>
       const annotations: GenAnnotations = {
         include: {
           partial: this.componentToPartialPath(tagName),
           props: this.extractComponentProps(node.openingElement.attributes),
+          originalName: tagName,
         },
       };
       
       this.dependencies.add(tagName);
       
-      return element('div', { ...properties, _gen: annotations }, []);
+      return element('div', { ...properties, _gen: annotations }, children);
     }
     
     return element(tagName, properties, children);
@@ -489,11 +558,13 @@ class HastBuilder {
    * Convert component name to partial path
    */
   private componentToPartialPath(componentName: string): string {
-    // Convert PascalCase to kebab-case
+    // Convert PascalCase/acronyms to kebab-case:
+    //   CTABlock → cta-block, SidebarContent → sidebar-content, DashSidebar → dash-sidebar
     const kebab = componentName
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')  // split acronym from next word (CTABlock → CTA-Block)
+      .replace(/([a-z])([A-Z])/g, '$1-$2')          // split camel (sideBar → side-Bar)
       .toLowerCase();
-    
+
     return `partials/${kebab}`;
   }
   
@@ -577,7 +648,12 @@ class HastBuilder {
     const props: Record<string, string> = {};
     
     for (const attr of attributes) {
-      if (attr.type === 'JSXSpreadAttribute') continue;
+      if (attr.type === 'JSXSpreadAttribute') {
+        // Preserve spread as a special key so React plugin can emit {...expr}
+        const expr = getNodeSource(this.source, attr.argument);
+        props[`__spread_${Object.keys(props).length}`] = expr;
+        continue;
+      }
       if (attr.name.type !== 'JSXIdentifier') continue;
       
       const name = attr.name.name;
@@ -629,15 +705,19 @@ class HastBuilder {
    * Transform JSX text
    */
   private transformJsxText(node: t.JSXText): GenText | null {
-    const value = node.value.trim();
-    
-    if (!value) {
+    // Normalize internal whitespace but preserve meaningful content.
+    // JSX text like "  at  " between expressions must keep " at ".
+    const normalized = node.value.replace(/\s+/g, ' ');
+
+    // Purely empty or newline-only JSX text between tags — drop
+    if (normalized === ' ' && /^\s*\n/.test(node.value)) {
       return null;
     }
-    
-    // Normalize whitespace
-    const normalized = value.replace(/\s+/g, ' ');
-    
+
+    if (!normalized || normalized === '') {
+      return null;
+    }
+
     return text(normalized);
   }
   

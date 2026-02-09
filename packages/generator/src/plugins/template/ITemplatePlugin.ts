@@ -253,12 +253,13 @@ export interface ITemplatePlugin {
    * Render include/partial
    *
    * @param include - Include annotation
+   * @param childrenContent - Optional transformed children (React: <Component>{childrenContent}</Component>)
    * @returns Template syntax for include
    *
    * @example Liquid: {% include 'partial.liquid', prop: value %}
    * @example Twig: {% include 'partial.twig' with {prop: value} %}
    */
-  renderInclude(include: GenInclude): string;
+  renderInclude(include: GenInclude, childrenContent?: string): string;
 
   /**
    * Render block (for inheritance)

@@ -186,7 +186,7 @@ export class LattePlugin extends BasePlugin {
    * {include 'partials/header.latte'}
    * {include 'partials/card.latte', title: $cardTitle}
    */
-  renderInclude(include: GenInclude): string {
+  renderInclude(include: GenInclude, _childrenContent?: string): string {
     const { partial, props } = include;
 
     // Add extension if not present

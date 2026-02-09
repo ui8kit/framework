@@ -3,10 +3,13 @@
  *
  * Orchestrates the transformation of React components to template files
  * using the transformer and plugin system.
+ *
+ * Modes:
+ * - sourceDirTargets: scan dirs, transform each file, write to outputDir/target/Name.ext
+ * - registryPath: read registry (e.g. dist/react/registry.json); for each item with
+ *   sourcePath, transform and write to outputDir/item.files[0].path (explicit contract).
  */
 
-import { readdir, stat, mkdir, writeFile } from 'node:fs/promises';
-import { join, relative, extname, basename } from 'node:path';
 import type { IService, IServiceContext } from '../../core/interfaces';
 import { transformJsxFile } from '../../transformer';
 import type { TransformResult } from '../../transformer';
@@ -19,17 +22,36 @@ import {
 import type { TemplateOutput } from '../../hast';
 import type { IFileSystem } from '../../core/filesystem';
 import { createNodeFileSystem } from '../../core/filesystem';
+import type { Registry, RegistryItem } from '../../scripts';
 
 // =============================================================================
 // Service Types
 // =============================================================================
 
 /**
+ * Source directory with target subfolder for structural output (e.g. blocks/, layouts/).
+ * Same concept as registry sourceDirs: path → target.
+ */
+export interface SourceDirTarget {
+  /** Absolute path to source directory */
+  path: string;
+  /** Subfolder name under outputDir (e.g. "blocks", "layouts", "partials", "routes") */
+  target: string;
+}
+
+/**
  * Input for TemplateService.execute()
  */
 export interface TemplateServiceInput {
-  /** Source directories to scan for components */
-  sourceDirs: string[];
+  /** Source directories to scan for components (flat output under outputDir) */
+  sourceDirs?: string[];
+  
+  /**
+   * Source directories with target subfolders for structural output.
+   * When set, files are written to outputDir/{target}/{ComponentName}.{ext}.
+   * Same source of truth as registry (blocks, layouts, partials, routes).
+   */
+  sourceDirTargets?: SourceDirTarget[];
   
   /** Output directory for generated templates */
   outputDir: string;
@@ -55,6 +77,23 @@ export interface TemplateServiceInput {
    * with their children intact in the generated output.
    */
   passthroughComponents?: string[];
+
+  /**
+   * Module specifiers to exclude from generated template imports.
+   * Imports from these sources are stripped from tree.meta.imports before
+   * the plugin runs (e.g. React plugin will not emit them).
+   * Use for DSL packages like @ui8kit/template whose components are
+   * compiled away and must not appear in the output.
+   */
+  excludeDependencies?: string[];
+
+  /**
+   * Path to registry.json (e.g. dist/react/registry.json).
+   * When set, the service reads the registry and generates templates only for
+   * items that have sourcePath; each output is written to outputDir + item.files[0].path.
+   * This is the "registry → dist" pipeline: one source of truth, explicit unpack paths.
+   */
+  registryPath?: string;
 }
 
 /**
@@ -126,6 +165,7 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
     const startTime = Date.now();
     const {
       sourceDirs,
+      sourceDirTargets,
       outputDir,
       engine,
       include = ['**/*.tsx'],
@@ -133,14 +173,19 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
       pluginConfig = {},
       verbose = false,
       passthroughComponents,
+      excludeDependencies,
+      registryPath,
     } = input;
-    
+
+    if (!registryPath && !sourceDirTargets?.length && !sourceDirs?.length) {
+      throw new Error('TemplateService: provide registryPath or sourceDirs/sourceDirTargets');
+    }
+
     const files: GeneratedFile[] = [];
     const warnings: string[] = [];
     const errors: string[] = [];
     let componentsProcessed = 0;
-    
-    // Initialize plugin
+
     const config: TemplatePluginConfig = {
       fileExtension: this.getFileExtension(engine),
       outputDir,
@@ -155,11 +200,57 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
       outputDir,
     });
     
-    // Ensure output directory exists
     await this.fs.mkdir(outputDir, { recursive: true });
-    
-    // Process each source directory
-    for (const sourceDir of sourceDirs) {
+
+    if (registryPath) {
+      // Registry → dist pipeline: read registry, for each item with sourcePath transform and write to outputDir/item.files[0].path
+      const registry: Registry = JSON.parse(await this.fs.readFile(registryPath, 'utf-8'));
+      if (!registry.items || !Array.isArray(registry.items)) {
+        throw new Error(`TemplateService: invalid registry at ${registryPath} (missing items)`);
+      }
+      for (const item of registry.items as RegistryItem[]) {
+        const sourcePath = item.sourcePath;
+        const outRelPath = item.files?.[0]?.path;
+        if (!sourcePath || !outRelPath) continue;
+        try {
+          if (verbose) this.context.logger.info(`Processing: ${item.name} → ${outRelPath}`);
+          const transformResult = await transformJsxFile(sourcePath, { passthroughComponents });
+          if (transformResult.errors.length > 0) {
+            errors.push(...transformResult.errors.map((e) => `${sourcePath}: ${e}`));
+            continue;
+          }
+          warnings.push(...transformResult.warnings.map((w) => `${sourcePath}: ${w}`));
+          if (transformResult.tree.children.length === 0) {
+            if (verbose) this.context.logger.debug(`Skipping empty: ${item.name}`);
+            continue;
+          }
+          if (excludeDependencies?.length && transformResult.tree.meta?.imports?.length) {
+            transformResult.tree.meta.imports = transformResult.tree.meta.imports.filter(
+              (imp) => !excludeDependencies.includes(imp.source)
+            );
+          }
+          const templateOutput = await this.plugin.transform(transformResult.tree);
+          const outputPath = this.fs.join(outputDir, outRelPath);
+          await this.writeTemplateFile(outputPath, templateOutput.content);
+          files.push({
+            source: sourcePath,
+            output: outputPath,
+            componentName: item.name,
+            variables: templateOutput.variables,
+            dependencies: templateOutput.dependencies,
+          });
+          componentsProcessed++;
+          if (verbose) this.context.logger.info(`Generated: ${outputPath}`);
+        } catch (error) {
+          errors.push(`${sourcePath}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+    } else {
+      const dirs: { sourceDir: string; target?: string }[] = sourceDirTargets?.length
+        ? sourceDirTargets.map(({ path, target }) => ({ sourceDir: path, target }))
+        : (sourceDirs!.map((sourceDir) => ({ sourceDir, target: undefined })));
+
+      for (const { sourceDir, target } of dirs) {
       try {
         if (verbose) {
           this.context.logger.info(`Scanning: ${sourceDir}`);
@@ -177,7 +268,6 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
               this.context.logger.info(`Processing: ${filePath}`);
             }
             
-            // Transform JSX to HAST
             const transformResult = await transformJsxFile(filePath, {
               passthroughComponents,
             });
@@ -189,25 +279,32 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
             
             warnings.push(...transformResult.warnings.map(w => `${filePath}: ${w}`));
             
-            // Skip if no valid tree
             if (transformResult.tree.children.length === 0) {
               if (verbose) {
                 this.context.logger.debug(`Skipping empty component: ${filePath}`);
               }
               continue;
             }
-            
-            // Transform HAST to template
+
+            // Strip imports from excluded dependencies (e.g. @ui8kit/template)
+            // so the plugin does not emit them in generated templates.
+            if (excludeDependencies?.length && transformResult.tree.meta?.imports?.length) {
+              transformResult.tree.meta.imports = transformResult.tree.meta.imports.filter(
+                (imp) => !excludeDependencies.includes(imp.source)
+              );
+            }
+
             const templateOutput = await this.plugin.transform(transformResult.tree);
-            
-            // Write output file
-            const outputPath = this.getOutputPath(filePath, sourceDir, outputDir, config.fileExtension);
+            const componentName = transformResult.tree.meta?.componentName || 'Unknown';
+            const outputPath = target
+              ? this.fs.join(outputDir, target, componentName + config.fileExtension)
+              : this.getOutputPath(filePath, sourceDir, outputDir, config.fileExtension);
             await this.writeTemplateFile(outputPath, templateOutput.content);
             
             files.push({
               source: filePath,
               output: outputPath,
-              componentName: transformResult.tree.meta?.componentName || 'Unknown',
+              componentName,
               variables: templateOutput.variables,
               dependencies: templateOutput.dependencies,
             });
@@ -225,7 +322,8 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
         errors.push(`${sourceDir}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
-    
+    }
+
     // Emit event (if eventBus is available)
     if (this.context.eventBus) {
       this.context.eventBus.emit('template:complete', {

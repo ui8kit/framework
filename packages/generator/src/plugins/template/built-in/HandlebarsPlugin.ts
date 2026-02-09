@@ -204,7 +204,7 @@ export class HandlebarsPlugin extends BasePlugin {
    * {{> header}}
    * {{> card title=cardTitle image=cardImage}}
    */
-  renderInclude(include: GenInclude): string {
+  renderInclude(include: GenInclude, _childrenContent?: string): string {
     const { partial, props } = include;
 
     // Remove extension if present

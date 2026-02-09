@@ -47,6 +47,7 @@ export type {
   GenProperties,
   GenElementProperties,
   // Metadata types
+  GenSourceImport,
   GenComponentMeta,
   GenPropDefinition,
   // Traversal types

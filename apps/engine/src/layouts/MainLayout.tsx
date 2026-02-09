@@ -33,9 +33,6 @@ export function MainLayout({
   showHeader = true,
   showFooter = true,
 }: MainLayoutProps) {
-  const isSidebarLeft = mode === 'sidebar-left';
-  const hasSidebar = (mode === 'with-sidebar' || mode === 'sidebar-left') && sidebar;
-
   return (
     <Block data-class="main-layout">
       {/* Header */}
@@ -51,7 +48,7 @@ export function MainLayout({
       {/* Main Content */}
       <Block component="main" flex="1" py="8" data-class="main-layout-content">
         <Container data-class="main-layout-container">
-          {hasSidebar ? (
+          {(mode === 'with-sidebar' || mode === 'sidebar-left') && sidebar ? (
             <Grid 
               grid="cols-3" 
               gap="8"
@@ -61,7 +58,7 @@ export function MainLayout({
               <Stack 
                 col="span-2"
                 gap="6"
-                order={isSidebarLeft ? "2" : "1"}
+                order={mode === 'sidebar-left' ? "2" : "1"}
                 data-class="main-layout-main"
               >
                 {children}
@@ -70,10 +67,10 @@ export function MainLayout({
               {/* Sidebar Column */}
               <Stack
                 col="span-1"
-                order={isSidebarLeft ? "1" : "2"}
+                order={mode === 'sidebar-left' ? "1" : "2"}
                 data-class="main-layout-sidebar-wrapper"
               >
-                <Sidebar position={isSidebarLeft ? 'left' : 'right'}>
+                <Sidebar position={mode === 'sidebar-left' ? 'left' : 'right'}>
                   {sidebar}
                 </Sidebar>
               </Stack>

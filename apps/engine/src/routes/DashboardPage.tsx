@@ -1,34 +1,20 @@
-import { Link } from 'react-router-dom';
 import { DashLayout } from '@/layouts';
+import { DashSidebar } from '@/blocks';
 import { DashboardBlock } from '@ui8kit/blocks';
-import { fixtures } from '@ui8kit/data';
-import { Stack, Text, Button } from '@ui8kit/core';
-
-// Sidebar navigation for dashboard
-const DashSidebar = () => (
-  <Stack gap="2" p="4" data-class="dash-sidebar-nav">
-    <Text fontSize="xs" fontWeight="semibold" textColor="muted-foreground" data-class="dash-sidebar-label">
-      Navigation
-    </Text>
-    <Link to="/" className="text-sm px-2 py-1 rounded hover:bg-accent">
-      Website
-    </Link>
-    <Link to="/dashboard" className="text-sm px-2 py-1 rounded bg-accent font-medium">
-      Dashboard
-    </Link>
-  </Stack>
-);
+import { context } from '@ui8kit/data';
+import { Stack } from '@ui8kit/core';
 
 /**
- * Dashboard Page — DashLayout showcase
- *
- * Demonstrates: dashboard layout with fixed sidebar, admin panels
+ * Dashboard Page — DashLayout showcase.
+ * Props-only: data from context (static prototype).
  */
 export function DashboardPage() {
   return (
-    <DashLayout sidebar={<DashSidebar />}>
+    <DashLayout
+      sidebar={<DashSidebar label="Navigation" links={context.dashboardSidebarLinks} />}
+    >
       <Stack gap="6" data-class="dashboard-content">
-        <DashboardBlock {...fixtures.dashboard} />
+        <DashboardBlock {...context.dashboard} />
       </Stack>
     </DashLayout>
   );

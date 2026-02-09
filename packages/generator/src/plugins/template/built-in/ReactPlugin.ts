@@ -30,7 +30,9 @@ import type {
   GenInclude,
   GenBlock,
   GenElement,
+  GenSourceImport,
 } from '../../../hast';
+import { collectVariables, collectDependencies, visit, isElement, getAnnotations } from '../../../hast';
 
 // =============================================================================
 // Branch Markers
@@ -83,7 +85,182 @@ export class ReactPlugin extends BasePlugin {
 
   protected override initializeFilterMappings(): void {
     // React doesn't use template filters.
-    // Transformations use JS expressions: value.toUpperCase(), etc.
+  }
+
+  // ===========================================================================
+  // Full-File Transformation (imports + export function)
+  // ===========================================================================
+
+  /**
+   * Override: when tree.meta.imports is present, emit full .tsx file
+   * (import block + export function) for use in apps; otherwise JSX body only.
+   */
+  async transform(tree: import('../../../hast').GenRoot): Promise<import('../../../hast').TemplateOutput> {
+    this.warnings = [];
+    this.currentDepth = 0;
+
+    const content = await this.transformChildren(tree.children);
+    const formattedJsx = this.formatOutput(content);
+    const componentName = tree.meta?.componentName ?? 'Template';
+    const imports = tree.meta?.imports;
+
+    if (imports && imports.length > 0) {
+      let importBlock = this.emitImportBlock(imports);
+      const bodyIndented = formattedJsx
+        .split('\n')
+        .map((line) => (line.trim() ? '    ' + line : ''))
+        .join('\n')
+        .trimEnd();
+      const propNames = this.getEmittedPropNames(tree, imports);
+      const needsReactImport = formattedJsx.includes('React.') && !imports.some((i) => i.source === 'react');
+      if (needsReactImport) {
+        importBlock = `import React from 'react';\n` + importBlock;
+      }
+
+      // Build typed signature when prop types are available from source
+      const propsInterface = this.buildPropsInterface(componentName, tree.meta?.props ?? [], propNames);
+      const sig = propNames.length > 0
+        ? `(props: ${componentName}Props) {\n  const { ${propNames.join(', ')} } = props;\n`
+        : '() {\n';
+
+      const fullContent =
+        importBlock +
+        '\n\n' +
+        (propsInterface ? propsInterface + '\n\n' : '') +
+        `export function ${componentName}${sig}` +
+        '  return (\n' +
+        (bodyIndented ? bodyIndented + '\n' : '') +
+        '  );\n' +
+        '}\n';
+      return {
+        filename: `${componentName}${this.fileExtension}`,
+        content: fullContent,
+        variables: collectVariables(tree),
+        dependencies: collectDependencies(tree),
+        warnings: this.warnings.length > 0 ? this.warnings : undefined,
+      };
+    }
+
+    return {
+      filename: this.getOutputFilename(tree),
+      content: formattedJsx,
+      variables: collectVariables(tree),
+      dependencies: collectDependencies(tree),
+      warnings: this.warnings.length > 0 ? this.warnings : undefined,
+    };
+  }
+
+  /** Valid JS identifier for destructuring (avoids emitting JSX or expressions as prop names). */
+  private static readonly VALID_PROP_NAME = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+
+  /**
+   * Prop names to emit in the function signature (destructured from props).
+   * Uses tree.meta.props when present; otherwise infers from collectVariables minus loop vars and imports.
+   * Only emits valid JavaScript identifiers so "copy-paste" output never has invalid destructuring.
+   */
+  private getEmittedPropNames(tree: import('../../../hast').GenRoot, imports: GenSourceImport[]): string[] {
+    const fromMeta = tree.meta?.props?.map((p) => p.name).filter((n) => ReactPlugin.VALID_PROP_NAME.test(n));
+    if (fromMeta && fromMeta.length > 0) return fromMeta;
+    const imported = new Set<string>();
+    for (const imp of imports) {
+      if (imp.defaultImport) imported.add(imp.defaultImport);
+      for (const n of imp.namedImports) imported.add(n);
+    }
+    const loopItemNames = new Set<string>();
+    visit(tree, (node) => {
+      if (!isElement(node)) return;
+      const ann = getAnnotations(node);
+      if (ann?.loop) loopItemNames.add(ann.loop.item);
+    });
+    const vars = collectVariables(tree);
+    const loopVars = new Set(['collection', 'item']);
+    return vars.filter(
+      (v) =>
+        ReactPlugin.VALID_PROP_NAME.test(v) &&
+        !loopVars.has(v) &&
+        !loopItemNames.has(v) &&
+        !imported.has(v)
+    );
+  }
+
+  /** TS primitives and well-known types that don't need imports. */
+  private static readonly SAFE_TYPES = new Set([
+    'string', 'number', 'boolean', 'any', 'unknown', 'void', 'never', 'null', 'undefined',
+    'ReactNode', 'ReactElement', 'JSX.Element', 'React.ReactNode', 'React.ReactElement',
+    'Record', 'Array', 'Promise', 'Partial', 'Required', 'Readonly', 'Pick', 'Omit',
+  ]);
+
+  /**
+   * Build a TypeScript props interface from extracted prop definitions.
+   * Replaces undefined/external type references with `any` so the output compiles standalone.
+   */
+  private buildPropsInterface(
+    componentName: string,
+    propDefs: import('../../../hast').GenPropDefinition[],
+    emittedNames: string[],
+  ): string {
+    if (emittedNames.length === 0) return '';
+
+    // Build a lookup from full prop definitions (may include type info)
+    const defMap = new Map(propDefs.map((p) => [p.name, p]));
+
+    const lines: string[] = [];
+    lines.push(`interface ${componentName}Props {`);
+    for (const name of emittedNames) {
+      const def = defMap.get(name);
+      let tsType = def && def.type !== 'unknown' ? def.type : 'any';
+      tsType = this.sanitizePropType(tsType);
+      const optional = def ? !def.required : true;
+      lines.push(`  ${name}${optional ? '?' : ''}: ${tsType};`);
+    }
+    lines.push('}');
+    return lines.join('\n');
+  }
+
+  /**
+   * Ensure a TS type string is safe for standalone output.
+   * Replaces unknown type references (NavItem[], LayoutMode, etc.) with `any`.
+   * Keeps primitives, ReactNode, generic wrappers, and inline object/union types.
+   */
+  private sanitizePropType(tsType: string): string {
+    // Remove trailing [] to check the base type, then re-add
+    const isArray = tsType.endsWith('[]');
+    const base = isArray ? tsType.slice(0, -2) : tsType;
+
+    // Inline types (unions, objects, tuples) are kept as-is
+    if (/[|&{}<>()]/.test(base)) return tsType;
+
+    // Primitives and well-known types
+    if (ReactPlugin.SAFE_TYPES.has(base)) return tsType;
+
+    // String literal types like 'full' | 'sidebar-left'
+    if (/^['"]/.test(base.trim())) return tsType;
+
+    // Unknown external type reference → replace with any
+    return isArray ? 'any[]' : 'any';
+  }
+
+  /**
+   * Emit import statements from source (React-only; other engines ignore meta.imports).
+   * Skips type-only imports for runtime; emits one statement per source.
+   */
+  private emitImportBlock(imports: GenSourceImport[]): string {
+    const lines: string[] = [];
+    for (const imp of imports) {
+      if (imp.isTypeOnly) continue; // skip type-only for runtime emission
+      if (imp.namespaceImport) {
+        lines.push(`import * as ${imp.namespaceImport} from '${imp.source}';`);
+      } else if (imp.defaultImport && imp.namedImports.length === 0) {
+        lines.push(`import ${imp.defaultImport} from '${imp.source}';`);
+      } else if (imp.defaultImport && imp.namedImports.length > 0) {
+        lines.push(
+          `import ${imp.defaultImport}, { ${imp.namedImports.join(', ')} } from '${imp.source}';`
+        );
+      } else if (imp.namedImports.length > 0) {
+        lines.push(`import { ${imp.namedImports.join(', ')} } from '${imp.source}';`);
+      }
+    }
+    return lines.join('\n');
   }
 
   // ===========================================================================
@@ -109,10 +286,11 @@ export class ReactPlugin extends BasePlugin {
     const { item, collection, key, index: indexVar } = loop;
     const idx = indexVar ?? 'index';
 
-    // Key resolution: explicit key → auto id → fallback index
+    // Key resolution: explicit key → auto id → fallback index.
+    // If key is already a full expression (e.g. "link.href"), do not prepend item again.
     let keyExpr: string;
     if (key) {
-      keyExpr = `${item}.${key}`;
+      keyExpr = key.startsWith(`${item}.`) || key === item ? key : `${item}.${key}`;
     } else {
       keyExpr = `${item}.id ?? ${idx}`;
     }
@@ -231,22 +409,35 @@ export class ReactPlugin extends BasePlugin {
    * <Header />
    * <Card title={cardTitle} image={cardImage} />
    */
-  renderInclude(include: GenInclude): string {
-    const { partial, props } = include;
+  renderInclude(include: GenInclude, childrenContent?: string): string {
+    const { partial, props, originalName } = include;
 
-    // Convert path to PascalCase component name
-    const componentName = this.toComponentName(partial);
+    // Use preserved original name when available; fall back to path-based conversion
+    const componentName = originalName || this.toComponentName(partial);
 
-    if (!props || Object.keys(props).length === 0) {
-      return `<${componentName} />`;
+    const hasChildren = childrenContent !== undefined && childrenContent.trim().length > 0;
+
+    // Build props string; __spread_* keys emit as {...expr}, regular keys as key={value}
+    const propsFragments: string[] = [];
+    if (props) {
+      for (const [key, value] of Object.entries(props)) {
+        if (key.startsWith('__spread_')) {
+          propsFragments.push(`{...${value}}`);
+        } else {
+          propsFragments.push(`${key}={${value}}`);
+        }
+      }
     }
+    const propsString = propsFragments.join(' ');
 
-    // Format props as JSX attributes
-    const propsString = Object.entries(props)
-      .map(([key, value]) => `${key}={${value}}`)
-      .join(' ');
-
-    return `<${componentName} ${propsString} />`;
+    if (hasChildren) {
+      const attrs = propsString ? ` ${propsString}` : '';
+      return `<${componentName}${attrs}>${childrenContent.trim()}</${componentName}>`;
+    }
+    if (propsString) {
+      return `<${componentName} ${propsString} />`;
+    }
+    return `<${componentName} />`;
   }
 
   /**

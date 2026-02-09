@@ -82,6 +82,9 @@ export interface TransformResult {
   
   /** Errors during transformation (non-fatal) */
   errors: string[];
+  
+  /** Import declarations from source (for React full-file emission) */
+  imports?: AnalyzedImport[];
 }
 
 // =============================================================================
