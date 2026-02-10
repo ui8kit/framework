@@ -8,6 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "generate": "bun run generator.config.ts",
+    "lint": "bun run typecheck && bun run ../../packages/lint/src/cli/validate-dsl.ts src",
+    "lint:dsl": "bun run ../../packages/lint/src/cli/validate-dsl.ts src",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"

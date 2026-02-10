@@ -17,7 +17,9 @@ export type LintErrorCode =
   | "DUPLICATE_PROP"           // Same prop specified multiple times
   | "EMPTY_PROP_VALUE"         // Prop with empty/null value
   | "INVALID_CLASS"            // Class not in whitelist (for className validation)
-  | "TYPO_DETECTED";           // Likely typo, closest match found
+  | "TYPO_DETECTED"            // Likely typo, closest match found
+  | "NON_DSL_LOOP"             // JS loops in JSX; prefer <Loop>
+  | "NON_DSL_CONDITIONAL";     // JS conditionals in JSX; prefer <If>
 
 /** Location in source code */
 export interface LintLocation {

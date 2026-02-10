@@ -1,5 +1,6 @@
 import { Fragment, ReactNode } from 'react';
 import { Block, Container, Grid, Stack } from '@ui8kit/core';
+import { If } from '@ui8kit/template';
 import { Header } from '../partials/Header';
 import { Footer } from '../partials/Footer';
 import { Sidebar } from '../partials/Sidebar';
@@ -34,47 +35,82 @@ export function MainLayout({
 }: MainLayoutProps) {
   return (
     <Fragment>
-      {(showHeader ?? true) ? (
+      <If test="layout.showHeader" value={showHeader ?? true}>
         <Header
           title={headerTitle ?? 'UI8Kit'}
           subtitle={headerSubtitle ?? 'Design System'}
           navItems={navItems ?? []}
           dataClass="main-layout-header"
         />
-      ) : null}
+      </If>
 
       {/* Main Content */}
       <Block component="main" flex="1" py="8" data-class="main-layout-content">
-        {((mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left') && sidebar ? (
-          <Container data-class="main-layout-container">
-            <Grid
-              grid="cols-3"
-              gap="8"
-              data-class="main-layout-grid"
-            >
-              {/* Content Column */}
-              <Stack
-                col="span-2"
-                gap="6"
-                order={(mode ?? 'with-sidebar') === 'sidebar-left' ? "2" : "1"}
-                data-class="main-layout-main"
+        <If
+          test="layout.withSidebarMode"
+          value={(mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left'}
+        >
+          <If test="layout.hasSidebarContent" value={!!sidebar}>
+            <Container data-class="main-layout-container">
+              <Grid
+                grid="cols-3"
+                gap="8"
+                data-class="main-layout-grid"
               >
-                {children}
-              </Stack>
+                <If test="layout.sidebarLeft" value={(mode ?? 'with-sidebar') === 'sidebar-left'}>
+                  <>
+                    <Stack
+                      col="span-2"
+                      gap="6"
+                      order="2"
+                      data-class="main-layout-main"
+                    >
+                      {children}
+                    </Stack>
 
-              {/* Sidebar Column */}
-              <Stack
-                col="span-1"
-                order={(mode ?? 'with-sidebar') === 'sidebar-left' ? "1" : "2"}
-                data-class="main-layout-sidebar-wrapper"
-              >
-                <Sidebar position={(mode ?? 'with-sidebar') === 'sidebar-left' ? 'left' : 'right'}>
-                  {sidebar}
-                </Sidebar>
-              </Stack>
-            </Grid>
-          </Container>
-        ) : (
+                    <Stack
+                      col="span-1"
+                      order="1"
+                      data-class="main-layout-sidebar-wrapper"
+                    >
+                      <Sidebar position="left">
+                        {sidebar}
+                      </Sidebar>
+                    </Stack>
+                  </>
+                </If>
+
+                <If test="layout.sidebarRight" value={(mode ?? 'with-sidebar') !== 'sidebar-left'}>
+                  <>
+                    <Stack
+                      col="span-2"
+                      gap="6"
+                      order="1"
+                      data-class="main-layout-main"
+                    >
+                      {children}
+                    </Stack>
+
+                    <Stack
+                      col="span-1"
+                      order="2"
+                      data-class="main-layout-sidebar-wrapper"
+                    >
+                      <Sidebar position="right">
+                        {sidebar}
+                      </Sidebar>
+                    </Stack>
+                  </>
+                </If>
+              </Grid>
+            </Container>
+          </If>
+        </If>
+
+        <If
+          test="layout.fullContent"
+          value={(mode ?? 'with-sidebar') === 'full' || !sidebar}
+        >
           <Container
             flex="col"
             gap="6"
@@ -82,16 +118,16 @@ export function MainLayout({
           >
             {children}
           </Container>
-        )}
+        </If>
       </Block>
 
-      {(showFooter ?? true) ? (
+      <If test="layout.showFooter" value={showFooter ?? true}>
         <Footer
           copyright={footerCopyright ?? '© 2025 UI8Kit Design System. All rights reserved.'}
           sections={footerSections ?? []}
           dataClass="main-layout-footer"
         />
-      ) : null}
+      </If>
     </Fragment>
   );
 }

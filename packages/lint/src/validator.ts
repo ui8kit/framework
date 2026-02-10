@@ -250,3 +250,82 @@ export function validateDataClass(
 
   return null;
 }
+
+/**
+ * Validate source code for non-DSL conditions/loops in JSX/TSX.
+ *
+ * This helps guide developers (and LLMs) to prefer @ui8kit/template primitives:
+ * - Loop => <Loop each="..." as="...">
+ * - Conditions => <If test="...">
+ */
+export function validateDSL(
+  source: string,
+  options: ValidateOptions = {}
+): LintResult {
+  const errors: LintError[] = [];
+  const lines = source.split(/\r?\n/);
+  const lineOffset = options.lineOffset ?? 0;
+
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    const trimmed = line.trim();
+    const lineNumber = lineOffset + index + 1;
+
+    // JSX loops that are fragile for generator output.
+    const hasJsxMapLoop = /\{[^}]*\.(map|forEach)\s*\(/.test(line);
+    const hasMultilineMapLoop =
+      (trimmed.startsWith(".map(") || trimmed.startsWith(".forEach(")) &&
+      index > 0 &&
+      lines[index - 1].includes("{");
+    if (hasJsxMapLoop || hasMultilineMapLoop) {
+      errors.push({
+        error_code: "NON_DSL_LOOP",
+        message: "Detected JS loop in JSX. Prefer @ui8kit/template <Loop> for stable generation.",
+        severity: "warning",
+        received: line.trim(),
+        expected: ['<Loop each="items" as="item" keyExpr="item.id" data={items}>...</Loop>'],
+        suggested_fix: 'Rewrite loop to <Loop each="..." as="..." data={...}>',
+        autofix_available: false,
+        rule_id: "ui8kit/non-dsl-loop",
+        location: options.file
+          ? { file: options.file, line: lineNumber, column: 1 }
+          : undefined,
+      });
+    }
+
+    // JSX conditionals that should use DSL primitives.
+    const hasTernaryInJsx = /\{[^}]*\?[^}]*:[^}]*\}/.test(line);
+    const hasLogicalAndConditionInJsx = /\{[^}]*&&[^}]*\}/.test(line);
+    const hasTypeOptionalSyntax =
+      trimmed.includes("?:") &&
+      !trimmed.includes("{") &&
+      !trimmed.includes("}");
+    const hasTernary = hasTernaryInJsx && !hasTypeOptionalSyntax;
+    const hasLogicalAndCondition = hasLogicalAndConditionInJsx;
+    if (hasTernary || hasLogicalAndCondition) {
+      errors.push({
+        error_code: "NON_DSL_CONDITIONAL",
+        message: "Detected JS conditional in JSX. Prefer @ui8kit/template <If> for stable generation.",
+        severity: "warning",
+        received: line.trim(),
+        expected: ['<If test="condition" value={!!condition}>...</If>'],
+        suggested_fix: 'Rewrite condition to <If test="..." value={...}>',
+        autofix_available: false,
+        rule_id: "ui8kit/non-dsl-conditional",
+        location: options.file
+          ? { file: options.file, line: lineNumber, column: 1 }
+          : undefined,
+      });
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    summary: {
+      errors: errors.filter((e) => e.severity === "error").length,
+      warnings: errors.filter((e) => e.severity === "warning").length,
+      info: errors.filter((e) => e.severity === "info").length,
+    },
+  };
+}

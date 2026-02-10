@@ -20,6 +20,7 @@
     "preview": "bunx turbo run preview",
     "test": "bunx turbo run test",
     "lint": "bunx turbo run lint",
+    "lint:dsl:engine": "bun run packages/lint/src/cli/validate-dsl.ts apps/engine/src",
     "generate": "bunx turbo run generate --filter=./apps/docs --filter=./apps/web",
     "generate:docs": "bunx turbo run generate --filter=./apps/docs",
     "generate:web": "bunx turbo run generate --filter=./apps/web",

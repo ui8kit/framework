@@ -4,6 +4,7 @@ import {
   validateProps,
   validateClassName,
   validateDataClass,
+  validateDSL,
 } from "./validator";
 import type { PropsMap } from "./types";
 
@@ -176,5 +177,58 @@ describe("validateDataClass", () => {
   it("returns null for primitive without className", () => {
     const error = validateDataClass(false, false, true);
     expect(error).toBeNull();
+  });
+});
+
+describe("validateDSL", () => {
+  it("detects non-DSL loops in JSX", () => {
+    const source = `
+      <div>
+        {items.map((item) => <span key={item.id}>{item.label}</span>)}
+      </div>
+    `;
+    const result = validateDSL(source);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.error_code === "NON_DSL_LOOP")).toBe(true);
+  });
+
+  it("detects non-DSL conditionals in JSX", () => {
+    const source = `
+      <div>
+        {isVisible ? <span>Hello</span> : null}
+      </div>
+    `;
+    const result = validateDSL(source);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.error_code === "NON_DSL_CONDITIONAL")).toBe(true);
+  });
+
+  it("passes for DSL-only control flow", () => {
+    const source = `
+      <If test="items" value={items.length > 0}>
+        <Loop each="items" as="item" data={items}>
+          {(item) => <Text>{item.label}</Text>}
+        </Loop>
+      </If>
+    `;
+    const result = validateDSL(source);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it("does not flag optional property syntax in TypeScript types", () => {
+    const source = `
+      type Example = {
+        title?: string;
+        description?: string;
+      };
+
+      export function View() {
+        return <Text>Hello</Text>;
+      }
+    `;
+    const result = validateDSL(source);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
   });
 });

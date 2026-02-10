@@ -30,10 +30,12 @@
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist coverage",
-    "validate:whitelist": "bun run src/cli/validate-whitelist.ts"
+    "validate:whitelist": "bun run src/cli/validate-whitelist.ts",
+    "validate:dsl": "bun run src/cli/validate-dsl.ts"
   },
   "bin": {
-    "ui8kit-lint": "./src/cli/validate-whitelist.ts"
+    "ui8kit-lint": "./src/cli/validate-whitelist.ts",
+    "ui8kit-lint-dsl": "./src/cli/validate-dsl.ts"
   },
   "peerDependencies": {
     "@ui8kit/core": "workspace:*"

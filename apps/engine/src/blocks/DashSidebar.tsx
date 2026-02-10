@@ -35,15 +35,30 @@ export function DashSidebar({
       <If test="links" value={(links ?? []).length > 0}>
         <Loop each="links" as="link" data={links ?? []}>
           {(link: DashSidebarLink) => (
-            <Button
-              href={link.href}
-              size="sm"
-              variant={link.active ? 'secondary' : 'ghost'}
-              justify="start"
-              data-class="dash-sidebar-link"
-            >
-              <Var name="link.label" value={link.label} />
-            </Button>
+            <>
+              <If test="link.active" value={!!link.active}>
+                <Button
+                  href={link.href}
+                  size="sm"
+                  variant="secondary"
+                  justify="start"
+                  data-class="dash-sidebar-link"
+                >
+                  <Var name="link.label" value={link.label} />
+                </Button>
+              </If>
+              <If test="link.inactive" value={!link.active}>
+                <Button
+                  href={link.href}
+                  size="sm"
+                  variant="ghost"
+                  justify="start"
+                  data-class="dash-sidebar-link"
+                >
+                  <Var name="link.label" value={link.label} />
+                </Button>
+              </If>
+            </>
           )}
         </Loop>
       </If>

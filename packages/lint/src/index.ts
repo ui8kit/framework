@@ -49,6 +49,7 @@ export {
   validateProps,
   validateClassName,
   validateDataClass,
+  validateDSL,
 } from "./validator";
 
 // Formatters

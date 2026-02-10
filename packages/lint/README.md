@@ -8,6 +8,7 @@ Linting and validation utilities for UI8Kit DSL props. Designed for both human d
 - **Typo Detection**: Levenshtein-based closest match suggestions
 - **className Validation**: Validate Tailwind classes against whitelist
 - **data-class Enforcement**: Ensure className is paired with data-class
+- **DSL Flow Validation**: Detect JS loops/conditionals and suggest `<Loop>/<If>`
 - **Whitelist Sync**: Check ui8kit.map.json ↔ utility-props.map.ts consistency
 - **Multiple Formats**: JSON, pretty console, compact CI, LLM-optimized output
 
@@ -68,6 +69,38 @@ const result = validateClassName("flex gap-5 p-2", whitelist);
 // Error: gap-5 not in whitelist, closest: gap-4
 ```
 
+### DSL Control Flow Validation
+
+```typescript
+import { validateDSL, formatPretty } from "@ui8kit/lint";
+
+const source = `
+  <Stack>
+    {items.map((item) => <Text>{item.label}</Text>)}
+    {isReady ? <Button>Go</Button> : null}
+  </Stack>
+`;
+
+const result = validateDSL(source, { file: "Example.tsx" });
+if (!result.valid) {
+  console.log(formatPretty(result));
+  // Suggests rewriting map/ternary to <Loop>/<If>
+}
+```
+
+CLI:
+
+```bash
+# Default target: apps/engine/src
+bun run packages/lint/src/cli/validate-dsl.ts
+
+# Explicit target
+bun run packages/lint/src/cli/validate-dsl.ts apps/engine/src/routes
+
+# JSON output for tooling/LLM
+bun run packages/lint/src/cli/validate-dsl.ts apps/engine/src --json
+```
+
 ### Whitelist Sync Check
 
 ```typescript
@@ -114,6 +147,8 @@ interface LintError {
 | `RESPONSIVE_IN_PROP` | Responsive modifier in prop |
 | `DUPLICATE_PROP` | Same value appears multiple times |
 | `INVALID_CLASS` | Class not in whitelist |
+| `NON_DSL_LOOP` | JS loop in JSX (prefer `<Loop>`) |
+| `NON_DSL_CONDITIONAL` | JS conditional in JSX (prefer `<If>`) |
 
 ## Output Formats
 

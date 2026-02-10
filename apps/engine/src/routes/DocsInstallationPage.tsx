@@ -55,13 +55,26 @@ export function DocsInstallationPage() {
                     </Block>
                   </If>
                   <If test="section.text" value={!!section.text}>
-                    <Text
-                      fontSize={section.code ? 'sm' : 'base'}
-                      textColor="muted-foreground"
-                      data-class={section.code ? 'docs-install-desc' : 'docs-install-text'}
-                    >
-                      <Var name="section.text" value={section.text} />
-                    </Text>
+                    <>
+                      <If test="section.codeForText" value={!!section.code}>
+                        <Text
+                          fontSize="sm"
+                          textColor="muted-foreground"
+                          data-class="docs-install-desc"
+                        >
+                          <Var name="section.text" value={section.text} />
+                        </Text>
+                      </If>
+                      <If test="section.plainText" value={!section.code}>
+                        <Text
+                          fontSize="base"
+                          textColor="muted-foreground"
+                          data-class="docs-install-text"
+                        >
+                          <Var name="section.text" value={section.text} />
+                        </Text>
+                      </If>
+                    </>
                   </If>
                 </Stack>
               )}
