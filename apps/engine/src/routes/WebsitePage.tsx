@@ -17,7 +17,7 @@ export function WebsitePage() {
       headerSubtitle={context.site.subtitle}
     >
       <HeroBlock {...context.hero} />
-      <ExamplesBlock />
+      <ExamplesBlock tabs={context.examplesSidebarLinks ?? []} />
     </MainLayout>
   );
 }

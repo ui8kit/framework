@@ -6,3 +6,4 @@ export { HeroBlock } from './HeroBlock';
 export { PricingBlock } from './PricingBlock';
 export { SidebarContent } from './SidebarContent';
 export { TestimonialsBlock } from './TestimonialsBlock';
+export { ExamplesBlock } from './ExamplesBlock';

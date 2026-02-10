@@ -1,33 +1,61 @@
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge } from '@ui8kit/core';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+
+export interface ExamplesBlockProps {
+  tabs?: Array<{ href: string; label: string }>;
+}
 
 /**
- * Examples block — compact shadcn-style component showcase.
- * Fits in a grid, shows design elements side by side.
+ * Examples block — tabbed section with common components.
+ * Tabs aligned from left; content below. Extensible for new sections.
+ * Tabs passed via props (from context on engine; caller must provide in dev).
  */
-export function ExamplesBlock() {
+export function ExamplesBlock({ tabs = [] }: ExamplesBlockProps) {
   return (
     <Block component="section" py="16" data-class="examples-section">
-      <Stack gap="8" items="center">
-        <Stack gap="2" items="center" data-class="examples-header">
-          <Title fontSize="2xl" fontWeight="bold" textAlign="center" data-class="examples-title">
-            Components
+      <Stack gap="8" data-class="examples-section-inner">
+        <Stack gap="2" data-class="examples-header">
+          <Title fontSize="2xl" fontWeight="bold" data-class="examples-title">
+            Examples
           </Title>
           <Text
             fontSize="sm"
             textColor="muted-foreground"
-            textAlign="center"
             max="w-xl"
             data-class="examples-description"
           >
-            Common UI elements. Click to explore.
+            Common UI components and patterns.
           </Text>
         </Stack>
+
+        {/* Tabs — left-aligned; routes from context.examplesSidebarLinks */}
+        <Group
+          gap="0"
+          justify="start"
+          items="center"
+          border="b"
+          data-class="examples-tabs"
+        >
+          {tabs.map((item) => (
+            <NavLink
+              key={item.href}
+              to={item.href}
+              className={({ isActive }) =>
+                isActive
+                  ? 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-t-md transition-colors -mb-px border-b-2 border-primary text-foreground'
+                  : 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-t-md transition-colors -mb-px border-b-2 border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              }
+              data-class="examples-tab"
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </Group>
 
         <Grid cols="1-2-4" gap="6" max="w-6xl" data-class="examples-grid">
           {/* Buttons */}
           <Stack
-            gap="3"
+            gap="4"
             p="4"
             rounded="lg"
             bg="card"
@@ -46,7 +74,7 @@ export function ExamplesBlock() {
 
           {/* Badges */}
           <Stack
-            gap="3"
+            gap="4"
             p="4"
             rounded="lg"
             bg="card"
@@ -63,40 +91,9 @@ export function ExamplesBlock() {
             </Group>
           </Stack>
 
-          {/* Links */}
-          <Stack
-            gap="3"
-            p="4"
-            rounded="lg"
-            bg="card"
-            border=""
-            data-class="examples-card"
-          >
-            <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
-              Examples
-            </Text>
-            <Stack gap="1" data-class="examples-card-content">
-              <Link to="/examples" className="text-sm text-primary hover:underline">
-                Examples
-              </Link>
-              <Link to="/examples/dashboard" className="text-sm text-primary hover:underline">
-                Dashboard
-              </Link>
-              <Link to="/examples/tasks" className="text-sm text-primary hover:underline">
-                Tasks
-              </Link>
-              <Link to="/examples/playground" className="text-sm text-primary hover:underline">
-                Playground
-              </Link>
-              <Link to="/examples/authentication" className="text-sm text-primary hover:underline">
-                Authentication
-              </Link>
-            </Stack>
-          </Stack>
-
           {/* Typography */}
           <Stack
-            gap="3"
+            gap="4"
             p="4"
             rounded="lg"
             bg="card"
@@ -118,10 +115,10 @@ export function ExamplesBlock() {
         </Grid>
 
         <Group gap="4" justify="center" items="center" data-class="examples-actions">
-          <Button as={Link} to="/examples" data-class="examples-cta">
+          <Button href="/examples" data-class="examples-cta">
             Explore Examples
           </Button>
-          <Button variant="outline" as={Link} to="/docs/components" data-class="examples-cta">
+          <Button variant="outline" href="/docs/components" data-class="examples-cta">
             All Components
           </Button>
         </Group>

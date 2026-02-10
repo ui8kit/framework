@@ -1,9 +1,6 @@
 import { Block, Container, Stack, Group, Title, Text, Button, Badge, Grid } from '@ui8kit/core';
 import { Link } from 'react-router-dom';
 
-/**
- * Examples default page — common components showcase.
- */
 export function ExamplesPage() {
   return (
     <Block component="section" py="12" data-class="examples-section">
@@ -12,40 +9,43 @@ export function ExamplesPage() {
           <Title fontSize="2xl" fontWeight="bold" textAlign="center" data-class="examples-title">
             Examples
           </Title>
-          <Text
-            fontSize="sm"
-            textColor="muted-foreground"
-            textAlign="center"
-            max="w-xl"
-            data-class="examples-description"
-          >
+          <Text fontSize="sm" textColor="muted-foreground" textAlign="center" max="w-xl" data-class="examples-description">
             Common UI components and patterns.
           </Text>
         </Stack>
-
         <Grid cols="1-2-4" gap="6" data-class="examples-grid">
           <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Button
             </Text>
             <Group gap="2" items="center" data-class="examples-card-content">
-              <Button size="sm" data-class="examples-btn">Default</Button>
-              <Button variant="outline" size="sm" data-class="examples-btn">Outline</Button>
-              <Button variant="ghost" size="sm" data-class="examples-btn">Ghost</Button>
+              <Button size="sm" data-class="examples-btn">
+                Default
+              </Button>
+              <Button variant="outline" size="sm" data-class="examples-btn">
+                Outline
+              </Button>
+              <Button variant="ghost" size="sm" data-class="examples-btn">
+                Ghost
+              </Button>
             </Group>
           </Stack>
-
           <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Badge
             </Text>
             <Group gap="2" items="center" data-class="examples-card-content">
-              <Badge variant="default" data-class="examples-badge">Default</Badge>
-              <Badge variant="secondary" data-class="examples-badge">Secondary</Badge>
-              <Badge variant="outline" data-class="examples-badge">Outline</Badge>
+              <Badge variant="default" data-class="examples-badge">
+                Default
+              </Badge>
+              <Badge variant="secondary" data-class="examples-badge">
+                Secondary
+              </Badge>
+              <Badge variant="outline" data-class="examples-badge">
+                Outline
+              </Badge>
             </Group>
           </Stack>
-
           <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Typography
@@ -59,7 +59,6 @@ export function ExamplesPage() {
               </Text>
             </Stack>
           </Stack>
-
           <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Routes
