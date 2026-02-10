@@ -13,7 +13,12 @@ export function ExamplesLayout() {
     <MainLayout
       mode="with-sidebar"
       navItems={context.navItems}
-      sidebar={<SidebarContent title="Examples" links={context.examplesSidebarLinks} />}
+      sidebar={
+        <SidebarContent
+          title={context.examplesSidebarLabel}
+          links={context.examplesSidebarLinks}
+        />
+      }
       headerTitle={context.site.title}
       headerSubtitle={context.site.subtitle}
     >

@@ -12,26 +12,31 @@ import {
   Container,
   Box,
   Grid,
+  Field,
 } from '@ui8kit/core';
-
-const docsLinks = context.docsSidebarLinks.map((link) => ({
-  ...link,
-  active: link.href === '/docs/components',
-}));
 
 /**
  * Docs Components — showcase all UI8Kit components and variants.
+ * Sidebar from context; showcase content (temporarily) inline.
  */
 export function DocsComponentsPage() {
+  const { title, lead } = context.docsComponents;
   return (
-    <DashLayout sidebar={<DashSidebar label="Documentation" links={docsLinks} />}>
+    <DashLayout
+      sidebar={
+        <DashSidebar
+          label={context.docsSidebarLabel}
+          links={context.getDocsSidebarLinks('/docs/components')}
+        />
+      }
+    >
       <Stack gap="12" data-class="docs-components-content">
         <Stack gap="4" data-class="docs-components-header">
           <Title fontSize="4xl" fontWeight="bold" data-class="docs-components-title">
-            Components
+            {title}
           </Title>
           <Text fontSize="lg" textColor="muted-foreground" data-class="docs-components-lead">
-            All UI8Kit core components with variants. Semantic props only.
+            {lead}
           </Text>
         </Stack>
 
@@ -129,6 +134,48 @@ export function DocsComponentsPage() {
                 Muted foreground
               </Text>
               <Text fontSize="xs" textColor="muted-foreground">textColor="muted-foreground"</Text>
+            </Stack>
+          </Stack>
+        </Stack>
+
+        {/* Field */}
+        <Stack gap="4" data-class="component-showcase">
+          <Title fontSize="2xl" fontWeight="semibold" data-class="component-showcase-title">
+            Field
+          </Title>
+          <Stack gap="4" data-class="field-demo">
+            <Stack gap="2" data-class="field-demo-group">
+              <Text fontSize="sm" fontWeight="medium" textColor="muted-foreground">
+                Kinds
+              </Text>
+              <Group gap="4" items="center" flex="wrap" data-class="field-demo-row">
+                <Field type="text" placeholder="Text input" w="max" data-class="field-demo-input" />
+                <Field type="email" placeholder="Email" w="max" data-class="field-demo-input" />
+                <Field component="textarea" placeholder="Textarea" rows={2} w="max" data-class="field-demo-textarea" />
+                <Field type="checkbox" data-class="field-demo-checkbox" />
+                <Field type="radio" name="demo" value="1" data-class="field-demo-radio" />
+                <Field component="button" type="submit" data-class="field-demo-submit">Submit</Field>
+              </Group>
+            </Stack>
+            <Stack gap="2" data-class="field-demo-group">
+              <Text fontSize="sm" fontWeight="medium" textColor="muted-foreground">
+                Variants
+              </Text>
+              <Group gap="2" items="center" flex="wrap" data-class="field-demo-row">
+                <Field variant="default" placeholder="Default" w="max" data-class="field-demo-input" />
+                <Field variant="outline" placeholder="Outline" w="max" data-class="field-demo-input" />
+                <Field variant="ghost" placeholder="Ghost" w="max" data-class="field-demo-input" />
+              </Group>
+            </Stack>
+            <Stack gap="2" data-class="field-demo-group">
+              <Text fontSize="sm" fontWeight="medium" textColor="muted-foreground">
+                Sizes
+              </Text>
+              <Group gap="2" items="center" data-class="field-demo-row">
+                <Field size="sm" placeholder="Small" w="max" data-class="field-demo-input" />
+                <Field size="default" placeholder="Default" w="max" data-class="field-demo-input" />
+                <Field size="lg" placeholder="Large" w="max" data-class="field-demo-input" />
+              </Group>
             </Stack>
           </Stack>
         </Stack>

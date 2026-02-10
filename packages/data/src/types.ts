@@ -99,6 +99,30 @@ export interface DashboardFixture {
   ctaUrl?: string;
 }
 
+export interface DocsSection {
+  id: string;
+  title: string;
+  text?: string;
+  code?: string;
+}
+
+export interface DocsIntroFixture {
+  title?: string;
+  lead?: string;
+  sections?: DocsSection[];
+}
+
+export interface DocsInstallationFixture {
+  title?: string;
+  lead?: string;
+  sections?: DocsSection[];
+}
+
+export interface DocsComponentsFixture {
+  title?: string;
+  lead?: string;
+}
+
 // -----------------------------------------------------------------------------
 // Unified context shape (for copy-paste apps: install @ui8kit/data, use context)
 // -----------------------------------------------------------------------------
@@ -116,4 +140,11 @@ export interface AppContext {
   testimonials: TestimonialsFixture;
   cta: CTAFixture;
   dashboard: DashboardFixture;
+  docsIntro: DocsIntroFixture;
+  docsInstallation: DocsInstallationFixture;
+  docsComponents: DocsComponentsFixture;
+  docsSidebarLabel: string;
+  examplesSidebarLabel: string;
+  getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
+  getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
 }

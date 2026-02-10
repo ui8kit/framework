@@ -5,7 +5,7 @@ import { Block, Container, Stack, Title, Text, Group, Button, Badge } from '@ui8
  */
 export function ExamplesPlaygroundPage() {
   return (
-    <Block component="section" py="12" data-class="examples-playground-section">
+    <Block component="section" py="16" data-class="examples-playground-section">
       <Container max="w-6xl" flex="col" gap="8" data-class="examples-playground-container">
         <Stack gap="2" data-class="examples-playground-header">
           <Title fontSize="2xl" fontWeight="bold" data-class="examples-playground-title">

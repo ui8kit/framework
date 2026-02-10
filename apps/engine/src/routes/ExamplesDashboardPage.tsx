@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@ui8k
  */
 export function ExamplesDashboardPage() {
   return (
-    <Block component="section" py="12" data-class="examples-dashboard-section">
+    <Block component="section" py="16" data-class="examples-dashboard-section">
       <Container max="w-6xl" flex="col" gap="8" data-class="examples-dashboard-container">
         <Stack gap="2" data-class="examples-dashboard-header">
           <Title fontSize="2xl" fontWeight="bold" data-class="examples-dashboard-title">

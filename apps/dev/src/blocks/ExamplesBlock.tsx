@@ -1,14 +1,13 @@
 import React from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge } from '@ui8kit/core';
 import { NavLink } from 'react-router-dom';
-import { context } from '@ui8kit/data';
 
 interface ExamplesBlockProps {
   tabs?: Array<{ href: string; label: string }>;
 }
 
 export function ExamplesBlock(props: ExamplesBlockProps) {
-  const tabs = context.examplesSidebarLinks;
+  const { tabs } = props;
   return (
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">

@@ -1,8 +1,8 @@
-import { Block, Container, Stack, Title, Text, Grid, Button } from '@ui8kit/core';
+import { Block, Container, Stack, Title, Text, Grid, Button, Field } from '@ui8kit/core';
 
 export function ExamplesAuthPage() {
   return (
-    <Block component="section" py="12" data-class="examples-auth-section">
+    <Block component="section" py="16" data-class="examples-auth-section">
       <Container max="w-md" flex="col" gap="8" items="center" data-class="examples-auth-container">
         <Stack gap="2" items="center" data-class="examples-auth-header">
           <Title fontSize="2xl" fontWeight="bold" textAlign="center" data-class="examples-auth-title">
@@ -17,15 +17,13 @@ export function ExamplesAuthPage() {
             <Text fontSize="sm" fontWeight="medium" data-class="examples-auth-label">
               Email
             </Text>
-            <Block component="input" type="email" placeholder="name@example.com" p="2" rounded="md" border="" w="full" data-class="examples-auth-input">
-            </Block>
+            <Field type={"email"} placeholder={"name@example.com"} w={"full"} data-class={"examples-auth-input"} />
           </Stack>
           <Stack gap="2" data-class="examples-auth-field">
             <Text fontSize="sm" fontWeight="medium" data-class="examples-auth-label">
               Password
             </Text>
-            <Block component="input" type="password" placeholder="••••••••" p="2" rounded="md" border="" w="full" data-class="examples-auth-input">
-            </Block>
+            <Field type={"password"} placeholder={"••••••••"} w={"full"} data-class={"examples-auth-input"} />
           </Stack>
           <Grid cols="1-2" gap="2" data-class="examples-auth-actions">
             <Button w="full" data-class="examples-auth-submit">

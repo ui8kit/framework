@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
  */
 export function ExamplesPage() {
   return (
-    <Block component="section" py="12" data-class="examples-section">
+    <Block component="section" py="16" data-class="examples-section">
       <Container max="w-6xl" flex="col" gap="8" data-class="examples-container">
         <Stack gap="2" items="center" data-class="examples-header">
           <Title fontSize="2xl" fontWeight="bold" textAlign="center" data-class="examples-title">

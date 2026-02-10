@@ -1,11 +1,11 @@
-import { Block, Container, Stack, Title, Text, Grid, Button } from '@ui8kit/core';
+import { Block, Container, Stack, Title, Text, Grid, Button, Field } from '@ui8kit/core';
 
 /**
  * Examples Authentication page — auth forms and flows.
  */
 export function ExamplesAuthPage() {
   return (
-    <Block component="section" py="12" data-class="examples-auth-section">
+    <Block component="section" py="16" data-class="examples-auth-section">
       <Container max="w-md" flex="col" gap="8" items="center" data-class="examples-auth-container">
         <Stack gap="2" items="center" data-class="examples-auth-header">
           <Title fontSize="2xl" fontWeight="bold" textAlign="center" data-class="examples-auth-title">
@@ -34,13 +34,9 @@ export function ExamplesAuthPage() {
             <Text fontSize="sm" fontWeight="medium" data-class="examples-auth-label">
               Email
             </Text>
-            <Block
-              component="input"
+            <Field
               type="email"
               placeholder="name@example.com"
-              p="2"
-              rounded="md"
-              border=""
               w="full"
               data-class="examples-auth-input"
             />
@@ -49,13 +45,9 @@ export function ExamplesAuthPage() {
             <Text fontSize="sm" fontWeight="medium" data-class="examples-auth-label">
               Password
             </Text>
-            <Block
-              component="input"
+            <Field
               type="password"
               placeholder="••••••••"
-              p="2"
-              rounded="md"
-              border=""
               w="full"
               data-class="examples-auth-input"
             />

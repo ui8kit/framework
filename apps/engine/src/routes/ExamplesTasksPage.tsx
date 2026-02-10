@@ -5,7 +5,7 @@ import { Block, Container, Stack, Title, Text, Group, Button, Badge } from '@ui8
  */
 export function ExamplesTasksPage() {
   return (
-    <Block component="section" py="12" data-class="examples-tasks-section">
+    <Block component="section" py="16" data-class="examples-tasks-section">
       <Container max="w-6xl" flex="col" gap="8" data-class="examples-tasks-container">
         <Stack gap="2" data-class="examples-tasks-header">
           <Title fontSize="2xl" fontWeight="bold" data-class="examples-tasks-title">

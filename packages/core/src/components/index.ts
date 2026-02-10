@@ -12,6 +12,7 @@ export { Text, type TextProps } from "./ui/Text";
 // Interactive Components
 export { Button, type ButtonProps } from "./ui/Button";
 export { Badge, type BadgeProps } from "./ui/Badge";
+export { Field, type FieldProps } from "./ui/Field";
 
 // Media Components
 export { Image, type ImageProps } from "./ui/Image";

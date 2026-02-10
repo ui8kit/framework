@@ -7,6 +7,9 @@ import pricing from './fixtures/pricing.json';
 import testimonials from './fixtures/testimonials.json';
 import cta from './fixtures/cta.json';
 import dashboard from './fixtures/dashboard.json';
+import docsIntro from './fixtures/docs-intro.json';
+import docsInstallation from './fixtures/docs-installation.json';
+import docsComponents from './fixtures/docs-components.json';
 import type {
   HeroFixture,
   FeaturesFixture,
@@ -14,6 +17,9 @@ import type {
   TestimonialsFixture,
   CTAFixture,
   DashboardFixture,
+  DocsIntroFixture,
+  DocsInstallationFixture,
+  DocsComponentsFixture,
   NavItem,
   SidebarLink,
   DashboardSidebarLink,
@@ -60,6 +66,23 @@ const site: SiteInfo = {
   subtitle: 'Template Engine',
 };
 
+const docsSidebarLabel = 'Documentation';
+const examplesSidebarLabel = 'Examples';
+
+function getDocsSidebarLinks(activeHref: string): DashboardSidebarLink[] {
+  return docsSidebarLinks.map((link) => ({
+    ...link,
+    active: link.href === activeHref,
+  }));
+}
+
+function getExamplesSidebarLinks(activeHref: string): DashboardSidebarLink[] {
+  return examplesSidebarLinks.map((link) => ({
+    ...link,
+    active: link.href === activeHref,
+  }));
+}
+
 export const context = {
   site,
   navItems,
@@ -67,12 +90,19 @@ export const context = {
   dashboardSidebarLinks,
   docsSidebarLinks,
   examplesSidebarLinks,
+  docsSidebarLabel,
+  examplesSidebarLabel,
+  getDocsSidebarLinks,
+  getExamplesSidebarLinks,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
   pricing: pricing as PricingFixture,
   testimonials: testimonials as TestimonialsFixture,
   cta: cta as CTAFixture,
   dashboard: dashboard as DashboardFixture,
+  docsIntro: docsIntro as DocsIntroFixture,
+  docsInstallation: docsInstallation as DocsInstallationFixture,
+  docsComponents: docsComponents as DocsComponentsFixture,
 } as const;
 
 /** @deprecated Use context instead */
