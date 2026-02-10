@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { Block, Container, Grid, Stack } from '@ui8kit/core';
 import { Header } from '../partials/Header';
 import { Footer } from '../partials/Footer';
 import { Sidebar } from '../partials/Sidebar';
-import { If } from '@ui8kit/template';
 import type { NavItem, FooterSection } from '../partials';
 
 export type LayoutMode = 'full' | 'with-sidebar' | 'sidebar-left';
@@ -34,28 +33,27 @@ export function MainLayout({
   showFooter = true,
 }: MainLayoutProps) {
   return (
-    <Block data-class="main-layout">
-      {/* Header */}
-      <If test="showHeader" value={showHeader}>
-        <Header 
+    <Fragment>
+      {showHeader ? (
+        <Header
           title={headerTitle}
           subtitle={headerSubtitle}
           navItems={navItems}
           data-class="main-layout-header"
         />
-      </If>
+      ) : null}
 
       {/* Main Content */}
       <Block component="main" flex="1" py="8" data-class="main-layout-content">
-        <Container data-class="main-layout-container">
-          {(mode === 'with-sidebar' || mode === 'sidebar-left') && sidebar ? (
-            <Grid 
-              grid="cols-3" 
+        {(mode === 'with-sidebar' || mode === 'sidebar-left') && sidebar ? (
+          <Container data-class="main-layout-container">
+            <Grid
+              grid="cols-3"
               gap="8"
               data-class="main-layout-grid"
             >
               {/* Content Column */}
-              <Stack 
+              <Stack
                 col="span-2"
                 gap="6"
                 order={mode === 'sidebar-left' ? "2" : "1"}
@@ -75,22 +73,25 @@ export function MainLayout({
                 </Sidebar>
               </Stack>
             </Grid>
-          ) : (
-            <Stack gap="6" data-class="main-layout-full">
-              {children}
-            </Stack>
-          )}
-        </Container>
+          </Container>
+        ) : (
+          <Container
+            flex="col"
+            gap="6"
+            data-class="main-layout-container"
+          >
+            {children}
+          </Container>
+        )}
       </Block>
 
-      {/* Footer */}
-      <If test="showFooter" value={showFooter}>
-        <Footer 
+      {showFooter ? (
+        <Footer
           copyright={footerCopyright}
           sections={footerSections}
           data-class="main-layout-footer"
         />
-      </If>
-    </Block>
+      ) : null}
+    </Fragment>
   );
 }

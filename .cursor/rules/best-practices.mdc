@@ -58,6 +58,21 @@ Use semantic tags for valid HTML5 output. `Block` and `Stack` support `component
 
 **Header structure**: `<header>` wraps the whole bar; `<nav>` wraps only links. `main` must not wrap `aside`.
 
+### Minimize div nesting
+
+Merge Container + Group/Stack when they serve the same layout layer. Use `component="span"` for inline wrappers inside links.
+
+```tsx
+// ✅ Fewer divs: Container with flex props
+<Container max="w-6xl" flex="" justify="between" items="center" gap="8">
+
+// ✅ Inline wrapper: Group component="span" inside <a>
+<Group component="span" gap="2" items="center">
+
+// ❌ Unnecessary nesting
+<Container><Group justify="between">...</Group></Container>
+```
+
 ### data-class Convention
 Every semantic element must have `data-class` for styling:
 ```tsx

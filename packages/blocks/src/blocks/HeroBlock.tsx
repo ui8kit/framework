@@ -23,15 +23,14 @@ export function HeroBlock({
   children,
 }: HeroBlockProps) {
   return (
-    <Block 
-      component="section" 
-      py="24" 
+    <Block
+      component="section"
+      py="24"
       bg="background"
       data-class="hero-section"
     >
-      <Container max="w-7xl">
-        <Stack gap="8" items="center">
-          <Stack gap="4" items="center" max="w-3xl">
+      <Container max="w-7xl" flex="col" gap="8" items="center">
+        <Stack gap="4" items="center" max="w-3xl">
             <Title 
               fontSize="5xl" 
               fontWeight="bold" 
@@ -51,9 +50,9 @@ export function HeroBlock({
                 <Var name="subtitle" value={subtitle} />
               </Text>
             </If>
-          </Stack>
-          
-          <Group gap="4" data-class="hero-actions">
+        </Stack>
+
+        <Group gap="4" justify="center" items="center" data-class="hero-actions">
             <If test="ctaText" value={!!ctaText}>
               <Button 
                 size="lg" 
@@ -74,12 +73,11 @@ export function HeroBlock({
                 <Var name="secondaryCtaText" value={secondaryCtaText} />
               </Button>
             </If>
-          </Group>
-          
-          <Slot name="extra">
-            {children}
-          </Slot>
-        </Stack>
+        </Group>
+
+        <Slot name="extra">
+          {children}
+        </Slot>
       </Container>
     </Block>
   );

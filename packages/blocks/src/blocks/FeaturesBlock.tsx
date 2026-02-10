@@ -21,8 +21,8 @@ export function FeaturesBlock({
 }: FeaturesBlockProps) {
   return (
     <Block component="section" data-class="features-section">
-      <Stack gap="8" py="16">
-        <Stack gap="4" items="center" data-class="features-header">
+      <Stack gap="8" py="16" items="center">
+        <Stack gap="4" items="center" justify="center" data-class="features-header">
           <If test="title" value={!!title}>
             <Title
               fontSize="3xl"
@@ -47,7 +47,7 @@ export function FeaturesBlock({
           </If>
         </Stack>
 
-        <Grid cols="1-2-4" gap="6" data-class="features-grid">
+        <Grid cols="1-2-4" gap="6" data-class="features-grid" justify="center">
           <Loop each="features" as="feature" data={features}>
             {(feature: Feature) => (
               <Stack

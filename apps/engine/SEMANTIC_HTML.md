@@ -23,9 +23,21 @@ Target: **valid W3C HTML5 + CSS3** after generation.
 3. **One main per page**: Single `<main>` landmark.
 4. **Heading hierarchy**: Use `order={1}` for h1, `order={2}` for h2, etc.
 
+## Nesting minimization
+
+Reduce div-in-div nesting until `<section>`:
+
+- **Root as layout**: `#root` is the layout container; no extra wrapper div
+- MainLayout: Fragment; header, main, footer are direct children of root (flex-col)
+- DashLayout: Fragment; aside, main are direct children of root (flex-row via `:has(> aside)`)
+- Merge Container + Group/Stack when same layout layer
+- Use `Group component="span"` inside links (span instead of div)
+- Layout full mode: `main` > `Container` (flex col) > blocks (no extra Stack)
+- Header: `header` > `Container` (flex) > brand + nav
+
 ## Applied
 
-- Header: `header` + `nav` inside
-- MainLayout: `header` → `main` → `footer`
+- Header: `header` + `nav` inside; merged container; `Group component="span"` for brand
+- MainLayout: `header` → `main` → `footer`; full mode: main > Container > children
 - DashLayout: `aside` + `main` (siblings)
-- Blocks: `section` for sections, `article` for cards (feature, pricing, testimonial)
+- Blocks: `section` for sections, `article` for cards; HeroBlock: section > Container > content
