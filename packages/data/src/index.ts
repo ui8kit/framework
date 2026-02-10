@@ -26,8 +26,9 @@ import type {
 
 const navItems: NavItem[] = [
   { id: 'home', title: 'Home', url: '/' },
-  { id: 'pricing', title: 'Pricing', url: '#pricing' },
+  { id: 'examples', title: 'Examples', url: '/examples' },
   { id: 'dashboard', title: 'Dashboard', url: '/dashboard' },
+  { id: 'docs', title: 'Docs', url: '/docs' },
 ];
 
 const sidebarLinks: SidebarLink[] = [
@@ -40,6 +41,20 @@ const dashboardSidebarLinks: DashboardSidebarLink[] = [
   { label: 'Dashboard', href: '/dashboard', active: true },
 ];
 
+const docsSidebarLinks: DashboardSidebarLink[] = [
+  { label: 'Introduction', href: '/docs', active: true },
+  { label: 'Components', href: '/docs/components', active: false },
+  { label: 'Installation', href: '/docs/installation', active: false },
+];
+
+const examplesSidebarLinks: DashboardSidebarLink[] = [
+  { label: 'Examples', href: '/examples', active: true },
+  { label: 'Dashboard', href: '/examples/dashboard', active: false },
+  { label: 'Tasks', href: '/examples/tasks', active: false },
+  { label: 'Playground', href: '/examples/playground', active: false },
+  { label: 'Authentication', href: '/examples/authentication', active: false },
+];
+
 const site: SiteInfo = {
   title: 'UI8Kit',
   subtitle: 'Template Engine',
@@ -50,6 +65,8 @@ export const context = {
   navItems,
   sidebarLinks,
   dashboardSidebarLinks,
+  docsSidebarLinks,
+  examplesSidebarLinks,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
   pricing: pricing as PricingFixture,

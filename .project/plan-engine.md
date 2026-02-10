@@ -48,10 +48,9 @@ Documentation site with sidebar + main content.
 
 ### 2.1 Docs routes
 
-- [ ] `/docs` — Introduction, motivation
-- [ ] `/docs/components` — All UI8Kit components, all variants
-- [ ] Hint: pure React, no MDX for now; Block, Stack, Group, Button, Badge, etc.
-- [ ] `/docs/installation` — Installation guide
+- [x] `/docs` — Introduction, motivation
+- [x] `/docs/components` — All UI8Kit components, all variants
+- [x] `/docs/installation` — Installation guide
 - [ ] Hint: static content; later can migrate to MDX
 
 ### 2.2 Theme / Create builder `/create`
@@ -137,10 +136,11 @@ Documentation site with sidebar + main content.
 
 ### Core components to showcase (from @ui8kit/core)
 
-- [ ] Block, Stack, Group, Box, Container
-- [ ] Grid, Card
-- [ ] Title, Text
-- [ ] Button, Badge
+- [x] Block, Stack, Group, Box, Container
+- [x] Grid
+- [x] Title, Text
+- [x] Button, Badge
+- [ ] Card
 - [ ] Image, Icon
 - [ ] Accordion, Sheet
 
@@ -164,6 +164,7 @@ Documentation site with sidebar + main content.
 | 5 | /docs route | Introduction, motivation |
 | 6 | /docs/components | All core components, variants |
 | 7 | /docs/installation | Static content |
+| 8 | Card, Image, Icon, Accordion, Sheet | Add to docs/components showcase |
 
 ### Phase 3: Theme builder
 

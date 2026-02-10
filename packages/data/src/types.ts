@@ -108,6 +108,8 @@ export interface AppContext {
   navItems: NavItem[];
   sidebarLinks: SidebarLink[];
   dashboardSidebarLinks: DashboardSidebarLink[];
+  docsSidebarLinks: DashboardSidebarLink[];
+  examplesSidebarLinks: DashboardSidebarLink[];
   hero: HeroFixture;
   features: FeaturesFixture;
   pricing: PricingFixture;
