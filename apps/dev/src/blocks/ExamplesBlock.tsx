@@ -2,32 +2,8 @@ import React from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge } from '@ui8kit/core';
 
 interface ExamplesBlockProps {
-  tabs?: Array<{ href: string; label: string }>;
-  examples?: {
-    title?: string;
-    description?: string;
-    button?: {
-      title?: string;
-      defaultLabel?: string;
-      outlineLabel?: string;
-      ghostLabel?: string;
-    };
-    badge?: {
-      title?: string;
-      defaultLabel?: string;
-      secondaryLabel?: string;
-      outlineLabel?: string;
-    };
-    typography?: {
-      title?: string;
-      heading?: string;
-      body?: string;
-    };
-    actions?: {
-      explore?: string;
-      allComponents?: string;
-    };
-  };
+  tabs?: any[];
+  examples: any;
 }
 
 export function ExamplesBlock(props: ExamplesBlockProps) {
@@ -36,15 +12,13 @@ export function ExamplesBlock(props: ExamplesBlockProps) {
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">
         <Stack gap="2" data-class="examples-header">
-          <Title fontSize="2xl" fontWeight="bold" data-class="examples-title">
-            {examples.title}
-          </Title>
+          {examples.title ? (<><Title fontSize="2xl" fontWeight="bold" data-class="examples-title">{examples.title}</Title></>) : null}
           <Text fontSize="sm" textColor="muted-foreground" max="w-xl" data-class="examples-description">
             {examples.description}
           </Text>
         </Stack>
         {tabs ? (<><Group gap="0" justify="start" items="center" border="b" data-class="examples-tabs">{tabs.map((item, index) => (
-        <React.Fragment key={item.id ?? index}>
+        <React.Fragment key={item.href}>
         <Button href={item.href} variant="ghost" size="sm" rounded="none" data-class="examples-tab">{item.label}</Button>
         </React.Fragment>
         ))}</Group></>) : null}

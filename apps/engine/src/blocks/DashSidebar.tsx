@@ -22,8 +22,6 @@ export function DashSidebar({
   links,
   'data-class': dataClass,
 }: DashSidebarProps) {
-  const safeLinks = links ?? [];
-
   return (
     <Stack gap="2" p="4" data-class={dataClass ?? 'dash-sidebar-nav'}>
       <Text
@@ -34,8 +32,8 @@ export function DashSidebar({
       >
         <Var name="label" value={label} />
       </Text>
-      <If test="links" value={safeLinks.length > 0}>
-        <Loop each="links" as="link" data={safeLinks}>
+      <If test="links" value={(links ?? []).length > 0}>
+        <Loop each="links" as="link" data={links ?? []}>
           {(link: DashSidebarLink) => (
             <Button
               href={link.href}

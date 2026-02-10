@@ -21,17 +21,15 @@ export function SidebarContent({
   links,
   'data-class': dataClass,
 }: SidebarContentProps) {
-  const safeLinks = links ?? [];
-
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">
         <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
           <Var name="title" value={title} />
         </Text>
-        <If test="links" value={safeLinks.length > 0}>
+        <If test="links" value={(links ?? []).length > 0}>
           <Stack gap="1" data-class="sidebar-links">
-            <Loop each="links" as="link" data={safeLinks}>
+            <Loop each="links" as="link" data={links ?? []}>
               {(link: SidebarLink) => (
                 <Button
                   href={link.href}

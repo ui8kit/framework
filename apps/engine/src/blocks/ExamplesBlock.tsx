@@ -1,33 +1,48 @@
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
 
+export interface ExampleTab {
+  href: string;
+  label: string;
+}
+
+export interface ExamplesButtonContent {
+  title?: string;
+  defaultLabel?: string;
+  outlineLabel?: string;
+  ghostLabel?: string;
+}
+
+export interface ExamplesBadgeContent {
+  title?: string;
+  defaultLabel?: string;
+  secondaryLabel?: string;
+  outlineLabel?: string;
+}
+
+export interface ExamplesTypographyContent {
+  title?: string;
+  heading?: string;
+  body?: string;
+}
+
+export interface ExamplesActionsContent {
+  explore?: string;
+  allComponents?: string;
+}
+
+export interface ExamplesContent {
+  title?: string;
+  description?: string;
+  button?: ExamplesButtonContent;
+  badge?: ExamplesBadgeContent;
+  typography?: ExamplesTypographyContent;
+  actions?: ExamplesActionsContent;
+}
+
 export interface ExamplesBlockProps {
-  tabs?: Array<{ href: string; label: string }>;
-  examples?: {
-    title?: string;
-    description?: string;
-    button?: {
-      title?: string;
-      defaultLabel?: string;
-      outlineLabel?: string;
-      ghostLabel?: string;
-    };
-    badge?: {
-      title?: string;
-      defaultLabel?: string;
-      secondaryLabel?: string;
-      outlineLabel?: string;
-    };
-    typography?: {
-      title?: string;
-      heading?: string;
-      body?: string;
-    };
-    actions?: {
-      explore?: string;
-      allComponents?: string;
-    };
-  };
+  tabs?: ExampleTab[];
+  examples: ExamplesContent;
 }
 
 /**
@@ -36,15 +51,15 @@ export interface ExamplesBlockProps {
  * Tabs passed via props (from context on engine; caller must provide in dev).
  */
 export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
-  const safeTabs = tabs ?? [];
-
   return (
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">
         <Stack gap="2" data-class="examples-header">
-          <Title fontSize="2xl" fontWeight="bold" data-class="examples-title">
-            <Var name="examples.title" value={examples?.title} />
-          </Title>
+          <If test="examples.title" value={!!(examples.title ?? '')}>
+            <Title fontSize="2xl" fontWeight="bold" data-class="examples-title">
+              <Var name="examples.title" value={examples.title} />
+            </Title>
+          </If>
           <Text
             fontSize="sm"
             textColor="muted-foreground"
@@ -53,12 +68,12 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
           >
             <Var
               name="examples.description"
-              value={examples?.description}
+              value={examples.description}
             />
           </Text>
         </Stack>
 
-        <If test="tabs" value={safeTabs.length > 0}>
+        <If test="tabs" value={(tabs ?? []).length > 0}>
           <Group
             gap="0"
             justify="start"
@@ -66,8 +81,8 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
             border="b"
             data-class="examples-tabs"
           >
-            <Loop each="tabs" as="item" data={safeTabs}>
-              {(item: { href: string; label: string }) => (
+            <Loop each="tabs" as="item" keyExpr="item.href" data={tabs ?? []}>
+              {(item: ExampleTab) => (
                 <Button
                   href={item.href}
                   variant="ghost"
