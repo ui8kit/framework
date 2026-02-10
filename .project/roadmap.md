@@ -104,19 +104,27 @@ apps/
 - [x] Engine generates to `dist/react/`
 - [x] Validate all blocks produce valid JSX
 
+### apps/engine: css framwork components
+
+- [ ] complete full ui design and docs with examples
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+
 ### apps/web + apps/docs: Templates → HTML + CSS
 
-- [ ] Copy React templates from `engine/dist/react/`
+- [x] Copy React templates from `engine/dist/react/`
 - [ ] apps/web → static HTML + CSS generation
 - [ ] apps/docs → static HTML + CSS generation
-- [ ] Support static context and API data sources
+- [x] Support static context and API data sources
 - [ ] Build script for full site generation
 - [ ] Asset handling (images, fonts, icons)
 
 ### Generator Architecture
 
-- [ ] PluginManager без хардкода
-- [ ] Zod schemas для config/output
+- [x] PluginManager без хардкода
+- [x] Zod schemas для config/output
 - [ ] Mode strategies (tailwind, css3, inline)
 
 ### Web Standards Validation
@@ -124,7 +132,7 @@ apps/
 - [ ] HTML5 semantic output validation
 - [ ] W3C CSS validation в CI
 - [ ] ARIA attributes checking
-- [ ] Snapshot tests for DSL vs React output
+- [x] Snapshot tests for DSL vs React output
 
 ---
 
