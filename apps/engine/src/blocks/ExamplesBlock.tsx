@@ -1,8 +1,33 @@
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge } from '@ui8kit/core';
-import { NavLink } from 'react-router-dom';
+import { If, Loop, Var } from '@ui8kit/template';
 
 export interface ExamplesBlockProps {
   tabs?: Array<{ href: string; label: string }>;
+  examples?: {
+    title?: string;
+    description?: string;
+    button?: {
+      title?: string;
+      defaultLabel?: string;
+      outlineLabel?: string;
+      ghostLabel?: string;
+    };
+    badge?: {
+      title?: string;
+      defaultLabel?: string;
+      secondaryLabel?: string;
+      outlineLabel?: string;
+    };
+    typography?: {
+      title?: string;
+      heading?: string;
+      body?: string;
+    };
+    actions?: {
+      explore?: string;
+      allComponents?: string;
+    };
+  };
 }
 
 /**
@@ -10,13 +35,15 @@ export interface ExamplesBlockProps {
  * Tabs aligned from left; content below. Extensible for new sections.
  * Tabs passed via props (from context on engine; caller must provide in dev).
  */
-export function ExamplesBlock({ tabs = [] }: ExamplesBlockProps) {
+export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
+  const safeTabs = tabs ?? [];
+
   return (
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">
         <Stack gap="2" data-class="examples-header">
           <Title fontSize="2xl" fontWeight="bold" data-class="examples-title">
-            Examples
+            <Var name="examples.title" value={examples?.title} />
           </Title>
           <Text
             fontSize="sm"
@@ -24,33 +51,36 @@ export function ExamplesBlock({ tabs = [] }: ExamplesBlockProps) {
             max="w-xl"
             data-class="examples-description"
           >
-            Common UI components and patterns.
+            <Var
+              name="examples.description"
+              value={examples?.description}
+            />
           </Text>
         </Stack>
 
-        {/* Tabs — left-aligned; routes from context.examplesSidebarLinks */}
-        <Group
-          gap="0"
-          justify="start"
-          items="center"
-          border="b"
-          data-class="examples-tabs"
-        >
-          {tabs.map((item) => (
-            <NavLink
-              key={item.href}
-              to={item.href}
-              className={({ isActive }) =>
-                isActive
-                  ? 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-t-md transition-colors -mb-px border-b-2 border-primary text-foreground'
-                  : 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-t-md transition-colors -mb-px border-b-2 border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50'
-              }
-              data-class="examples-tab"
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </Group>
+        <If test="tabs" value={safeTabs.length > 0}>
+          <Group
+            gap="0"
+            justify="start"
+            items="center"
+            border="b"
+            data-class="examples-tabs"
+          >
+            <Loop each="tabs" as="item" data={safeTabs}>
+              {(item: { href: string; label: string }) => (
+                <Button
+                  href={item.href}
+                  variant="ghost"
+                  size="sm"
+                  rounded="none"
+                  data-class="examples-tab"
+                >
+                  <Var name="item.label" value={item.label} />
+                </Button>
+              )}
+            </Loop>
+          </Group>
+        </If>
 
         <Grid cols="1-2-4" gap="6" max="w-6xl" data-class="examples-grid">
           {/* Buttons */}
@@ -63,12 +93,18 @@ export function ExamplesBlock({ tabs = [] }: ExamplesBlockProps) {
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
-              Button
+              <Var name="examples.button.title" value={examples?.button?.title} />
             </Text>
             <Group gap="2" items="center" data-class="examples-card-content">
-              <Button size="sm" data-class="examples-btn">Default</Button>
-              <Button variant="outline" size="sm" data-class="examples-btn">Outline</Button>
-              <Button variant="ghost" size="sm" data-class="examples-btn">Ghost</Button>
+              <Button size="sm" data-class="examples-btn">
+                <Var name="examples.button.defaultLabel" value={examples?.button?.defaultLabel} />
+              </Button>
+              <Button variant="outline" size="sm" data-class="examples-btn">
+                <Var name="examples.button.outlineLabel" value={examples?.button?.outlineLabel} />
+              </Button>
+              <Button variant="ghost" size="sm" data-class="examples-btn">
+                <Var name="examples.button.ghostLabel" value={examples?.button?.ghostLabel} />
+              </Button>
             </Group>
           </Stack>
 
@@ -82,12 +118,18 @@ export function ExamplesBlock({ tabs = [] }: ExamplesBlockProps) {
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
-              Badge
+              <Var name="examples.badge.title" value={examples?.badge?.title} />
             </Text>
             <Group gap="2" items="center" data-class="examples-card-content">
-              <Badge variant="default" data-class="examples-badge">Default</Badge>
-              <Badge variant="secondary" data-class="examples-badge">Secondary</Badge>
-              <Badge variant="outline" data-class="examples-badge">Outline</Badge>
+              <Badge variant="default" data-class="examples-badge">
+                <Var name="examples.badge.defaultLabel" value={examples?.badge?.defaultLabel} />
+              </Badge>
+              <Badge variant="secondary" data-class="examples-badge">
+                <Var name="examples.badge.secondaryLabel" value={examples?.badge?.secondaryLabel} />
+              </Badge>
+              <Badge variant="outline" data-class="examples-badge">
+                <Var name="examples.badge.outlineLabel" value={examples?.badge?.outlineLabel} />
+              </Badge>
             </Group>
           </Stack>
 
@@ -101,14 +143,14 @@ export function ExamplesBlock({ tabs = [] }: ExamplesBlockProps) {
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
-              Typography
+              <Var name="examples.typography.title" value={examples?.typography?.title} />
             </Text>
             <Stack gap="1" data-class="examples-card-content">
               <Title fontSize="lg" fontWeight="semibold" data-class="examples-typo-title">
-                Heading
+                <Var name="examples.typography.heading" value={examples?.typography?.heading} />
               </Title>
               <Text fontSize="sm" textColor="muted-foreground" data-class="examples-typo-text">
-                Body text
+                <Var name="examples.typography.body" value={examples?.typography?.body} />
               </Text>
             </Stack>
           </Stack>
@@ -116,10 +158,10 @@ export function ExamplesBlock({ tabs = [] }: ExamplesBlockProps) {
 
         <Group gap="4" justify="center" items="center" data-class="examples-actions">
           <Button href="/examples" data-class="examples-cta">
-            Explore Examples
+            <Var name="examples.actions.explore" value={examples?.actions?.explore} />
           </Button>
           <Button variant="outline" href="/docs/components" data-class="examples-cta">
-            All Components
+            <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents} />
           </Button>
         </Group>
       </Stack>

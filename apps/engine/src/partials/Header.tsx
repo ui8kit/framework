@@ -11,14 +11,16 @@ export type HeaderProps = {
   title?: string;
   subtitle?: string;
   navItems?: NavItem[];
+  dataClass?: string;
   'data-class'?: string;
 };
 
 export function Header({
-  title = 'UI8Kit',
-  subtitle = 'Design System',
-  navItems = [],
-  'data-class': dataClass,
+  title,
+  subtitle,
+  navItems,
+  dataClass,
+  'data-class': dataClassAttr,
 }: HeaderProps) {
   return (
     <Block
@@ -27,7 +29,7 @@ export function Header({
       bg="background"
       border=""
       shadow="sm"
-      data-class={dataClass || 'header'}
+      data-class={dataClass ?? dataClassAttr ?? 'header'}
     >
       <Container
         max="w-6xl"
@@ -48,24 +50,24 @@ export function Header({
               textColor="primary"
               data-class="header-brand-title"
             >
-              <Var name="title" value={title} />
+              <Var name="title" value={title ?? 'UI8Kit'} />
             </Text>
-            <If test="subtitle" value={!!subtitle}>
+            <If test="subtitle" value={!!(subtitle ?? 'Design System')}>
               <Text
                 fontSize="sm"
                 textColor="muted-foreground"
                 data-class="header-brand-subtitle"
               >
-                <Var name="subtitle" value={subtitle} />
+                <Var name="subtitle" value={subtitle ?? 'Design System'} />
               </Text>
             </If>
           </Group>
         </a>
 
         {/* Navigation */}
-        <If test="navItems" value={navItems.length > 0}>
+        <If test="navItems" value={(navItems ?? []).length > 0}>
           <Block component="nav" flex="" gap="2" items="center" data-class="header-nav">
-            <Loop each="navItems" as="item" data={navItems}>
+            <Loop each="navItems" as="item" data={navItems ?? []}>
               {(item: NavItem) => (
                 <Button
                   variant="ghost"

@@ -22,30 +22,30 @@ export type MainLayoutProps = {
 
 export function MainLayout({
   children,
-  mode = 'with-sidebar',
+  mode,
   sidebar,
-  navItems = [],
-  footerSections = [],
-  headerTitle = 'UI8Kit',
-  headerSubtitle = 'Design System',
-  footerCopyright = '© 2025 UI8Kit Design System. All rights reserved.',
-  showHeader = true,
-  showFooter = true,
+  navItems,
+  footerSections,
+  headerTitle,
+  headerSubtitle,
+  footerCopyright,
+  showHeader,
+  showFooter,
 }: MainLayoutProps) {
   return (
     <Fragment>
-      {showHeader ? (
+      {(showHeader ?? true) ? (
         <Header
-          title={headerTitle}
-          subtitle={headerSubtitle}
-          navItems={navItems}
-          data-class="main-layout-header"
+          title={headerTitle ?? 'UI8Kit'}
+          subtitle={headerSubtitle ?? 'Design System'}
+          navItems={navItems ?? []}
+          dataClass="main-layout-header"
         />
       ) : null}
 
       {/* Main Content */}
       <Block component="main" flex="1" py="8" data-class="main-layout-content">
-        {(mode === 'with-sidebar' || mode === 'sidebar-left') && sidebar ? (
+        {((mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left') && sidebar ? (
           <Container data-class="main-layout-container">
             <Grid
               grid="cols-3"
@@ -56,7 +56,7 @@ export function MainLayout({
               <Stack
                 col="span-2"
                 gap="6"
-                order={mode === 'sidebar-left' ? "2" : "1"}
+                order={(mode ?? 'with-sidebar') === 'sidebar-left' ? "2" : "1"}
                 data-class="main-layout-main"
               >
                 {children}
@@ -65,10 +65,10 @@ export function MainLayout({
               {/* Sidebar Column */}
               <Stack
                 col="span-1"
-                order={mode === 'sidebar-left' ? "1" : "2"}
+                order={(mode ?? 'with-sidebar') === 'sidebar-left' ? "1" : "2"}
                 data-class="main-layout-sidebar-wrapper"
               >
-                <Sidebar position={mode === 'sidebar-left' ? 'left' : 'right'}>
+                <Sidebar position={(mode ?? 'with-sidebar') === 'sidebar-left' ? 'left' : 'right'}>
                   {sidebar}
                 </Sidebar>
               </Stack>
@@ -85,11 +85,11 @@ export function MainLayout({
         )}
       </Block>
 
-      {showFooter ? (
+      {(showFooter ?? true) ? (
         <Footer
-          copyright={footerCopyright}
-          sections={footerSections}
-          data-class="main-layout-footer"
+          copyright={footerCopyright ?? '© 2025 UI8Kit Design System. All rights reserved.'}
+          sections={footerSections ?? []}
+          dataClass="main-layout-footer"
         />
       ) : null}
     </Fragment>

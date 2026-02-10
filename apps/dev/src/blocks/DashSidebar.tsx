@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Stack, Text } from '@ui8kit/core';
+import { Stack, Text, Button } from '@ui8kit/core';
 
 interface DashSidebarProps {
   label?: string;
@@ -15,11 +14,11 @@ export function DashSidebar(props: DashSidebarProps) {
       <Text fontSize="xs" fontWeight="semibold" textColor="muted-foreground" data-class="dash-sidebar-label">
         {label}
       </Text>
-      {links.map((link, index) => (
-      <React.Fragment key={link.href}>
-      <Link to={link.href} data-class="dash-sidebar-link">{link.label}</Link>
+      {links ? (<>{links.map((link, index) => (
+      <React.Fragment key={link.id ?? index}>
+      <Button href={link.href} size="sm" variant={link.active ? 'secondary' : 'ghost'} justify="start" data-class="dash-sidebar-link">{link.label}</Button>
       </React.Fragment>
-      ))}
+      ))}</>) : null}
     </Stack>
   );
 }

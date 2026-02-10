@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Stack, Text } from '@ui8kit/core';
+import { Stack, Text, Button } from '@ui8kit/core';
 
 interface SidebarContentProps {
   title?: string;
@@ -16,13 +15,11 @@ export function SidebarContent(props: SidebarContentProps) {
         <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
           {title}
         </Text>
-        <Stack gap="1" data-class="sidebar-links">
-          {links.map((link, index) => (
-          <React.Fragment key={link.href}>
-          <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground" data-class="sidebar-link">{link.label}</Link>
-          </React.Fragment>
-          ))}
-        </Stack>
+        {links ? (<><Stack gap="1" data-class="sidebar-links">{links.map((link, index) => (
+        <React.Fragment key={link.id ?? index}>
+        <Button href={link.href} variant="link" size="sm" justify="start" data-class="sidebar-link">{link.label}</Button>
+        </React.Fragment>
+        ))}</Stack></>) : null}
       </Stack>
     </Stack>
   );

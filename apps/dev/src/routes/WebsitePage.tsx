@@ -7,7 +7,7 @@ export function WebsitePage() {
   return (
     <MainLayout mode={"full"} navItems={context.navItems} sidebar={<SidebarContent title="Quick Links" links={context.sidebarLinks} />} headerTitle={context.site.title} headerSubtitle={context.site.subtitle}>
       <HeroBlock {...context.hero} />
-      <ExamplesBlock tabs={context.examplesSidebarLinks ?? []} />
+      <ExamplesBlock tabs={context.examplesSidebarLinks} examples={context.examples} />
     </MainLayout>
   );
 }

@@ -123,6 +123,32 @@ export interface DocsComponentsFixture {
   lead?: string;
 }
 
+export interface ExamplesFixture {
+  title?: string;
+  description?: string;
+  button?: {
+    title?: string;
+    defaultLabel?: string;
+    outlineLabel?: string;
+    ghostLabel?: string;
+  };
+  badge?: {
+    title?: string;
+    defaultLabel?: string;
+    secondaryLabel?: string;
+    outlineLabel?: string;
+  };
+  typography?: {
+    title?: string;
+    heading?: string;
+    body?: string;
+  };
+  actions?: {
+    explore?: string;
+    allComponents?: string;
+  };
+}
+
 // -----------------------------------------------------------------------------
 // Unified context shape (for copy-paste apps: install @ui8kit/data, use context)
 // -----------------------------------------------------------------------------
@@ -143,6 +169,7 @@ export interface AppContext {
   docsIntro: DocsIntroFixture;
   docsInstallation: DocsInstallationFixture;
   docsComponents: DocsComponentsFixture;
+  examples: ExamplesFixture;
   docsSidebarLabel: string;
   examplesSidebarLabel: string;
   getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];

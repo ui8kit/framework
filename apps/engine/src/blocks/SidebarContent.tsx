@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Stack, Text } from '@ui8kit/core';
+import { Stack, Text, Button } from '@ui8kit/core';
+import { If, Loop, Var } from '@ui8kit/template';
 
 export type SidebarLink = {
   label: string;
@@ -14,34 +14,38 @@ export type SidebarContentProps = {
 
 /**
  * Sidebar content block for website layout.
- * Pure presentational: title and links from props. Static prototype defaults.
+ * Pure presentational: title and links come from external context/props.
  */
 export function SidebarContent({
-  title = 'Quick Links',
-  links = [
-    { label: 'Home', href: '/' },
-    { label: 'Dashboard', href: '/dashboard' },
-  ],
+  title,
+  links,
   'data-class': dataClass,
 }: SidebarContentProps) {
+  const safeLinks = links ?? [];
+
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">
         <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
-          {title}
+          <Var name="title" value={title} />
         </Text>
-        <Stack gap="1" data-class="sidebar-links">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground"
-              data-class="sidebar-link"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </Stack>
+        <If test="links" value={safeLinks.length > 0}>
+          <Stack gap="1" data-class="sidebar-links">
+            <Loop each="links" as="link" data={safeLinks}>
+              {(link: SidebarLink) => (
+                <Button
+                  href={link.href}
+                  variant="link"
+                  size="sm"
+                  justify="start"
+                  data-class="sidebar-link"
+                >
+                  <Var name="link.label" value={link.label} />
+                </Button>
+              )}
+            </Loop>
+          </Stack>
+        </If>
       </Stack>
     </Stack>
   );

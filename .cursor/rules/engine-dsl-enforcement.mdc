@@ -1,0 +1,29 @@
+---
+description: strict rules for apps/engine - no hardcode, ui8kit + template DSL only
+globs: apps/engine/**
+alwaysApply: false
+---
+
+# Engine DSL Enforcement
+
+Scope: this rule is mandatory for any edits under `apps/engine/**`.
+
+## Non-negotiable constraints
+
+1. Do not hardcode business/content values in engine components. Move values to props, data sources, or template variables.
+2. Build template logic strictly with `@ui8kit/template` DSL primitives (`If`, `Else`, `ElseIf`, `Loop`, `Var`, `Slot`, `Include`, `DefineBlock`, `Extends`) when logic/output targets template generation.
+3. Follow ui8kit semantics: use semantic components and props, avoid `className`, inline `style`, raw HTML wrappers when ui8kit primitives exist.
+4. Keep all comments and docs in English.
+
+## Required checks before finalizing
+
+1. Run lint for the engine scope using the lint package:
+   - `bun --filter @ui8kit/lint run lint`
+   - or workspace equivalent that executes `packages/lint` validation.
+2. If a command cannot be run, explicitly report it and why; do not claim success.
+
+## Reject patterns
+
+- Hardcoded literals that should be template/data variables (titles, labels, prices, statuses, feature flags).
+- Direct template syntax strings instead of DSL components when editing React/TSX sources.
+- Any change that bypasses `packages/lint` validation without reporting the skipped check.

@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Stack, Text } from '@ui8kit/core';
+import { Stack, Text, Button } from '@ui8kit/core';
+import { If, Loop, Var } from '@ui8kit/template';
 
 export type DashSidebarLink = {
   label: string;
@@ -14,17 +14,16 @@ export type DashSidebarProps = {
 };
 
 /**
- * Dashboard sidebar navigation block.
- * Pure presentational: label and links from props. Static prototype defaults.
+ * Dashboard sidebar navigation block. 
+ * Pure presentational: label and links come from external context/props.
  */
 export function DashSidebar({
-  label = 'Navigation',
-  links = [
-    { label: 'Website', href: '/', active: false },
-    { label: 'Dashboard', href: '/dashboard', active: true },
-  ],
+  label,
+  links,
   'data-class': dataClass,
 }: DashSidebarProps) {
+  const safeLinks = links ?? [];
+
   return (
     <Stack gap="2" p="4" data-class={dataClass ?? 'dash-sidebar-nav'}>
       <Text
@@ -33,22 +32,23 @@ export function DashSidebar({
         textColor="muted-foreground"
         data-class="dash-sidebar-label"
       >
-        {label}
+        <Var name="label" value={label} />
       </Text>
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          to={link.href}
-          className={
-            link.active
-              ? 'text-sm px-2 py-1 rounded bg-accent font-medium'
-              : 'text-sm px-2 py-1 rounded hover:bg-accent'
-          }
-          data-class="dash-sidebar-link"
-        >
-          {link.label}
-        </Link>
-      ))}
+      <If test="links" value={safeLinks.length > 0}>
+        <Loop each="links" as="link" data={safeLinks}>
+          {(link: DashSidebarLink) => (
+            <Button
+              href={link.href}
+              size="sm"
+              variant={link.active ? 'secondary' : 'ghost'}
+              justify="start"
+              data-class="dash-sidebar-link"
+            >
+              <Var name="link.label" value={link.label} />
+            </Button>
+          )}
+        </Loop>
+      </If>
     </Stack>
   );
 }

@@ -14,13 +14,15 @@ export type FooterSection = {
 export type FooterProps = {
   copyright?: string;
   sections?: FooterSection[];
+  dataClass?: string;
   'data-class'?: string;
 };
 
 export function Footer({
   copyright = '© 2025 UI8Kit Design System. All rights reserved.',
   sections = [],
-  'data-class': dataClass,
+  dataClass,
+  'data-class': dataClassAttr,
 }: FooterProps) {
   return (
     <Block
@@ -28,7 +30,7 @@ export function Footer({
       py="8"
       border="t"
       bg="card"
-      data-class={dataClass || 'footer'}
+      data-class={dataClass ?? dataClassAttr ?? 'footer'}
     >
       <Container
         flex=""

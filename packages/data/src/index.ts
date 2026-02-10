@@ -20,6 +20,7 @@ import type {
   DocsIntroFixture,
   DocsInstallationFixture,
   DocsComponentsFixture,
+  ExamplesFixture,
   NavItem,
   SidebarLink,
   DashboardSidebarLink,
@@ -61,6 +62,32 @@ const examplesSidebarLinks: DashboardSidebarLink[] = [
   { label: 'Authentication', href: '/examples/authentication', active: false },
 ];
 
+const examples: ExamplesFixture = {
+  title: 'Examples',
+  description: 'Common UI components and patterns.',
+  button: {
+    title: 'Button',
+    defaultLabel: 'Default',
+    outlineLabel: 'Outline',
+    ghostLabel: 'Ghost',
+  },
+  badge: {
+    title: 'Badge',
+    defaultLabel: 'Default',
+    secondaryLabel: 'Secondary',
+    outlineLabel: 'Outline',
+  },
+  typography: {
+    title: 'Typography',
+    heading: 'Heading',
+    body: 'Body text',
+  },
+  actions: {
+    explore: 'Explore Examples',
+    allComponents: 'All Components',
+  },
+};
+
 const site: SiteInfo = {
   title: 'UI8Kit',
   subtitle: 'Template Engine',
@@ -90,6 +117,7 @@ export const context = {
   dashboardSidebarLinks,
   docsSidebarLinks,
   examplesSidebarLinks,
+  examples,
   docsSidebarLabel,
   examplesSidebarLabel,
   getDocsSidebarLinks,
