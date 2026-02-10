@@ -32,11 +32,11 @@ export function DashSidebar({
       >
         <Var name="label" value={label} />
       </Text>
-      <If test="links" value={(links ?? []).length > 0}>
+      <If test="(links ?? []).length > 0" value={(links ?? []).length > 0}>
         <Loop each="links" as="link" data={links ?? []}>
           {(link: DashSidebarLink) => (
             <>
-              <If test="link.active" value={!!link.active}>
+              <If test="!!link.active" value={!!link.active}>
                 <Button
                   href={link.href}
                   size="sm"
@@ -47,7 +47,7 @@ export function DashSidebar({
                   <Var name="link.label" value={link.label} />
                 </Button>
               </If>
-              <If test="link.inactive" value={!link.active}>
+              <If test="!link.active" value={!link.active}>
                 <Button
                   href={link.href}
                   size="sm"

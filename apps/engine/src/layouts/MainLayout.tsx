@@ -35,7 +35,7 @@ export function MainLayout({
 }: MainLayoutProps) {
   return (
     <Fragment>
-      <If test="layout.showHeader" value={showHeader ?? true}>
+      <If test="showHeader ?? true" value={showHeader ?? true}>
         <Header
           title={headerTitle ?? 'UI8Kit'}
           subtitle={headerSubtitle ?? 'Design System'}
@@ -47,17 +47,17 @@ export function MainLayout({
       {/* Main Content */}
       <Block component="main" flex="1" py="8" data-class="main-layout-content">
         <If
-          test="layout.withSidebarMode"
+          test="(mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left'"
           value={(mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left'}
         >
-          <If test="layout.hasSidebarContent" value={!!sidebar}>
+          <If test="!!sidebar" value={!!sidebar}>
             <Container data-class="main-layout-container">
               <Grid
                 grid="cols-3"
                 gap="8"
                 data-class="main-layout-grid"
               >
-                <If test="layout.sidebarLeft" value={(mode ?? 'with-sidebar') === 'sidebar-left'}>
+                <If test="(mode ?? 'with-sidebar') === 'sidebar-left'" value={(mode ?? 'with-sidebar') === 'sidebar-left'}>
                   <>
                     <Stack
                       col="span-2"
@@ -80,7 +80,7 @@ export function MainLayout({
                   </>
                 </If>
 
-                <If test="layout.sidebarRight" value={(mode ?? 'with-sidebar') !== 'sidebar-left'}>
+                <If test="(mode ?? 'with-sidebar') !== 'sidebar-left'" value={(mode ?? 'with-sidebar') !== 'sidebar-left'}>
                   <>
                     <Stack
                       col="span-2"
@@ -108,7 +108,7 @@ export function MainLayout({
         </If>
 
         <If
-          test="layout.fullContent"
+          test="(mode ?? 'with-sidebar') === 'full' || !sidebar"
           value={(mode ?? 'with-sidebar') === 'full' || !sidebar}
         >
           <Container
@@ -121,7 +121,7 @@ export function MainLayout({
         </If>
       </Block>
 
-      <If test="layout.showFooter" value={showFooter ?? true}>
+      <If test="showFooter ?? true" value={showFooter ?? true}>
         <Footer
           copyright={footerCopyright ?? '© 2025 UI8Kit Design System. All rights reserved.'}
           sections={footerSections ?? []}

@@ -21,19 +21,19 @@ Landing site with Hero + navigation sections.
 
 ### 1.1 Home page `/`
 
-- [ ] Hero block (welcome)
-- [ ] Second block: Examples section with common components
-- [ ] Header + Footer partials
-- [ ] Hint: `context.navItems` for main nav links
+- [x] Hero block (welcome)
+- [x] Second block: Examples section with common components
+- [x] Header + Footer partials
+- [x] Hint: `context.navItems` for main nav links
 
 ### 1.2 Section routes (SPA, Vite Router)
 
-- [ ] `/examples` — default: Examples
-- [ ] `/examples/dashboard` — Dashboard examples
-- [ ] `/examples/tasks` — Tasks examples
-- [ ] `/examples/playground` — Playground
-- [ ] `/examples/authentication` — Auth examples
-- [ ] Hint: same Hero on all; only content differs; use `<Outlet />` or nested routes
+- [x] `/examples` — default: Examples
+- [x] `/examples/dashboard` — Dashboard examples
+- [x] `/examples/tasks` — Tasks examples
+- [x] `/examples/playground` — Playground
+- [x] `/examples/authentication` — Auth examples
+- [x] Hint: same Hero on all; only content differs; use `<Outlet />` or nested routes
 
 ### 1.3 Blocks showcase `/blocks`
 

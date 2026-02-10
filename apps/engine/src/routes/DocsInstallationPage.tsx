@@ -28,16 +28,25 @@ export function DocsInstallationPage() {
       <Stack gap="8" data-class="docs-install-content">
         <Stack gap="4" data-class="docs-install-header">
           <Title fontSize="4xl" fontWeight="bold" data-class="docs-install-title">
-            <Var name="docsInstallation.title" value={context.docsInstallation.title} />
+            <Var
+              name="context.docsInstallation.title"
+              value={context.docsInstallation.title}
+            />
           </Title>
           <Text fontSize="lg" textColor="muted-foreground" data-class="docs-install-lead">
-            <Var name="docsInstallation.lead" value={context.docsInstallation.lead} />
+            <Var
+              name="context.docsInstallation.lead"
+              value={context.docsInstallation.lead}
+            />
           </Text>
         </Stack>
         <Stack gap="6" data-class="docs-install-sections">
-          <If test="docsInstallation.sections" value={(context.docsInstallation.sections ?? []).length > 0}>
+          <If
+            test="(context.docsInstallation.sections ?? []).length > 0"
+            value={(context.docsInstallation.sections ?? []).length > 0}
+          >
             <Loop
-              each="docsInstallation.sections"
+              each="context.docsInstallation.sections"
               as="section"
               keyExpr="section.id"
               data={context.docsInstallation.sections ?? []}
@@ -56,7 +65,7 @@ export function DocsInstallationPage() {
                   </If>
                   <If test="section.text" value={!!section.text}>
                     <>
-                      <If test="section.codeForText" value={!!section.code}>
+                      <If test="!!section.code" value={!!section.code}>
                         <Text
                           fontSize="sm"
                           textColor="muted-foreground"
@@ -65,7 +74,7 @@ export function DocsInstallationPage() {
                           <Var name="section.text" value={section.text} />
                         </Text>
                       </If>
-                      <If test="section.plainText" value={!section.code}>
+                      <If test="!section.code" value={!section.code}>
                         <Text
                           fontSize="base"
                           textColor="muted-foreground"

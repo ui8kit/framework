@@ -4,7 +4,12 @@ import { DashSidebar } from '@/blocks';
 import { context } from '@ui8kit/data';
 import { Stack, Title, Text, Block } from '@ui8kit/core';
 
-export function DocsInstallationPage() {
+interface DocsInstallationPageProps {
+  length?: any;
+}
+
+export function DocsInstallationPage(props: DocsInstallationPageProps) {
+  const { length } = props;
   return (
     <DashLayout sidebar={<DashSidebar
               label={context.docsSidebarLabel}
@@ -20,11 +25,11 @@ export function DocsInstallationPage() {
           </Text>
         </Stack>
         <Stack gap="6" data-class="docs-install-sections">
-          {.map((section, index) => (
+          {(context.docsInstallation.sections ?? []).length > 0 ? (<>{context.docsInstallation.sections.map((section, index) => (
           <React.Fragment key={section.id}>
-          <Stack gap="2" data-class="docs-install-section"><Title fontSize="xl" fontWeight="semibold" data-class="docs-install-section-title">{section.title}</Title>{section.code ? (<><Block component="pre" p="4" rounded="md" bg="muted" data-class="docs-install-code"><Text fontSize="sm" component="code" data-class="docs-install-code-text">{section.code}</Text></Block></>) : (<></>)}{section.text ? (<><Text fontSize={section.code ? 'sm' : 'base'} textColor="muted-foreground" data-class={section.code ? 'docs-install-desc' : 'docs-install-text'}>{section.text}</Text></>) : (<></>)}</Stack>
+          <Stack gap="2" data-class="docs-install-section"><Title fontSize="xl" fontWeight="semibold" data-class="docs-install-section-title">{section.title}</Title>{section.code ? (<><Block component="pre" p="4" rounded="md" bg="muted" data-class="docs-install-code"><Text fontSize="sm" component="code" data-class="docs-install-code-text">{section.code}</Text></Block></>) : null}{section.text ? (<>{!!section.code ? (<><Text fontSize="sm" textColor="muted-foreground" data-class="docs-install-desc">{section.text}</Text></>) : null}{!section.code ? (<><Text fontSize="base" textColor="muted-foreground" data-class="docs-install-text">{section.text}</Text></>) : null}</>) : null}</Stack>
           </React.Fragment>
-          ))}
+          ))}</>) : null}
         </Stack>
       </Stack>
     </DashLayout>

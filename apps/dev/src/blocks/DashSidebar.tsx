@@ -14,9 +14,9 @@ export function DashSidebar(props: DashSidebarProps) {
       <Text fontSize="xs" fontWeight="semibold" textColor="muted-foreground" data-class="dash-sidebar-label">
         {label}
       </Text>
-      {links ? (<>{links.map((link, index) => (
+      {(links ?? []).length > 0 ? (<>{links.map((link, index) => (
       <React.Fragment key={link.id ?? index}>
-      <Button href={link.href} size="sm" variant={link.active ? 'secondary' : 'ghost'} justify="start" data-class="dash-sidebar-link">{link.label}</Button>
+      {!!link.active ? (<><Button href={link.href} size="sm" variant="secondary" justify="start" data-class="dash-sidebar-link">{link.label}</Button></>) : null}{!link.active ? (<><Button href={link.href} size="sm" variant="ghost" justify="start" data-class="dash-sidebar-link">{link.label}</Button></>) : null}
       </React.Fragment>
       ))}</>) : null}
     </Stack>

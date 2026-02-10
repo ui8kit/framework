@@ -106,8 +106,8 @@ apps/
 
 ### apps/engine: css framwork components
 
+- [x] complete base ui design from DSL 
 - [ ] complete full ui design and docs with examples
-- [ ] 
 - [ ] 
 - [ ] 
 - [ ] 

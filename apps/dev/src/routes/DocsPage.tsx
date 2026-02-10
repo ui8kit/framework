@@ -4,7 +4,12 @@ import { DashSidebar } from '@/blocks';
 import { context } from '@ui8kit/data';
 import { Stack, Title, Text } from '@ui8kit/core';
 
-export function DocsPage() {
+interface DocsPageProps {
+  length?: any;
+}
+
+export function DocsPage(props: DocsPageProps) {
+  const { length } = props;
   return (
     <DashLayout sidebar={<DashSidebar
               label={context.docsSidebarLabel}
@@ -20,11 +25,11 @@ export function DocsPage() {
           </Text>
         </Stack>
         <Stack gap="6" data-class="docs-sections">
-          {.map((section, index) => (
+          {(context.docsIntro.sections ?? []).length > 0 ? (<>{context.docsIntro.sections.map((section, index) => (
           <React.Fragment key={section.id}>
           <Stack gap="2" data-class="docs-section"><Title fontSize="xl" fontWeight="semibold" data-class="docs-section-title">{section.title}</Title><Text fontSize="base" textColor="muted-foreground" data-class="docs-section-text">{section.text}</Text></Stack>
           </React.Fragment>
-          ))}
+          ))}</>) : null}
         </Stack>
       </Stack>
     </DashLayout>

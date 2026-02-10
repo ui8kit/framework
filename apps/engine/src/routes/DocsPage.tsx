@@ -27,16 +27,19 @@ export function DocsPage() {
       <Stack gap="8" data-class="docs-content">
         <Stack gap="4" data-class="docs-header">
           <Title fontSize="4xl" fontWeight="bold" data-class="docs-title">
-            <Var name="docsIntro.title" value={context.docsIntro.title} />
+            <Var name="context.docsIntro.title" value={context.docsIntro.title} />
           </Title>
           <Text fontSize="lg" textColor="muted-foreground" data-class="docs-lead">
-            <Var name="docsIntro.lead" value={context.docsIntro.lead} />
+            <Var name="context.docsIntro.lead" value={context.docsIntro.lead} />
           </Text>
         </Stack>
         <Stack gap="6" data-class="docs-sections">
-          <If test="docsIntro.sections" value={(context.docsIntro.sections ?? []).length > 0}>
+          <If
+            test="(context.docsIntro.sections ?? []).length > 0"
+            value={(context.docsIntro.sections ?? []).length > 0}
+          >
             <Loop
-              each="docsIntro.sections"
+              each="context.docsIntro.sections"
               as="section"
               keyExpr="section.id"
               data={context.docsIntro.sections ?? []}
