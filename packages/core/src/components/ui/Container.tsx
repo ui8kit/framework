@@ -30,18 +30,12 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
     // Use provided data-class or default to "container"
     const dataClass = (rest as any)['data-class'] || 'container';
 
-    // When flex layout props (flex, gap, items, justify) are used, add display: flex
-    // so gap/items/justify work. flex="col" alone gives flex-col but not display: flex.
-    const needsFlex =
-      'flex' in props || 'gap' in props || 'items' in props || 'justify' in props;
-
     return (
       <Element
         ref={ref}
         data-class={dataClass}
         className={cn(
           defaultProps,
-          needsFlex && 'flex',
           utilityClassName,
           className
         )}

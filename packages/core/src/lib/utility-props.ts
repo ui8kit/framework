@@ -39,6 +39,8 @@ export type UtilityPropValue<P extends UtilityPropPrefix> =
  * Use this when whitelist checks are enforced by scripts/guards and you want
  * the runtime to be as cheap as simple `cn(...)`.
  */
+const FLEX_DIR_VALUES = ['col', 'row', 'col-reverse', 'row-reverse'] as const;
+
 export function ux(props: UtilityPropBag): string {
   const tokens: string[] = [];
 
@@ -53,6 +55,12 @@ export function ux(props: UtilityPropBag): string {
     const value = String(raw).trim();
     if (!value) {
       tokens.push(k);
+      continue;
+    }
+
+    // flex="col"|"row"|... → "flex" + "flex-col" (direction implies display: flex)
+    if (k === 'flex' && (FLEX_DIR_VALUES as readonly string[]).includes(value)) {
+      tokens.push('flex', `flex-${value}`);
       continue;
     }
 

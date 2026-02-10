@@ -13,7 +13,7 @@ export type StackProps
 };
 
 const defaultProps = ux({
-  flex: '',        // display: flex
+  flex: 'col',     // display: flex + flex-direction: column
   gap: '4',        // gap: 1rem
   items: 'start',  // align-items: flex-start
   justify: 'start' // justify-content: flex-start
@@ -22,7 +22,7 @@ const defaultProps = ux({
 export const Stack = forwardRef<HTMLElement, StackProps>(
   ({
     children,
-    className = 'flex-col',
+    className,
     component = 'div',
     ...props
   }, ref) => {
