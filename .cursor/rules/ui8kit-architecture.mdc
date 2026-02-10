@@ -13,6 +13,25 @@ When mentioned: "design", "UI", "ui8kit", "component", "block", "styling", "layo
 3. **data-class Required**: Every element needs `data-class` for CSS generation
 4. **No Inline Styles**: Use semantic props only (no `className`, `style={}`)
 5. **Semantic Colors**: Use tokens like `primary`, `secondary`, `muted`, `destructive`, not hex values
+6. **Valid HTML5**: Target W3C-valid HTML5 + CSS3; use semantic tags throughout
+
+## Semantic HTML5 (W3C Valid Output)
+
+Target: valid W3C HTML5 + CSS3 after generation.
+
+| Role | Use | Component |
+|------|-----|-----------|
+| Page section | `<section>` | `<Block component="section">` |
+| Self-contained content (card, quote, plan) | `<article>` | `<Block component="article">` or `<Stack component="article">` |
+| Complementary content (sidebar) | `<aside>` | `<Block component="aside">` |
+| Primary content | `<main>` | `<Block component="main">` |
+| Site header | `<header>` | `<Block component="header">` |
+| Site footer | `<footer>` | `<Block component="footer">` |
+| Navigation | `<nav>` | `<Block component="nav">` |
+| Headings | `<h1>`–`<h6>` | `<Title order={1-6}>` |
+| Paragraphs | `<p>` | `<Text>` (default) |
+
+**Layout structure**: `header` → `main` → `footer`. `main` must not wrap `aside`; use a wrapper `div` for layout.
 
 ## Components (Import from `@ui8kit/core`)
 

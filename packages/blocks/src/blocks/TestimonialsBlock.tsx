@@ -42,6 +42,7 @@ export function TestimonialsBlock({
           <Loop each="testimonials" as="testimonial" data={testimonials}>
             {(testimonial: Testimonial) => (
               <Stack
+                component="article"
                 gap="4"
                 p="6"
                 rounded="lg"

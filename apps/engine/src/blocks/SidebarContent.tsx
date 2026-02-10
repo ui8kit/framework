@@ -26,7 +26,7 @@ export function SidebarContent({
 }: SidebarContentProps) {
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
-      <div data-class="sidebar-widget">
+      <Stack component="nav" data-class="sidebar-widget">
         <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
           {title}
         </Text>
@@ -42,7 +42,7 @@ export function SidebarContent({
             </Link>
           ))}
         </Stack>
-      </div>
+      </Stack>
     </Stack>
   );
 }

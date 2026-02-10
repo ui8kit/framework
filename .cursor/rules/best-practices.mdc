@@ -37,6 +37,27 @@ export function BtnGrp() { }
 </div>
 ```
 
+### Semantic HTML5 (W3C Valid)
+
+Use semantic tags for valid HTML5 output. `Block` and `Stack` support `component` prop:
+
+```tsx
+// Page sections
+<Block component="section" data-class="hero-section">
+
+// Self-contained cards (testimonial, pricing plan, feature)
+<Stack component="article" data-class="feature-card">
+
+// Layout roles
+<Block component="header">  // site header
+<Block component="nav">     // navigation only (inside header)
+<Block component="main">    // primary content only (not wrapping aside)
+<Block component="footer">  // site footer
+<Block component="aside">   // sidebar
+```
+
+**Header structure**: `<header>` wraps the whole bar; `<nav>` wraps only links. `main` must not wrap `aside`.
+
 ### data-class Convention
 Every semantic element must have `data-class` for styling:
 ```tsx
@@ -320,6 +341,7 @@ Error: bg="red" invalid, closest: "destructive"
 3. **Extract repeated patterns** into reusable block components
 4. **Lazy load** heavy image blocks
 5. **Use semantic HTML** for SEO (Block, Title, Text, etc.)
+6. **Semantic tags**: `header`, `nav`, `main`, `footer`, `aside`, `section`, `article` via `component` prop
 
 ## When in Doubt
 

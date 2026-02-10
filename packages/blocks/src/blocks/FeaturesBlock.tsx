@@ -51,6 +51,7 @@ export function FeaturesBlock({
           <Loop each="features" as="feature" data={features}>
             {(feature: Feature) => (
               <Stack
+                component="article"
                 gap="4"
                 p="6"
                 rounded="lg"

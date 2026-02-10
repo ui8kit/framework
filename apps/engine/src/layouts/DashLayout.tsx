@@ -17,13 +17,13 @@ export interface DashLayoutProps {
  */
 export function DashLayout({ children, sidebar }: DashLayoutProps) {
   return (
-    <Block component="main" data-role="dash-main" w="full" flex="" data-class="main">
-      <aside data-class="sidebar-desktop" className="hidden md:flex w-64 shrink-0 border-r border-border">
+    <Block component="div" data-role="dash-main" w="full" flex="" data-class="dash-layout">
+      <Block component="aside" data-class="sidebar-desktop" className="hidden md:flex w-64 shrink-0 border-r border-border">
         <Box w="full" h="full" data-class="sidebar-desktop-content" className="overflow-auto">
           <Sidebar>{sidebar}</Sidebar>
         </Box>
-      </aside>
-      <Box flex="col" w="full" data-class="main-content-wrapper" className="flex-1 overflow-auto">
+      </Block>
+      <Block component="main" flex="col" w="full" data-class="main-content-wrapper" className="flex-1 overflow-auto">
         <Box p="4" bg="muted" data-class="main-content-box">
           <Container data-class="main-content-container">
             <Header title="" subtitle="" navItems={[]} />
@@ -31,7 +31,7 @@ export function DashLayout({ children, sidebar }: DashLayoutProps) {
             <Footer copyright="" sections={[]} />
           </Container>
         </Box>
-      </Box>
+      </Block>
     </Block>
   );
 }

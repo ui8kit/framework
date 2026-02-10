@@ -51,6 +51,7 @@ export function PricingBlock({
           <Loop each="plans" as="plan" data={plans}>
             {(plan: PricingPlan) => (
               <Stack
+                component="article"
                 gap="6"
                 p="6"
                 rounded="xl"

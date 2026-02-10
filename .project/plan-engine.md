@@ -56,8 +56,8 @@ Documentation site with sidebar + main content.
 
 ### 2.2 Theme / Create builder `/create`
 
-- [ ] Visual builder for design tokens: spacing, radii, colors
-- [ ] Output: Tailwind 3/4 config
+- [ ] Visual builder for design tokens: spacing, radius, font, colors
+- [ ] Output: Tailwind 3/4 css config
 - [ ] Theme: root / dark; HSL / RGB / HEX
 - [ ] Real-time preview in apps/engine (dev mode)
 - [ ] Export: copy-paste CSS config for apps/dev
@@ -66,11 +66,15 @@ Documentation site with sidebar + main content.
 :root {
   --background: hsl(0 0% 97.2549%);
   --foreground: hsl(240 3.3333% 11.7647%);
+  --radius:
+  ...
 }
 
 .dark {
   --background: hsl(0 0% 7.0588%);
   --foreground: hsl(0 0% 87.8431%);
+  --radius:
+  ...
 }
 ```
 
@@ -85,17 +89,27 @@ Documentation site with sidebar + main content.
 
 ---
 
-## 4. React output quality
+## 4. Semantic HTML5 foundation
+
+- [x] Header: `<header>` with `<nav>` for links (not whole header as nav)
+- [x] MainLayout: `header` → `main` → `footer`
+- [x] DashLayout: `aside` + `main` (main does not wrap aside)
+- [x] Page sections: `<Block component="section">`
+- [x] Self-contained cards: `<Stack component="article">` (feature, pricing, testimonial)
+- [ ] Title: use `order={1-6}` for heading hierarchy (h1–h6)
+- [ ] Landmarks: ensure single `main` per page, logical heading order
+
+## 5. React output quality
 
 - [ ] All blocks → `dist/react/` — no DSL, clean JSX
-- [ ] Typed props: `export interface XProps { ... }`
+- [ ] Typed props: `export interface props { ... }`
 - [ ] shadcn-style theming: CSS variables, tokens
 - [ ] `data-class` on all elements for CSS generation
 - [ ] Hint: `bun run generate`; validate output manually
 
 ---
 
-## 5. Component inventory
+## 6. Component inventory
 
 ### Blocks (page sections)
 
@@ -132,7 +146,7 @@ Documentation site with sidebar + main content.
 
 ---
 
-## 6. Checklist by priority
+## 7. Checklist by priority
 
 ### Phase 1: MainLayout + routing
 
@@ -170,7 +184,7 @@ Documentation site with sidebar + main content.
 
 ---
 
-## 7. File structure (apps/engine)
+## 8. File structure (apps/engine)
 
 ```
 src/
@@ -202,7 +216,7 @@ src/
 
 ---
 
-## 8. Pipeline summary
+## 9. Pipeline summary
 
 ```
 apps/engine (DSL + @ui8kit/core)
