@@ -15,13 +15,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@ui8kit/blocks": "workspace:*",
     "@ui8kit/core": "workspace:*",
     "@ui8kit/data": "workspace:*",
     "@ui8kit/template": "workspace:*",
+    "postcss": "^8.5.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.0.1"
+    "react-router-dom": "^7.0.1",
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
