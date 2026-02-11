@@ -1,0 +1,20 @@
+---
+description: mandatory checks for apps/engine before finalizing changes
+globs: apps/engine/**
+alwaysApply: false
+---
+
+# Engine Mandatory Checks
+
+For any change inside `apps/engine/**`, complete this checklist before final answer.
+
+1. Run engine lint:
+   - `bun run lint` (from `apps/engine`)
+2. Run engine DSL lint:
+   - `bun run lint:dsl` (from `apps/engine`)
+3. If generation flow is involved, re-generate and sync:
+   - `bun run generate` (from `apps/engine`)
+   - `bun run scripts/copy-templates-to-dev.ts` (from repo root)
+4. Report command outcomes honestly (pass/fail and reason if skipped).
+
+If any required check is skipped, explicitly state why and what remains unverified.

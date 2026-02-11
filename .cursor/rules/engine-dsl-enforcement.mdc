@@ -17,13 +17,15 @@ Scope: this rule is mandatory for any edits under `apps/engine/**`.
 
 ## Required checks before finalizing
 
-1. Run lint for the engine scope using the lint package:
-   - `bun --filter @ui8kit/lint run lint`
-   - or workspace equivalent that executes `packages/lint` validation.
-2. If a command cannot be run, explicitly report it and why; do not claim success.
+1. Always run lint for `apps/engine` after any code change (no exceptions):
+   - `bun run lint` (from `apps/engine`)
+2. Always run DSL lint for engine sources:
+   - `bun run lint:dsl` (from `apps/engine`)
+   - or equivalent: `bun run packages/lint/src/cli/validate-dsl.ts apps/engine/src`
+3. If a command cannot be run, explicitly report it and why; do not claim success.
 
 ## Reject patterns
 
 - Hardcoded literals that should be template/data variables (titles, labels, prices, statuses, feature flags).
 - Direct template syntax strings instead of DSL components when editing React/TSX sources.
-- Any change that bypasses `packages/lint` validation without reporting the skipped check.
+- Any change that bypasses `apps/engine` lint + DSL lint without reporting the skipped check.
