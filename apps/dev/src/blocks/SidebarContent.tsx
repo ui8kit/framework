@@ -1,5 +1,5 @@
-import React from 'react';
 import { Stack, Text, Button } from '@ui8kit/core';
+import { Fragment } from 'react';
 
 interface SidebarContentProps {
   title?: string;
@@ -16,9 +16,9 @@ export function SidebarContent(props: SidebarContentProps) {
           {title}
         </Text>
         {links ? (<><Stack gap="1" data-class="sidebar-links">{links.map((link, index) => (
-        <React.Fragment key={link.id ?? index}>
+        <Fragment key={link.id ?? index}>
         <Button href={link.href} variant="link" size="sm" justify="start" data-class="sidebar-link">{link.label}</Button>
-        </React.Fragment>
+        </Fragment>
         ))}</Stack></>) : null}
       </Stack>
     </Stack>

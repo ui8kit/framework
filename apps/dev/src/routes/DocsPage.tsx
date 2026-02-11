@@ -1,8 +1,8 @@
-import React from 'react';
 import { DashLayout } from '@/layouts';
 import { DashSidebar } from '@/blocks';
 import { context } from '@ui8kit/data';
 import { Stack, Title, Text } from '@ui8kit/core';
+import { Fragment } from 'react';
 
 interface DocsPageProps {
   length?: any;
@@ -26,9 +26,9 @@ export function DocsPage(props: DocsPageProps) {
         </Stack>
         <Stack gap="6" data-class="docs-sections">
           {(context.docsIntro.sections ?? []).length > 0 ? (<>{context.docsIntro.sections.map((section, index) => (
-          <React.Fragment key={section.id}>
+          <Fragment key={section.id}>
           <Stack gap="2" data-class="docs-section"><Title fontSize="xl" fontWeight="semibold" data-class="docs-section-title">{section.title}</Title><Text fontSize="base" textColor="muted-foreground" data-class="docs-section-text">{section.text}</Text></Stack>
-          </React.Fragment>
+          </Fragment>
           ))}</>) : null}
         </Stack>
       </Stack>

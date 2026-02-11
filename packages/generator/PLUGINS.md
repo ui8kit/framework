@@ -204,9 +204,9 @@ The generator automatically transforms DSL components from `@ui8kit/template` to
 **React (auto key: item.id → index):**
 ```tsx
 {items.map((item, index) => (
-<React.Fragment key={item.id ?? index}>
+<Fragment key={item.id ?? index}>
   <div>{item.name}</div>
-</React.Fragment>
+</Fragment>
 ))}
 ```
 
@@ -265,6 +265,39 @@ The generator automatically transforms DSL components from `@ui8kit/template` to
 {{> partials/header}}
 ```
 
+## DSL Runtime vs Generated Templates: Engine vs Output
+
+### Engine (apps/engine) — Dev Mode Only
+
+When the engine app runs in dev mode (Vite), it uses the **actual React components** from `@ui8kit/template` (`If`, `Loop`, `Var`, etc.). These components must render something at runtime:
+
+- **`<If>`** currently renders a `<span style="display:contents">` wrapper around its children (with `data-gen-if` for debugging). This wrapper is visible in the DOM inspector and can be confusing during development.
+- The generator **never sees this runtime output**. It parses the source AST and transforms `<If>` in the source code directly.
+
+### Generated Templates — No DSL Wrappers
+
+The generator transforms DSL components **at build time** and replaces them with native syntax:
+
+- **React output:** `{condition ? (<>content</>) : null}` — no `<If>`, no wrapper
+- **Liquid output:** `{% if condition %}content{% endif %}`
+- **Handlebars, Twig, Latte:** similar native constructs
+
+The `<span>` (or any wrapper) from the DSL components **never appears in generated templates**. It exists only in the engine's dev runtime.
+
+### Why `React.Fragment` (`<>...</>`) Matters
+
+The React plugin uses `Fragment` in conditionals and loops to avoid extra DOM nodes:
+
+```tsx
+{isActive ? (<><span>Active</span></>) : null}
+```
+
+- **Fragment** does not create a DOM element — it is a logical grouping only. The output HTML has no wrapper.
+- If we used `<div>` or `<span>` instead, every conditional would add an unnecessary DOM node in the final output.
+- Fragment keeps the generated React templates clean and semantic, matching the structure of Liquid/Handlebars output where conditionals also add no wrapper.
+
+**Summary:** DSL wrappers (`<span>` in `If`) are an engine dev-mode implementation detail. Generated templates use Fragment (React) or native syntax (other engines) and produce clean, wrapper-free output.
+
 ## React Plugin: Condition Strategy
 
 The React plugin uses three patterns for conditional rendering, selected automatically:
@@ -288,11 +321,11 @@ The React plugin automatically resolves `key` for `.map()` iterations:
 ```tsx
 // With explicit key="slug"
 {items.map((item, index) => (
-<React.Fragment key={item.slug}>
+<Fragment key={item.slug}>
 
 // Default (auto id → index fallback)
 {items.map((item, index) => (
-<React.Fragment key={item.id ?? index}>
+<Fragment key={item.id ?? index}>
 ```
 
 ## React Plugin: Filters as JS Methods

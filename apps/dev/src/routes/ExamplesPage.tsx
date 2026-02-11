@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export function ExamplesPage() {
   return (
     <Block component="section" py="16" data-class="examples-section">
-      <Stack gap="8" w="full" min="w-0" data-class="examples-container">
+      <Stack gap="8" w="full" min="w-0" max="w-7xl" data-class="examples-container">
         <Grid cols="1-2-3-4" gap="6" w="full" min="w-0" data-class="examples-grid">
           <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">

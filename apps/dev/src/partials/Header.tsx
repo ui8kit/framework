@@ -1,5 +1,5 @@
-import React from 'react';
 import { Block, Container, Group, Button, Text } from '@ui8kit/core';
+import { Fragment } from 'react';
 
 interface HeaderProps {
   title?: string;
@@ -23,9 +23,9 @@ export function Header(props: HeaderProps) {
           </Group>
         </a>
         {navItems ? (<><Block component="nav" flex="" gap="2" items="center" data-class="header-nav">{navItems.map((item, index) => (
-        <React.Fragment key={item.id ?? index}>
+        <Fragment key={item.id ?? index}>
         <Button variant="ghost" size="sm" href={item.url} data-class="header-nav-item">{item.title}</Button>
-        </React.Fragment>
+        </Fragment>
         ))}</Block></>) : null}
       </Container>
     </Block>

@@ -292,9 +292,9 @@ describe('ReactPlugin', () => {
       );
 
       expect(result).toContain('{products.map((product, index) => (');
-      expect(result).toContain('<React.Fragment key={product.id ?? index}>');
+      expect(result).toContain('<Fragment key={product.id ?? index}>');
       expect(result).toContain('<div>{product.name}</div>');
-      expect(result).toContain('</React.Fragment>');
+      expect(result).toContain('</Fragment>');
       expect(result).toContain('))}');
     });
 
@@ -516,7 +516,7 @@ describe('ReactPlugin', () => {
       const output = await plugin.transform(tree);
 
       expect(output.content).toContain('{items.map(');
-      expect(output.content).toContain('React.Fragment');
+      expect(output.content).toContain('Fragment');
       expect(output.variables).toContain('items');
     });
 
@@ -615,7 +615,7 @@ describe('ReactPlugin', () => {
       expect(output.content).toContain('}\n');
     });
 
-    it('skips type-only imports in full-file emission', async () => {
+    it('emits type-only imports for TS compilation (e.g. ReactNode)', async () => {
       const tree: GenRoot = root(
         [element('div', {}, [text('x')])],
         {
@@ -642,7 +642,7 @@ describe('ReactPlugin', () => {
 
       const output = await plugin.transform(tree);
 
-      expect(output.content).not.toContain("from './types'");
+      expect(output.content).toContain("import type { Props } from './types'");
       expect(output.content).toContain("import { useState } from 'react';");
       expect(output.content).toContain('export function Comp() {');
     });

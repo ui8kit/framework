@@ -1,5 +1,5 @@
-import React from 'react';
 import { Block, Grid, Stack, Title, Text } from '@ui8kit/core';
+import { Fragment } from 'react';
 
 interface FeaturesBlockProps {
   title?: string;
@@ -18,9 +18,9 @@ export function FeaturesBlock(props: FeaturesBlockProps) {
         </Stack>
         <Grid cols="1-2-4" gap="6" data-class="features-grid" justify="center">
           {features.map((feature, index) => (
-          <React.Fragment key={feature.id ?? index}>
+          <Fragment key={feature.id ?? index}>
           <Stack component="article" gap="4" p="6" rounded="lg" bg="card" border="" data-class="feature-card"><Title fontSize="xl" fontWeight="semibold" data-class="feature-title">{feature.title}</Title><Text fontSize="sm" textColor="muted-foreground" data-class="feature-description">{feature.description}</Text></Stack>
-          </React.Fragment>
+          </Fragment>
           ))}
         </Grid>
       </Stack>

@@ -1,5 +1,5 @@
-import React from 'react';
 import { Stack, Text, Button } from '@ui8kit/core';
+import { Fragment } from 'react';
 
 interface DashSidebarProps {
   label?: string;
@@ -15,9 +15,9 @@ export function DashSidebar(props: DashSidebarProps) {
         {label}
       </Text>
       {(links ?? []).length > 0 ? (<>{links.map((link, index) => (
-      <React.Fragment key={link.id ?? index}>
+      <Fragment key={link.id ?? index}>
       {!!link.active ? (<><Button href={link.href} size="sm" variant="secondary" justify="start" data-class="dash-sidebar-link">{link.label}</Button></>) : null}{!link.active ? (<><Button href={link.href} size="sm" variant="ghost" justify="start" data-class="dash-sidebar-link">{link.label}</Button></>) : null}
-      </React.Fragment>
+      </Fragment>
       ))}</>) : null}
     </Stack>
   );

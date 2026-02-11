@@ -9,7 +9,7 @@
  * - If        → {condition ? (<>content</>) : null}
  * - If/Else   → {condition ? (<>ifContent</>) : (<>elseContent</>)}
  * - If/ElseIf → IIFE {(() => { if (c1) return ...; if (c2) return ...; return null; })()}
- * - Loop      → {collection.map((item, index) => (<React.Fragment key=...>content</React.Fragment>))}
+ * - Loop      → {collection.map((item, index) => (<Fragment key=...>content</Fragment>))}
  * - Slot      → {name ?? (<>default</>)} or {children}
  * - Include   → <ComponentName prop={value} />
  *
@@ -105,17 +105,15 @@ export class ReactPlugin extends BasePlugin {
     const imports = tree.meta?.imports;
 
     if (imports && imports.length > 0) {
-      let importBlock = this.emitImportBlock(imports);
+      const needsFragment = formattedJsx.includes('<Fragment') || formattedJsx.includes('</Fragment>');
+      const importsWithFragment = needsFragment ? this.ensureFragmentImport(imports) : imports;
+      let importBlock = this.emitImportBlock(importsWithFragment);
       const bodyIndented = formattedJsx
         .split('\n')
         .map((line) => (line.trim() ? '    ' + line : ''))
         .join('\n')
         .trimEnd();
       const propNames = this.getEmittedPropNames(tree, imports);
-      const needsReactImport = formattedJsx.includes('React.') && !imports.some((i) => i.source === 'react');
-      if (needsReactImport) {
-        importBlock = `import React from 'react';\n` + importBlock;
-      }
 
       // Build typed signature when prop types are available from source
       const propsInterface = this.buildPropsInterface(componentName, tree.meta?.props ?? [], propNames);
@@ -183,6 +181,28 @@ export class ReactPlugin extends BasePlugin {
     );
   }
 
+  /**
+   * Ensure Fragment is in react imports when output uses Loop.
+   * Adds Fragment to existing runtime react import, or creates a new one (keeps type-only imports separate).
+   */
+  private ensureFragmentImport(imports: GenSourceImport[]): GenSourceImport[] {
+    const reactRuntimeIdx = imports.findIndex((i) => i.source === 'react' && !i.isTypeOnly);
+    if (reactRuntimeIdx >= 0) {
+      const imp = imports[reactRuntimeIdx];
+      if (!imp.namedImports.includes('Fragment')) {
+        const updated = [...imports];
+        updated[reactRuntimeIdx] = {
+          ...imp,
+          namedImports: [...imp.namedImports, 'Fragment'],
+        };
+        return updated;
+      }
+      return imports;
+    }
+    // No runtime react import: add Fragment (type-only imports stay separate)
+    return [...imports, { source: 'react', namedImports: ['Fragment'], isTypeOnly: false }];
+  }
+
   /** TS primitives and well-known types that don't need imports. */
   private static readonly SAFE_TYPES = new Set([
     'string', 'number', 'boolean', 'any', 'unknown', 'void', 'never', 'null', 'undefined',
@@ -242,12 +262,18 @@ export class ReactPlugin extends BasePlugin {
 
   /**
    * Emit import statements from source (React-only; other engines ignore meta.imports).
-   * Skips type-only imports for runtime; emits one statement per source.
+   * Emits type-only imports (e.g. ReactNode) for props interface; emits Fragment when Loop is used.
    */
   private emitImportBlock(imports: GenSourceImport[]): string {
     const lines: string[] = [];
     for (const imp of imports) {
-      if (imp.isTypeOnly) continue; // skip type-only for runtime emission
+      if (imp.isTypeOnly) {
+        // Emit type imports (e.g. ReactNode for props interface) — required for TS compilation
+        if (imp.namedImports.length > 0) {
+          lines.push(`import type { ${imp.namedImports.join(', ')} } from '${imp.source}';`);
+        }
+        continue;
+      }
       if (imp.namespaceImport) {
         lines.push(`import * as ${imp.namespaceImport} from '${imp.source}';`);
       } else if (imp.defaultImport && imp.namedImports.length === 0) {
@@ -297,9 +323,9 @@ export class ReactPlugin extends BasePlugin {
 
     const lines = [
       `{${collection}.map((${item}, ${idx}) => (`,
-      `<React.Fragment key={${keyExpr}}>`,
+      `<Fragment key={${keyExpr}}>`,
       content,
-      '</React.Fragment>',
+      '</Fragment>',
       '))}',
     ];
 

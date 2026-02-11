@@ -3,6 +3,7 @@ import { Block, Container, Grid, Stack } from '@ui8kit/core';
 import { Header } from '../partials/Header';
 import { Footer } from '../partials/Footer';
 import { Sidebar } from '../partials/Sidebar';
+import type { NavItem, FooterSection } from '../partials';
 
 interface MainLayoutProps {
   children: ReactNode;
