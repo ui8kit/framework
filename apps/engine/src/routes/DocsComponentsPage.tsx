@@ -10,9 +10,9 @@ import {
   Badge,
   Block,
   Container,
-  Box,
   Grid,
   Field,
+  Card,
 } from '@ui8kit/core';
 
 /**
@@ -186,10 +186,10 @@ export function DocsComponentsPage() {
             Grid
           </Title>
           <Grid cols="1-2-4" gap="4" data-class="grid-demo">
-            <Box p="4" rounded="md" bg="card" border="" data-class="grid-demo-cell">1</Box>
-            <Box p="4" rounded="md" bg="card" border="" data-class="grid-demo-cell">2</Box>
-            <Box p="4" rounded="md" bg="card" border="" data-class="grid-demo-cell">3</Box>
-            <Box p="4" rounded="md" bg="card" border="" data-class="grid-demo-cell">4</Box>
+            <Card data-class="grid-demo-cell">1</Card>
+            <Card data-class="grid-demo-cell">2</Card>
+            <Card data-class="grid-demo-cell">3</Card>
+            <Card data-class="grid-demo-cell">4</Card>
           </Grid>
         </Stack>
       </Stack>

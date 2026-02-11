@@ -1,4 +1,4 @@
-import { Block, Container, Stack, Title, Text, Group, Button, Badge } from '@ui8kit/core';
+import { Block, Container, Stack, Title, Text, Group, Button, Badge, Card } from '@ui8kit/core';
 
 export function ExamplesPlaygroundPage() {
   return (
@@ -12,7 +12,7 @@ export function ExamplesPlaygroundPage() {
             Experiment with components and variants.
           </Text>
         </Stack>
-        <Stack gap="6" p="6" rounded="lg" bg="card" border="" data-class="examples-playground-content">
+        <Card gap="6" data-class="examples-playground-content">
           <Stack gap="2" data-class="examples-playground-group">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-playground-label">
               Buttons
@@ -45,7 +45,7 @@ export function ExamplesPlaygroundPage() {
               </Badge>
             </Group>
           </Stack>
-        </Stack>
+        </Card>
       </Container>
     </Block>
   );

@@ -1,4 +1,4 @@
-import { Block, Container, Stack, Title, Text, Group, Button, Badge } from '@ui8kit/core';
+import { Block, Container, Stack, Title, Text, Group, Button, Badge, Card } from '@ui8kit/core';
 
 /**
  * Examples Tasks page — task list and checklist patterns.
@@ -16,7 +16,7 @@ export function ExamplesTasksPage() {
           </Text>
         </Stack>
 
-        <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-tasks-list">
+        <Card gap="4" data-class="examples-tasks-list">
           <Group justify="between" items="center" p="2" rounded="md" bg="muted" data-class="examples-task-item">
             <Text fontSize="sm" fontWeight="medium" data-class="examples-task-title">
               Task 1
@@ -35,7 +35,7 @@ export function ExamplesTasksPage() {
             </Text>
             <Badge variant="outline" data-class="examples-task-badge">Todo</Badge>
           </Group>
-        </Stack>
+        </Card>
 
         <Group gap="2" data-class="examples-tasks-actions">
           <Button size="sm" data-class="examples-tasks-btn">Add Task</Button>

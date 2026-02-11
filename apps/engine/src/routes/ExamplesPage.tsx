@@ -1,4 +1,4 @@
-import { Block, Container, Stack, Group, Title, Text, Button, Badge, Grid } from '@ui8kit/core';
+import { Block, Container, Stack, Group, Title, Text, Button, Badge, Grid, Card } from '@ui8kit/core';
 import { Link } from 'react-router-dom';
 
 /**
@@ -24,7 +24,7 @@ export function ExamplesPage() {
         </Stack>
 
         <Grid cols="1-2-4" gap="6" data-class="examples-grid">
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Button
             </Text>
@@ -33,9 +33,9 @@ export function ExamplesPage() {
               <Button variant="outline" size="sm" data-class="examples-btn">Outline</Button>
               <Button variant="ghost" size="sm" data-class="examples-btn">Ghost</Button>
             </Group>
-          </Stack>
+          </Card>
 
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Badge
             </Text>
@@ -44,9 +44,9 @@ export function ExamplesPage() {
               <Badge variant="secondary" data-class="examples-badge">Secondary</Badge>
               <Badge variant="outline" data-class="examples-badge">Outline</Badge>
             </Group>
-          </Stack>
+          </Card>
 
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Typography
             </Text>
@@ -58,9 +58,9 @@ export function ExamplesPage() {
                 Body text
               </Text>
             </Stack>
-          </Stack>
+          </Card>
 
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Routes
             </Text>
@@ -78,7 +78,7 @@ export function ExamplesPage() {
                 Authentication
               </Link>
             </Stack>
-          </Stack>
+          </Card>
         </Grid>
       </Container>
     </Block>

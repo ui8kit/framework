@@ -27,7 +27,7 @@ export function Header({
       component="header"
       py="4"
       bg="background"
-      border=""
+      border="b"
       shadow="sm"
       data-class={dataClass ?? dataClassAttr ?? 'header'}
     >

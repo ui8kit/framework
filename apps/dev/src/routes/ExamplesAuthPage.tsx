@@ -1,4 +1,4 @@
-import { Block, Container, Stack, Title, Text, Grid, Button, Field } from '@ui8kit/core';
+import { Block, Container, Stack, Title, Text, Grid, Button, Field, Card } from '@ui8kit/core';
 
 export function ExamplesAuthPage() {
   return (
@@ -12,7 +12,7 @@ export function ExamplesAuthPage() {
             Sign in to your account.
           </Text>
         </Stack>
-        <Stack gap="4" p="6" rounded="lg" bg="card" border="" w="full" data-class="examples-auth-form">
+        <Card gap="4" w="full" data-class="examples-auth-form">
           <Stack gap="2" data-class="examples-auth-field">
             <Text fontSize="sm" fontWeight="medium" data-class="examples-auth-label">
               Email
@@ -33,7 +33,7 @@ export function ExamplesAuthPage() {
               Sign up
             </Button>
           </Grid>
-        </Stack>
+        </Card>
       </Container>
     </Block>
   );

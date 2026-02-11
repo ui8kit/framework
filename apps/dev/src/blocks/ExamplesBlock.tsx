@@ -1,5 +1,5 @@
 import React from 'react';
-import { Block, Grid, Stack, Group, Title, Text, Button, Badge } from '@ui8kit/core';
+import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 
 interface ExamplesBlockProps {
   tabs?: any[];
@@ -23,7 +23,7 @@ export function ExamplesBlock(props: ExamplesBlockProps) {
         </React.Fragment>
         ))}</Group></>) : null}
         <Grid cols="1-2-4" gap="6" max="w-6xl" data-class="examples-grid">
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               {examples.button.title}
             </Text>
@@ -38,8 +38,8 @@ export function ExamplesBlock(props: ExamplesBlockProps) {
                 {examples.button.ghostLabel}
               </Button>
             </Group>
-          </Stack>
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          </Card>
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               {examples.badge.title}
             </Text>
@@ -54,8 +54,8 @@ export function ExamplesBlock(props: ExamplesBlockProps) {
                 {examples.badge.outlineLabel}
               </Badge>
             </Group>
-          </Stack>
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          </Card>
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               {examples.typography.title}
             </Text>
@@ -67,7 +67,7 @@ export function ExamplesBlock(props: ExamplesBlockProps) {
                 {examples.typography.body}
               </Text>
             </Stack>
-          </Stack>
+          </Card>
         </Grid>
         <Group gap="4" justify="center" items="center" data-class="examples-actions">
           <Button href="/examples" data-class="examples-cta">

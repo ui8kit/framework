@@ -1,4 +1,4 @@
-import { Block, Grid, Stack, Group, Title, Text, Button, Badge } from '@ui8kit/core';
+import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
 
 export interface ExampleTab {
@@ -99,12 +99,8 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
 
         <Grid cols="1-2-4" gap="6" max="w-6xl" data-class="examples-grid">
           {/* Buttons */}
-          <Stack
+          <Card
             gap="4"
-            p="4"
-            rounded="lg"
-            bg="card"
-            border=""
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
@@ -121,15 +117,11 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
                 <Var name="examples.button.ghostLabel" value={examples?.button?.ghostLabel} />
               </Button>
             </Group>
-          </Stack>
+          </Card>
 
           {/* Badges */}
-          <Stack
+          <Card
             gap="4"
-            p="4"
-            rounded="lg"
-            bg="card"
-            border=""
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
@@ -146,15 +138,11 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
                 <Var name="examples.badge.outlineLabel" value={examples?.badge?.outlineLabel} />
               </Badge>
             </Group>
-          </Stack>
+          </Card>
 
           {/* Typography */}
-          <Stack
+          <Card
             gap="4"
-            p="4"
-            rounded="lg"
-            bg="card"
-            border=""
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
@@ -168,7 +156,7 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
                 <Var name="examples.typography.body" value={examples?.typography?.body} />
               </Text>
             </Stack>
-          </Stack>
+          </Card>
         </Grid>
 
         <Group gap="4" justify="center" items="center" data-class="examples-actions">

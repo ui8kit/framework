@@ -176,6 +176,31 @@ Examples:
 
 ## Component Architecture
 
+### Prefer Existing Core Components
+
+Before building custom layouts with `Stack`, `Group`, or primitives, check `packages/core/src/components/` for existing composite components. Use them instead of reimplementing the same UI.
+
+```tsx
+// ✅ Correct — use Card when you need a card container
+import { Card, CardHeader, CardTitle, CardContent } from '@ui8kit/core';
+<Card data-class="examples-card">
+  <CardHeader>
+    <CardTitle order={4}><Var name="examples.button.title" value={examples?.button?.title} /></CardTitle>
+  </CardHeader>
+  <CardContent gap="2" flex="row" items="center">
+    <Button size="sm">...</Button>
+  </CardContent>
+</Card>
+
+// ❌ Wrong — Stack mimicking Card when Card already exists in core
+<Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+  <Text fontSize="sm" fontWeight="semibold">...</Text>
+  <Group gap="2" items="center">...</Group>
+</Stack>
+```
+
+**Rule:** If a component exists in `@ui8kit/core` (e.g. `Card`, `Accordion`, `Sheet`), use it instead of composing `Stack`/`Group` with the same layout. Check `packages/core/src/components/` before building.
+
 ### Blocks (Location: `apps/web/src/blocks/`)
 - Represent full page sections
 - Wrap in `<Block component="section">`
@@ -206,27 +231,31 @@ export function HeroBlock() {
 
 ### Reusable Patterns
 ```tsx
-// ✅ Card Pattern
-<Stack p="6" rounded="lg" bg="card" border="" shadow="sm" gap="4" data-class="card">
+// ✅ Card Pattern — prefer Card from @ui8kit/core
+<Card data-class="card">
   <Image src="..." aspect="video" rounded="md" fit="cover" data-class="card-image" />
-  <Title fontSize="lg" fontWeight="semibold" data-class="card-title">Title</Title>
-  <Text fontSize="sm" textColor="muted-foreground" data-class="card-description">
-    Description
-  </Text>
-  <Group gap="2" data-class="card-actions">
-    <Button size="sm">Action</Button>
-    <Badge variant="secondary">Tag</Badge>
-  </Group>
-</Stack>
+  <CardHeader>
+    <CardTitle order={4} data-class="card-title">Title</CardTitle>
+    <CardDescription data-class="card-description">Description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <Group gap="2" data-class="card-actions">
+      <Button size="sm">Action</Button>
+      <Badge variant="secondary">Tag</Badge>
+    </Group>
+  </CardContent>
+</Card>
 
-// ✅ Feature Grid
+// ✅ Feature Grid — prefer Card instead of Stack for card-like items
 <Grid grid="cols-3" gap="6" data-class="features-grid">
   {features.map(feature => (
-    <Stack key={feature.id} p="6" rounded="lg" bg="card" gap="4" data-class="feature-card">
+    <Card key={feature.id} data-class="feature-card">
       <Icon lucideIcon={feature.icon} size="lg" />
-      <Title fontSize="xl" fontWeight="semibold">{feature.title}</Title>
-      <Text fontSize="sm" textColor="muted-foreground">{feature.description}</Text>
-    </Stack>
+      <CardHeader>
+        <CardTitle order={4}>{feature.title}</CardTitle>
+        <CardDescription>{feature.description}</CardDescription>
+      </CardHeader>
+    </Card>
   ))}
 </Grid>
 ```
@@ -303,6 +332,23 @@ export function HeroBlock() {
 <Stack data-class="hero-text">
 ```
 
+### ❌ Reimplementing Core Components
+```tsx
+// Wrong — Stack with card-like props when Card exists in core
+<Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+  <Text fontSize="sm" fontWeight="semibold">Title</Text>
+  <Group gap="2">...</Group>
+</Stack>
+
+// Correct — use Card from @ui8kit/core
+<Card data-class="examples-card">
+  <CardHeader>
+    <CardTitle order={4}>Title</CardTitle>
+  </CardHeader>
+  <CardContent>...</CardContent>
+</Card>
+```
+
 ## File Organization
 
 ### Block File Structure
@@ -360,8 +406,9 @@ Error: bg="red" invalid, closest: "destructive"
 
 ## When in Doubt
 
-1. Check `packages/ui8kit/AGENTS.md` for full reference
-2. Look at existing blocks in `apps/web/src/blocks/`
-3. Use `data-class` for ALL semantic elements
-4. Prefer semantic props over className/style
-5. Keep blocks focused and reusable
+1. Check `packages/core/src/components/` for existing components before building layouts
+2. Check `packages/ui8kit/AGENTS.md` for full reference
+3. Look at existing blocks in `apps/web/src/blocks/`
+4. Use `data-class` for ALL semantic elements
+5. Prefer semantic props over className/style
+6. Keep blocks focused and reusable

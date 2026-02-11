@@ -1,4 +1,4 @@
-import { Block, Container, Stack, Title, Text, Grid, Button, Field } from '@ui8kit/core';
+import { Block, Container, Stack, Title, Text, Grid, Button, Field, Card } from '@ui8kit/core';
 
 /**
  * Examples Authentication page — auth forms and flows.
@@ -21,12 +21,8 @@ export function ExamplesAuthPage() {
           </Text>
         </Stack>
 
-        <Stack
+        <Card
           gap="4"
-          p="6"
-          rounded="lg"
-          bg="card"
-          border=""
           w="full"
           data-class="examples-auth-form"
         >
@@ -60,7 +56,7 @@ export function ExamplesAuthPage() {
               Sign up
             </Button>
           </Grid>
-        </Stack>
+        </Card>
       </Container>
     </Block>
   );

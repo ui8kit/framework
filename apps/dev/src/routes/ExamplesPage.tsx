@@ -1,4 +1,4 @@
-import { Block, Container, Stack, Group, Title, Text, Button, Badge, Grid } from '@ui8kit/core';
+import { Block, Container, Stack, Group, Title, Text, Button, Badge, Grid, Card } from '@ui8kit/core';
 import { Link } from 'react-router-dom';
 
 export function ExamplesPage() {
@@ -14,7 +14,7 @@ export function ExamplesPage() {
           </Text>
         </Stack>
         <Grid cols="1-2-4" gap="6" data-class="examples-grid">
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Button
             </Text>
@@ -29,8 +29,8 @@ export function ExamplesPage() {
                 Ghost
               </Button>
             </Group>
-          </Stack>
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          </Card>
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Badge
             </Text>
@@ -45,8 +45,8 @@ export function ExamplesPage() {
                 Outline
               </Badge>
             </Group>
-          </Stack>
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          </Card>
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Typography
             </Text>
@@ -58,8 +58,8 @@ export function ExamplesPage() {
                 Body text
               </Text>
             </Stack>
-          </Stack>
-          <Stack gap="4" p="4" rounded="lg" bg="card" border="" data-class="examples-card">
+          </Card>
+          <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Routes
             </Text>
@@ -77,7 +77,7 @@ export function ExamplesPage() {
                 Authentication
               </Link>
             </Stack>
-          </Stack>
+          </Card>
         </Grid>
       </Container>
     </Block>
