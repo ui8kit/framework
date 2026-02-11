@@ -50,7 +50,9 @@ export function Header({
               textColor="primary"
               data-class="header-brand-title"
             >
-              <Var name="title" value={title ?? 'UI8Kit'} />
+              <If test="title" value={!!(title ?? '')}>
+                <Var name="title" value={title ?? 'UI8Kit'} />
+              </If>
             </Text>
             <If test="subtitle" value={!!(subtitle ?? 'Design System')}>
               <Text

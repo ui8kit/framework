@@ -25,7 +25,9 @@ export function SidebarContent({
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">
         <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
-          <Var name="title" value={title} />
+          <If test="title" value={!!(title ?? '')}>
+            <Var name="title" value={title ?? ''} />
+          </If>
         </Text>
         <If test="links" value={(links ?? []).length > 0}>
           <Stack gap="1" data-class="sidebar-links">

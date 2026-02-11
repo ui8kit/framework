@@ -231,4 +231,30 @@ describe("validateDSL", () => {
     expect(result.valid).toBe(true);
     expect(result.errors).toHaveLength(0);
   });
+
+  it("detects unwrapped Var and suggests wrapping in If", () => {
+    const source = `
+      <div>
+        <Var name="title" value={title ?? ''} />
+      </div>
+    `;
+    const result = validateDSL(source);
+    expect(result.valid).toBe(false);
+    const err = result.errors.find((e) => e.error_code === "UNWRAPPED_VAR");
+    expect(err).toBeDefined();
+    expect(err?.message).toContain("wrapped in <If>");
+    expect(err?.suggested_fix).toContain('Wrap in <If test="title"');
+    expect(err?.expected?.[0]).toContain("<If test=\"title\"");
+  });
+
+  it("passes for Var wrapped in If", () => {
+    const source = `
+      <If test="title" value={!!(title ?? '')}>
+        <Var name="title" value={title ?? ''} />
+      </If>
+    `;
+    const result = validateDSL(source);
+    expect(result.valid).toBe(true);
+    expect(result.errors.some((e) => e.error_code === "UNWRAPPED_VAR")).toBe(false);
+  });
 });

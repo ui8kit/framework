@@ -27,10 +27,14 @@ export function DocsPage() {
       <Stack gap="8" data-class="docs-content">
         <Stack gap="4" data-class="docs-header">
           <Title fontSize="4xl" fontWeight="bold" data-class="docs-title">
-            <Var name="context.docsIntro.title" value={context.docsIntro.title} />
+            <If test="context.docsIntro.title" value={!!(context.docsIntro.title ?? '')}>
+              <Var name="context.docsIntro.title" value={context.docsIntro.title ?? ''} />
+            </If>
           </Title>
           <Text fontSize="lg" textColor="muted-foreground" data-class="docs-lead">
-            <Var name="context.docsIntro.lead" value={context.docsIntro.lead} />
+            <If test="context.docsIntro.lead" value={!!(context.docsIntro.lead ?? '')}>
+              <Var name="context.docsIntro.lead" value={context.docsIntro.lead ?? ''} />
+            </If>
           </Text>
         </Stack>
         <Stack gap="6" data-class="docs-sections">
@@ -47,10 +51,14 @@ export function DocsPage() {
               {(section: DocsIntroSection) => (
                 <Stack gap="2" data-class="docs-section">
                   <Title fontSize="xl" fontWeight="semibold" data-class="docs-section-title">
-                    <Var name="section.title" value={section.title} />
+                    <If test="section.title" value={!!(section.title ?? '')}>
+                      <Var name="section.title" value={section.title ?? ''} />
+                    </If>
                   </Title>
                   <Text fontSize="base" textColor="muted-foreground" data-class="docs-section-text">
-                    <Var name="section.text" value={section.text} />
+                    <If test="section.text" value={!!(section.text ?? '')}>
+                      <Var name="section.text" value={section.text ?? ''} />
+                    </If>
                   </Text>
                 </Stack>
               )}

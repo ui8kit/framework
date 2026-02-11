@@ -28,16 +28,20 @@ export function DocsInstallationPage() {
       <Stack gap="8" data-class="docs-install-content">
         <Stack gap="4" data-class="docs-install-header">
           <Title fontSize="4xl" fontWeight="bold" data-class="docs-install-title">
-            <Var
-              name="context.docsInstallation.title"
-              value={context.docsInstallation.title}
-            />
+            <If test="context.docsInstallation.title" value={!!(context.docsInstallation.title ?? '')}>
+              <Var
+                name="context.docsInstallation.title"
+                value={context.docsInstallation.title ?? ''}
+              />
+            </If>
           </Title>
           <Text fontSize="lg" textColor="muted-foreground" data-class="docs-install-lead">
-            <Var
-              name="context.docsInstallation.lead"
-              value={context.docsInstallation.lead}
-            />
+            <If test="context.docsInstallation.lead" value={!!(context.docsInstallation.lead ?? '')}>
+              <Var
+                name="context.docsInstallation.lead"
+                value={context.docsInstallation.lead ?? ''}
+              />
+            </If>
           </Text>
         </Stack>
         <Stack gap="6" data-class="docs-install-sections">
@@ -54,7 +58,9 @@ export function DocsInstallationPage() {
               {(section: DocsInstallationSection) => (
                 <Stack gap="2" data-class="docs-install-section">
                   <Title fontSize="xl" fontWeight="semibold" data-class="docs-install-section-title">
-                    <Var name="section.title" value={section.title} />
+                    <If test="section.title" value={!!(section.title ?? '')}>
+                      <Var name="section.title" value={section.title ?? ''} />
+                    </If>
                   </Title>
                   <If test="section.code" value={!!section.code}>
                     <Block component="pre" p="4" rounded="md" bg="muted" data-class="docs-install-code">

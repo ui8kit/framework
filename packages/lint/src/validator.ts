@@ -252,6 +252,58 @@ export function validateDataClass(
 }
 
 /**
+ * Find <Var> usages not wrapped in <If>. Tracks If-depth per line.
+ */
+function findUnwrappedVars(
+  _source: string,
+  lines: string[],
+  lineOffset: number,
+  file?: string
+): LintError[] {
+  const errors: LintError[] = [];
+  let ifDepth = 0;
+  const tagRe = /<(If|Var)(\s|\/>|>)|<\/(If)>/g;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const lineNumber = lineOffset + i + 1;
+    let match: RegExpExecArray | null;
+
+    tagRe.lastIndex = 0;
+    while ((match = tagRe.exec(line)) !== null) {
+      const tag = match[1];
+      const suffix = match[2];
+
+      if (tag === "If") {
+        if (suffix !== "/") ifDepth += 1;
+      } else if (match[0].startsWith("</")) {
+        ifDepth = Math.max(0, ifDepth - 1);
+      } else if (tag === "Var" && suffix !== "/") {
+        if (ifDepth === 0) {
+          const nameMatch = /name=["']([^"']+)["']/.exec(line.slice(match.index));
+          const varName = nameMatch ? nameMatch[1] : "path";
+          errors.push({
+            error_code: "UNWRAPPED_VAR",
+            message: `<Var> should be wrapped in <If> for optional values.`,
+            severity: "warning",
+            received: "<Var ... />",
+            expected: [
+              `<If test="${varName}" value={!!(${varName} ?? '')}><Var name="${varName}" value={${varName} ?? ''} /></If>`,
+            ],
+            suggested_fix: `Wrap in <If test="${varName}" value={!!(${varName} ?? '')}>`,
+            autofix_available: false,
+            rule_id: "ui8kit/unwrapped-var",
+            location: file ? { file, line: lineNumber, column: match.index + 1 } : undefined,
+          });
+        }
+      }
+    }
+  }
+
+  return errors;
+}
+
+/**
  * Validate source code for non-DSL conditions/loops in JSX/TSX.
  *
  * This helps guide developers (and LLMs) to prefer @ui8kit/template primitives:
@@ -318,6 +370,10 @@ export function validateDSL(
       });
     }
   }
+
+  // Check for Var not wrapped in If (scan with If-depth tracking)
+  const unwrappedVarErrors = findUnwrappedVars(source, lines, lineOffset, options.file);
+  errors.push(...unwrappedVarErrors);
 
   return {
     valid: errors.length === 0,

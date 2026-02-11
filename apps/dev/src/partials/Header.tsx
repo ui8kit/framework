@@ -17,7 +17,7 @@ export function Header(props: HeaderProps) {
         <a href="/" data-class="header-brand">
           <Group component="span" gap="2" items="center" data-class="header-brand-content">
             <Text fontSize="xl" fontWeight="bold" textColor="primary" data-class="header-brand-title">
-              {title}
+              {title ? (<>{title}</>) : null}
             </Text>
             {subtitle ? (<><Text fontSize="sm" textColor="muted-foreground" data-class="header-brand-subtitle">{subtitle}</Text></>) : null}
           </Group>

@@ -1,5 +1,5 @@
 import { Block, Container, Text } from '@ui8kit/core';
-import { Var } from '@ui8kit/template';
+import { If, Var } from '@ui8kit/template';
 
 export type FooterLink = {
   label: string;
@@ -40,7 +40,9 @@ export function Footer({
         data-class="footer-container"
       >
         <Text fontSize="sm" textColor="muted-foreground" data-class="footer-copyright">
-          <Var name="copyright" value={copyright} />
+          <If test="copyright" value={!!(copyright ?? '')}>
+            <Var name="copyright" value={copyright ?? ''} />
+          </If>
         </Text>
       </Container>
     </Block>

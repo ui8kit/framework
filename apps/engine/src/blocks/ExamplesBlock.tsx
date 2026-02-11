@@ -71,10 +71,9 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
             max="w-xl"
             data-class="examples-description"
           >
-            <Var
-              name="examples.description"
-              value={examples.description}
-            />
+            <If test="examples.description" value={!!(examples.description ?? '')}>
+              <Var name="examples.description" value={examples.description ?? ''} />
+            </If>
           </Text>
         </Stack>
 
@@ -88,14 +87,31 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
           >
             <Loop each="tabs" as="item" keyExpr="item.href" data={tabs ?? []}>
               {(item: ExampleTab) => (
-                <Link
-                  to={item.href}
-                  data-class="examples-tab"
-                  data-state={item.active ? 'active' : undefined}
-                  className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
-                >
-                  <Var name="item.label" value={item.label} />
-                </Link>
+                <>
+                  <If test="item.active" value={!!item.active}>
+                    <Link
+                      to={item.href}
+                      data-class="examples-tab"
+                      data-state="active"
+                      className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
+                    >
+                      <If test="item.label" value={!!(item.label ?? '')}>
+                        <Var name="item.label" value={item.label ?? ''} />
+                      </If>
+                    </Link>
+                  </If>
+                  <If test="!item.active" value={!item.active}>
+                    <Link
+                      to={item.href}
+                      data-class="examples-tab"
+                      className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
+                    >
+                      <If test="item.label" value={!!(item.label ?? '')}>
+                        <Var name="item.label" value={item.label ?? ''} />
+                      </If>
+                    </Link>
+                  </If>
+                </>
               )}
             </Loop>
           </Group>
@@ -109,17 +125,25 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
-              <Var name="examples.button.title" value={examples?.button?.title} />
+              <If test="examples.button.title" value={!!(examples?.button?.title ?? '')}>
+                <Var name="examples.button.title" value={examples?.button?.title ?? ''} />
+              </If>
             </Text>
             <Group gap="2" items="center" data-class="examples-card-content">
               <Button size="sm" data-class="examples-btn">
-                <Var name="examples.button.defaultLabel" value={examples?.button?.defaultLabel} />
+                <If test="examples.button.defaultLabel" value={!!(examples?.button?.defaultLabel ?? '')}>
+                  <Var name="examples.button.defaultLabel" value={examples?.button?.defaultLabel ?? ''} />
+                </If>
               </Button>
               <Button variant="outline" size="sm" data-class="examples-btn">
-                <Var name="examples.button.outlineLabel" value={examples?.button?.outlineLabel} />
+                <If test="examples.button.outlineLabel" value={!!(examples?.button?.outlineLabel ?? '')}>
+                  <Var name="examples.button.outlineLabel" value={examples?.button?.outlineLabel ?? ''} />
+                </If>
               </Button>
               <Button variant="ghost" size="sm" data-class="examples-btn">
-                <Var name="examples.button.ghostLabel" value={examples?.button?.ghostLabel} />
+                <If test="examples.button.ghostLabel" value={!!(examples?.button?.ghostLabel ?? '')}>
+                  <Var name="examples.button.ghostLabel" value={examples?.button?.ghostLabel ?? ''} />
+                </If>
               </Button>
             </Group>
           </Card>
@@ -130,17 +154,25 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
-              <Var name="examples.badge.title" value={examples?.badge?.title} />
+              <If test="examples.badge.title" value={!!(examples?.badge?.title ?? '')}>
+                <Var name="examples.badge.title" value={examples?.badge?.title ?? ''} />
+              </If>
             </Text>
             <Group gap="2" items="center" data-class="examples-card-content">
               <Badge variant="default" data-class="examples-badge">
-                <Var name="examples.badge.defaultLabel" value={examples?.badge?.defaultLabel} />
+                <If test="examples.badge.defaultLabel" value={!!(examples?.badge?.defaultLabel ?? '')}>
+                  <Var name="examples.badge.defaultLabel" value={examples?.badge?.defaultLabel ?? ''} />
+                </If>
               </Badge>
               <Badge variant="secondary" data-class="examples-badge">
-                <Var name="examples.badge.secondaryLabel" value={examples?.badge?.secondaryLabel} />
+                <If test="examples.badge.secondaryLabel" value={!!(examples?.badge?.secondaryLabel ?? '')}>
+                  <Var name="examples.badge.secondaryLabel" value={examples?.badge?.secondaryLabel ?? ''} />
+                </If>
               </Badge>
               <Badge variant="outline" data-class="examples-badge">
-                <Var name="examples.badge.outlineLabel" value={examples?.badge?.outlineLabel} />
+                <If test="examples.badge.outlineLabel" value={!!(examples?.badge?.outlineLabel ?? '')}>
+                  <Var name="examples.badge.outlineLabel" value={examples?.badge?.outlineLabel ?? ''} />
+                </If>
               </Badge>
             </Group>
           </Card>
@@ -151,14 +183,20 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
             data-class="examples-card"
           >
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
-              <Var name="examples.typography.title" value={examples?.typography?.title} />
+              <If test="examples.typography.title" value={!!(examples?.typography?.title ?? '')}>
+                <Var name="examples.typography.title" value={examples?.typography?.title ?? ''} />
+              </If>
             </Text>
             <Stack gap="1" data-class="examples-card-content">
               <Title fontSize="lg" fontWeight="semibold" data-class="examples-typo-title">
-                <Var name="examples.typography.heading" value={examples?.typography?.heading} />
+                <If test="examples.typography.heading" value={!!(examples?.typography?.heading ?? '')}>
+                  <Var name="examples.typography.heading" value={examples?.typography?.heading ?? ''} />
+                </If>
               </Title>
               <Text fontSize="sm" textColor="muted-foreground" data-class="examples-typo-text">
-                <Var name="examples.typography.body" value={examples?.typography?.body} />
+                <If test="examples.typography.body" value={!!(examples?.typography?.body ?? '')}>
+                  <Var name="examples.typography.body" value={examples?.typography?.body ?? ''} />
+                </If>
               </Text>
             </Stack>
           </Card>
@@ -166,10 +204,14 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
 
         <Group gap="4" justify="center" items="center" data-class="examples-actions">
           <Button href="/examples" data-class="examples-cta">
-            <Var name="examples.actions.explore" value={examples?.actions?.explore} />
+            <If test="examples.actions.explore" value={!!(examples?.actions?.explore ?? '')}>
+              <Var name="examples.actions.explore" value={examples?.actions?.explore ?? ''} />
+            </If>
           </Button>
           <Button variant="outline" href="/docs/components" data-class="examples-cta">
-            <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents} />
+            <If test="examples.actions.allComponents" value={!!(examples?.actions?.allComponents ?? '')}>
+              <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents ?? ''} />
+            </If>
           </Button>
         </Group>
         </If>

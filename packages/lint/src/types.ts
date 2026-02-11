@@ -19,7 +19,8 @@ export type LintErrorCode =
   | "INVALID_CLASS"            // Class not in whitelist (for className validation)
   | "TYPO_DETECTED"            // Likely typo, closest match found
   | "NON_DSL_LOOP"             // JS loops in JSX; prefer <Loop>
-  | "NON_DSL_CONDITIONAL";     // JS conditionals in JSX; prefer <If>
+  | "NON_DSL_CONDITIONAL"      // JS conditionals in JSX; prefer <If>
+  | "UNWRAPPED_VAR";           // Var not wrapped in If; wrap for safe generation
 
 /** Location in source code */
 export interface LintLocation {

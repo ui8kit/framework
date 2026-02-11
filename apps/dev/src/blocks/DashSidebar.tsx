@@ -12,7 +12,7 @@ export function DashSidebar(props: DashSidebarProps) {
   return (
     <Stack gap="2" p="4" data-class={dataClass ?? 'dash-sidebar-nav'}>
       <Text fontSize="xs" fontWeight="semibold" textColor="muted-foreground" data-class="dash-sidebar-label">
-        {label}
+        {label ? (<>{label}</>) : null}
       </Text>
       {(links ?? []).length > 0 ? (<>{links.map((link, index) => (
       <Fragment key={link.id ?? index}>

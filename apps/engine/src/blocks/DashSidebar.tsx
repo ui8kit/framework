@@ -30,7 +30,9 @@ export function DashSidebar({
         textColor="muted-foreground"
         data-class="dash-sidebar-label"
       >
-        <Var name="label" value={label} />
+        <If test="label" value={!!(label ?? '')}>
+          <Var name="label" value={label ?? ''} />
+        </If>
       </Text>
       <If test="(links ?? []).length > 0" value={(links ?? []).length > 0}>
         <Loop each="links" as="link" data={links ?? []}>
