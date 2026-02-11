@@ -1,13 +1,15 @@
 import React from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
+import { Link } from 'react-router-dom';
 
 interface ExamplesBlockProps {
-  tabs?: any[];
+  tabs?: Array<{ href: string; label: string; active?: boolean }>;
   examples: any;
+  children?: React.ReactNode;
 }
 
 export function ExamplesBlock(props: ExamplesBlockProps) {
-  const { tabs, examples } = props;
+  const { tabs, examples, children } = props;
   return (
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">
@@ -17,12 +19,24 @@ export function ExamplesBlock(props: ExamplesBlockProps) {
             {examples.description}
           </Text>
         </Stack>
-        {tabs ? (<><Group gap="0" justify="start" items="center" border="b" data-class="examples-tabs">{tabs.map((item, index) => (
-        <React.Fragment key={item.href}>
-        <Button href={item.href} variant="ghost" size="sm" rounded="none" data-class="examples-tab">{item.label}</Button>
-        </React.Fragment>
-        ))}</Group></>) : null}
-        <Grid cols="1-2-4" gap="6" max="w-6xl" data-class="examples-grid">
+        {tabs && tabs.length > 0 ? (
+          <Group gap="0" justify="start" items="center" border="b" data-class="examples-tabs">
+            {tabs.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                data-class="examples-tab"
+                data-state={item.active ? 'active' : undefined}
+                className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </Group>
+        ) : null}
+        {!children ? (
+          <>
+        <Grid cols="1-2-3-4" gap="6" w="full" min="w-0" data-class="examples-grid">
           <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               {examples.button.title}
@@ -77,6 +91,10 @@ export function ExamplesBlock(props: ExamplesBlockProps) {
             {examples.actions.allComponents}
           </Button>
         </Group>
+          </>
+        ) : (
+          children
+        )}
       </Stack>
     </Block>
   );

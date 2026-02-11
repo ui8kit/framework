@@ -1,9 +1,12 @@
+import type { ReactNode } from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
+import { Link } from 'react-router-dom';
 
 export interface ExampleTab {
   href: string;
   label: string;
+  active?: boolean;
 }
 
 export interface ExamplesButtonContent {
@@ -43,6 +46,8 @@ export interface ExamplesContent {
 export interface ExamplesBlockProps {
   tabs?: ExampleTab[];
   examples: ExamplesContent;
+  /** When provided, renders header + tabs + children instead of grid + actions (for Examples layout) */
+  children?: ReactNode;
 }
 
 /**
@@ -50,7 +55,7 @@ export interface ExamplesBlockProps {
  * Tabs aligned from left; content below. Extensible for new sections.
  * Tabs passed via props (from context on engine; caller must provide in dev).
  */
-export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
+export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) {
   return (
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">
@@ -83,21 +88,21 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
           >
             <Loop each="tabs" as="item" keyExpr="item.href" data={tabs ?? []}>
               {(item: ExampleTab) => (
-                <Button
-                  href={item.href}
-                  variant="ghost"
-                  size="sm"
-                  rounded="none"
+                <Link
+                  to={item.href}
                   data-class="examples-tab"
+                  data-state={item.active ? 'active' : undefined}
+                  className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
                 >
                   <Var name="item.label" value={item.label} />
-                </Button>
+                </Link>
               )}
             </Loop>
           </Group>
         </If>
 
-        <Grid cols="1-2-4" gap="6" max="w-6xl" data-class="examples-grid">
+        <If test="!children" value={!children}>
+          <Grid cols="1-2-3-4" gap="6" w="full" min="w-0" max="w-7xl" data-class="examples-grid">
           {/* Buttons */}
           <Card
             gap="4"
@@ -167,6 +172,11 @@ export function ExamplesBlock({ tabs, examples }: ExamplesBlockProps) {
             <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents} />
           </Button>
         </Group>
+        </If>
+
+        <If test="children" value={!!children}>
+          {children}
+        </If>
       </Stack>
     </Block>
   );

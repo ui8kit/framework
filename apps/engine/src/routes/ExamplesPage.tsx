@@ -1,29 +1,15 @@
-import { Block, Container, Stack, Group, Title, Text, Button, Badge, Grid, Card } from '@ui8kit/core';
+import { Block, Stack, Group, Title, Text, Button, Badge, Grid, Card } from '@ui8kit/core';
 import { Link } from 'react-router-dom';
 
 /**
  * Examples default page — common components showcase.
+ * Header is provided by ExamplesBlock in layout; this page renders only the grid.
  */
 export function ExamplesPage() {
   return (
     <Block component="section" py="16" data-class="examples-section">
-      <Container max="w-6xl" flex="col" gap="8" data-class="examples-container">
-        <Stack gap="2" items="center" data-class="examples-header">
-          <Title fontSize="2xl" fontWeight="bold" textAlign="center" data-class="examples-title">
-            Examples
-          </Title>
-          <Text
-            fontSize="sm"
-            textColor="muted-foreground"
-            textAlign="center"
-            max="w-xl"
-            data-class="examples-description"
-          >
-            Common UI components and patterns.
-          </Text>
-        </Stack>
-
-        <Grid cols="1-2-4" gap="6" data-class="examples-grid">
+      <Stack gap="8" w="full" min="w-0" max="w-7xl" data-class="examples-container">
+        <Grid cols="1-2-3-4" gap="6" w="full" min="w-0" data-class="examples-grid">
           <Card gap="4" data-class="examples-card">
             <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
               Button
@@ -80,7 +66,7 @@ export function ExamplesPage() {
             </Stack>
           </Card>
         </Grid>
-      </Container>
+      </Stack>
     </Block>
   );
 }
