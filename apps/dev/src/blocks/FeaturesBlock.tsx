@@ -9,6 +9,7 @@ interface FeaturesBlockProps {
 
 export function FeaturesBlock(props: FeaturesBlockProps) {
   const { title, subtitle, features } = props;
+
   return (
     <Block component="section" data-class="features-section">
       <Stack gap="8" py="16" items="center">

@@ -20,6 +20,7 @@ interface MainLayoutProps {
 
 export function MainLayout(props: MainLayoutProps) {
   const { children, mode, sidebar, navItems, footerSections, headerTitle, headerSubtitle, footerCopyright, showHeader, showFooter } = props;
+
   return (
     <Fragment>
       {showHeader ?? true ? (<><Header title={headerTitle ?? 'UI8Kit'} subtitle={headerSubtitle ?? 'Design System'} navItems={navItems ?? []} dataClass={"main-layout-header"} /></>) : null}

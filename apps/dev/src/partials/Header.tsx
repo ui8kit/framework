@@ -11,6 +11,7 @@ interface HeaderProps {
 
 export function Header(props: HeaderProps) {
   const { title, subtitle, navItems, dataClass, dataClassAttr } = props;
+
   return (
     <Block component="header" py="4" bg="background" border="b" shadow="sm" data-class={dataClass ?? dataClassAttr ?? 'header'}>
       <Container max="w-6xl" mx="auto" px="4" flex="" justify="between" items="center" gap="8" data-class="header-container">

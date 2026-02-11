@@ -11,6 +11,7 @@ interface DashLayoutProps {
 
 export function DashLayout(props: DashLayoutProps) {
   const { children, sidebar } = props;
+
   return (
     <Fragment>
       <Block component="aside" data-class="sidebar-desktop" className="hidden md:flex w-64 shrink-0 border-r border-border">

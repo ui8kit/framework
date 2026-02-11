@@ -177,6 +177,8 @@ export const GenComponentMetaSchema = z.object({
   dependencies: z.array(z.string()),
   componentType: z.enum(['layout', 'partial', 'page', 'block', 'component']).optional(),
   props: z.array(GenPropDefinitionSchema).optional(),
+  preamble: z.array(z.string()).optional(),
+  preambleVars: z.array(z.string()).optional(),
 });
 
 /**

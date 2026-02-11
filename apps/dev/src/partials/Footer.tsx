@@ -9,6 +9,7 @@ interface FooterProps {
 
 export function Footer(props: FooterProps) {
   const { copyright, sections, dataClass, dataClassAttr } = props;
+
   return (
     <Block component="footer" py="8" border="t" bg="card" data-class={dataClass ?? dataClassAttr ?? 'footer'}>
       <Container flex="" justify="center" items="center" gap="8" data-class="footer-container">

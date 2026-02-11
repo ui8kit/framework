@@ -271,6 +271,10 @@ export interface GenComponentMeta {
   props?: GenPropDefinition[];
   /** Imports from source (for React full-file emission) */
   imports?: GenSourceImport[];
+  /** Statements before return (const, let, hook calls) — emitted as body preamble */
+  preamble?: string[];
+  /** Variable names declared in preamble — excluded from emitted props */
+  preambleVars?: string[];
 }
 
 /**

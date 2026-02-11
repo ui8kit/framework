@@ -9,6 +9,7 @@ interface TestimonialsBlockProps {
 
 export function TestimonialsBlock(props: TestimonialsBlockProps) {
   const { title, subtitle, testimonials } = props;
+
   return (
     <Block component="section" data-class="testimonials-section">
       <Stack gap="8" py="16" items="center" data-class="testimonials-container">

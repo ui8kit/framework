@@ -10,6 +10,7 @@ interface PricingBlockProps {
 
 export function PricingBlock(props: PricingBlockProps) {
   const { title, subtitle, badge, plans } = props;
+
   return (
     <Block component="section" data-class="pricing-section">
       <Stack gap="8" py="16" items="center" data-class="pricing-container">

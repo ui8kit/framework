@@ -10,6 +10,9 @@ interface DocsComponentsPageProps {
 
 export function DocsComponentsPage(props: DocsComponentsPageProps) {
   const { lead, title } = props;
+
+  const { title, lead } = context.docsComponents;
+
   return (
     <DashLayout sidebar={<DashSidebar
               label={context.docsSidebarLabel}

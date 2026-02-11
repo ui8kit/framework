@@ -4,12 +4,10 @@ import { HeroBlock } from '@ui8kit/blocks';
 import { ExamplesBlock } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-interface ExamplesLayoutProps {
-  tabs?: any;
-}
+export function ExamplesLayout() {
+  const location = useLocation();
+  const tabs = context.getExamplesSidebarLinks(location.pathname);
 
-export function ExamplesLayout(props: ExamplesLayoutProps) {
-  const { tabs } = props;
   return (
     <MainLayout mode={"full"} navItems={context.navItems} headerTitle={context.site.title} headerSubtitle={context.site.subtitle}>
       <HeroBlock {...context.hero} />

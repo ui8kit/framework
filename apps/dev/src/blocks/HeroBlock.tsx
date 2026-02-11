@@ -13,6 +13,7 @@ interface HeroBlockProps {
 
 export function HeroBlock(props: HeroBlockProps) {
   const { title, subtitle, ctaText, ctaUrl, secondaryCtaText, secondaryCtaUrl, backgroundImage, children } = props;
+
   return (
     <Block component="section" py="24" bg="background" data-class="hero-section">
       <Container max="w-7xl" flex="col" gap="8" items="center">

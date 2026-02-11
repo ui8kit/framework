@@ -117,9 +117,11 @@ export class ReactPlugin extends BasePlugin {
 
       // Build typed signature when prop types are available from source
       const propsInterface = this.buildPropsInterface(componentName, tree.meta?.props ?? [], propNames);
+      const preamble = tree.meta?.preamble ?? [];
+      const preambleBlock = preamble.length > 0 ? preamble.map((s) => '  ' + s).join('\n') + '\n\n' : '';
       const sig = propNames.length > 0
-        ? `(props: ${componentName}Props) {\n  const { ${propNames.join(', ')} } = props;\n`
-        : '() {\n';
+        ? `(props: ${componentName}Props) {\n  const { ${propNames.join(', ')} } = props;\n\n${preambleBlock}`
+        : `() {\n${preambleBlock}`;
 
       const fullContent =
         importBlock +
@@ -153,7 +155,7 @@ export class ReactPlugin extends BasePlugin {
 
   /**
    * Prop names to emit in the function signature (destructured from props).
-   * Uses tree.meta.props when present; otherwise infers from collectVariables minus loop vars and imports.
+   * Uses tree.meta.props when present; otherwise infers from collectVariables minus loop vars, imports, and preamble vars.
    * Only emits valid JavaScript identifiers so "copy-paste" output never has invalid destructuring.
    */
   private getEmittedPropNames(tree: import('../../../hast').GenRoot, imports: GenSourceImport[]): string[] {
@@ -164,6 +166,7 @@ export class ReactPlugin extends BasePlugin {
       if (imp.defaultImport) imported.add(imp.defaultImport);
       for (const n of imp.namedImports) imported.add(n);
     }
+    const preambleVars = new Set(tree.meta?.preambleVars ?? []);
     const loopItemNames = new Set<string>();
     visit(tree, (node) => {
       if (!isElement(node)) return;
@@ -177,7 +180,8 @@ export class ReactPlugin extends BasePlugin {
         ReactPlugin.VALID_PROP_NAME.test(v) &&
         !loopVars.has(v) &&
         !loopItemNames.has(v) &&
-        !imported.has(v)
+        !imported.has(v) &&
+        !preambleVars.has(v)
     );
   }
 

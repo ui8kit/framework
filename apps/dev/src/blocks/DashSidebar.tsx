@@ -9,6 +9,7 @@ interface DashSidebarProps {
 
 export function DashSidebar(props: DashSidebarProps) {
   const { label, links, dataClass } = props;
+
   return (
     <Stack gap="2" p="4" data-class={dataClass ?? 'dash-sidebar-nav'}>
       <Text fontSize="xs" fontWeight="semibold" textColor="muted-foreground" data-class="dash-sidebar-label">

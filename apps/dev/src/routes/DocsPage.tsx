@@ -10,6 +10,7 @@ interface DocsPageProps {
 
 export function DocsPage(props: DocsPageProps) {
   const { length } = props;
+
   return (
     <DashLayout sidebar={<DashSidebar
               label={context.docsSidebarLabel}

@@ -9,6 +9,7 @@ interface SidebarContentProps {
 
 export function SidebarContent(props: SidebarContentProps) {
   const { title, links, dataClass } = props;
+
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">

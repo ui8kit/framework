@@ -11,6 +11,7 @@ interface CTABlockProps {
 
 export function CTABlock(props: CTABlockProps) {
   const { title, subtitle, ctaText, ctaUrl, secondaryCtaText, secondaryCtaUrl } = props;
+
   return (
     <Block component="section" data-class="cta-section">
       <Stack gap="6" items="center" py="16" px="6" rounded="2xl" bg="primary" data-class="cta-container">

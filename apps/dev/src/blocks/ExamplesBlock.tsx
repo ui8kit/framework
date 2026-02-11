@@ -11,6 +11,7 @@ interface ExamplesBlockProps {
 
 export function ExamplesBlock(props: ExamplesBlockProps) {
   const { tabs, examples, children } = props;
+
   return (
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">

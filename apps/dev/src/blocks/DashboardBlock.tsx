@@ -9,6 +9,7 @@ interface DashboardBlockProps {
 
 export function DashboardBlock(props: DashboardBlockProps) {
   const { title, description, ctaText, ctaUrl } = props;
+
   return (
     <Block w="full" component="section" data-class="dashboard-section">
       <Stack gap="6">

@@ -80,11 +80,14 @@ class HastBuilder {
       return root([], this.createMeta());
     }
     
+    // Extract preamble (statements before return) and vars declared there
+    const { preamble, preambleVars } = this.findPreamble(componentNode);
+    
     // Get the JSX return
     const jsxRoot = this.findJsxReturn(componentNode);
     
     if (!jsxRoot) {
-      return root([], this.createMeta());
+      return root([], this.createMeta(preamble, preambleVars));
     }
     
     // Transform JSX to HAST
@@ -92,7 +95,7 @@ class HastBuilder {
     
     return root(
       Array.isArray(children) ? children : [children].filter(Boolean) as GenChild[],
-      this.createMeta()
+      this.createMeta(preamble, preambleVars)
     );
   }
   
@@ -334,6 +337,41 @@ class HastBuilder {
   // JSX Return Discovery
   // ===========================================================================
   
+  /**
+   * Extract statements before the return (preamble) and variable names declared there.
+   * Preserves const/let/var declarations and expression statements (e.g. hook calls).
+   */
+  private findPreamble(componentNode: t.Node): { preamble: string[]; preambleVars: string[] } {
+    const preamble: string[] = [];
+    const preambleVars: string[] = [];
+    let body: t.Statement[] | null = null;
+
+    if (componentNode.type === 'FunctionDeclaration' && componentNode.body.type === 'BlockStatement') {
+      body = componentNode.body.body;
+    } else if (
+      (componentNode.type === 'ArrowFunctionExpression' || componentNode.type === 'FunctionExpression') &&
+      componentNode.body.type === 'BlockStatement'
+    ) {
+      body = componentNode.body.body;
+    }
+    if (!body || body.length === 0) return { preamble, preambleVars };
+
+    for (const stmt of body) {
+      if (stmt.type === 'ReturnStatement') break;
+      if (stmt.type === 'VariableDeclaration') {
+        for (const decl of stmt.declarations) {
+          if (decl.id.type === 'Identifier') {
+            preambleVars.push(decl.id.name);
+          }
+        }
+        preamble.push(getNodeSource(this.source, stmt));
+      } else if (stmt.type === 'ExpressionStatement') {
+        preamble.push(getNodeSource(this.source, stmt));
+      }
+    }
+    return { preamble, preambleVars };
+  }
+
   /**
    * Find the JSX return statement in a component
    */
@@ -978,7 +1016,7 @@ class HastBuilder {
   /**
    * Create component metadata
    */
-  private createMeta(): GenComponentMeta {
+  private createMeta(preamble?: string[], preambleVars?: string[]): GenComponentMeta {
     return {
       sourceFile: this.options.sourceFile || 'unknown',
       componentName: this.componentInfo?.name || 'Component',
@@ -991,6 +1029,7 @@ class HastBuilder {
         required: p.required,
         defaultValue: p.defaultValue,
       })),
+      ...(preamble && preamble.length > 0 ? { preamble, preambleVars: preambleVars ?? [] } : {}),
     };
   }
 }

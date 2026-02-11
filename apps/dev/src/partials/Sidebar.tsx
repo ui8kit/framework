@@ -8,6 +8,7 @@ interface SidebarProps {
 
 export function Sidebar(props: SidebarProps) {
   const { children, position } = props;
+
   return (
     <Block component="aside" data-class={`sidebar sidebar-${position}`}>
       <Stack gap="6" data-class="sidebar-content">
