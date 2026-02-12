@@ -16,9 +16,14 @@ import { join, relative } from "path";
 
 const REPO_ROOT = join(import.meta.dir, "..");
 const SOURCE = join(REPO_ROOT, "apps", "engine", "dist", "react");
+const ENGINE_SRC = join(REPO_ROOT, "apps", "engine", "src");
 const TARGET = join(REPO_ROOT, "apps", "dev", "src");
 
-const SUBDIRS = ["blocks", "layouts", "partials", "routes"] as const;
+/** From dist: blocks, partials (layouts/routes come from engine/src containers) */
+const SUBDIRS = ["blocks", "partials"] as const;
+
+const LAYOUT_VIEW_SUFFIX = "LayoutView.tsx";
+const ROUTE_VIEW_SUFFIX = "PageView.tsx";
 
 function shouldSkipFile(name: string): boolean {
   if (name === "registry.json") return true;
@@ -61,6 +66,54 @@ function main(): void {
     const dest = join(TARGET, subdir);
     if (!existsSync(src)) continue;
     copyDir(src, dest);
+  }
+
+  // Copy generated views: dist/views/*LayoutView.tsx -> layouts/views/, *PageView.tsx -> routes/views/
+  const viewsDir = join(SOURCE, "views");
+  if (existsSync(viewsDir)) {
+    const layoutViewsDir = join(TARGET, "layouts", "views");
+    const routeViewsDir = join(TARGET, "routes", "views");
+    mkdirSync(layoutViewsDir, { recursive: true });
+    mkdirSync(routeViewsDir, { recursive: true });
+    const entries = readdirSync(viewsDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.endsWith(".tsx") && !shouldSkipFile(entry.name)) {
+        const srcPath = join(viewsDir, entry.name);
+        const destDir = entry.name.endsWith(LAYOUT_VIEW_SUFFIX) ? layoutViewsDir : entry.name.endsWith(ROUTE_VIEW_SUFFIX) ? routeViewsDir : null;
+        if (destDir) {
+          const destPath = join(destDir, entry.name);
+          copyFileSync(srcPath, destPath);
+          console.log(`  + ${relative(REPO_ROOT, destPath)} (view)`);
+        }
+      }
+    }
+  }
+
+  // Copy non-generated files from engine/src (containers + type files)
+  const containerDirs = ["layouts", "routes"] as const;
+  for (const subdir of containerDirs) {
+    const srcDir = join(ENGINE_SRC, subdir);
+    const destDir = join(TARGET, subdir);
+    if (!existsSync(srcDir)) continue;
+    mkdirSync(destDir, { recursive: true });
+    const entries = readdirSync(srcDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.endsWith(".tsx") && !shouldSkipFile(entry.name)) {
+        const srcPath = join(srcDir, entry.name);
+        const destPath = join(destDir, entry.name);
+        copyFileSync(srcPath, destPath);
+        console.log(`  + ${relative(REPO_ROOT, destPath)} (container)`);
+      }
+    }
+  }
+
+  // Copy blocks type files (e.g. examples-types.ts) — not generated
+  const blocksTypesSrc = join(ENGINE_SRC, "blocks", "examples-types.ts");
+  if (existsSync(blocksTypesSrc)) {
+    const destPath = join(TARGET, "blocks", "examples-types.ts");
+    mkdirSync(join(TARGET, "blocks"), { recursive: true });
+    copyFileSync(blocksTypesSrc, destPath);
+    console.log(`  + ${relative(REPO_ROOT, destPath)} (types)`);
   }
 
   console.log("\nDone. registry.json was not copied (handle separately if needed).");

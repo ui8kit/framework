@@ -1,8 +1,6 @@
-import { DashLayout } from '@/layouts';
 import { DashSidebar } from '@/blocks';
-import { DashboardBlock } from '@ui8kit/blocks';
 import { context } from '@ui8kit/data';
-import { Stack } from '@ui8kit/core';
+import { DashboardPageView } from './views/DashboardPageView';
 
 /**
  * Dashboard Page — DashLayout showcase.
@@ -10,12 +8,9 @@ import { Stack } from '@ui8kit/core';
  */
 export function DashboardPage() {
   return (
-    <DashLayout
+    <DashboardPageView
       sidebar={<DashSidebar label="Navigation" links={context.dashboardSidebarLinks} />}
-    >
-      <Stack gap="6" data-class="dashboard-content">
-        <DashboardBlock {...context.dashboard} />
-      </Stack>
-    </DashLayout>
+      dashboard={context.dashboard}
+    />
   );
 }

@@ -38,9 +38,9 @@ const PASSTHROUGH_COMPONENTS = getFallbackCoreComponents();
 const REGISTRY_SOURCE_DIRS: Array<{ path: string; type: RegistrySourceDir['type']; target: string }> = [
   { path: './src/blocks', type: 'registry:block', target: 'blocks' },
   { path: '../../packages/blocks/src/blocks', type: 'registry:block', target: 'blocks' },
-  { path: './src/layouts', type: 'registry:layout', target: 'layouts' },
+  { path: './src/layouts/views', type: 'registry:layout', target: 'layouts' },
   { path: './src/partials', type: 'registry:partial', target: 'partials' },
-  { path: './src/routes', type: 'registry:route', target: 'routes' },
+  { path: './src/routes/views', type: 'registry:route', target: 'routes' },
 ];
 
 interface EngineConfig {

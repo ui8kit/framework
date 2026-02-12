@@ -1,19 +1,24 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { MainLayout } from './MainLayout';
-import { HeroBlock } from '@ui8kit/blocks';
-import { ExamplesBlock } from '@/blocks';
 import { context } from '@ui8kit/data';
+import { ExamplesLayoutView } from './views/ExamplesLayoutView';
 
+/**
+ * Examples layout container — resolves context/router data.
+ */
 export function ExamplesLayout() {
   const location = useLocation();
   const tabs = context.getExamplesSidebarLinks(location.pathname);
 
   return (
-    <MainLayout mode={"full"} navItems={context.navItems} headerTitle={context.site.title} headerSubtitle={context.site.subtitle}>
-      <HeroBlock {...context.hero} />
-      <ExamplesBlock tabs={tabs} examples={context.examples}>
-        <Outlet />
-      </ExamplesBlock>
-    </MainLayout>
+    <ExamplesLayoutView
+      navItems={context.navItems}
+      headerTitle={context.site.title}
+      headerSubtitle={context.site.subtitle}
+      hero={context.hero}
+      examples={context.examples}
+      tabs={tabs}
+    >
+      <Outlet />
+    </ExamplesLayoutView>
   );
 }

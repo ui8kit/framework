@@ -32,7 +32,7 @@ import type {
   GenElement,
   GenSourceImport,
 } from '../../../hast';
-import { collectVariables, collectDependencies, visit, isElement, getAnnotations } from '../../../hast';
+import { collectVariables, collectDependencies } from '../../../hast';
 
 // =============================================================================
 // Branch Markers
@@ -113,7 +113,7 @@ export class ReactPlugin extends BasePlugin {
         .map((line) => (line.trim() ? '    ' + line : ''))
         .join('\n')
         .trimEnd();
-      const propNames = this.getEmittedPropNames(tree, imports);
+      const propNames = this.getEmittedPropNames(tree);
 
       // Build typed signature when prop types are available from source
       const propsInterface = this.buildPropsInterface(componentName, tree.meta?.props ?? [], propNames);
@@ -155,34 +155,12 @@ export class ReactPlugin extends BasePlugin {
 
   /**
    * Prop names to emit in the function signature (destructured from props).
-   * Uses tree.meta.props when present; otherwise infers from collectVariables minus loop vars, imports, and preamble vars.
+   * Uses only tree.meta.props (from function signature). No variable-based inference.
    * Only emits valid JavaScript identifiers so "copy-paste" output never has invalid destructuring.
    */
-  private getEmittedPropNames(tree: import('../../../hast').GenRoot, imports: GenSourceImport[]): string[] {
+  private getEmittedPropNames(tree: import('../../../hast').GenRoot): string[] {
     const fromMeta = tree.meta?.props?.map((p) => p.name).filter((n) => ReactPlugin.VALID_PROP_NAME.test(n));
-    if (fromMeta && fromMeta.length > 0) return fromMeta;
-    const imported = new Set<string>();
-    for (const imp of imports) {
-      if (imp.defaultImport) imported.add(imp.defaultImport);
-      for (const n of imp.namedImports) imported.add(n);
-    }
-    const preambleVars = new Set(tree.meta?.preambleVars ?? []);
-    const loopItemNames = new Set<string>();
-    visit(tree, (node) => {
-      if (!isElement(node)) return;
-      const ann = getAnnotations(node);
-      if (ann?.loop) loopItemNames.add(ann.loop.item);
-    });
-    const vars = collectVariables(tree);
-    const loopVars = new Set(['collection', 'item']);
-    return vars.filter(
-      (v) =>
-        ReactPlugin.VALID_PROP_NAME.test(v) &&
-        !loopVars.has(v) &&
-        !loopItemNames.has(v) &&
-        !imported.has(v) &&
-        !preambleVars.has(v)
-    );
+    return fromMeta ?? [];
   }
 
   /**
@@ -325,8 +303,11 @@ export class ReactPlugin extends BasePlugin {
       keyExpr = `${item}.id ?? ${idx}`;
     }
 
+    // Wrap optional collection paths (e.g. docsInstallation.sections) with ?? [] for safe iteration
+    const safeCollection = collection.includes('.') ? `(${collection} ?? [])` : collection;
+
     const lines = [
-      `{${collection}.map((${item}, ${idx}) => (`,
+      `{${safeCollection}.map((${item}, ${idx}) => (`,
       `<Fragment key={${keyExpr}}>`,
       content,
       '</Fragment>',

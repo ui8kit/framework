@@ -7,3 +7,4 @@ export { PricingBlock } from './PricingBlock';
 export { SidebarContent } from './SidebarContent';
 export { TestimonialsBlock } from './TestimonialsBlock';
 export { ExamplesBlock } from './ExamplesBlock';
+export type { ExampleTab, ExamplesContent } from './examples-types';
