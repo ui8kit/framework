@@ -39,11 +39,11 @@ export function Footer({
         gap="8"
         data-class="footer-container"
       >
-        <Text fontSize="sm" textColor="muted-foreground" data-class="footer-copyright">
-          <If test="copyright" value={!!(copyright ?? '')}>
+        <If test="copyright" value={!!(copyright ?? '')}>
+          <Text fontSize="sm" textColor="muted-foreground" data-class="footer-copyright">
             <Var name="copyright" value={copyright ?? ''} />
-          </If>
-        </Text>
+          </Text>
+        </If>
       </Container>
     </Block>
   );

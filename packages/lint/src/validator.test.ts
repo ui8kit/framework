@@ -192,6 +192,19 @@ describe("validateDSL", () => {
     expect(result.errors.some((e) => e.error_code === "NON_DSL_LOOP")).toBe(true);
   });
 
+  it("detects multiline map in JSX (AST-aware)", () => {
+    const source = `
+      <div>
+        {items.map((item) => (
+          <span key={item.id}>{item.label}</span>
+        ))}
+      </div>
+    `;
+    const result = validateDSL(source);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.error_code === "NON_DSL_LOOP")).toBe(true);
+  });
+
   it("detects non-DSL conditionals in JSX", () => {
     const source = `
       <div>
@@ -247,14 +260,30 @@ describe("validateDSL", () => {
     expect(err?.expected?.[0]).toContain("<If test=\"title\"");
   });
 
-  it("passes for Var wrapped in If", () => {
+  it("flags Var as direct child of If (prefer If > Wrapper > Var)", () => {
     const source = `
       <If test="title" value={!!(title ?? '')}>
         <Var name="title" value={title ?? ''} />
       </If>
     `;
     const result = validateDSL(source);
+    expect(result.valid).toBe(false);
+    const err = result.errors.find((e) => e.error_code === "VAR_DIRECT_CHILD_OF_IF");
+    expect(err).toBeDefined();
+    expect(err?.message).toContain("direct child");
+  });
+
+  it("passes for If > Wrapper > Var (correct nesting)", () => {
+    const source = `
+      <If test="title" value={!!(title ?? '')}>
+        <Text>
+          <Var name="title" value={title ?? ''} />
+        </Text>
+      </If>
+    `;
+    const result = validateDSL(source);
     expect(result.valid).toBe(true);
     expect(result.errors.some((e) => e.error_code === "UNWRAPPED_VAR")).toBe(false);
+    expect(result.errors.some((e) => e.error_code === "VAR_DIRECT_CHILD_OF_IF")).toBe(false);
   });
 });

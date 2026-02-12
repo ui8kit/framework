@@ -149,6 +149,8 @@ interface LintError {
 | `INVALID_CLASS` | Class not in whitelist |
 | `NON_DSL_LOOP` | JS loop in JSX (prefer `<Loop>`) |
 | `NON_DSL_CONDITIONAL` | JS conditional in JSX (prefer `<If>`) |
+| `UNWRAPPED_VAR` | `<Var>` not wrapped in `<If>` |
+| `VAR_DIRECT_CHILD_OF_IF` | `<If>` wraps `<Var>` directly; use `<If><Wrapper><Var /></Wrapper></If>` |
 
 ## Output Formats
 

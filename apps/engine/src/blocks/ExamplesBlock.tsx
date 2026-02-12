@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
-import { Link } from 'react-router-dom';
 
 export interface ExampleTab {
   href: string;
@@ -65,16 +64,16 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
               <Var name="examples.title" value={examples.title} />
             </Title>
           </If>
-          <Text
-            fontSize="sm"
-            textColor="muted-foreground"
-            max="w-xl"
-            data-class="examples-description"
-          >
-            <If test="examples.description" value={!!(examples.description ?? '')}>
+          <If test="examples.description" value={!!(examples.description ?? '')}>
+            <Text
+              fontSize="sm"
+              textColor="muted-foreground"
+              max="w-xl"
+              data-class="examples-description"
+            >
               <Var name="examples.description" value={examples.description ?? ''} />
-            </If>
-          </Text>
+            </Text>
+          </If>
         </Stack>
 
         <If test="tabs" value={(tabs ?? []).length > 0}>
@@ -89,27 +88,27 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
               {(item: ExampleTab) => (
                 <>
                   <If test="item.active" value={!!item.active}>
-                    <Link
-                      to={item.href}
+                    <Button
+                      href={item.href}
+                      variant="ghost"
                       data-class="examples-tab"
                       data-state="active"
-                      className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
                     >
-                      <If test="item.label" value={!!(item.label ?? '')}>
+                      <Text component="span">
                         <Var name="item.label" value={item.label ?? ''} />
-                      </If>
-                    </Link>
+                      </Text>
+                    </Button>
                   </If>
                   <If test="!item.active" value={!item.active}>
-                    <Link
-                      to={item.href}
+                    <Button
+                      href={item.href}
+                      variant="ghost"
                       data-class="examples-tab"
-                      className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
                     >
-                      <If test="item.label" value={!!(item.label ?? '')}>
+                      <Text component="span">
                         <Var name="item.label" value={item.label ?? ''} />
-                      </If>
-                    </Link>
+                      </Text>
+                    </Button>
                   </If>
                 </>
               )}
@@ -119,101 +118,101 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
 
         <If test="!children" value={!children}>
           <Grid cols="1-2-3-4" gap="6" w="full" min="w-0" max="w-7xl" data-class="examples-grid">
-          {/* Buttons */}
-          <Card
-            gap="4"
-            data-class="examples-card"
-          >
-            <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
+            {/* Buttons */}
+            <Card
+              gap="4"
+              data-class="examples-card"
+            >
               <If test="examples.button.title" value={!!(examples?.button?.title ?? '')}>
-                <Var name="examples.button.title" value={examples?.button?.title ?? ''} />
+                <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
+                  <Var name="examples.button.title" value={examples?.button?.title ?? ''} />
+                </Text>
               </If>
-            </Text>
-            <Group gap="2" items="center" data-class="examples-card-content">
-              <Button size="sm" data-class="examples-btn">
+              <Group gap="2" items="center" data-class="examples-card-content">
                 <If test="examples.button.defaultLabel" value={!!(examples?.button?.defaultLabel ?? '')}>
-                  <Var name="examples.button.defaultLabel" value={examples?.button?.defaultLabel ?? ''} />
+                  <Button size="sm" data-class="examples-btn">
+                    <Var name="examples.button.defaultLabel" value={examples?.button?.defaultLabel ?? ''} />
+                  </Button>
                 </If>
-              </Button>
-              <Button variant="outline" size="sm" data-class="examples-btn">
                 <If test="examples.button.outlineLabel" value={!!(examples?.button?.outlineLabel ?? '')}>
-                  <Var name="examples.button.outlineLabel" value={examples?.button?.outlineLabel ?? ''} />
+                  <Button variant="outline" size="sm" data-class="examples-btn">
+                    <Var name="examples.button.outlineLabel" value={examples?.button?.outlineLabel ?? ''} />
+                  </Button>
                 </If>
-              </Button>
-              <Button variant="ghost" size="sm" data-class="examples-btn">
                 <If test="examples.button.ghostLabel" value={!!(examples?.button?.ghostLabel ?? '')}>
-                  <Var name="examples.button.ghostLabel" value={examples?.button?.ghostLabel ?? ''} />
+                  <Button variant="ghost" size="sm" data-class="examples-btn">
+                    <Var name="examples.button.ghostLabel" value={examples?.button?.ghostLabel ?? ''} />
+                  </Button>
                 </If>
-              </Button>
-            </Group>
-          </Card>
+              </Group>
+            </Card>
 
-          {/* Badges */}
-          <Card
-            gap="4"
-            data-class="examples-card"
-          >
-            <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
+            {/* Badges */}
+            <Card
+              gap="4"
+              data-class="examples-card"
+            >
               <If test="examples.badge.title" value={!!(examples?.badge?.title ?? '')}>
-                <Var name="examples.badge.title" value={examples?.badge?.title ?? ''} />
+                <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
+                  <Var name="examples.badge.title" value={examples?.badge?.title ?? ''} />
+                </Text>
               </If>
-            </Text>
-            <Group gap="2" items="center" data-class="examples-card-content">
-              <Badge variant="default" data-class="examples-badge">
+              <Group gap="2" items="center" data-class="examples-card-content">
                 <If test="examples.badge.defaultLabel" value={!!(examples?.badge?.defaultLabel ?? '')}>
-                  <Var name="examples.badge.defaultLabel" value={examples?.badge?.defaultLabel ?? ''} />
+                  <Badge variant="default" data-class="examples-badge">
+                    <Var name="examples.badge.defaultLabel" value={examples?.badge?.defaultLabel ?? ''} />
+                  </Badge>
                 </If>
-              </Badge>
-              <Badge variant="secondary" data-class="examples-badge">
                 <If test="examples.badge.secondaryLabel" value={!!(examples?.badge?.secondaryLabel ?? '')}>
-                  <Var name="examples.badge.secondaryLabel" value={examples?.badge?.secondaryLabel ?? ''} />
+                  <Badge variant="secondary" data-class="examples-badge">
+                    <Var name="examples.badge.secondaryLabel" value={examples?.badge?.secondaryLabel ?? ''} />
+                  </Badge>
                 </If>
-              </Badge>
-              <Badge variant="outline" data-class="examples-badge">
                 <If test="examples.badge.outlineLabel" value={!!(examples?.badge?.outlineLabel ?? '')}>
-                  <Var name="examples.badge.outlineLabel" value={examples?.badge?.outlineLabel ?? ''} />
+                  <Badge variant="outline" data-class="examples-badge">
+                    <Var name="examples.badge.outlineLabel" value={examples?.badge?.outlineLabel ?? ''} />
+                  </Badge>
                 </If>
-              </Badge>
-            </Group>
-          </Card>
+              </Group>
+            </Card>
 
-          {/* Typography */}
-          <Card
-            gap="4"
-            data-class="examples-card"
-          >
-            <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
+            {/* Typography */}
+            <Card
+              gap="4"
+              data-class="examples-card"
+            >
               <If test="examples.typography.title" value={!!(examples?.typography?.title ?? '')}>
-                <Var name="examples.typography.title" value={examples?.typography?.title ?? ''} />
+                <Text fontSize="sm" fontWeight="semibold" data-class="examples-card-title">
+                  <Var name="examples.typography.title" value={examples?.typography?.title ?? ''} />
+                </Text>
               </If>
-            </Text>
-            <Stack gap="1" data-class="examples-card-content">
-              <Title fontSize="lg" fontWeight="semibold" data-class="examples-typo-title">
+              <Stack gap="1" data-class="examples-card-content">
                 <If test="examples.typography.heading" value={!!(examples?.typography?.heading ?? '')}>
-                  <Var name="examples.typography.heading" value={examples?.typography?.heading ?? ''} />
+                  <Title fontSize="lg" fontWeight="semibold" data-class="examples-typo-title">
+                    <Var name="examples.typography.heading" value={examples?.typography?.heading ?? ''} />
+                  </Title>
                 </If>
-              </Title>
-              <Text fontSize="sm" textColor="muted-foreground" data-class="examples-typo-text">
                 <If test="examples.typography.body" value={!!(examples?.typography?.body ?? '')}>
-                  <Var name="examples.typography.body" value={examples?.typography?.body ?? ''} />
+                  <Text fontSize="sm" textColor="muted-foreground" data-class="examples-typo-text">
+                    <Var name="examples.typography.body" value={examples?.typography?.body ?? ''} />
+                  </Text>
                 </If>
-              </Text>
-            </Stack>
-          </Card>
-        </Grid>
+              </Stack>
+            </Card>
+          </Grid>
 
-        <Group gap="4" justify="center" items="center" data-class="examples-actions">
-          <Button href="/examples" data-class="examples-cta">
+          <Group gap="4" justify="center" items="center" data-class="examples-actions">
             <If test="examples.actions.explore" value={!!(examples?.actions?.explore ?? '')}>
-              <Var name="examples.actions.explore" value={examples?.actions?.explore ?? ''} />
+              <Button href="/examples" data-class="examples-cta">
+                <Var name="examples.actions.explore" value={examples?.actions?.explore ?? ''} />
+              </Button>
             </If>
-          </Button>
-          <Button variant="outline" href="/docs/components" data-class="examples-cta">
             <If test="examples.actions.allComponents" value={!!(examples?.actions?.allComponents ?? '')}>
-              <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents ?? ''} />
+              <Button variant="outline" href="/docs/components" data-class="examples-cta">
+                <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents ?? ''} />
+              </Button>
             </If>
-          </Button>
-        </Group>
+          </Group>
         </If>
 
         <If test="children" value={!!children}>

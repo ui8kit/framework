@@ -24,16 +24,16 @@ export function DashSidebar({
 }: DashSidebarProps) {
   return (
     <Stack gap="2" p="4" data-class={dataClass ?? 'dash-sidebar-nav'}>
-      <Text
-        fontSize="xs"
-        fontWeight="semibold"
-        textColor="muted-foreground"
-        data-class="dash-sidebar-label"
-      >
-        <If test="label" value={!!(label ?? '')}>
+      <If test="label" value={!!(label ?? '')}>
+        <Text
+          fontSize="xs"
+          fontWeight="semibold"
+          textColor="muted-foreground"
+          data-class="dash-sidebar-label"
+        >
           <Var name="label" value={label ?? ''} />
-        </If>
-      </Text>
+        </Text>
+      </If>
       <If test="(links ?? []).length > 0" value={(links ?? []).length > 0}>
         <Loop each="links" as="link" data={links ?? []}>
           {(link: DashSidebarLink) => (

@@ -24,11 +24,11 @@ export function SidebarContent({
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">
-        <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
-          <If test="title" value={!!(title ?? '')}>
+        <If test="title" value={!!(title ?? '')}>
+          <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
             <Var name="title" value={title ?? ''} />
-          </If>
-        </Text>
+          </Text>
+        </If>
         <If test="links" value={(links ?? []).length > 0}>
           <Stack gap="1" data-class="sidebar-links">
             <Loop each="links" as="link" data={links ?? []}>
@@ -40,7 +40,9 @@ export function SidebarContent({
                   justify="start"
                   data-class="sidebar-link"
                 >
-                  <Var name="link.label" value={link.label} />
+                  <Text component="span">
+                    <Var name="link.label" value={link.label} />
+                  </Text>
                 </Button>
               )}
             </Loop>
