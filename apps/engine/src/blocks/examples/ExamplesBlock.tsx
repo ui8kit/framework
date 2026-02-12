@@ -1,46 +1,7 @@
 import type { ReactNode } from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
-
-export interface ExampleTab {
-  href: string;
-  label: string;
-  active?: boolean;
-}
-
-export interface ExamplesButtonContent {
-  title?: string;
-  defaultLabel?: string;
-  outlineLabel?: string;
-  ghostLabel?: string;
-}
-
-export interface ExamplesBadgeContent {
-  title?: string;
-  defaultLabel?: string;
-  secondaryLabel?: string;
-  outlineLabel?: string;
-}
-
-export interface ExamplesTypographyContent {
-  title?: string;
-  heading?: string;
-  body?: string;
-}
-
-export interface ExamplesActionsContent {
-  explore?: string;
-  allComponents?: string;
-}
-
-export interface ExamplesContent {
-  title?: string;
-  description?: string;
-  button?: ExamplesButtonContent;
-  badge?: ExamplesBadgeContent;
-  typography?: ExamplesTypographyContent;
-  actions?: ExamplesActionsContent;
-}
+import type { ExampleTab, ExamplesContent } from './types';
 
 export interface ExamplesBlockProps {
   tabs?: ExampleTab[];

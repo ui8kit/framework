@@ -13,12 +13,10 @@ export function SidebarContent(props: SidebarContentProps) {
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">
-        <Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">
-          {title ? (<>{title}</>) : null}
-        </Text>
+        {title ? (<><Text component="h3" fontSize="sm" fontWeight="semibold" data-class="sidebar-widget-title">{title}</Text></>) : null}
         {links ? (<><Stack gap="1" data-class="sidebar-links">{links.map((link, index) => (
         <Fragment key={link.id ?? index}>
-        <Button href={link.href} variant="link" size="sm" justify="start" data-class="sidebar-link">{link.label}</Button>
+        <Button href={link.href} variant="link" size="sm" justify="start" data-class="sidebar-link"><Text component="span">{link.label}</Text></Button>
         </Fragment>
         ))}</Stack></>) : null}
       </Stack>

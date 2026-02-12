@@ -107,11 +107,11 @@ function main(): void {
     }
   }
 
-  // Copy blocks type files (e.g. examples-types.ts) — not generated
-  const blocksTypesSrc = join(ENGINE_SRC, "blocks", "examples-types.ts");
+  // Copy blocks type files (e.g. examples/types.ts) — not generated
+  const blocksTypesSrc = join(ENGINE_SRC, "blocks", "examples", "types.ts");
   if (existsSync(blocksTypesSrc)) {
-    const destPath = join(TARGET, "blocks", "examples-types.ts");
-    mkdirSync(join(TARGET, "blocks"), { recursive: true });
+    const destPath = join(TARGET, "blocks", "examples", "types.ts");
+    mkdirSync(join(TARGET, "blocks", "examples"), { recursive: true });
     copyFileSync(blocksTypesSrc, destPath);
     console.log(`  + ${relative(REPO_ROOT, destPath)} (types)`);
   }
