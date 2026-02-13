@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
+import { EMPTY_ARRAY } from '@ui8kit/data';
 import type { ExampleTab, ExamplesContent } from './types';
 
 export interface ExamplesBlockProps {
@@ -37,7 +38,7 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
           </If>
         </Stack>
 
-        <If test="tabs" value={(tabs ?? []).length > 0}>
+        <If test="tabs" value={(tabs ?? EMPTY_ARRAY).length > 0}>
           <Group
             gap="0"
             justify="start"
@@ -45,7 +46,7 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
             border="b"
             data-class="examples-tabs"
           >
-            <Loop each="tabs" as="item" keyExpr="item.href" data={tabs ?? []}>
+            <Loop each="tabs" as="item" keyExpr="item.href" data={tabs ?? EMPTY_ARRAY}>
               {(item: ExampleTab) => (
                 <>
                   <If test="item.active" value={!!item.active}>

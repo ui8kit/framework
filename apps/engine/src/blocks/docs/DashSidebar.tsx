@@ -1,5 +1,6 @@
 import { Stack, Text, Button } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
+import { EMPTY_ARRAY } from '@ui8kit/data';
 
 export type DashSidebarLink = {
   label: string;
@@ -34,8 +35,8 @@ export function DashSidebar({
           <Var name="label" value={label ?? ''} />
         </Text>
       </If>
-      <If test="(links ?? []).length > 0" value={(links ?? []).length > 0}>
-        <Loop each="links" as="link" data={links ?? []}>
+      <If test="(links ?? EMPTY_ARRAY).length > 0" value={(links ?? EMPTY_ARRAY).length > 0}>
+        <Loop each="links" as="link" data={links ?? EMPTY_ARRAY}>
           {(link: DashSidebarLink) => (
             <>
               <If test="!!link.active" value={!!link.active}>

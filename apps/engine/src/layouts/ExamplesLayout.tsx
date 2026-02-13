@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { context } from '@ui8kit/data';
 import { ExamplesLayoutView } from './views/ExamplesLayoutView';
@@ -7,7 +8,10 @@ import { ExamplesLayoutView } from './views/ExamplesLayoutView';
  */
 export function ExamplesLayout() {
   const location = useLocation();
-  const tabs = context.getExamplesSidebarLinks(location.pathname);
+  const tabs = useMemo(
+    () => context.getExamplesSidebarLinks(location.pathname),
+    [location.pathname]
+  );
 
   return (
     <ExamplesLayoutView

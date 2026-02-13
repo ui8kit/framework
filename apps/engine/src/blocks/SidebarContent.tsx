@@ -1,5 +1,6 @@
 import { Stack, Text, Button } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
+import { EMPTY_ARRAY } from '@ui8kit/data';
 
 export type SidebarLink = {
   label: string;
@@ -29,9 +30,9 @@ export function SidebarContent({
             <Var name="title" value={title ?? ''} />
           </If>
         </Text>
-        <If test="links" value={(links ?? []).length > 0}>
+        <If test="links" value={(links ?? EMPTY_ARRAY).length > 0}>
           <Stack gap="1" data-class="sidebar-links">
-            <Loop each="links" as="link" data={links ?? []}>
+            <Loop each="links" as="link" data={links ?? EMPTY_ARRAY}>
               {(link: SidebarLink) => (
                 <Button
                   href={link.href}

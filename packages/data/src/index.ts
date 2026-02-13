@@ -127,6 +127,18 @@ function getExamplesSidebarLinks(activeHref: string): DashboardSidebarLink[] {
   return result;
 }
 
+/** Pre-warm cache for all docs and examples routes to avoid allocations during navigation. */
+const DOCS_PATHS = ['/docs', '/docs/installation', '/docs/components'];
+const EXAMPLES_PATHS = [
+  '/examples',
+  '/examples/dashboard',
+  '/examples/tasks',
+  '/examples/playground',
+  '/examples/authentication',
+];
+for (const p of DOCS_PATHS) getDocsSidebarLinks(p);
+for (const p of EXAMPLES_PATHS) getExamplesSidebarLinks(p);
+
 // Domain namespaces (read-only views, aligned with routes.config.json)
 const websiteDomain = Object.freeze({
   hero: hero as HeroFixture,
