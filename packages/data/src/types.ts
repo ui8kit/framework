@@ -25,6 +25,37 @@ export interface SiteInfo {
   description?: string;
 }
 
+export type PageDomain = 'website' | 'docs' | 'examples' | 'dashboard';
+
+export interface PageRecord {
+  id: string;
+  domain: PageDomain;
+  title: string;
+  path: string;
+  layout?: string;
+  component?: string;
+  parentId?: string;
+}
+
+export interface PageFixture {
+  page: Record<PageDomain, PageRecord[]>;
+}
+
+export interface SidebarCacheDiagnostics {
+  stats: {
+    hits: number;
+    misses: number;
+    sets: number;
+    evictions: number;
+    size: number;
+    maxSize: number;
+  };
+  totalEntries: number;
+  docsEntries: number;
+  examplesEntries: number;
+  otherEntries: number;
+}
+
 export interface HeroFixture {
   title?: string;
   subtitle?: string;
@@ -155,6 +186,9 @@ export interface ExamplesFixture {
 
 export interface AppContext {
   site: SiteInfo;
+  page: PageFixture['page'];
+  /** @deprecated Use page instead. */
+  routes: PageFixture['page'];
   navItems: NavItem[];
   sidebarLinks: SidebarLink[];
   dashboardSidebarLinks: DashboardSidebarLink[];
@@ -174,6 +208,9 @@ export interface AppContext {
   examplesSidebarLabel: string;
   getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
   getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
+  getPageByPath: (path: string) => PageRecord | undefined;
+  getPagesByDomain: (domain: PageDomain) => PageRecord[];
+  getSidebarCacheDiagnostics: () => SidebarCacheDiagnostics;
   domains?: DomainsContext;
   clearCache?: () => void;
 }
@@ -187,6 +224,7 @@ export interface DomainsContext {
 }
 
 export interface WebsiteDomainContext {
+  page: PageRecord[];
   hero: HeroFixture;
   features: FeaturesFixture;
   pricing: PricingFixture;
@@ -198,6 +236,7 @@ export interface WebsiteDomainContext {
 }
 
 export interface DocsDomainContext {
+  page: PageRecord[];
   docsIntro: DocsIntroFixture;
   docsInstallation: DocsInstallationFixture;
   docsComponents: DocsComponentsFixture;
@@ -206,12 +245,14 @@ export interface DocsDomainContext {
 }
 
 export interface ExamplesDomainContext {
+  page: PageRecord[];
   examples: ExamplesFixture;
   examplesSidebarLabel: string;
   getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
 }
 
 export interface DashboardDomainContext {
+  page: PageRecord[];
   dashboard: DashboardFixture;
   dashboardSidebarLinks: DashboardSidebarLink[];
 }

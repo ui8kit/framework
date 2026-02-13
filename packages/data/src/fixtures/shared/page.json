@@ -1,0 +1,23 @@
+{
+  "page": {
+    "website": [
+      { "id": "website-home", "domain": "website", "title": "Home", "path": "/", "component": "WebsitePage" }
+    ],
+    "dashboard": [
+      { "id": "dashboard-home", "domain": "dashboard", "title": "Dashboard", "path": "/dashboard", "component": "DashboardPage" }
+    ],
+    "docs": [
+      { "id": "docs-introduction", "domain": "docs", "title": "Introduction", "path": "/docs", "component": "DocsPage" },
+      { "id": "docs-components", "domain": "docs", "title": "Components", "path": "/docs/components", "component": "DocsComponentsPage" },
+      { "id": "docs-installation", "domain": "docs", "title": "Installation", "path": "/docs/installation", "component": "DocsInstallationPage" }
+    ],
+    "examples": [
+      { "id": "examples-layout", "domain": "examples", "title": "Examples", "path": "/examples", "layout": "ExamplesLayout" },
+      { "id": "examples-index", "domain": "examples", "title": "Examples", "path": "/examples", "component": "ExamplesPage", "parentId": "examples-layout" },
+      { "id": "examples-dashboard", "domain": "examples", "title": "Dashboard", "path": "/examples/dashboard", "component": "ExamplesDashboardPage", "parentId": "examples-layout" },
+      { "id": "examples-tasks", "domain": "examples", "title": "Tasks", "path": "/examples/tasks", "component": "ExamplesTasksPage", "parentId": "examples-layout" },
+      { "id": "examples-playground", "domain": "examples", "title": "Playground", "path": "/examples/playground", "component": "ExamplesPlaygroundPage", "parentId": "examples-layout" },
+      { "id": "examples-authentication", "domain": "examples", "title": "Authentication", "path": "/examples/authentication", "component": "ExamplesAuthPage", "parentId": "examples-layout" }
+    ]
+  }
+}

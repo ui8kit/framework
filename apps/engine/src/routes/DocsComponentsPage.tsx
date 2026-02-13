@@ -2,7 +2,10 @@ import { useMemo } from 'react';
 import { DashSidebar, DocsComponentsPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-const COMPONENTS_LINKS = context.getDocsSidebarLinks('/docs/components');
+const COMPONENTS_PATH =
+  context.page.docs.find((entry) => entry.id === 'docs-components')?.path ??
+  '/docs/components';
+const COMPONENTS_LINKS = context.getDocsSidebarLinks(COMPONENTS_PATH);
 
 /**
  * Docs Components container — resolves context and sidebar.

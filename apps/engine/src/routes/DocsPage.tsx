@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { DashSidebar, DocsPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-const DOCS_LINKS = context.getDocsSidebarLinks('/docs');
+const DOCS_PATH = context.page.docs[0]?.path ?? '/docs';
+const DOCS_LINKS = context.getDocsSidebarLinks(DOCS_PATH);
 
 /**
  * Docs Introduction container — resolves context and sidebar.

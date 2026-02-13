@@ -10,7 +10,7 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./fixtures/*": "./dist/fixtures/*.json"
+    "./fixtures/*": "./dist/fixtures/*"
   },
   "files": [
     "dist",

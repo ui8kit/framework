@@ -1,0 +1,25 @@
+{
+  "title": "Examples",
+  "description": "Common UI components and patterns.",
+  "button": {
+    "title": "Button",
+    "defaultLabel": "Default",
+    "outlineLabel": "Outline",
+    "ghostLabel": "Ghost"
+  },
+  "badge": {
+    "title": "Badge",
+    "defaultLabel": "Default",
+    "secondaryLabel": "Secondary",
+    "outlineLabel": "Outline"
+  },
+  "typography": {
+    "title": "Typography",
+    "heading": "Heading",
+    "body": "Body text"
+  },
+  "actions": {
+    "explore": "Explore Examples",
+    "allComponents": "All Components"
+  }
+}

@@ -99,10 +99,31 @@ describe('context', () => {
 
   describe('domains', () => {
     it('exposes domain-scoped data', () => {
+      expect(context.domains.website.page).toBe(context.page.website);
       expect(context.domains.website.hero).toBe(context.hero);
+      expect(context.domains.docs.page).toBe(context.page.docs);
       expect(context.domains.docs.docsIntro).toBe(context.docsIntro);
+      expect(context.domains.examples.page).toBe(context.page.examples);
       expect(context.domains.examples.examples).toBe(context.examples);
+      expect(context.domains.dashboard.page).toBe(context.page.dashboard);
       expect(context.domains.dashboard.dashboard).toBe(context.dashboard);
+    });
+  });
+
+  describe('page model', () => {
+    it('keeps backward-compatible routes alias', () => {
+      expect(context.routes).toBe(context.page);
+    });
+
+    it('returns normalized page metadata by path', () => {
+      const docsPage = context.getPageByPath('/docs?tab=components#top');
+      expect(docsPage?.id).toBe('docs-introduction');
+    });
+
+    it('returns pages by domain', () => {
+      const examplesPages = context.getPagesByDomain('examples');
+      expect(examplesPages.length).toBeGreaterThanOrEqual(5);
+      expect(examplesPages.some((entry) => entry.id === 'examples-layout')).toBe(true);
     });
   });
 

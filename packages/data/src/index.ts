@@ -7,15 +7,19 @@ import { sidebarLinksCache } from './cache';
 export function clearCache(): void {
   sidebarLinksCache.clear();
 }
-import hero from './fixtures/hero.json';
-import features from './fixtures/features.json';
-import pricing from './fixtures/pricing.json';
-import testimonials from './fixtures/testimonials.json';
-import cta from './fixtures/cta.json';
-import dashboard from './fixtures/dashboard.json';
-import docsIntro from './fixtures/docs-intro.json';
-import docsInstallation from './fixtures/docs-installation.json';
-import docsComponents from './fixtures/docs-components.json';
+import siteData from './fixtures/shared/site.json';
+import navigationData from './fixtures/shared/navigation.json';
+import pageData from './fixtures/shared/page.json';
+import heroData from './fixtures/website/hero.json';
+import featuresData from './fixtures/website/features.json';
+import pricingData from './fixtures/website/pricing.json';
+import testimonialsData from './fixtures/website/testimonials.json';
+import ctaData from './fixtures/website/cta.json';
+import dashboardData from './fixtures/dashboard/dashboard.json';
+import docsIntroData from './fixtures/docs/intro.json';
+import docsInstallationData from './fixtures/docs/installation.json';
+import docsComponentsData from './fixtures/docs/components.json';
+import examplesData from './fixtures/examples/examples.json';
 import type {
   HeroFixture,
   FeaturesFixture,
@@ -31,76 +35,36 @@ import type {
   SidebarLink,
   DashboardSidebarLink,
   SiteInfo,
+  PageFixture,
+  PageDomain,
+  PageRecord,
 } from './types';
 
 // -----------------------------------------------------------------------------
 // Unified context: one source for layout + block data (alias in apps via @ui8kit/data)
 // -----------------------------------------------------------------------------
 
-const navItems: NavItem[] = [
-  { id: 'home', title: 'Home', url: '/' },
-  { id: 'examples', title: 'Examples', url: '/examples' },
-  { id: 'dashboard', title: 'Dashboard', url: '/dashboard' },
-  { id: 'docs', title: 'Docs', url: '/docs' },
-];
+const site = siteData as SiteInfo;
+const page = (pageData as PageFixture).page;
 
-const sidebarLinks: SidebarLink[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Dashboard', href: '/dashboard' },
-];
+const navItems = navigationData.navItems as NavItem[];
+const sidebarLinks = navigationData.sidebarLinks as SidebarLink[];
+const dashboardSidebarLinks = navigationData.dashboardSidebarLinks as DashboardSidebarLink[];
+const docsSidebarLinks = navigationData.docsSidebarLinks as DashboardSidebarLink[];
+const examplesSidebarLinks = navigationData.examplesSidebarLinks as DashboardSidebarLink[];
+const docsSidebarLabel = navigationData.labels.docsSidebarLabel;
+const examplesSidebarLabel = navigationData.labels.examplesSidebarLabel;
 
-const dashboardSidebarLinks: DashboardSidebarLink[] = [
-  { label: 'Website', href: '/', active: false },
-  { label: 'Dashboard', href: '/dashboard', active: true },
-];
-
-const docsSidebarLinks: DashboardSidebarLink[] = [
-  { label: 'Introduction', href: '/docs', active: true },
-  { label: 'Components', href: '/docs/components', active: false },
-  { label: 'Installation', href: '/docs/installation', active: false },
-];
-
-const examplesSidebarLinks: DashboardSidebarLink[] = [
-  { label: 'Examples', href: '/examples', active: true },
-  { label: 'Dashboard', href: '/examples/dashboard', active: false },
-  { label: 'Tasks', href: '/examples/tasks', active: false },
-  { label: 'Playground', href: '/examples/playground', active: false },
-  { label: 'Authentication', href: '/examples/authentication', active: false },
-];
-
-const examples: ExamplesFixture = {
-  title: 'Examples',
-  description: 'Common UI components and patterns.',
-  button: {
-    title: 'Button',
-    defaultLabel: 'Default',
-    outlineLabel: 'Outline',
-    ghostLabel: 'Ghost',
-  },
-  badge: {
-    title: 'Badge',
-    defaultLabel: 'Default',
-    secondaryLabel: 'Secondary',
-    outlineLabel: 'Outline',
-  },
-  typography: {
-    title: 'Typography',
-    heading: 'Heading',
-    body: 'Body text',
-  },
-  actions: {
-    explore: 'Explore Examples',
-    allComponents: 'All Components',
-  },
-};
-
-const site: SiteInfo = {
-  title: 'UI8Kit',
-  subtitle: 'Template Engine',
-};
-
-const docsSidebarLabel = 'Documentation';
-const examplesSidebarLabel = 'Examples';
+const hero = heroData as HeroFixture;
+const features = featuresData as FeaturesFixture;
+const pricing = pricingData as PricingFixture;
+const testimonials = testimonialsData as TestimonialsFixture;
+const cta = ctaData as CTAFixture;
+const dashboard = dashboardData as DashboardFixture;
+const docsIntro = docsIntroData as DocsIntroFixture;
+const docsInstallation = docsInstallationData as DocsInstallationFixture;
+const docsComponents = docsComponentsData as DocsComponentsFixture;
+const examples = examplesData as ExamplesFixture;
 
 /** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
 export const EMPTY_ARRAY: readonly never[] = Object.freeze([]) as readonly never[];
@@ -113,6 +77,22 @@ function normalizeActiveHref(activeHref: string): string {
   const normalizedSlashes = withLeadingSlash.replace(/\/{2,}/g, '/');
   if (normalizedSlashes === '' || normalizedSlashes === '/') return '/';
   return normalizedSlashes.replace(/\/+$/, '');
+}
+
+function getPagesByDomain(domain: PageDomain): PageRecord[] {
+  return page[domain];
+}
+
+function getPageByPath(path: string): PageRecord | undefined {
+  const normalizedPath = normalizeActiveHref(path);
+  const domains: PageDomain[] = ['website', 'docs', 'examples', 'dashboard'];
+  for (const domain of domains) {
+    const matched = page[domain].find(
+      (item) => normalizeActiveHref(item.path) === normalizedPath
+    );
+    if (matched) return matched;
+  }
+  return undefined;
 }
 
 function freezeSidebarLinks(
@@ -177,6 +157,7 @@ export function getSidebarCacheDiagnostics() {
 
 // Domain namespaces (read-only views, aligned with routes.config.json)
 const websiteDomain = Object.freeze({
+  page: page.website,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
   pricing: pricing as PricingFixture,
@@ -187,6 +168,7 @@ const websiteDomain = Object.freeze({
   sidebarLinks,
 });
 const docsDomain = Object.freeze({
+  page: page.docs,
   docsIntro: docsIntro as DocsIntroFixture,
   docsInstallation: docsInstallation as DocsInstallationFixture,
   docsComponents: docsComponents as DocsComponentsFixture,
@@ -194,16 +176,21 @@ const docsDomain = Object.freeze({
   getDocsSidebarLinks,
 });
 const examplesDomain = Object.freeze({
+  page: page.examples,
   examples,
   examplesSidebarLabel,
   getExamplesSidebarLinks,
 });
 const dashboardDomain = Object.freeze({
+  page: page.dashboard,
   dashboard: dashboard as DashboardFixture,
   dashboardSidebarLinks,
 });
 
 export const context = Object.freeze({
+  page,
+  /** @deprecated Use page instead. */
+  routes: page,
   site,
   navItems,
   sidebarLinks,
@@ -215,6 +202,8 @@ export const context = Object.freeze({
   examplesSidebarLabel,
   getDocsSidebarLinks,
   getExamplesSidebarLinks,
+  getPageByPath,
+  getPagesByDomain,
   getSidebarCacheDiagnostics,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
