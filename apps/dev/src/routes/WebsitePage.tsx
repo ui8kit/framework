@@ -1,9 +1,6 @@
 import { SidebarContent, WebsitePageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-/**
- * Home Page container — resolves context.
- */
 export function WebsitePage() {
   return (
     <WebsitePageView

@@ -12,29 +12,10 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { loadScaffoldConfig } from "./scaffold-config";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
-
-interface ScaffoldConfig {
-  appName: string;
-  target: string;
-  domain?: string;
-  packageName: string;
-  description: string;
-  port?: number;
-  title?: string;
-}
-
-async function loadConfig(): Promise<ScaffoldConfig> {
-  const configPath = join(__dirname, "app-scaffold.config.json");
-  if (!existsSync(configPath)) {
-    console.error("Config not found:", configPath);
-    process.exit(1);
-  }
-  const raw = await Bun.file(configPath).json();
-  return raw as ScaffoldConfig;
-}
 
 function writeFile(targetPath: string, content: string): void {
   mkdirSync(dirname(targetPath), { recursive: true });
@@ -43,7 +24,7 @@ function writeFile(targetPath: string, content: string): void {
 }
 
 async function main(): Promise<void> {
-  const config = await loadConfig();
+  const config = await loadScaffoldConfig();
   const targetRoot = join(REPO_ROOT, config.target);
   const appName = config.appName;
   const packageName = config.packageName;
