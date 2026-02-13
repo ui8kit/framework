@@ -1,4 +1,4 @@
-import { ExamplesPlaygroundPageView } from './views/ExamplesPlaygroundPageView';
+import { ExamplesPlaygroundPageView } from '@/blocks';
 
 export function ExamplesPlaygroundPage() {
   return <ExamplesPlaygroundPageView />;

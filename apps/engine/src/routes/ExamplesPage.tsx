@@ -1,4 +1,4 @@
-import { ExamplesPageView } from './views/ExamplesPageView';
+import { ExamplesPageView } from '@/blocks';
 
 export function ExamplesPage() {
   return <ExamplesPageView />;

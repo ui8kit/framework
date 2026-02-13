@@ -1,4 +1,4 @@
-import { ExamplesTasksPageView } from './views/ExamplesTasksPageView';
+import { ExamplesTasksPageView } from '@/blocks';
 
 export function ExamplesTasksPage() {
   return <ExamplesTasksPageView />;

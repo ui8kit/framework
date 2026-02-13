@@ -1,6 +1,5 @@
-import { DashSidebar } from '@/blocks';
+import { DashSidebar, DocsInstallationPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
-import { DocsInstallationPageView } from './views/DocsInstallationPageView';
 
 /**
  * Docs Installation container — resolves context and sidebar.

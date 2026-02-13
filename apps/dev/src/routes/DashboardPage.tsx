@@ -1,6 +1,5 @@
-import { DashSidebar } from '@/blocks';
+import { DashSidebar, DashboardPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
-import { DashboardPageView } from './views/DashboardPageView';
 
 /**
  * Dashboard Page — DashLayout showcase.

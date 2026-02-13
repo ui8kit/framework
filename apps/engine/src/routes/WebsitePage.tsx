@@ -1,6 +1,5 @@
-import { SidebarContent } from '@/blocks';
+import { SidebarContent, WebsitePageView } from '@/blocks';
 import { context } from '@ui8kit/data';
-import { WebsitePageView } from './views/WebsitePageView';
 
 /**
  * Home Page container — resolves context.
