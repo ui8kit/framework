@@ -105,25 +105,44 @@ const examplesSidebarLabel = 'Examples';
 /** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
 export const EMPTY_ARRAY: readonly never[] = Object.freeze([]) as readonly never[];
 
+function normalizeActiveHref(activeHref: string): string {
+  const raw = activeHref.trim();
+  const noHash = raw.split('#', 1)[0] ?? '';
+  const noQuery = noHash.split('?', 1)[0] ?? '';
+  const withLeadingSlash = noQuery.startsWith('/') ? noQuery : `/${noQuery}`;
+  const normalizedSlashes = withLeadingSlash.replace(/\/{2,}/g, '/');
+  if (normalizedSlashes === '' || normalizedSlashes === '/') return '/';
+  return normalizedSlashes.replace(/\/+$/, '');
+}
+
+function freezeSidebarLinks(
+  links: DashboardSidebarLink[],
+  activeHref: string
+): DashboardSidebarLink[] {
+  const frozen = links.map((link) =>
+    Object.freeze({
+      ...link,
+      active: link.href === activeHref,
+    })
+  );
+  return Object.freeze(frozen) as DashboardSidebarLink[];
+}
+
 function getDocsSidebarLinks(activeHref: string): DashboardSidebarLink[] {
-  const cached = sidebarLinksCache.get(`docs:${activeHref}`);
+  const normalizedHref = normalizeActiveHref(activeHref);
+  const cached = sidebarLinksCache.get(`docs:${normalizedHref}`);
   if (cached) return cached;
-  const result = docsSidebarLinks.map((link) => ({
-    ...link,
-    active: link.href === activeHref,
-  }));
-  sidebarLinksCache.set(`docs:${activeHref}`, result);
+  const result = freezeSidebarLinks(docsSidebarLinks, normalizedHref);
+  sidebarLinksCache.set(`docs:${normalizedHref}`, result);
   return result;
 }
 
 function getExamplesSidebarLinks(activeHref: string): DashboardSidebarLink[] {
-  const cached = sidebarLinksCache.get(`examples:${activeHref}`);
+  const normalizedHref = normalizeActiveHref(activeHref);
+  const cached = sidebarLinksCache.get(`examples:${normalizedHref}`);
   if (cached) return cached;
-  const result = examplesSidebarLinks.map((link) => ({
-    ...link,
-    active: link.href === activeHref,
-  }));
-  sidebarLinksCache.set(`examples:${activeHref}`, result);
+  const result = freezeSidebarLinks(examplesSidebarLinks, normalizedHref);
+  sidebarLinksCache.set(`examples:${normalizedHref}`, result);
   return result;
 }
 
@@ -138,6 +157,23 @@ const EXAMPLES_PATHS = [
 ];
 for (const p of DOCS_PATHS) getDocsSidebarLinks(p);
 for (const p of EXAMPLES_PATHS) getExamplesSidebarLinks(p);
+
+export function getSidebarCacheDiagnostics() {
+  const keys = sidebarLinksCache.keys();
+  let docsEntries = 0;
+  let examplesEntries = 0;
+  for (const key of keys) {
+    if (key.startsWith('docs:')) docsEntries += 1;
+    else if (key.startsWith('examples:')) examplesEntries += 1;
+  }
+  return Object.freeze({
+    stats: Object.freeze(sidebarLinksCache.stats()),
+    totalEntries: keys.length,
+    docsEntries,
+    examplesEntries,
+    otherEntries: keys.length - docsEntries - examplesEntries,
+  });
+}
 
 // Domain namespaces (read-only views, aligned with routes.config.json)
 const websiteDomain = Object.freeze({
@@ -179,6 +215,7 @@ export const context = Object.freeze({
   examplesSidebarLabel,
   getDocsSidebarLinks,
   getExamplesSidebarLinks,
+  getSidebarCacheDiagnostics,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
   pricing: pricing as PricingFixture,

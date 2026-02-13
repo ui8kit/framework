@@ -56,4 +56,41 @@ describe('createCache', () => {
     expect(cache.get('a')).toBeUndefined();
     expect(cache.get('b')).toBeUndefined();
   });
+
+  it('exposes size and keys for diagnostics', () => {
+    cache.set('a', 1);
+    cache.set('b', 2);
+    expect(cache.size()).toBe(2);
+    expect(cache.keys()).toEqual(['a', 'b']);
+  });
+
+  it('exposes stats with hits, misses, sets, and evictions', () => {
+    cache.get('missing');
+    cache.set('a', 1);
+    cache.set('b', 2);
+    cache.set('c', 3);
+    cache.get('a');
+    cache.set('d', 4);
+    const stats = cache.stats();
+    expect(stats.hits).toBe(1);
+    expect(stats.misses).toBe(1);
+    expect(stats.sets).toBe(4);
+    expect(stats.evictions).toBe(1);
+    expect(stats.size).toBe(3);
+    expect(stats.maxSize).toBe(3);
+  });
+
+  it('resets stats after clear', () => {
+    cache.get('missing');
+    cache.set('a', 1);
+    cache.clear();
+    expect(cache.stats()).toEqual({
+      hits: 0,
+      misses: 0,
+      sets: 0,
+      evictions: 0,
+      size: 0,
+      maxSize: 3,
+    });
+  });
 });
