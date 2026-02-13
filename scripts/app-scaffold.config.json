@@ -1,0 +1,8 @@
+{
+  "appName": "test",
+  "target": "apps/test",
+  "packageName": "@ui8kit/vite-test",
+  "description": "Test app for UI8Kit — scaffolded from engine pipeline",
+  "port": 5174,
+  "title": "UI8Kit Test"
+}

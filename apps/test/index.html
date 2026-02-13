@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UI8Kit Test</title>
+    <style>
+      #app[data-class="main-layout"]:has(> aside) { flex-direction: row; }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="flex flex-col min-h-screen" data-class="main-layout"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

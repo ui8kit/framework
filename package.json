@@ -26,7 +26,11 @@
     "generate:web": "bunx turbo run generate --filter=./apps/web",
     "generate:engine": "bunx turbo run generate --filter=./apps/engine",
     "copy-templates-to-dev": "bun run scripts/copy-templates-to-dev.ts",
+    "copy-templates-to-test": "TARGET_APP=test bun run scripts/copy-templates-to-dev.ts",
+    "scaffold-app": "bun run scripts/scaffold-app.ts",
+    "install-app": "bash scripts/installer.sh",
     "sync-dev": "bun run generate:engine && bun run copy-templates-to-dev",
+    "sync-test": "cd apps/engine && bun run generate && cd ../.. && TARGET_APP=test bun run scripts/copy-templates-to-dev.ts",
     "m": "bash scripts/engine.sh"
 
   },

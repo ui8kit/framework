@@ -8,7 +8,9 @@
  * - Skips: any file named index.ts or index.tsx (do not overwrite dev’s index files).
  *
  * Run from repo root:
- *   bun run scripts/copy-templates-to-dev.ts
+ *   bun run scripts/copy-templates-to-dev.ts           # default: apps/dev
+ *   bun run scripts/copy-templates-to-dev.ts -- test  # apps/test
+ *   TARGET_APP=test bun run scripts/copy-templates-to-dev.ts
  */
 
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync } from "fs";
@@ -17,7 +19,17 @@ import { join, relative } from "path";
 const REPO_ROOT = join(import.meta.dir, "..");
 const SOURCE = join(REPO_ROOT, "apps", "engine", "dist", "react");
 const ENGINE_SRC = join(REPO_ROOT, "apps", "engine", "src");
-const TARGET = join(REPO_ROOT, "apps", "dev", "src");
+
+function getTargetApp(): string {
+  const env = process.env.TARGET_APP;
+  if (env) return env;
+  const idx = process.argv.indexOf("--");
+  if (idx >= 0 && process.argv[idx + 1]) return process.argv[idx + 1];
+  return "dev";
+}
+
+const TARGET_APP = getTargetApp();
+const TARGET = join(REPO_ROOT, "apps", TARGET_APP, "src");
 
 /** From dist: blocks, partials (layouts/routes come from engine/src containers) */
 const SUBDIRS = ["blocks", "partials"] as const;
@@ -51,7 +63,7 @@ function copyDir(sourceDir: string, targetDir: string): void {
 }
 
 function main(): void {
-  console.log("Copy engine/dist/react → apps/dev/src");
+  console.log(`Copy engine/dist/react → apps/${TARGET_APP}/src`);
   console.log("  Source:", relative(REPO_ROOT, SOURCE));
   console.log("  Target:", relative(REPO_ROOT, TARGET));
   console.log("  Skip: registry.json, index.ts, index.tsx\n");
