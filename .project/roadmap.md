@@ -107,6 +107,7 @@ apps/
 ### apps/engine: css framwork components
 
 - [x] complete base ui design from DSL 
+- [x] reafactor domain like structure
 - [ ] complete full ui design and docs with examples
 - [ ] 
 - [ ] 
