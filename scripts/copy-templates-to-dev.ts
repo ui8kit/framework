@@ -11,7 +11,7 @@
  *   bun run scripts/copy-templates-to-dev.ts
  */
 
-import { copyFileSync, existsSync, mkdirSync, readdirSync } from "fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync } from "fs";
 import { join, relative } from "path";
 
 const REPO_ROOT = join(import.meta.dir, "..");
@@ -70,18 +70,20 @@ function main(): void {
 
   // Copy generated views: *LayoutView -> layouts/views/, *PageView -> blocks/{domain}/
   const viewsDir = join(SOURCE, "views");
-  const pageViewToDomain: Record<string, string> = {
-    WebsitePageView: "website",
-    DashboardPageView: "dashboard",
-    DocsPageView: "docs",
-    DocsInstallationPageView: "docs",
-    DocsComponentsPageView: "docs",
-    ExamplesPageView: "examples",
-    ExamplesDashboardPageView: "examples",
-    ExamplesTasksPageView: "examples",
-    ExamplesPlaygroundPageView: "examples",
-    ExamplesAuthPageView: "examples",
-  };
+  const registryPath = join(SOURCE, "registry.json");
+  let pageViewToDomain: Record<string, string> = {};
+  if (existsSync(registryPath)) {
+    const registry = JSON.parse(readFileSync(registryPath, "utf-8"));
+    const routeItems = (registry.items || []).filter(
+      (i: { type: string; name: string; domain?: string }) =>
+        i.type === "registry:route" && i.domain
+    );
+    pageViewToDomain = Object.fromEntries(
+      routeItems.map((i: { name: string; domain: string }) => [i.name, i.domain])
+    );
+  } else {
+    console.warn("  ! registry.json not found; skipping PageView copy");
+  }
   if (existsSync(viewsDir)) {
     const layoutViewsDir = join(TARGET, "layouts", "views");
     mkdirSync(layoutViewsDir, { recursive: true });
@@ -126,6 +128,28 @@ function main(): void {
     }
   }
 
+  // Copy App.tsx from engine
+  const appSrc = join(ENGINE_SRC, "App.tsx");
+  if (existsSync(appSrc)) {
+    copyFileSync(appSrc, join(TARGET, "App.tsx"));
+    console.log(`  + ${relative(REPO_ROOT, join(TARGET, "App.tsx"))} (app)`);
+  }
+
+  // Copy index files from engine (layouts, partials, routes)
+  const indexFiles = [
+    ["layouts", "index.ts"],
+    ["partials", "index.ts"],
+    ["routes", "index.ts"],
+  ] as const;
+  for (const [dir, file] of indexFiles) {
+    const src = join(ENGINE_SRC, dir, file);
+    if (existsSync(src)) {
+      mkdirSync(join(TARGET, dir), { recursive: true });
+      copyFileSync(src, join(TARGET, dir, file));
+      console.log(`  + ${relative(REPO_ROOT, join(TARGET, dir, file))} (${dir} index)`);
+    }
+  }
+
   // Copy blocks type files (e.g. examples/types.ts) — not generated
   const blocksTypesSrc = join(ENGINE_SRC, "blocks", "examples", "types.ts");
   if (existsSync(blocksTypesSrc)) {
@@ -135,18 +159,24 @@ function main(): void {
     console.log(`  + ${relative(REPO_ROOT, destPath)} (types)`);
   }
 
-  // Copy blocks index files from engine (exports for website, dashboard, docs, examples)
+  // Copy blocks index files from engine (discover domains from filesystem)
   const blocksIndexSrc = join(ENGINE_SRC, "blocks", "index.ts");
   if (existsSync(blocksIndexSrc)) {
     copyFileSync(blocksIndexSrc, join(TARGET, "blocks", "index.ts"));
     console.log(`  + ${relative(REPO_ROOT, join(TARGET, "blocks", "index.ts"))} (blocks index)`);
   }
-  for (const domain of ["website", "dashboard", "docs", "examples"]) {
-    const domainIndex = join(ENGINE_SRC, "blocks", domain, "index.ts");
-    if (existsSync(domainIndex)) {
-      mkdirSync(join(TARGET, "blocks", domain), { recursive: true });
-      copyFileSync(domainIndex, join(TARGET, "blocks", domain, "index.ts"));
-      console.log(`  + ${relative(REPO_ROOT, join(TARGET, "blocks", domain, "index.ts"))} (${domain} index)`);
+  const blocksDir = join(ENGINE_SRC, "blocks");
+  if (existsSync(blocksDir)) {
+    const subdirs = readdirSync(blocksDir, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name);
+    for (const domain of subdirs) {
+      const domainIndex = join(blocksDir, domain, "index.ts");
+      if (existsSync(domainIndex)) {
+        mkdirSync(join(TARGET, "blocks", domain), { recursive: true });
+        copyFileSync(domainIndex, join(TARGET, "blocks", domain, "index.ts"));
+        console.log(`  + ${relative(REPO_ROOT, join(TARGET, "blocks", domain, "index.ts"))} (${domain} index)`);
+      }
     }
   }
 

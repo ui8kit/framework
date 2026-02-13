@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { WebsitePage } from '@/routes/WebsitePage';
 import { DashboardPage } from '@/routes/DashboardPage';
 import { DocsPage } from '@/routes/DocsPage';
@@ -10,7 +10,6 @@ import { ExamplesDashboardPage } from '@/routes/ExamplesDashboardPage';
 import { ExamplesTasksPage } from '@/routes/ExamplesTasksPage';
 import { ExamplesPlaygroundPage } from '@/routes/ExamplesPlaygroundPage';
 import { ExamplesAuthPage } from '@/routes/ExamplesAuthPage';
-import { Navigate } from 'react-router-dom';
 
 export function App() {
   return (

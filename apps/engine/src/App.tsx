@@ -1,15 +1,15 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { WebsitePage } from './routes/WebsitePage';
-import { DashboardPage } from './routes/DashboardPage';
-import { DocsPage } from './routes/DocsPage';
-import { DocsComponentsPage } from './routes/DocsComponentsPage';
-import { DocsInstallationPage } from './routes/DocsInstallationPage';
-import { ExamplesLayout } from './layouts/ExamplesLayout';
-import { ExamplesPage } from './routes/ExamplesPage';
-import { ExamplesDashboardPage } from './routes/ExamplesDashboardPage';
-import { ExamplesTasksPage } from './routes/ExamplesTasksPage';
-import { ExamplesPlaygroundPage } from './routes/ExamplesPlaygroundPage';
-import { ExamplesAuthPage } from './routes/ExamplesAuthPage';
+import { WebsitePage } from '@/routes/WebsitePage';
+import { DashboardPage } from '@/routes/DashboardPage';
+import { DocsPage } from '@/routes/DocsPage';
+import { DocsComponentsPage } from '@/routes/DocsComponentsPage';
+import { DocsInstallationPage } from '@/routes/DocsInstallationPage';
+import { ExamplesLayout } from '@/layouts/ExamplesLayout';
+import { ExamplesPage } from '@/routes/ExamplesPage';
+import { ExamplesDashboardPage } from '@/routes/ExamplesDashboardPage';
+import { ExamplesTasksPage } from '@/routes/ExamplesTasksPage';
+import { ExamplesPlaygroundPage } from '@/routes/ExamplesPlaygroundPage';
+import { ExamplesAuthPage } from '@/routes/ExamplesAuthPage';
 
 export function App() {
   return (

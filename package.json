@@ -26,6 +26,7 @@
     "generate:web": "bunx turbo run generate --filter=./apps/web",
     "generate:engine": "bunx turbo run generate --filter=./apps/engine",
     "copy-templates-to-dev": "bun run scripts/copy-templates-to-dev.ts",
+    "sync-dev": "bun run generate:engine && bun run copy-templates-to-dev",
     "m": "bash scripts/engine.sh"
 
   },

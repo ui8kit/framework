@@ -42,6 +42,8 @@ export interface RegistryItem {
   description: string;
   category?: string;
   tags?: string[];
+  /** Domain folder when file is under blocks/{domain}/ (e.g. "examples", "website") */
+  domain?: string;
   dependencies: string[];
   devDependencies: string[];
   files: Array<{
@@ -317,6 +319,28 @@ function matchesAny(path: string, patterns: string[]): boolean {
 }
 
 // =============================================================================
+// Domain extraction
+// =============================================================================
+
+/**
+ * Extract domain from file path when under blocks/{domain}/.
+ * Returns undefined for files in blocks/ root or outside engine domain structure.
+ * Uses lastIndexOf to handle packages/blocks/src/blocks/ (no domain) vs apps/engine/src/blocks/website/ (domain=website).
+ */
+function extractDomainFromPath(filePath: string): string | undefined {
+  const parts = filePath.replace(/\\/g, '/').split('/');
+  const blocksIdx = parts.lastIndexOf('blocks');
+  if (blocksIdx === -1 || blocksIdx + 1 >= parts.length) return undefined;
+
+  const next = parts[blocksIdx + 1];
+  // Next segment is a folder (domain) if it does not look like a file
+  if (next.endsWith('.tsx') || next.endsWith('.ts')) return undefined;
+  // "src" is a path segment in packages/blocks/src/blocks/, not a domain
+  if (next === 'src') return undefined;
+  return next;
+}
+
+// =============================================================================
 // Registry type resolver
 // =============================================================================
 
@@ -386,6 +410,9 @@ export async function generateRegistry(config: RegistryConfig): Promise<Registry
             )
           : info.dependencies;
 
+      const filePathResolved = resolve(filePath);
+      const domain = extractDomainFromPath(filePathResolved);
+
       const item: RegistryItem = {
         name: info.name,
         type: resolveType(info.typeOverride, sourceDir.type),
@@ -398,13 +425,14 @@ export async function generateRegistry(config: RegistryConfig): Promise<Registry
             target: sourceDir.target,
           },
         ],
-        sourcePath: resolve(filePath),
+        sourcePath: filePathResolved,
       };
 
       // Only add optional fields if present
       if (info.category) item.category = info.category;
       if (info.tags && info.tags.length > 0) item.tags = info.tags;
       if (info.props.length > 0) item.props = info.props;
+      if (domain) item.domain = domain;
 
       items.push(item);
     }

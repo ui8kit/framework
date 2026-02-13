@@ -8,8 +8,11 @@ When editing `apps/engine/**`, complete before finalizing:
 |---|---------|----------|
 | 1 | `bun run lint` | apps/engine |
 | 2 | `bun run lint:dsl` | apps/engine |
-| 3 | `bun run generate` | apps/engine |
-| 4 | `bun run scripts/copy-templates-to-dev.ts` | repo root |
+| 3 | `bun run sync-dev` | repo root (generate + copy in one step) |
+
+Or run steps 3–4 separately: `bun run generate` in apps/engine, then `bun run copy-templates-to-dev` at repo root.
+
+**Automated:** App.tsx, layouts/partials/routes index files, and PageView→domain mapping are now copied from engine; no manual updates in apps/dev when adding new routes or PageViews.
 
 Report pass/fail for each. If skipped, state why.
 
