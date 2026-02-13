@@ -44,8 +44,24 @@ export function HomePage() {
 ## Structure
 
 - `fixtures/` — JSON files with fixture data
-- `types.ts` — TypeScript interfaces (`NavItem`, `HeroFixture`, `AppContext`, etc.)
-- `context` — Single export: `{ site, navItems, sidebarLinks, dashboardSidebarLinks, hero, features, pricing, testimonials, cta, dashboard }`
+- `types.ts` — TypeScript interfaces (`NavItem`, `HeroFixture`, `AppContext`, `DomainsContext`, etc.)
+- `cache.ts` — LRU-style cache for derived data (sidebar links)
+- `context` — Single export with flat shape + `context.domains` for domain-scoped access
+
+## Caching and Memory
+
+- `getDocsSidebarLinks(activeHref)` and `getExamplesSidebarLinks(activeHref)` are cached by `activeHref` (max 20 entries, FIFO eviction)
+- Use `EMPTY_ARRAY` instead of `x ?? []` to avoid creating new arrays on every access
+- Call `clearCache()` for tests or explicit cleanup
+
+## Domain-Scoped Access
+
+```ts
+context.domains.website  // hero, features, pricing, site, navItems, sidebarLinks
+context.domains.docs     // docsIntro, docsInstallation, docsComponents, getDocsSidebarLinks
+context.domains.examples // examples, getExamplesSidebarLinks
+context.domains.dashboard // dashboard, dashboardSidebarLinks
+```
 
 ## Adding New Fixtures
 

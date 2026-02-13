@@ -103,6 +103,9 @@ export interface RegistryConfig {
    * in consuming apps. If absent or empty, dependencies are left as-is.
    */
   excludeDependencies?: string[];
+
+  /** When false, do not write registry.json (return in-memory only). Default: true */
+  write?: boolean;
 }
 
 // =============================================================================
@@ -452,10 +455,12 @@ export async function generateRegistry(config: RegistryConfig): Promise<Registry
     registry: config.registryName || 'ui8kit',
   };
 
-  // Write output
-  const outDir = dirname(config.outputPath);
-  await mkdir(outDir, { recursive: true });
-  await writeFile(config.outputPath, JSON.stringify(registry, null, 2) + '\n', 'utf-8');
+  // Write output (unless write: false)
+  if (config.write !== false) {
+    const outDir = dirname(config.outputPath);
+    await mkdir(outDir, { recursive: true });
+    await writeFile(config.outputPath, JSON.stringify(registry, null, 2) + '\n', 'utf-8');
+  }
 
   return registry;
 }

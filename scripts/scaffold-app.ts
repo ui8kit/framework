@@ -19,6 +19,7 @@ const REPO_ROOT = join(__dirname, "..");
 interface ScaffoldConfig {
   appName: string;
   target: string;
+  domain?: string;
   packageName: string;
   description: string;
   port?: number;
@@ -288,7 +289,7 @@ export function cn(...inputs: ClassValue[]) {
 `
   );
 
-  console.log("\nDone. Run: bun install && bun run copy-templates-to-test");
+  console.log("\nDone. Run: bun install && bun run generate (in apps/engine) && TARGET_APP=" + appName + " DOMAIN=" + (config.domain ?? "website") + " bun run scripts/copy-templates-to-dev.ts");
 }
 
 main().catch((err) => {

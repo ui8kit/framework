@@ -17,8 +17,14 @@
 import { TemplateService } from '../../packages/generator/src/services/template/TemplateService';
 import { Logger } from '../../packages/generator/src/core';
 import { getFallbackCoreComponents } from '../../packages/generator/src/core/scanner/core-component-scanner';
-import { generateRegistry, type RegistryConfig, type RegistrySourceDir } from '../../packages/generator/src/scripts';
+import {
+  generateRegistry,
+  resolveDomainItems,
+  type RegistryConfig,
+  type RegistrySourceDir,
+} from '../../packages/generator/src/scripts';
 import { resolve } from 'path';
+import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 
 // =============================================================================
 // Configuration
@@ -27,6 +33,9 @@ import { resolve } from 'path';
 type Engine = 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
 
 const VALID_ENGINES: Engine[] = ['react', 'liquid', 'handlebars', 'twig', 'latte'];
+
+/** Domains for per-domain dist output */
+const DOMAINS = ['website', 'docs', 'examples', 'dashboard'] as const;
 
 /**
  * Auto-load passthrough components from @ui8kit/core
@@ -127,17 +136,15 @@ async function main() {
   console.log('  UI8Kit Engine — Template Generator');
   console.log('  ─────────────────────────────────');
   console.log(`  Engine:  ${config.engine}`);
-  console.log(`  Output:  ${engineOutputDir.replace(appRoot, '.')}`);
-  console.log(`  Pipeline:  registry → ${engineOutputDir.replace(appRoot, '.')}`);
+  console.log(`  Output:  ${engineOutputDir.replace(appRoot, '.')} (per domain)`);
   console.log('');
 
   const logger = new Logger({ level: config.verbose ? 'debug' : 'info' });
 
   // -------------------------------------------------------------------------
-  // Step 1: Generate registry into dist/react (single source of truth)
+  // Step 1: Generate full registry (in memory)
   // -------------------------------------------------------------------------
 
-  const registryPath = resolve(engineOutputDir, 'registry.json');
   const registryConfig: RegistryConfig = {
     sourceDirs: REGISTRY_SOURCE_DIRS.map(({ path: p, type, target, include, exclude, pathTemplate }) => ({
       path: resolve(appRoot, p),
@@ -147,25 +154,27 @@ async function main() {
       ...(exclude && { exclude }),
       ...(pathTemplate && { pathTemplate }),
     })),
-    outputPath: registryPath,
+    outputPath: resolve(engineOutputDir, '_temp', 'registry.json'),
     registryName: 'ui8kit',
     version: '0.1.0',
     excludeDependencies: ['@ui8kit/template'],
+    write: false,
   };
 
   console.log('  Registry (step 1)');
   console.log('  ─────────────────────────────────');
-  const registry = await generateRegistry(registryConfig);
-  console.log(`  Items:   ${registry.items.length}`);
-  for (const item of registry.items) {
-    console.log(`    ${item.type.replace('registry:', '')}  ${item.name}`);
-  }
-  console.log(`  Output:  ${registryPath.replace(appRoot, '.')}`);
+  const fullRegistry = await generateRegistry(registryConfig);
+  console.log(`  Full registry: ${fullRegistry.items.length} items`);
   console.log('');
 
-  // -------------------------------------------------------------------------
-  // Step 2: Generate templates from registry (path = dist/react/{item.files[0].path})
-  // -------------------------------------------------------------------------
+  // Load routes config for domain resolution
+  const routesConfigPath = resolve(appRoot, 'src', 'routes.config.json');
+  let routesConfig: { routes: Array<{ path: string; component?: string; layout?: string; domain: string; children?: unknown[] }> } | undefined;
+  try {
+    routesConfig = JSON.parse(readFileSync(routesConfigPath, 'utf-8'));
+  } catch {
+    console.warn('  ! routes.config.json not found; using registry domain only');
+  }
 
   const service = new TemplateService();
   await service.initialize({
@@ -182,45 +191,64 @@ async function main() {
     registry: null as any,
   });
 
-  const result = await service.execute({
-    registryPath,
-    outputDir: engineOutputDir,
-    engine: config.engine,
-    verbose: config.verbose,
-    passthroughComponents: config.passthroughComponents,
-    excludeDependencies: config.excludeDependencies,
-  });
+  let totalFiles = 0;
+  let totalErrors = 0;
+
+  // -------------------------------------------------------------------------
+  // Step 2: For each domain, resolve deps, write registry, generate templates
+  // -------------------------------------------------------------------------
+
+  for (const domain of DOMAINS) {
+    const domainOutputDir = resolve(engineOutputDir, domain);
+    const domainRegistryPath = resolve(domainOutputDir, 'registry.json');
+
+    console.log(`  Domain: ${domain}`);
+    console.log('  ─────────────────────────────────');
+
+    const domainItems = await resolveDomainItems(fullRegistry, domain, routesConfig);
+    console.log(`  Items:   ${domainItems.length}`);
+
+    mkdirSync(domainOutputDir, { recursive: true });
+    const domainRegistry = {
+      ...fullRegistry,
+      items: domainItems,
+    };
+    writeFileSync(domainRegistryPath, JSON.stringify(domainRegistry, null, 2) + '\n', 'utf-8');
+
+    const result = await service.execute({
+      registryPath: domainRegistryPath,
+      outputDir: domainOutputDir,
+      engine: config.engine,
+      verbose: config.verbose,
+      passthroughComponents: config.passthroughComponents,
+      excludeDependencies: config.excludeDependencies,
+    });
+
+    totalFiles += result.files.length;
+    totalErrors += result.errors.length;
+
+    if (result.files.length > 0) {
+      for (const file of result.files) {
+        const relativePath = file.output.replace(appRoot, '.').replace(/\\/g, '/');
+        console.log(`    + ${file.componentName} → ${relativePath}`);
+      }
+    }
+    if (result.errors.length > 0) {
+      for (const error of result.errors) console.log(`    x ${error}`);
+    }
+    console.log('');
+  }
 
   await service.dispose();
 
-  console.log('  Templates (step 2)');
+  console.log('  Summary');
   console.log('  ─────────────────────────────────');
-  if (result.files.length > 0) {
-    for (const file of result.files) {
-      const relativePath = file.output.replace(appRoot, '.').replace(/\\/g, '/');
-      console.log(`    + ${file.componentName} → ${relativePath}`);
-      if (config.verbose) {
-        if (file.variables.length > 0) console.log(`      vars: ${file.variables.join(', ')}`);
-        if (file.dependencies.length > 0) console.log(`      deps: ${file.dependencies.join(', ')}`);
-      }
-    }
-  }
-  if (result.warnings.length > 0) {
-    console.log('');
-    for (const warning of result.warnings) console.log(`    ! ${warning}`);
-  }
-  if (result.errors.length > 0) {
-    console.log('');
-    for (const error of result.errors) console.log(`    x ${error}`);
-  }
-  console.log('');
-  console.log(`  Components: ${result.componentsProcessed}`);
-  console.log(`  Templates:  ${result.files.length}`);
-  console.log(`  Duration:   ${result.duration}ms`);
-  console.log(result.errors.length === 0 ? '  Status:     OK' : '  Status:     FAILED');
+  console.log(`  Domains:   ${DOMAINS.length}`);
+  console.log(`  Templates: ${totalFiles}`);
+  console.log(totalErrors === 0 ? '  Status:     OK' : '  Status:     FAILED');
   console.log('');
 
-  process.exit(result.errors.length > 0 ? 1 : 0);
+  process.exit(totalErrors > 0 ? 1 : 0);
 }
 
 main().catch((err) => {

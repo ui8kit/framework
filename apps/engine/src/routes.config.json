@@ -1,0 +1,21 @@
+{
+  "routes": [
+    { "path": "/", "component": "WebsitePage", "domain": "website" },
+    { "path": "/dashboard", "component": "DashboardPage", "domain": "dashboard" },
+    { "path": "/docs", "component": "DocsPage", "domain": "docs" },
+    { "path": "/docs/installation", "component": "DocsInstallationPage", "domain": "docs" },
+    { "path": "/docs/components", "component": "DocsComponentsPage", "domain": "docs" },
+    {
+      "path": "/examples",
+      "layout": "ExamplesLayout",
+      "domain": "examples",
+      "children": [
+        { "path": "", "component": "ExamplesPage", "domain": "examples" },
+        { "path": "dashboard", "component": "ExamplesDashboardPage", "domain": "examples" },
+        { "path": "tasks", "component": "ExamplesTasksPage", "domain": "examples" },
+        { "path": "playground", "component": "ExamplesPlaygroundPage", "domain": "examples" },
+        { "path": "authentication", "component": "ExamplesAuthPage", "domain": "examples" }
+      ]
+    }
+  ]
+}

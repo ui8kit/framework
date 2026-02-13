@@ -174,4 +174,44 @@ export interface AppContext {
   examplesSidebarLabel: string;
   getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
   getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
+  domains?: DomainsContext;
+  clearCache?: () => void;
+}
+
+/** Domain-scoped context (context.domains.website, etc.) */
+export interface DomainsContext {
+  website: WebsiteDomainContext;
+  docs: DocsDomainContext;
+  examples: ExamplesDomainContext;
+  dashboard: DashboardDomainContext;
+}
+
+export interface WebsiteDomainContext {
+  hero: HeroFixture;
+  features: FeaturesFixture;
+  pricing: PricingFixture;
+  testimonials: TestimonialsFixture;
+  cta: CTAFixture;
+  site: SiteInfo;
+  navItems: NavItem[];
+  sidebarLinks: SidebarLink[];
+}
+
+export interface DocsDomainContext {
+  docsIntro: DocsIntroFixture;
+  docsInstallation: DocsInstallationFixture;
+  docsComponents: DocsComponentsFixture;
+  docsSidebarLabel: string;
+  getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
+}
+
+export interface ExamplesDomainContext {
+  examples: ExamplesFixture;
+  examplesSidebarLabel: string;
+  getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
+}
+
+export interface DashboardDomainContext {
+  dashboard: DashboardFixture;
+  dashboardSidebarLinks: DashboardSidebarLink[];
 }

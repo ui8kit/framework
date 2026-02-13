@@ -42,8 +42,10 @@ echo ""
 # 4. Copy to target (read from config)
 TARGET_APP=$(grep -o '"appName"[[:space:]]*:[[:space:]]*"[^"]*"' scripts/app-scaffold.config.json | cut -d'"' -f4)
 TARGET_APP=${TARGET_APP:-test}
-echo "  4. Copying templates to apps/$TARGET_APP..."
-TARGET_APP="$TARGET_APP" bun run scripts/copy-templates-to-dev.ts
+DOMAIN=$(grep -o '"domain"[[:space:]]*:[[:space:]]*"[^"]*"' scripts/app-scaffold.config.json | cut -d'"' -f4)
+DOMAIN=${DOMAIN:-website}
+echo "  4. Copying templates to apps/$TARGET_APP (from domain: $DOMAIN)..."
+TARGET_APP="$TARGET_APP" DOMAIN="$DOMAIN" bun run scripts/copy-templates-to-dev.ts
 echo ""
 
 echo "  Done. Run: cd apps/$TARGET_APP && bun run dev"

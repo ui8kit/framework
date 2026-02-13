@@ -1,6 +1,12 @@
 // Main export for @ui8kit/data
 // Unified context (site, menu, sidebars, blocks) for engine and apps
 
+import { sidebarLinksCache } from './cache';
+
+/** Clear sidebar links cache. Use for tests or explicit cleanup. */
+export function clearCache(): void {
+  sidebarLinksCache.clear();
+}
 import hero from './fixtures/hero.json';
 import features from './fixtures/features.json';
 import pricing from './fixtures/pricing.json';
@@ -96,21 +102,60 @@ const site: SiteInfo = {
 const docsSidebarLabel = 'Documentation';
 const examplesSidebarLabel = 'Examples';
 
+/** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
+export const EMPTY_ARRAY: readonly never[] = Object.freeze([]) as readonly never[];
+
 function getDocsSidebarLinks(activeHref: string): DashboardSidebarLink[] {
-  return docsSidebarLinks.map((link) => ({
+  const cached = sidebarLinksCache.get(`docs:${activeHref}`);
+  if (cached) return cached;
+  const result = docsSidebarLinks.map((link) => ({
     ...link,
     active: link.href === activeHref,
   }));
+  sidebarLinksCache.set(`docs:${activeHref}`, result);
+  return result;
 }
 
 function getExamplesSidebarLinks(activeHref: string): DashboardSidebarLink[] {
-  return examplesSidebarLinks.map((link) => ({
+  const cached = sidebarLinksCache.get(`examples:${activeHref}`);
+  if (cached) return cached;
+  const result = examplesSidebarLinks.map((link) => ({
     ...link,
     active: link.href === activeHref,
   }));
+  sidebarLinksCache.set(`examples:${activeHref}`, result);
+  return result;
 }
 
-export const context = {
+// Domain namespaces (read-only views, aligned with routes.config.json)
+const websiteDomain = Object.freeze({
+  hero: hero as HeroFixture,
+  features: features as FeaturesFixture,
+  pricing: pricing as PricingFixture,
+  testimonials: testimonials as TestimonialsFixture,
+  cta: cta as CTAFixture,
+  site,
+  navItems,
+  sidebarLinks,
+});
+const docsDomain = Object.freeze({
+  docsIntro: docsIntro as DocsIntroFixture,
+  docsInstallation: docsInstallation as DocsInstallationFixture,
+  docsComponents: docsComponents as DocsComponentsFixture,
+  docsSidebarLabel,
+  getDocsSidebarLinks,
+});
+const examplesDomain = Object.freeze({
+  examples,
+  examplesSidebarLabel,
+  getExamplesSidebarLinks,
+});
+const dashboardDomain = Object.freeze({
+  dashboard: dashboard as DashboardFixture,
+  dashboardSidebarLinks,
+});
+
+export const context = Object.freeze({
   site,
   navItems,
   sidebarLinks,
@@ -131,7 +176,14 @@ export const context = {
   docsIntro: docsIntro as DocsIntroFixture,
   docsInstallation: docsInstallation as DocsInstallationFixture,
   docsComponents: docsComponents as DocsComponentsFixture,
-} as const;
+  domains: Object.freeze({
+    website: websiteDomain,
+    docs: docsDomain,
+    examples: examplesDomain,
+    dashboard: dashboardDomain,
+  }),
+  clearCache,
+});
 
 /** @deprecated Use context instead */
 export const fixtures = {

@@ -1,4 +1,10 @@
-export * from './docs';
-export * from './examples';
+export { CTABlock } from './CTABlock';
+export { DashboardBlock } from './DashboardBlock';
+export { DashSidebar } from './DashSidebar';
+export { ExamplesBlock } from './ExamplesBlock';
+export { FeaturesBlock } from './FeaturesBlock';
+export { HeroBlock } from './HeroBlock';
+export { PricingBlock } from './PricingBlock';
+export { SidebarContent } from './SidebarContent';
+export { TestimonialsBlock } from './TestimonialsBlock';
 export * from './website';
-export * from './dashboard';
