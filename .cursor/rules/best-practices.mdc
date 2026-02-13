@@ -1,5 +1,5 @@
 ---
-description: best practices, code standards, patterns, conventions, do's and don'ts, coding style
+description: best practices, code standards, patterns, conventions, domain blocks, package organization, core vs widgets
 alwaysApply: false
 ---
 # UI8Kit Development Best Practices
@@ -201,11 +201,11 @@ import { Card, CardHeader, CardTitle, CardContent } from '@ui8kit/core';
 
 **Rule:** If a component exists in `@ui8kit/core` (e.g. `Card`, `Accordion`, `Sheet`), use it instead of composing `Stack`/`Group` with the same layout. Check `packages/core/src/components/` before building.
 
-### Blocks (Location: `apps/web/src/blocks/`)
+### Blocks (Location: `packages/blocks` or `apps/engine/src/blocks/{domain}`)
 - Represent full page sections
 - Wrap in `<Block component="section">`
 - Single responsibility principle
-- Export from `index.ts`
+- Export from domain `index.ts`
 
 ```tsx
 // ✅ Correct
@@ -259,6 +259,74 @@ export function HeroBlock() {
   ))}
 </Grid>
 ```
+
+## Domain & Package Organization
+
+### Domain-Based Blocks
+
+Blocks live in domain folders. Each domain is self-contained and copy-paste friendly.
+
+```
+apps/engine/src/blocks/
+├── website/           ← Landing, marketing (Hero, CTA, etc.)
+│   ├── WebsitePageView.tsx
+│   └── index.ts
+├── docs/              ← Documentation (DashSidebar, SidebarContent)
+│   ├── DocsPageView.tsx
+│   ├── DashSidebar.tsx
+│   └── index.ts
+├── examples/          ← Demos, playground (ExamplesBlock)
+│   ├── ExamplesPageView.tsx
+│   └── index.ts
+├── dashboard/         ← SaaS, admin (DashboardBlock)
+│   ├── DashboardPageView.tsx
+│   └── index.ts
+└── index.ts           ← Re-exports all domains
+```
+
+**Rule:** A block imports only from `@ui8kit/core` and `@ui8kit/template`. No cross-domain imports inside blocks.
+
+### Where to Put New Components — Decision Tree
+
+| Question | Answer | Location |
+|----------|--------|----------|
+| Is it a simple layout/content primitive? (Button, Card, Stack, Accordion, Sheet, Modal) | Yes | `packages/core` |
+| Does it have heavy logic, multiple views, or domain-specific variants? (Calendar, RichTextEditor, Charts) | Yes | New package `@ui8kit/[name]` |
+| Is it a page section composed of primitives? | Yes | `packages/blocks` or `apps/engine/src/blocks/{domain}` |
+
+### Core vs Separate Package
+
+**Core (`packages/core`):**
+- Generic UI primitives
+- Single responsibility, minimal logic
+- Examples: Button, Card, Accordion, Sheet, Modal, Grid, Stack
+
+**Separate package (`packages/calendar`, `packages/editor`, etc.):**
+- Complex components with multiple representation levels (e.g. Calendar: month, week, agenda)
+- Heavy internal logic or state
+- May evolve independently
+
+```tsx
+// ✅ Block uses core + optional widget package
+import { Block, Title, Button } from '@ui8kit/core';
+import { Calendar } from '@ui8kit/calendar';
+
+export function BookingBlock() {
+  return (
+    <Block component="section" data-class="booking-section">
+      <Title>Select date</Title>
+      <Calendar selected={...} onSelect={...} />
+    </Block>
+  );
+}
+```
+
+### Cognitive Load — Keep It Simple
+
+1. **Blocks = composition only.** No business logic. Use `Var`, `If`, `Loop` from `@ui8kit/template` for data binding.
+2. **One dependency per layer.** Block → core (required). Block → calendar/editor (optional, only when needed).
+3. **Copy-paste = block + its imports.** When copying a block, you get a self-contained file. No hidden shared components.
+4. **Don't extract "FeatureCard".** Use `Card` from core. Different block types (event, product, news) = same Card, different content.
 
 ## Common Props Defaults
 
@@ -406,9 +474,10 @@ Error: bg="red" invalid, closest: "destructive"
 
 ## When in Doubt
 
-1. Check `packages/core/src/components/` for existing components before building layouts
-2. Check `packages/ui8kit/AGENTS.md` for full reference
-3. Look at existing blocks in `apps/web/src/blocks/`
-4. Use `data-class` for ALL semantic elements
-5. Prefer semantic props over className/style
-6. Keep blocks focused and reusable
+1. **New component?** → Decision tree: Core (simple) vs new package (complex, multi-view)
+2. **New block?** → Put in `packages/blocks` or `apps/engine/src/blocks/{domain}`
+3. **Card-like UI?** → Use `Card` from core, don't create FeatureCard/EventCard
+4. Check `packages/core/src/components/` before building layouts
+5. Use `data-class` for ALL semantic elements
+6. Prefer semantic props over className/style
+7. Keep blocks focused: composition only, no business logic
