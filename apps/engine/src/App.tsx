@@ -1,15 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { WebsitePage } from '@/routes/WebsitePage';
-import { DashboardPage } from '@/routes/DashboardPage';
-import { DocsPage } from '@/routes/DocsPage';
-import { DocsComponentsPage } from '@/routes/DocsComponentsPage';
-import { DocsInstallationPage } from '@/routes/DocsInstallationPage';
+import { WebsitePage } from '@/routes/website/WebsitePage';
+import { DashboardPage } from '@/routes/dashboard/DashboardPage';
+import { DocsPage } from '@/routes/docs/DocsPage';
+import { DocsComponentsPage } from '@/routes/docs/DocsComponentsPage';
+import { DocsInstallationPage } from '@/routes/docs/DocsInstallationPage';
 import { ExamplesLayout } from '@/layouts/ExamplesLayout';
-import { ExamplesPage } from '@/routes/ExamplesPage';
-import { ExamplesDashboardPage } from '@/routes/ExamplesDashboardPage';
-import { ExamplesTasksPage } from '@/routes/ExamplesTasksPage';
-import { ExamplesPlaygroundPage } from '@/routes/ExamplesPlaygroundPage';
-import { ExamplesAuthPage } from '@/routes/ExamplesAuthPage';
 import { context } from '@ui8kit/data';
 
 const WEBSITE_PATH = context.page.website[0]?.path ?? '/';
@@ -30,15 +25,10 @@ export function App() {
       <Route path={DOCS_COMPONENTS_PATH} element={<DocsComponentsPage />} />
       <Route path={DOCS_INSTALLATION_PATH} element={<DocsInstallationPage />} />
 
-      {/* Examples section (nested routes, same Hero + Outlet) */}
-      <Route path={EXAMPLES_ROOT_PATH} element={<ExamplesLayout />}>
-        <Route index element={<ExamplesPage />} />
-        <Route path="dashboard" element={<ExamplesDashboardPage />} />
-        <Route path="tasks" element={<ExamplesTasksPage />} />
-        <Route path="playground" element={<ExamplesPlaygroundPage />} />
-        <Route path="authentication" element={<ExamplesAuthPage />} />
-        <Route path="*" element={<Navigate to={EXAMPLES_ROOT_PATH} replace />} />
-      </Route>
+      {/* Examples section (single param route + view selection in layout) */}
+      <Route path={EXAMPLES_ROOT_PATH} element={<ExamplesLayout />} />
+      <Route path={`${EXAMPLES_ROOT_PATH}/:examplePage`} element={<ExamplesLayout />} />
+      <Route path={`${EXAMPLES_ROOT_PATH}/*`} element={<Navigate to={EXAMPLES_ROOT_PATH} replace />} />
     </Routes>
   );
 }

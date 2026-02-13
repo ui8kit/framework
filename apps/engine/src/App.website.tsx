@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { WebsitePage } from '@/routes/WebsitePage';
+import { WebsitePage } from '@/routes/website/WebsitePage';
 
 export function App() {
   return (

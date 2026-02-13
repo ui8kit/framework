@@ -1,5 +1,5 @@
-export { WebsitePage } from './WebsitePage';
-export { DashboardPage } from './DashboardPage';
-export { DocsPage } from './DocsPage';
-export { DocsComponentsPage } from './DocsComponentsPage';
-export { DocsInstallationPage } from './DocsInstallationPage';
+export { WebsitePage } from './website/WebsitePage';
+export { DashboardPage } from './dashboard/DashboardPage';
+export { DocsPage } from './docs/DocsPage';
+export { DocsComponentsPage } from './docs/DocsComponentsPage';
+export { DocsInstallationPage } from './docs/DocsInstallationPage';

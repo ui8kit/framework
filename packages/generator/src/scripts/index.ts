@@ -8,6 +8,4 @@ export {
 } from './generate-registry';
 export {
   resolveDomainItems,
-  type RoutesConfig,
-  type RouteConfigEntry,
 } from './resolve-domain-deps';

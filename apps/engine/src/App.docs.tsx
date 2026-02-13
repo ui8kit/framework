@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
-import { DocsPage } from '@/routes/DocsPage';
-import { DocsComponentsPage } from '@/routes/DocsComponentsPage';
-import { DocsInstallationPage } from '@/routes/DocsInstallationPage';
+import { DocsPage } from '@/routes/docs/DocsPage';
+import { DocsComponentsPage } from '@/routes/docs/DocsComponentsPage';
+import { DocsInstallationPage } from '@/routes/docs/DocsInstallationPage';
 
 export function App() {
   return (

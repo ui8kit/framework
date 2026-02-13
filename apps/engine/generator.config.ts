@@ -24,7 +24,7 @@ import {
   type RegistrySourceDir,
 } from '../../packages/generator/src/scripts';
 import { resolve } from 'path';
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 
 // =============================================================================
 // Configuration
@@ -167,15 +167,6 @@ async function main() {
   console.log(`  Full registry: ${fullRegistry.items.length} items`);
   console.log('');
 
-  // Load routes config for domain resolution
-  const routesConfigPath = resolve(appRoot, 'src', 'routes.config.json');
-  let routesConfig: { routes: Array<{ path: string; component?: string; layout?: string; domain: string; children?: unknown[] }> } | undefined;
-  try {
-    routesConfig = JSON.parse(readFileSync(routesConfigPath, 'utf-8'));
-  } catch {
-    console.warn('  ! routes.config.json not found; using registry domain only');
-  }
-
   const service = new TemplateService();
   await service.initialize({
     config: {},
@@ -205,7 +196,7 @@ async function main() {
     console.log(`  Domain: ${domain}`);
     console.log('  ─────────────────────────────────');
 
-    const domainItems = await resolveDomainItems(fullRegistry, domain, routesConfig);
+    const domainItems = await resolveDomainItems(fullRegistry, domain);
     console.log(`  Items:   ${domainItems.length}`);
 
     mkdirSync(domainOutputDir, { recursive: true });

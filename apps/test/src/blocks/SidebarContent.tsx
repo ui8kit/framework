@@ -1,4 +1,5 @@
 import { Stack, Text, Button } from '@ui8kit/core';
+import { EMPTY_ARRAY } from '@ui8kit/data';
 import { Fragment } from 'react';
 
 interface SidebarContentProps {

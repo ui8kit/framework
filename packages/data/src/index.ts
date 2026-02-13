@@ -155,7 +155,7 @@ export function getSidebarCacheDiagnostics() {
   });
 }
 
-// Domain namespaces (read-only views, aligned with routes.config.json)
+// Domain namespaces (read-only views, aligned with shared page model)
 const websiteDomain = Object.freeze({
   page: page.website,
   hero: hero as HeroFixture,

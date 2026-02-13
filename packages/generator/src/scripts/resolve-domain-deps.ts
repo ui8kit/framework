@@ -12,20 +12,6 @@ import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import type { RegistryItem, Registry } from './generate-registry';
 
-/** Route config entry */
-export interface RouteConfigEntry {
-  path: string;
-  component?: string;
-  layout?: string;
-  domain: string;
-  children?: RouteConfigEntry[];
-}
-
-/** Routes configuration */
-export interface RoutesConfig {
-  routes: RouteConfigEntry[];
-}
-
 /** Map layout container names to their view names (registry layout items) */
 const LAYOUT_CONTAINER_TO_VIEW: Record<string, string> = {
   MainLayout: 'MainLayoutView',
@@ -124,13 +110,11 @@ function resolveToRegistryName(importedName: string, nameToItem: Map<string, Reg
  *
  * @param registry Full registry (all items)
  * @param domain Domain name (e.g. "website", "docs")
- * @param routesConfig Routes config (optional; used to validate seeds)
  * @returns Filtered registry items for the domain
  */
 export async function resolveDomainItems(
   registry: Registry,
-  domain: string,
-  routesConfig?: RoutesConfig
+  domain: string
 ): Promise<RegistryItem[]> {
   const items = registry.items;
   const nameToItem = new Map<string, RegistryItem>();
