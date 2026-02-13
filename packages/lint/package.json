@@ -37,6 +37,12 @@
     "ui8kit-lint": "./src/cli/validate-whitelist.ts",
     "ui8kit-lint-dsl": "./src/cli/validate-dsl.ts"
   },
+  "dependencies": {
+    "@babel/parser": "^7.24.0",
+    "@babel/traverse": "^7.24.0",
+    "@babel/types": "^7.24.0",
+    "@types/babel__traverse": "^7.28.0"
+  },
   "peerDependencies": {
     "@ui8kit/core": "workspace:*"
   },

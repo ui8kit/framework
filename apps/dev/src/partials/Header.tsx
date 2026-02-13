@@ -17,15 +17,13 @@ export function Header(props: HeaderProps) {
       <Container max="w-6xl" mx="auto" px="4" flex="" justify="between" items="center" gap="8" data-class="header-container">
         <a href="/" data-class="header-brand">
           <Group component="span" gap="2" items="center" data-class="header-brand-content">
-            <Text fontSize="xl" fontWeight="bold" textColor="primary" data-class="header-brand-title">
-              {title ? (<>{title}</>) : null}
-            </Text>
+            {title ? (<><Text fontSize="xl" fontWeight="bold" textColor="primary" data-class="header-brand-title">{title}</Text></>) : null}
             {subtitle ? (<><Text fontSize="sm" textColor="muted-foreground" data-class="header-brand-subtitle">{subtitle}</Text></>) : null}
           </Group>
         </a>
         {navItems ? (<><Block component="nav" flex="" gap="2" items="center" data-class="header-nav">{navItems.map((item, index) => (
         <Fragment key={item.id ?? index}>
-        <Button variant="ghost" size="sm" href={item.url} data-class="header-nav-item">{item.title}</Button>
+        <Button variant="ghost" size="sm" href={item.url} data-class="header-nav-item"><Text component="span">{item.title}</Text></Button>
         </Fragment>
         ))}</Block></>) : null}
       </Container>

@@ -71,6 +71,12 @@ export interface RegistrySourceDir {
   type: RegistryItemType;
   /** Target directory name for the "target" field */
   target: string;
+  /** Override include patterns for this dir (default: config.include) */
+  include?: string[];
+  /** Override exclude patterns for this dir (default: config.exclude) */
+  exclude?: string[];
+  /** Path template for output; {{name}} = component name. When set, overrides relPath. */
+  pathTemplate?: string;
 }
 
 /** Registry generation configuration */
@@ -359,7 +365,9 @@ export async function generateRegistry(config: RegistryConfig): Promise<Registry
 
   for (const sourceDir of config.sourceDirs) {
     const resolvedDir = resolve(sourceDir.path);
-    const files = await findFiles(resolvedDir, include, exclude);
+    const dirInclude = sourceDir.include ?? include;
+    const dirExclude = sourceDir.exclude ?? exclude;
+    const files = await findFiles(resolvedDir, dirInclude, dirExclude);
 
     for (const filePath of files) {
       const source = await readFile(filePath, 'utf-8');
@@ -367,7 +375,9 @@ export async function generateRegistry(config: RegistryConfig): Promise<Registry
 
       if (!info) continue;
 
-      const relPath = relative(resolve(sourceDir.path, '..'), filePath).replace(/\\/g, '/');
+      const relPath = sourceDir.pathTemplate
+        ? sourceDir.pathTemplate.replace(/\{\{name\}\}/g, info.name)
+        : relative(resolve(sourceDir.path, '..'), filePath).replace(/\\/g, '/');
 
       const deps =
         config.excludeDependencies && config.excludeDependencies.length > 0

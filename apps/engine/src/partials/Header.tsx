@@ -44,16 +44,16 @@ export function Header({
         {/* Brand */}
         <a href="/" data-class="header-brand">
           <Group component="span" gap="2" items="center" data-class="header-brand-content">
-            <Text
-              fontSize="xl"
-              fontWeight="bold"
-              textColor="primary"
-              data-class="header-brand-title"
-            >
-              <If test="title" value={!!(title ?? '')}>
+            <If test="title" value={!!(title ?? '')}>
+              <Text
+                fontSize="xl"
+                fontWeight="bold"
+                textColor="primary"
+                data-class="header-brand-title"
+              >
                 <Var name="title" value={title ?? 'UI8Kit'} />
-              </If>
-            </Text>
+              </Text>
+            </If>
             <If test="subtitle" value={!!(subtitle ?? 'Design System')}>
               <Text
                 fontSize="sm"
@@ -77,7 +77,9 @@ export function Header({
                   href={item.url}
                   data-class="header-nav-item"
                 >
-                  <Var name="item.title" value={item.title} />
+                  <Text component="span">
+                    <Var name="item.title" value={item.title} />
+                  </Text>
                 </Button>
               )}
             </Loop>

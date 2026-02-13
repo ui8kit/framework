@@ -35,12 +35,15 @@ const VALID_ENGINES: Engine[] = ['react', 'liquid', 'handlebars', 'twig', 'latte
 const PASSTHROUGH_COMPONENTS = getFallbackCoreComponents();
 
 /** Single source of truth for registry (and thus template) sources. Paths relative to app root. */
-const REGISTRY_SOURCE_DIRS: Array<{ path: string; type: RegistrySourceDir['type']; target: string }> = [
-  { path: './src/blocks', type: 'registry:block', target: 'blocks' },
+const REGISTRY_SOURCE_DIRS: RegistrySourceDir[] = [
+  { path: './src/blocks', type: 'registry:block', target: 'blocks', exclude: ['**/*PageView.tsx'] },
   { path: '../../packages/blocks/src/blocks', type: 'registry:block', target: 'blocks' },
-  { path: './src/layouts', type: 'registry:layout', target: 'layouts' },
+  { path: './src/layouts/views', type: 'registry:layout', target: 'layouts' },
   { path: './src/partials', type: 'registry:partial', target: 'partials' },
-  { path: './src/routes', type: 'registry:route', target: 'routes' },
+  { path: './src/blocks/website', type: 'registry:route', target: 'views', include: ['**/*PageView.tsx'], pathTemplate: 'views/{{name}}.tsx' },
+  { path: './src/blocks/docs', type: 'registry:route', target: 'views', include: ['**/*PageView.tsx'], pathTemplate: 'views/{{name}}.tsx' },
+  { path: './src/blocks/examples', type: 'registry:route', target: 'views', include: ['**/*PageView.tsx'], pathTemplate: 'views/{{name}}.tsx' },
+  { path: './src/blocks/dashboard', type: 'registry:route', target: 'views', include: ['**/*PageView.tsx'], pathTemplate: 'views/{{name}}.tsx' },
 ];
 
 interface EngineConfig {
@@ -136,10 +139,13 @@ async function main() {
 
   const registryPath = resolve(engineOutputDir, 'registry.json');
   const registryConfig: RegistryConfig = {
-    sourceDirs: REGISTRY_SOURCE_DIRS.map(({ path: p, type, target }) => ({
+    sourceDirs: REGISTRY_SOURCE_DIRS.map(({ path: p, type, target, include, exclude, pathTemplate }) => ({
       path: resolve(appRoot, p),
       type,
       target,
+      ...(include && { include }),
+      ...(exclude && { exclude }),
+      ...(pathTemplate && { pathTemplate }),
     })),
     outputPath: registryPath,
     registryName: 'ui8kit',

@@ -20,7 +20,8 @@ export type LintErrorCode =
   | "TYPO_DETECTED"            // Likely typo, closest match found
   | "NON_DSL_LOOP"             // JS loops in JSX; prefer <Loop>
   | "NON_DSL_CONDITIONAL"      // JS conditionals in JSX; prefer <If>
-  | "UNWRAPPED_VAR";           // Var not wrapped in If; wrap for safe generation
+  | "UNWRAPPED_VAR"            // Var not wrapped in If; wrap for safe generation
+  | "VAR_DIRECT_CHILD_OF_IF";  // If > Var wrong; use If > Wrapper > Var
 
 /** Location in source code */
 export interface LintLocation {
