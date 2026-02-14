@@ -1,0 +1,9 @@
+{
+  "title": "Promotions",
+  "subtitle": "Special offers and seasonal deals.",
+  "promotions": [
+    {"id": "1", "title": "Happy Hour", "description": "50% off select cocktails and appetizers, Mon–Fri 4–6 PM", "validUntil": "2025-12-31", "image": ""},
+    {"id": "2", "title": "Sunday Brunch", "description": "Bottomless mimosas with any brunch entrée", "validUntil": "2025-12-31", "image": ""},
+    {"id": "3", "title": "Date Night", "description": "Three-course dinner for two with a complimentary dessert", "validUntil": "2025-02-28", "image": ""}
+  ]
+}

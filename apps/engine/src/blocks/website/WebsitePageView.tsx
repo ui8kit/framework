@@ -1,21 +1,21 @@
 import type { ReactNode } from 'react';
 import { MainLayout } from '@/layouts';
-import { ValuePropositionBlock } from './ValuePropositionBlock';
-import { HeroBlock } from '@ui8kit/blocks';
-import type { HeroFixture, ValuePropositionFixture } from '@ui8kit/data';
+import { SidebarContent } from '@/blocks';
+import { HeroBlock, FeaturesBlock, CTABlock } from '@ui8kit/blocks';
 
 export interface WebsitePageViewProps {
   mode?: 'full' | 'with-sidebar' | 'sidebar-left';
   navItems?: { id: string; title: string; url: string }[];
-  sidebar?: ReactNode;
+  sidebar: ReactNode;
   headerTitle?: string;
   headerSubtitle?: string;
-  hero: HeroFixture;
-  valueProposition: ValuePropositionFixture;
+  hero: { title?: string; subtitle?: string; ctaText?: string; ctaUrl?: string; secondaryCtaText?: string; secondaryCtaUrl?: string };
+  features: { title?: string; subtitle?: string; features?: { id: string; title: string; description: string }[] };
+  cta: { title?: string; subtitle?: string; ctaText?: string; ctaUrl?: string; secondaryCtaText?: string; secondaryCtaUrl?: string };
 }
 
 /**
- * Home Page view — Hero + Value Proposition (props-only).
+ * Home Page view — Hero + Features + CTA (RestA landing).
  */
 export function WebsitePageView({
   mode,
@@ -24,18 +24,20 @@ export function WebsitePageView({
   headerTitle,
   headerSubtitle,
   hero,
-  valueProposition,
+  features,
+  cta,
 }: WebsitePageViewProps) {
   return (
     <MainLayout
       mode={mode ?? 'full'}
-      navItems={navItems ?? []}
+      navItems={navItems}
       sidebar={sidebar}
       headerTitle={headerTitle}
       headerSubtitle={headerSubtitle}
     >
       <HeroBlock {...hero} />
-      <ValuePropositionBlock {...valueProposition} />
+      <FeaturesBlock {...features} />
+      <CTABlock {...cta} />
     </MainLayout>
   );
 }

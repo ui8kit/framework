@@ -9,3 +9,4 @@ export { Sidebar } from './Sidebar';
 export type { SidebarProps } from './Sidebar';
 
 export { DomainNavButton } from './DomainNavButton';
+export { ThemeToggle } from './ThemeToggle';

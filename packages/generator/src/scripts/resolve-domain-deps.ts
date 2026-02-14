@@ -15,6 +15,8 @@ import type { RegistryItem, Registry } from './generate-registry';
 /** Map layout container names to their view names (registry layout items) */
 const LAYOUT_CONTAINER_TO_VIEW: Record<string, string> = {
   MainLayout: 'MainLayoutView',
+  DashLayout: 'DashLayoutView',
+  ExamplesLayout: 'ExamplesLayoutView',
 };
 
 /** Import specifiers that may reference registry items */

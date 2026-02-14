@@ -25,7 +25,7 @@ export interface SiteInfo {
   description?: string;
 }
 
-export type PageDomain = 'website' | 'docs' | 'examples' | 'dashboard';
+export type PageDomain = 'website' | 'admin';
 
 export interface PageRecord {
   id: string;
@@ -38,50 +38,7 @@ export interface PageRecord {
 }
 
 export interface PageFixture {
-  page: {
-    website: PageRecord[];
-    docs?: PageRecord[];
-    examples?: PageRecord[];
-    dashboard?: PageRecord[];
-  };
-}
-
-export interface BlogPostFixture {
-  id: string;
-  title: string;
-  excerpt: string;
-  slug: string;
-}
-
-export interface BlogFixture {
-  title?: string;
-  subtitle?: string;
-  posts?: BlogPostFixture[];
-}
-
-export interface ShowcaseProjectFixture {
-  id: string;
-  title: string;
-  description: string;
-  url?: string | null;
-}
-
-export interface ShowcaseFixture {
-  title?: string;
-  subtitle?: string;
-  projects?: ShowcaseProjectFixture[];
-}
-
-export interface ValuePropositionItemFixture {
-  id: string;
-  title: string;
-  description: string;
-}
-
-export interface ValuePropositionFixture {
-  title?: string;
-  subtitle?: string;
-  items?: ValuePropositionItemFixture[];
+  page: Record<PageDomain, PageRecord[]>;
 }
 
 export type NavigationPolicyMode = 'soft';
@@ -111,9 +68,6 @@ export interface SidebarCacheDiagnostics {
     maxSize: number;
   };
   totalEntries: number;
-  docsEntries: number;
-  examplesEntries: number;
-  otherEntries: number;
 }
 
 export interface HeroFixture {
@@ -190,6 +144,76 @@ export interface DashboardFixture {
   ctaUrl?: string;
 }
 
+export interface MenuDish {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  category: string;
+  image?: string;
+}
+
+export interface MenuCategory {
+  id: string;
+  title: string;
+}
+
+export interface MenuFixture {
+  title?: string;
+  subtitle?: string;
+  categories?: MenuCategory[];
+  dishes?: MenuDish[];
+}
+
+export interface RecipeItem {
+  slug: string;
+  title: string;
+  excerpt: string;
+  body: string;
+  image?: string;
+  date?: string;
+}
+
+export interface RecipesFixture {
+  title?: string;
+  subtitle?: string;
+  recipes?: RecipeItem[];
+}
+
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  body: string;
+  image?: string;
+  date?: string;
+  author?: string;
+}
+
+export interface BlogFixture {
+  title?: string;
+  subtitle?: string;
+  posts?: BlogPost[];
+}
+
+export interface PromotionItem {
+  id: string;
+  title: string;
+  description: string;
+  validUntil?: string;
+  image?: string;
+}
+
+export interface PromotionsFixture {
+  title?: string;
+  subtitle?: string;
+  promotions?: PromotionItem[];
+}
+
+export interface AdminFixture {
+  exportSchema?: Record<string, string>;
+}
+
 export interface DocsSection {
   id: string;
   title: string;
@@ -251,17 +275,18 @@ export interface AppContext {
   routes: PageFixture['page'];
   navItems: NavItem[];
   sidebarLinks: SidebarLink[];
-  dashboardSidebarLinks: DashboardSidebarLink[];
-  docsSidebarLinks: DashboardSidebarLink[];
-  examplesSidebarLinks: DashboardSidebarLink[];
+  adminSidebarLinks: DashboardSidebarLink[];
   hero: HeroFixture;
-  valueProposition: ValuePropositionFixture;
+  features: FeaturesFixture;
+  menu: MenuFixture;
+  recipes: RecipesFixture;
   blog: BlogFixture;
-  showcase: ShowcaseFixture;
-  docsSidebarLabel: string;
-  examplesSidebarLabel: string;
-  getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
-  getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
+  promotions: PromotionsFixture;
+  cta: CTAFixture;
+  testimonials: TestimonialsFixture;
+  admin: AdminFixture;
+  adminSidebarLabel: string;
+  getAdminSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
   getPageByPath: (path: string) => PageRecord | undefined;
   getPagesByDomain: (domain: PageDomain) => PageRecord[];
   resolveNavigation: (href: string) => NavigationState;
@@ -274,40 +299,27 @@ export interface AppContext {
 /** Domain-scoped context (context.domains.website, etc.) */
 export interface DomainsContext {
   website: WebsiteDomainContext;
-  docs: DocsDomainContext;
-  examples: ExamplesDomainContext;
-  dashboard: DashboardDomainContext;
+  admin: AdminDomainContext;
 }
 
 export interface WebsiteDomainContext {
   page: PageRecord[];
   hero: HeroFixture;
-  valueProposition: ValuePropositionFixture;
+  features: FeaturesFixture;
+  menu: MenuFixture;
+  recipes: RecipesFixture;
   blog: BlogFixture;
-  showcase: ShowcaseFixture;
+  promotions: PromotionsFixture;
+  cta: CTAFixture;
+  testimonials: TestimonialsFixture;
   site: SiteInfo;
   navItems: NavItem[];
   sidebarLinks: SidebarLink[];
 }
 
-export interface DocsDomainContext {
+export interface AdminDomainContext {
   page: PageRecord[];
-  docsIntro: DocsIntroFixture;
-  docsInstallation: DocsInstallationFixture;
-  docsComponents: DocsComponentsFixture;
-  docsSidebarLabel: string;
-  getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
-}
-
-export interface ExamplesDomainContext {
-  page: PageRecord[];
-  examples: ExamplesFixture;
-  examplesSidebarLabel: string;
-  getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
-}
-
-export interface DashboardDomainContext {
-  page: PageRecord[];
-  dashboard: DashboardFixture;
-  dashboardSidebarLinks: DashboardSidebarLink[];
+  admin: AdminFixture;
+  adminSidebarLinks: DashboardSidebarLink[];
+  adminSidebarLabel: string;
 }

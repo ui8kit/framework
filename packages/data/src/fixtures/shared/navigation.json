@@ -1,13 +1,19 @@
 {
   "navItems": [
     {"id": "home", "title": "Home", "url": "/"},
+    {"id": "menu", "title": "Menu", "url": "/menu"},
+    {"id": "recipes", "title": "Recipes", "url": "/recipes"},
     {"id": "blog", "title": "Blog", "url": "/blog"},
-    {"id": "showcase", "title": "Showcase", "url": "/showcase"},
+    {"id": "promotions", "title": "Promotions", "url": "/promotions"},
     {"id": "admin", "title": "Admin", "url": "/admin"}
   ],
-  "sidebarLinks": [],
-  "dashboardSidebarLinks": [],
-  "docsSidebarLinks": [],
-  "examplesSidebarLinks": [],
-  "labels": {"docsSidebarLabel": "", "examplesSidebarLabel": ""}
+  "sidebarLinks": [
+    {"label": "Home", "href": "/"},
+    {"label": "Menu", "href": "/menu"}
+  ],
+  "adminSidebarLinks": [
+    {"label": "Dashboard", "href": "/admin/dashboard", "active": true},
+    {"label": "Back to Site", "href": "/", "active": false}
+  ],
+  "labels": {"adminSidebarLabel": "Admin"}
 }

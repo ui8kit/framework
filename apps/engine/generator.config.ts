@@ -35,7 +35,7 @@ type Engine = 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
 const VALID_ENGINES: Engine[] = ['react', 'liquid', 'handlebars', 'twig', 'latte'];
 
 /** Domains for per-domain dist output */
-const DOMAINS = ['website'] as const;
+const DOMAINS = ['website', 'admin'] as const;
 
 /**
  * Auto-load passthrough components from @ui8kit/core
@@ -50,6 +50,7 @@ const REGISTRY_SOURCE_DIRS: RegistrySourceDir[] = [
   { path: './src/layouts/views', type: 'registry:layout', target: 'layouts' },
   { path: './src/partials', type: 'registry:partial', target: 'partials' },
   { path: './src/blocks/website', type: 'registry:route', target: 'views', include: ['**/*PageView.tsx'], pathTemplate: 'views/{{name}}.tsx' },
+  { path: './src/blocks/admin', type: 'registry:route', target: 'views', include: ['**/*PageView.tsx'], pathTemplate: 'views/{{name}}.tsx' },
 ];
 
 interface EngineConfig {

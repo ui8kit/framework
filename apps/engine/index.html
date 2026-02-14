@@ -3,9 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Templetor - Template Generator Demo</title>
+    <title>RestA — Restaurant & Bar</title>
+    <script>
+      (function() {
+        const stored = localStorage.getItem('resta-theme');
+        const dark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('resta-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('resta-theme', 'light');
+        }
+      })();
+    </script>
     <style>
-      /* MainLayout: flex-col (header, main, footer). DashLayout: flex-row (aside, main). */
+      /* MainLayout: flex-col (header, main, footer). AdminLayout: flex-row (aside, main). */
       #root[data-class="main-layout"]:has(> aside) { flex-direction: row; }
     </style>
   </head>

@@ -1,14 +1,14 @@
-import { SidebarContent, BlogPageView } from '@/blocks';
+import { SidebarContent, PromotionsPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-export function BlogPage() {
+export function PromotionsPage() {
   return (
-    <BlogPageView
+    <PromotionsPageView
       navItems={context.navItems}
       sidebar={<SidebarContent title="Quick Links" links={context.sidebarLinks} />}
       headerTitle={context.site.title}
       headerSubtitle={context.site.subtitle}
-      blog={context.blog}
+      promotions={context.promotions}
     />
   );
 }

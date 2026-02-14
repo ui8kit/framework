@@ -1,21 +1,33 @@
-import type { ReactNode } from 'react';
 import { MainLayout } from '@/layouts';
-import { Block, Container, Grid, Stack, Title, Text, Button } from '@ui8kit/core';
+import { SidebarContent } from '@/blocks';
+import { Block, Grid, Card, CardHeader, CardTitle, CardDescription, CardContent, Text } from '@ui8kit/core';
 import { If, Var, Loop } from '@ui8kit/template';
-import type { BlogFixture, BlogPostFixture } from '@ui8kit/data';
+import { DomainNavButton } from '@/partials';
+
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  body?: string;
+  image?: string;
+  date?: string;
+  author?: string;
+}
 
 export interface BlogPageViewProps {
   navItems?: { id: string; title: string; url: string }[];
+  sidebar: React.ReactNode;
   headerTitle?: string;
   headerSubtitle?: string;
-  blog: BlogFixture;
+  blog: { title?: string; subtitle?: string; posts?: BlogPost[] };
 }
 
 /**
- * Blog page — 3 posts in card layout (props-only, DSL).
+ * Blog list Page view — Grid of blog post cards.
  */
 export function BlogPageView({
   navItems,
+  sidebar,
   headerTitle,
   headerSubtitle,
   blog,
@@ -24,62 +36,66 @@ export function BlogPageView({
   return (
     <MainLayout
       mode="full"
-      navItems={navItems ?? []}
+      navItems={navItems}
+      sidebar={sidebar}
       headerTitle={headerTitle}
       headerSubtitle={headerSubtitle}
     >
-      <Block component="section" py="8" data-class="blog-section">
-        <Container max="w-6xl" flex="col" gap="8" data-class="blog-container">
+      <Block component="section" data-class="blog-section">
+        <Block py="16" data-class="blog-header">
           <If test="blog.title" value={!!blog.title}>
-            <Title fontSize="3xl" fontWeight="bold" textAlign="center" data-class="blog-title">
+            <Text component="h2" fontSize="3xl" fontWeight="bold" textAlign="center" data-class="blog-title">
               <Var name="blog.title" value={blog.title} />
-            </Title>
+            </Text>
           </If>
           <If test="blog.subtitle" value={!!blog.subtitle}>
             <Text
               fontSize="lg"
               textColor="muted-foreground"
               textAlign="center"
+              max="w-xl"
+              mx="auto"
               data-class="blog-subtitle"
             >
               <Var name="blog.subtitle" value={blog.subtitle} />
             </Text>
           </If>
-          <Grid grid="cols-3" gap="6" data-class="blog-grid">
-            <Loop each="posts" as="post" data={posts}>
-              {(post: BlogPostFixture) => (
-                <Stack
-                  p="6"
-                  rounded="lg"
-                  bg="card"
-                  border=""
-                  shadow="sm"
-                  gap="4"
-                  data-class="blog-card"
-                >
+        </Block>
+        <Grid cols="1-2-3" gap="6" data-class="blog-grid">
+          <Loop each="posts" as="post" data={posts}>
+            {(post: BlogPost) => (
+              <Card data-class="blog-post-card">
+                <CardHeader>
                   <If test="post.title" value={!!post.title}>
-                    <Title fontSize="xl" fontWeight="semibold" data-class="blog-card-title">
+                    <CardTitle order={4} data-class="blog-post-title">
                       <Var name="post.title" value={post.title} />
-                    </Title>
+                    </CardTitle>
                   </If>
                   <If test="post.excerpt" value={!!post.excerpt}>
-                    <Text fontSize="sm" textColor="muted-foreground" data-class="blog-card-excerpt">
+                    <CardDescription data-class="blog-post-excerpt">
                       <Var name="post.excerpt" value={post.excerpt} />
+                    </CardDescription>
+                  </If>
+                  <If test="post.author" value={!!post.author}>
+                    <Text fontSize="sm" textColor="muted-foreground" data-class="blog-post-meta">
+                      <Var name="post.author" value={post.author} />
                     </Text>
                   </If>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    href={`/blog#${post.slug}`}
-                    data-class="blog-card-link"
-                  >
-                    Read more
-                  </Button>
-                </Stack>
-              )}
-            </Loop>
-          </Grid>
-        </Container>
+                  <If test="post.date" value={!!post.date}>
+                    <Text fontSize="sm" textColor="muted-foreground" data-class="blog-post-date">
+                      <Var name="post.date" value={post.date} />
+                    </Text>
+                  </If>
+                </CardHeader>
+                <CardContent data-class="blog-post-actions">
+                  <DomainNavButton href={`/blog/${post.slug}`} size="sm" data-class="blog-post-link">
+                    Read More
+                  </DomainNavButton>
+                </CardContent>
+              </Card>
+            )}
+          </Loop>
+        </Grid>
       </Block>
     </MainLayout>
   );

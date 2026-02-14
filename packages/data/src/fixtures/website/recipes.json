@@ -1,0 +1,9 @@
+{
+  "title": "Recipes",
+  "subtitle": "Try our signature dishes at home.",
+  "recipes": [
+    {"slug": "caesar-salad", "title": "Classic Caesar Salad", "excerpt": "A timeless recipe with crisp romaine and homemade dressing.", "body": "Combine romaine lettuce, parmesan, and croutons. Add our house Caesar dressing and toss gently. Serve immediately.", "image": "", "date": "2025-01-15"},
+    {"slug": "herb-crusted-salmon", "title": "Herb-Crusted Salmon", "excerpt": "Pan-seared salmon with a fresh herb crust.", "body": "Coat salmon fillets with a mixture of breadcrumbs, parsley, dill, and lemon zest. Pan-sear until golden. Serve with seasonal vegetables.", "image": "", "date": "2025-01-10"},
+    {"slug": "tiramisu", "title": "Homemade Tiramisu", "excerpt": "The perfect balance of coffee, mascarpone, and cocoa.", "body": "Layer espresso-soaked ladyfingers with whipped mascarpone cream. Dust with cocoa powder. Chill for at least 4 hours before serving.", "image": "", "date": "2025-01-05"}
+  ]
+}

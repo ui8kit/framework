@@ -1,24 +1,9 @@
 {
   "title": "Blog",
-  "subtitle": "Insights on UI8Kit architecture and design principles",
+  "subtitle": "News, tips, and stories from the RestA kitchen.",
   "posts": [
-    {
-      "id": "architecture-principles",
-      "title": "Architecture Principles",
-      "excerpt": "Learn how UI8Kit's modular architecture enables type-safe, semantic UI development with clear separation of concerns.",
-      "slug": "architecture-principles"
-    },
-    {
-      "id": "props-driven-approach",
-      "title": "Props-Driven Approach",
-      "excerpt": "Discover how semantic props map directly to Tailwind classes, eliminating custom CSS while maintaining design consistency.",
-      "slug": "props-driven-approach"
-    },
-    {
-      "id": "constrained-tailwind-shadcn",
-      "title": "Constrained Tailwind + shadcn Design Tokens",
-      "excerpt": "Explore the combination of constrained utility classes with shadcn design tokens for a violet-first, accessible design system.",
-      "slug": "constrained-tailwind-shadcn"
-    }
+    {"slug": "seasonal-ingredients", "title": "Cooking with Seasonal Ingredients", "excerpt": "Why we choose local and seasonal produce for our dishes.", "body": "At RestA, we believe the best flavors come from ingredients at their peak. Our chefs work closely with local farmers to bring you the freshest seasonal produce.", "image": "", "date": "2025-02-01", "author": "Chef Marco"},
+    {"slug": "wine-pairing-guide", "title": "Wine Pairing Guide", "excerpt": "Tips for pairing wine with your favorite dishes.", "body": "A great wine can elevate any meal. Our sommelier shares insights on matching wines with different cuisines and flavor profiles.", "image": "", "date": "2025-01-25", "author": "RestA Team"},
+    {"slug": "valentines-special", "title": "Valentine's Day Special Menu", "excerpt": "Romantic dining experience for two.", "body": "Join us for a specially curated menu designed for romance. Reserve your table for an unforgettable evening.", "image": "", "date": "2025-01-20", "author": "RestA Team"}
   ]
 }

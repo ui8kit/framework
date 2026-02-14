@@ -4,7 +4,6 @@
 # - **/node_modules
 # - **/dist
 # - **/*.tsbuildinfo
-# - **/debug.log
 # - **/bun.lock
 # - **/.turbo
 #
@@ -51,7 +50,7 @@ for dir in "$ROOT"/**/node_modules "$ROOT"/**/dist "$ROOT"/**/.turbo; do
 done
 
 # 2) File cleanup
-for file in "$ROOT"/**/*.tsbuildinfo "$ROOT"/**/debug.log "$ROOT"/**/bun.lock; do
+for file in "$ROOT"/**/*.tsbuildinfo "$ROOT"/**/bun.lock; do
   [ -f "$file" ] || continue
   remove_file "$file"
 done

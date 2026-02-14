@@ -11,14 +11,24 @@ import siteData from './fixtures/shared/site.json';
 import navigationData from './fixtures/shared/navigation.json';
 import pageData from './fixtures/shared/page.json';
 import heroData from './fixtures/website/hero.json';
-import valuePropositionData from './fixtures/website/value-proposition.json';
+import featuresData from './fixtures/website/features.json';
+import testimonialsData from './fixtures/website/testimonials.json';
+import ctaData from './fixtures/website/cta.json';
+import menuData from './fixtures/website/menu.json';
+import recipesData from './fixtures/website/recipes.json';
 import blogData from './fixtures/website/blog.json';
-import showcaseData from './fixtures/website/showcase.json';
+import promotionsData from './fixtures/website/promotions.json';
+import adminData from './fixtures/admin/admin.json';
 import type {
   HeroFixture,
-  ValuePropositionFixture,
+  FeaturesFixture,
+  TestimonialsFixture,
+  CTAFixture,
+  MenuFixture,
+  RecipesFixture,
   BlogFixture,
-  ShowcaseFixture,
+  PromotionsFixture,
+  AdminFixture,
   NavItem,
   SidebarLink,
   DashboardSidebarLink,
@@ -34,26 +44,22 @@ import type {
 // -----------------------------------------------------------------------------
 
 const site = siteData as SiteInfo;
-const pageRaw = (pageData as PageFixture).page;
-const page = {
-  website: pageRaw.website,
-  docs: pageRaw.docs ?? [],
-  examples: pageRaw.examples ?? [],
-  dashboard: pageRaw.dashboard ?? [],
-};
+const page = (pageData as PageFixture).page;
 
 const navItems = navigationData.navItems as NavItem[];
 const sidebarLinks = navigationData.sidebarLinks as SidebarLink[];
-const dashboardSidebarLinks = navigationData.dashboardSidebarLinks as DashboardSidebarLink[];
-const docsSidebarLinks = navigationData.docsSidebarLinks as DashboardSidebarLink[];
-const examplesSidebarLinks = navigationData.examplesSidebarLinks as DashboardSidebarLink[];
-const docsSidebarLabel = navigationData.labels.docsSidebarLabel;
-const examplesSidebarLabel = navigationData.labels.examplesSidebarLabel;
+const adminSidebarLinks = (navigationData.adminSidebarLinks ?? []) as DashboardSidebarLink[];
+const adminSidebarLabel = navigationData.labels?.adminSidebarLabel ?? 'Admin';
 
 const hero = heroData as HeroFixture;
-const valueProposition = valuePropositionData as ValuePropositionFixture;
+const features = featuresData as FeaturesFixture;
+const testimonials = testimonialsData as TestimonialsFixture;
+const cta = ctaData as CTAFixture;
+const menu = menuData as MenuFixture;
+const recipes = recipesData as RecipesFixture;
 const blog = blogData as BlogFixture;
-const showcase = showcaseData as ShowcaseFixture;
+const promotions = promotionsData as PromotionsFixture;
+const admin = adminData as AdminFixture;
 
 /** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
 export const EMPTY_ARRAY: readonly never[] = Object.freeze([]) as readonly never[];
@@ -74,14 +80,21 @@ function getPagesByDomain(domain: PageDomain): PageRecord[] {
 
 function getPageByPath(path: string): PageRecord | undefined {
   const normalizedPath = normalizeActiveHref(path);
-  const domains: PageDomain[] = ['website', 'docs', 'examples', 'dashboard'];
+  const domains: PageDomain[] = ['website', 'admin'];
   for (const domain of domains) {
-    const domainPages = page[domain];
-    if (!domainPages) continue;
-    const matched = domainPages.find(
+    const matched = (page[domain] ?? []).find(
       (item) => normalizeActiveHref(item.path) === normalizedPath
     );
     if (matched) return matched;
+  }
+  // Match dynamic routes: /recipes/:slug, /blog/:slug
+  const recipeMatch = normalizedPath.match(/^\/recipes\/([^/]+)$/);
+  if (recipeMatch) {
+    return (page.website ?? []).find((p) => p.path === '/recipes/:slug') ?? undefined;
+  }
+  const blogMatch = normalizedPath.match(/^\/blog\/([^/]+)$/);
+  if (blogMatch) {
+    return (page.website ?? []).find((p) => p.path === '/blog/:slug') ?? undefined;
   }
   return undefined;
 }
@@ -92,11 +105,21 @@ function isInternalPath(href: string): boolean {
   return href.startsWith('/');
 }
 
-const availablePaths = Object.freeze(
-  page.website.map((entry) => normalizeActiveHref(entry.path))
-) as readonly string[];
+/** Static paths from page model (exclude param paths for exact matching). */
+const staticPaths = (['website', 'admin'] as const).flatMap((domain) =>
+  (page[domain] ?? [])
+    .filter((entry) => !entry.path.includes(':'))
+    .map((entry) => normalizeActiveHref(entry.path))
+);
+
+const availablePaths = Object.freeze([...new Set(staticPaths)]) as readonly string[];
 
 const availablePathSet = new Set(availablePaths);
+
+/** Check if path matches dynamic route pattern (e.g. /recipes/slug, /blog/slug). */
+function matchesDynamicRoute(normalizedHref: string): boolean {
+  return /^\/recipes\/[^/]+$/.test(normalizedHref) || /^\/blog\/[^/]+$/.test(normalizedHref);
+}
 
 function resolveNavigation(href: string): NavigationState {
   if (!isInternalPath(href)) {
@@ -108,7 +131,7 @@ function resolveNavigation(href: string): NavigationState {
   }
 
   const normalizedHref = normalizeActiveHref(href);
-  if (availablePathSet.has(normalizedHref)) {
+  if (availablePathSet.has(normalizedHref) || matchesDynamicRoute(normalizedHref)) {
     return Object.freeze({
       href: normalizedHref,
       enabled: true,
@@ -136,79 +159,59 @@ function freezeSidebarLinks(
   links: DashboardSidebarLink[],
   activeHref: string
 ): DashboardSidebarLink[] {
+  const normalizedHref = normalizeActiveHref(activeHref);
   const frozen = links.map((link) =>
     Object.freeze({
       ...link,
-      active: link.href === activeHref,
+      active: normalizeActiveHref(link.href) === normalizedHref,
     })
   );
   return Object.freeze(frozen) as DashboardSidebarLink[];
 }
 
-function getDocsSidebarLinks(activeHref: string): DashboardSidebarLink[] {
+function getAdminSidebarLinks(activeHref: string): DashboardSidebarLink[] {
   const normalizedHref = normalizeActiveHref(activeHref);
-  const cached = sidebarLinksCache.get(`docs:${normalizedHref}`);
+  const cached = sidebarLinksCache.get(`admin:${normalizedHref}`);
   if (cached) return cached;
-  const result = freezeSidebarLinks(docsSidebarLinks, normalizedHref);
-  sidebarLinksCache.set(`docs:${normalizedHref}`, result);
+  const result = freezeSidebarLinks(adminSidebarLinks, normalizedHref);
+  sidebarLinksCache.set(`admin:${normalizedHref}`, result);
   return result;
 }
 
-function getExamplesSidebarLinks(activeHref: string): DashboardSidebarLink[] {
-  const normalizedHref = normalizeActiveHref(activeHref);
-  const cached = sidebarLinksCache.get(`examples:${normalizedHref}`);
-  if (cached) return cached;
-  const result = freezeSidebarLinks(examplesSidebarLinks, normalizedHref);
-  sidebarLinksCache.set(`examples:${normalizedHref}`, result);
-  return result;
-}
+/** Pre-warm cache for admin routes. */
+const ADMIN_PATHS = ['/admin', '/admin/dashboard'];
+for (const p of ADMIN_PATHS) getAdminSidebarLinks(p);
 
 export function getSidebarCacheDiagnostics() {
   const keys = sidebarLinksCache.keys();
-  let docsEntries = 0;
-  let examplesEntries = 0;
-  for (const key of keys) {
-    if (key.startsWith('docs:')) docsEntries += 1;
-    else if (key.startsWith('examples:')) examplesEntries += 1;
-  }
   return Object.freeze({
     stats: Object.freeze(sidebarLinksCache.stats()),
     totalEntries: keys.length,
-    docsEntries,
-    examplesEntries,
-    otherEntries: keys.length - docsEntries - examplesEntries,
   });
 }
 
 // Domain namespaces (read-only views, aligned with shared page model)
 const websiteDomain = Object.freeze({
-  page: page.website,
+  page: page.website ?? [],
   hero: hero as HeroFixture,
-  valueProposition: valueProposition as ValuePropositionFixture,
+  features: features as FeaturesFixture,
+  menu: menu as MenuFixture,
+  recipes: recipes as RecipesFixture,
   blog: blog as BlogFixture,
-  showcase: showcase as ShowcaseFixture,
+  promotions: promotions as PromotionsFixture,
+  testimonials: testimonials as TestimonialsFixture,
+  cta: cta as CTAFixture,
   site,
   navItems,
   sidebarLinks,
 });
-const docsDomain = Object.freeze({
-  page: page.docs,
-  docsIntro: Object.freeze({}),
-  docsInstallation: Object.freeze({}),
-  docsComponents: Object.freeze({}),
-  docsSidebarLabel,
-  getDocsSidebarLinks,
-});
-const examplesDomain = Object.freeze({
-  page: page.examples,
-  examples: Object.freeze({}),
-  examplesSidebarLabel,
-  getExamplesSidebarLinks,
-});
-const dashboardDomain = Object.freeze({
-  page: page.dashboard,
-  dashboard: Object.freeze({}),
-  dashboardSidebarLinks,
+
+const adminDomain = Object.freeze({
+  page: page.admin ?? [],
+  admin: admin as AdminFixture,
+  adminSidebarLinks,
+  adminSidebarLabel,
+  getAdminSidebarLinks,
 });
 
 export const context = Object.freeze({
@@ -218,27 +221,26 @@ export const context = Object.freeze({
   site,
   navItems,
   sidebarLinks,
-  dashboardSidebarLinks,
-  docsSidebarLinks,
-  examplesSidebarLinks,
-  docsSidebarLabel,
-  examplesSidebarLabel,
-  getDocsSidebarLinks,
-  getExamplesSidebarLinks,
+  adminSidebarLinks,
+  adminSidebarLabel,
+  getAdminSidebarLinks,
   getPageByPath,
   getPagesByDomain,
   resolveNavigation,
   navigation,
   getSidebarCacheDiagnostics,
   hero: hero as HeroFixture,
-  valueProposition: valueProposition as ValuePropositionFixture,
+  features: features as FeaturesFixture,
+  menu: menu as MenuFixture,
+  recipes: recipes as RecipesFixture,
   blog: blog as BlogFixture,
-  showcase: showcase as ShowcaseFixture,
+  promotions: promotions as PromotionsFixture,
+  testimonials: testimonials as TestimonialsFixture,
+  cta: cta as CTAFixture,
+  admin: admin as AdminFixture,
   domains: Object.freeze({
     website: websiteDomain,
-    docs: docsDomain,
-    examples: examplesDomain,
-    dashboard: dashboardDomain,
+    admin: adminDomain,
   }),
   clearCache,
 });
@@ -246,9 +248,13 @@ export const context = Object.freeze({
 /** @deprecated Use context instead */
 export const fixtures = {
   hero: context.hero,
-  valueProposition: context.valueProposition,
+  features: context.features,
+  menu: context.menu,
+  recipes: context.recipes,
   blog: context.blog,
-  showcase: context.showcase,
+  promotions: context.promotions,
+  testimonials: context.testimonials,
+  cta: context.cta,
 };
 
 export * from './types';
