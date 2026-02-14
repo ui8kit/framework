@@ -10,6 +10,7 @@ export interface ScaffoldConfig {
   appName: string;
   target: string;
   domain?: string;
+  dataMode?: "local" | "shared";
   packageName: string;
   description: string;
   port?: number;

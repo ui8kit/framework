@@ -1,7 +1,7 @@
 export { CTABlock } from './CTABlock';
+export * from './dashboard';
 export { DashboardBlock } from './DashboardBlock';
 export { DashSidebar } from './DashSidebar';
-export * from './docs';
 export * from './examples';
 export { ExamplesBlock } from './ExamplesBlock';
 export { FeaturesBlock } from './FeaturesBlock';

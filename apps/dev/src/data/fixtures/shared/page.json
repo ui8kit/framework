@@ -1,0 +1,16 @@
+{
+  "page": {
+    "website": [
+      {
+        "id": "website-home",
+        "domain": "website",
+        "title": "Home",
+        "path": "/",
+        "component": "WebsitePage"
+      }
+    ],
+    "docs": [],
+    "examples": [],
+    "dashboard": []
+  }
+}

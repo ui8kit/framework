@@ -44,8 +44,10 @@ TARGET_APP=$(bun run scripts/scaffold-config.ts --field appName)
 TARGET_APP=${TARGET_APP:-test}
 DOMAIN=$(bun run scripts/scaffold-config.ts --field domain)
 DOMAIN=${DOMAIN:-website}
-echo "  4. Copying templates to apps/$TARGET_APP (from domain: $DOMAIN)..."
-TARGET_APP="$TARGET_APP" DOMAIN="$DOMAIN" bun run scripts/copy-templates-to-dev.ts --target "$TARGET_APP" --domain "$DOMAIN"
+DATA_MODE=$(bun run scripts/scaffold-config.ts --field dataMode)
+DATA_MODE=${DATA_MODE:-local}
+echo "  4. Syncing templates + data to apps/$TARGET_APP (domain: $DOMAIN, data: $DATA_MODE)..."
+TARGET_APP="$TARGET_APP" DOMAIN="$DOMAIN" DATA_MODE="$DATA_MODE" bun run scripts/pipeline-app.ts sync --target "$TARGET_APP" --domain "$DOMAIN" --data-mode "$DATA_MODE"
 echo ""
 
 echo "  Done. Run: cd apps/$TARGET_APP && bun run dev"
