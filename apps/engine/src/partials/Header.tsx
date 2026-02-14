@@ -1,5 +1,6 @@
-import { Block, Container, Group, Button, Text } from '@ui8kit/core';
+import { Block, Container, Group, Text } from '@ui8kit/core';
 import { If, Var, Loop } from '@ui8kit/template';
+import { DomainNavButton } from './DomainNavButton';
 
 export type NavItem = {
   id: string;
@@ -71,7 +72,7 @@ export function Header({
           <Block component="nav" flex="" gap="2" items="center" data-class="header-nav">
             <Loop each="navItems" as="item" data={navItems ?? []}>
               {(item: NavItem) => (
-                <Button
+                <DomainNavButton
                   variant="ghost"
                   size="sm"
                   href={item.url}
@@ -80,7 +81,7 @@ export function Header({
                   <Text component="span">
                     <Var name="item.title" value={item.title} />
                   </Text>
-                </Button>
+                </DomainNavButton>
               )}
             </Loop>
           </Block>

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
-import { Link } from 'react-router-dom';
+import { DomainNavButton } from '@/partials';
 
 export interface ExampleTab {
   href: string;
@@ -89,8 +89,8 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
               {(item: ExampleTab) => (
                 <>
                   <If test="item.active" value={!!item.active}>
-                    <Link
-                      to={item.href}
+                    <DomainNavButton
+                      href={item.href}
                       data-class="examples-tab"
                       data-state="active"
                       className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
@@ -98,18 +98,18 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
                       <If test="item.label" value={!!(item.label ?? '')}>
                         <Var name="item.label" value={item.label ?? ''} />
                       </If>
-                    </Link>
+                    </DomainNavButton>
                   </If>
                   <If test="!item.active" value={!item.active}>
-                    <Link
-                      to={item.href}
+                    <DomainNavButton
+                      href={item.href}
                       data-class="examples-tab"
                       className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium rounded-none text-accent-foreground bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:-mb-px data-[state=active]:text-foreground no-underline"
                     >
                       <If test="item.label" value={!!(item.label ?? '')}>
                         <Var name="item.label" value={item.label ?? ''} />
                       </If>
-                    </Link>
+                    </DomainNavButton>
                   </If>
                 </>
               )}
@@ -203,16 +203,16 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
         </Grid>
 
         <Group gap="4" justify="center" items="center" data-class="examples-actions">
-          <Button href="/examples" data-class="examples-cta">
+          <DomainNavButton href="/examples" data-class="examples-cta">
             <If test="examples.actions.explore" value={!!(examples?.actions?.explore ?? '')}>
               <Var name="examples.actions.explore" value={examples?.actions?.explore ?? ''} />
             </If>
-          </Button>
-          <Button variant="outline" href="/docs/components" data-class="examples-cta">
+          </DomainNavButton>
+          <DomainNavButton variant="outline" href="/docs/components" data-class="examples-cta">
             <If test="examples.actions.allComponents" value={!!(examples?.actions?.allComponents ?? '')}>
               <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents ?? ''} />
             </If>
-          </Button>
+          </DomainNavButton>
         </Group>
         </If>
 

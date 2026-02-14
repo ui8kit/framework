@@ -66,6 +66,8 @@ async function main(): Promise<void> {
     "getExamplesSidebarLinks",
     "getPageByPath",
     "getPagesByDomain",
+    "resolveNavigation",
+    "navigation",
     "domains",
   ];
   for (const key of requiredContextKeys) {

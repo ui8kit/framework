@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Block, Grid, Stack, Group, Title, Text, Button, Badge, Card } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
-import { EMPTY_ARRAY } from '@ui8kit/data';
 import type { ExampleTab, ExamplesContent } from './types';
+import { DomainNavButton } from '@/partials';
 
 export interface ExamplesBlockProps {
   tabs?: ExampleTab[];
@@ -17,6 +17,8 @@ export interface ExamplesBlockProps {
  * Tabs passed via props (from context on engine; caller must provide in dev).
  */
 export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) {
+  const normalizedTabs = (tabs ?? []) as ExampleTab[];
+
   return (
     <Block component="section" py="16" data-class="examples-section">
       <Stack gap="8" data-class="examples-section-inner">
@@ -38,7 +40,7 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
           </If>
         </Stack>
 
-        <If test="tabs" value={(tabs ?? EMPTY_ARRAY).length > 0}>
+        <If test="tabs" value={normalizedTabs.length > 0}>
           <Group
             gap="0"
             justify="start"
@@ -46,11 +48,11 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
             border="b"
             data-class="examples-tabs"
           >
-            <Loop each="tabs" as="item" keyExpr="item.href" data={tabs ?? EMPTY_ARRAY}>
+            <Loop each="tabs" as="item" keyExpr="item.href" data={normalizedTabs}>
               {(item: ExampleTab) => (
                 <>
                   <If test="item.active" value={!!item.active}>
-                    <Button
+                    <DomainNavButton
                       href={item.href}
                       variant="ghost"
                       data-class="examples-tab"
@@ -59,10 +61,10 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
                       <Text component="span">
                         <Var name="item.label" value={item.label ?? ''} />
                       </Text>
-                    </Button>
+                    </DomainNavButton>
                   </If>
                   <If test="!item.active" value={!item.active}>
-                    <Button
+                    <DomainNavButton
                       href={item.href}
                       variant="ghost"
                       data-class="examples-tab"
@@ -70,7 +72,7 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
                       <Text component="span">
                         <Var name="item.label" value={item.label ?? ''} />
                       </Text>
-                    </Button>
+                    </DomainNavButton>
                   </If>
                 </>
               )}
@@ -165,14 +167,14 @@ export function ExamplesBlock({ tabs, examples, children }: ExamplesBlockProps) 
 
           <Group gap="4" justify="center" items="center" data-class="examples-actions">
             <If test="examples.actions.explore" value={!!(examples?.actions?.explore ?? '')}>
-              <Button href="/examples" data-class="examples-cta">
+              <DomainNavButton href="/examples" data-class="examples-cta">
                 <Var name="examples.actions.explore" value={examples?.actions?.explore ?? ''} />
-              </Button>
+              </DomainNavButton>
             </If>
             <If test="examples.actions.allComponents" value={!!(examples?.actions?.allComponents ?? '')}>
-              <Button variant="outline" href="/docs/components" data-class="examples-cta">
+              <DomainNavButton variant="outline" href="/docs/components" data-class="examples-cta">
                 <Var name="examples.actions.allComponents" value={examples?.actions?.allComponents ?? ''} />
-              </Button>
+              </DomainNavButton>
             </If>
           </Group>
         </If>

@@ -1,5 +1,5 @@
 import { Block, Stack, Group, Title, Text, Button, Badge, Grid, Card } from '@ui8kit/core';
-import { Link } from 'react-router-dom';
+import { DomainNavButton } from '@/partials';
 
 /**
  * Examples default page view — common components showcase.
@@ -50,18 +50,42 @@ export function ExamplesPageView() {
               Routes
             </Text>
             <Stack gap="1" data-class="examples-card-content">
-              <Link to="/examples/dashboard" className="text-sm text-primary hover:underline">
+              <DomainNavButton
+                href="/examples/dashboard"
+                variant="link"
+                size="sm"
+                justify="start"
+                className="text-sm text-primary hover:underline"
+              >
                 Dashboard
-              </Link>
-              <Link to="/examples/tasks" className="text-sm text-primary hover:underline">
+              </DomainNavButton>
+              <DomainNavButton
+                href="/examples/tasks"
+                variant="link"
+                size="sm"
+                justify="start"
+                className="text-sm text-primary hover:underline"
+              >
                 Tasks
-              </Link>
-              <Link to="/examples/playground" className="text-sm text-primary hover:underline">
+              </DomainNavButton>
+              <DomainNavButton
+                href="/examples/playground"
+                variant="link"
+                size="sm"
+                justify="start"
+                className="text-sm text-primary hover:underline"
+              >
                 Playground
-              </Link>
-              <Link to="/examples/authentication" className="text-sm text-primary hover:underline">
+              </DomainNavButton>
+              <DomainNavButton
+                href="/examples/authentication"
+                variant="link"
+                size="sm"
+                justify="start"
+                className="text-sm text-primary hover:underline"
+              >
                 Authentication
-              </Link>
+              </DomainNavButton>
             </Stack>
           </Card>
         </Grid>

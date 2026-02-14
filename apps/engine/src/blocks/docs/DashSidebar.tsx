@@ -1,6 +1,6 @@
-import { Stack, Text, Button } from '@ui8kit/core';
+import { Stack, Text } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
-import { EMPTY_ARRAY } from '@ui8kit/data';
+import { DomainNavButton } from '@/partials';
 
 export type DashSidebarLink = {
   label: string;
@@ -23,6 +23,8 @@ export function DashSidebar({
   links,
   'data-class': dataClass,
 }: DashSidebarProps) {
+  const normalizedLinks = (links ?? []) as DashSidebarLink[];
+
   return (
     <Stack gap="2" p="4" data-class={dataClass ?? 'dash-sidebar-nav'}>
       <If test="label" value={!!(label ?? '')}>
@@ -35,12 +37,12 @@ export function DashSidebar({
           <Var name="label" value={label ?? ''} />
         </Text>
       </If>
-      <If test="(links ?? EMPTY_ARRAY).length > 0" value={(links ?? EMPTY_ARRAY).length > 0}>
-        <Loop each="links" as="link" data={links ?? EMPTY_ARRAY}>
+      <If test="links.length > 0" value={normalizedLinks.length > 0}>
+        <Loop each="links" as="link" data={normalizedLinks}>
           {(link: DashSidebarLink) => (
             <>
               <If test="!!link.active" value={!!link.active}>
-                <Button
+                <DomainNavButton
                   href={link.href}
                   size="sm"
                   variant="secondary"
@@ -48,10 +50,10 @@ export function DashSidebar({
                   data-class="dash-sidebar-link"
                 >
                   <Var name="link.label" value={link.label} />
-                </Button>
+                </DomainNavButton>
               </If>
               <If test="!link.active" value={!link.active}>
-                <Button
+                <DomainNavButton
                   href={link.href}
                   size="sm"
                   variant="ghost"
@@ -59,7 +61,7 @@ export function DashSidebar({
                   data-class="dash-sidebar-link"
                 >
                   <Var name="link.label" value={link.label} />
-                </Button>
+                </DomainNavButton>
               </If>
             </>
           )}

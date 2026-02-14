@@ -1,6 +1,6 @@
-import { Stack, Text, Button } from '@ui8kit/core';
+import { Stack, Text } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
-import { EMPTY_ARRAY } from '@ui8kit/data';
+import { DomainNavButton } from '@/partials';
 
 export type SidebarLink = {
   label: string;
@@ -22,6 +22,8 @@ export function SidebarContent({
   links,
   'data-class': dataClass,
 }: SidebarContentProps) {
+  const normalizedLinks = (links ?? []) as SidebarLink[];
+
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">
@@ -30,11 +32,11 @@ export function SidebarContent({
             <Var name="title" value={title ?? ''} />
           </Text>
         </If>
-        <If test="links" value={(links ?? EMPTY_ARRAY).length > 0}>
+        <If test="links" value={normalizedLinks.length > 0}>
           <Stack gap="1" data-class="sidebar-links">
-            <Loop each="links" as="link" data={links ?? EMPTY_ARRAY}>
+            <Loop each="links" as="link" data={normalizedLinks}>
               {(link: SidebarLink) => (
-                <Button
+                <DomainNavButton
                   href={link.href}
                   variant="link"
                   size="sm"
@@ -44,7 +46,7 @@ export function SidebarContent({
                   <Text component="span">
                     <Var name="link.label" value={link.label} />
                   </Text>
-                </Button>
+                </DomainNavButton>
               )}
             </Loop>
           </Stack>

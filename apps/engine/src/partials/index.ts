@@ -7,3 +7,5 @@ export type { FooterProps, FooterLink, FooterSection } from './Footer';
 
 export { Sidebar } from './Sidebar';
 export type { SidebarProps } from './Sidebar';
+
+export { DomainNavButton } from './DomainNavButton';

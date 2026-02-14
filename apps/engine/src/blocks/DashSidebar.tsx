@@ -1,5 +1,6 @@
-import { Stack, Text, Button } from '@ui8kit/core';
+import { Stack, Text } from '@ui8kit/core';
 import { If, Loop, Var } from '@ui8kit/template';
+import { DomainNavButton } from '@/partials';
 
 export type DashSidebarLink = {
   label: string;
@@ -39,7 +40,7 @@ export function DashSidebar({
           {(link: DashSidebarLink) => (
             <>
               <If test="!!link.active" value={!!link.active}>
-                <Button
+                <DomainNavButton
                   href={link.href}
                   size="sm"
                   variant="secondary"
@@ -47,10 +48,10 @@ export function DashSidebar({
                   data-class="dash-sidebar-link"
                 >
                   <Var name="link.label" value={link.label} />
-                </Button>
+                </DomainNavButton>
               </If>
               <If test="!link.active" value={!link.active}>
-                <Button
+                <DomainNavButton
                   href={link.href}
                   size="sm"
                   variant="ghost"
@@ -58,7 +59,7 @@ export function DashSidebar({
                   data-class="dash-sidebar-link"
                 >
                   <Var name="link.label" value={link.label} />
-                </Button>
+                </DomainNavButton>
               </If>
             </>
           )}

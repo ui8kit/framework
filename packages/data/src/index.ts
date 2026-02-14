@@ -38,6 +38,7 @@ import type {
   PageFixture,
   PageDomain,
   PageRecord,
+  NavigationState,
 } from './types';
 
 // -----------------------------------------------------------------------------
@@ -94,6 +95,54 @@ function getPageByPath(path: string): PageRecord | undefined {
   }
   return undefined;
 }
+
+const NAVIGATION_UNAVAILABLE_TOOLTIP = 'Not available in this domain build';
+
+function isInternalPath(href: string): boolean {
+  return href.startsWith('/');
+}
+
+const availablePaths = Object.freeze(
+  (['website', 'docs', 'examples', 'dashboard'] as const).flatMap((domain) =>
+    page[domain].map((entry) => normalizeActiveHref(entry.path))
+  )
+) as readonly string[];
+
+const availablePathSet = new Set(availablePaths);
+
+function resolveNavigation(href: string): NavigationState {
+  if (!isInternalPath(href)) {
+    return Object.freeze({
+      href,
+      enabled: true,
+      mode: 'soft' as const,
+    });
+  }
+
+  const normalizedHref = normalizeActiveHref(href);
+  if (availablePathSet.has(normalizedHref)) {
+    return Object.freeze({
+      href: normalizedHref,
+      enabled: true,
+      mode: 'soft' as const,
+    });
+  }
+
+  return Object.freeze({
+    href: normalizedHref,
+    enabled: false,
+    mode: 'soft' as const,
+    reason: NAVIGATION_UNAVAILABLE_TOOLTIP,
+  });
+}
+
+const navigation = Object.freeze({
+  mode: 'soft' as const,
+  unavailableTooltip: NAVIGATION_UNAVAILABLE_TOOLTIP,
+  availablePaths,
+  resolve: resolveNavigation,
+  isEnabled: (href: string) => resolveNavigation(href).enabled,
+});
 
 function freezeSidebarLinks(
   links: DashboardSidebarLink[],
@@ -204,6 +253,8 @@ export const context = Object.freeze({
   getExamplesSidebarLinks,
   getPageByPath,
   getPagesByDomain,
+  resolveNavigation,
+  navigation,
   getSidebarCacheDiagnostics,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
