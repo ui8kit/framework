@@ -25,7 +25,7 @@ Build a presentation website for the UI8Kit framework in English:
 |-----------------|--------------|-----------------|--------------|
 | `/components`   | components   | components.json | context.components |
 | `/guides`       | guides       | guides.json     | context.guides |
-| `/guides/:slug` | guides       | guides.json     | context.guides.recipes |
+| `/guides/:slug` | guides       | guides.json     | context.guides.guides |
 | `/blog`         | blog         | blog.json       | context.blog |
 | `/blog/:slug`   | blog         | blog.json       | context.blog.posts |
 | `/showcase`     | showcase     | showcase.json   | context.showcase |
@@ -92,7 +92,7 @@ This staged gate model is mandatory because it balances speed and consistency.
 
 When changing routes or domain names:
 
-1. **Fixtures:** `components.json` (uses `dishes` for MenuBlock), `guides.json` (uses `recipes`), `showcase.json` (uses `promotions`) — internal array names may differ from domain labels.
+1. **Fixtures:** `components.json` (uses `items`), `guides.json` (uses `guides`), `showcase.json` (uses `projects`) — array names align with domain labels.
 2. **Context:** `packages/data/src/index.ts` exposes `components`, `guides`, `showcase`; `getPageByPath` and `matchesDynamicRoute` must handle `/guides/:slug`.
 3. **Admin:** `admin.json` exportSchema and `AdminDashboardPageView` handleExport must use the same keys as context.
 4. **Bundle script:** `scripts/bundle-data.ts` DOMAIN_FIXTURE_FILES must list all domain fixtures used by the app.

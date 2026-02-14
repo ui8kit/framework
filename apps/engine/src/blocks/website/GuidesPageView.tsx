@@ -18,7 +18,7 @@ export interface GuidesPageViewProps {
   sidebar: React.ReactNode;
   headerTitle?: string;
   headerSubtitle?: string;
-  guides: { title?: string; subtitle?: string; recipes?: GuideItem[] };
+  guides: { title?: string; subtitle?: string; guides?: GuideItem[] };
 }
 
 /**
@@ -31,7 +31,7 @@ export function GuidesPageView({
   headerSubtitle,
   guides,
 }: GuidesPageViewProps) {
-  const items = guides.recipes ?? [];
+  const items = guides.guides ?? [];
   return (
     <MainLayout
       mode="full"

@@ -4,7 +4,7 @@ import { context } from '@ui8kit/data';
 
 export function GuideDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const guide = context.guides.recipes?.find((r) => r.slug === slug);
+  const guide = context.guides.guides?.find((r) => r.slug === slug);
 
   return (
     <GuideDetailPageView

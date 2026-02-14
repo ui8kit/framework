@@ -8,8 +8,8 @@ export type { FeaturesBlockProps, Feature } from './FeaturesBlock';
 export { CTABlock } from './CTABlock';
 export type { CTABlockProps } from './CTABlock';
 
-export { MenuBlock } from './MenuBlock';
-export type { MenuBlockProps, MenuDish } from './MenuBlock';
+export { ComponentsBlock } from './ComponentsBlock';
+export type { ComponentsBlockProps, ComponentItem } from './ComponentsBlock';
 
 export { PricingBlock } from './PricingBlock';
 export type { PricingBlockProps, PricingPlan } from './PricingBlock';

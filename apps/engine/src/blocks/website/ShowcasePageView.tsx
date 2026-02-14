@@ -16,7 +16,7 @@ export interface ShowcasePageViewProps {
   sidebar: React.ReactNode;
   headerTitle?: string;
   headerSubtitle?: string;
-  showcase: { title?: string; subtitle?: string; promotions?: ShowcaseItem[] };
+  showcase: { title?: string; subtitle?: string; projects?: ShowcaseItem[] };
 }
 
 /**
@@ -29,7 +29,7 @@ export function ShowcasePageView({
   headerSubtitle,
   showcase,
 }: ShowcasePageViewProps) {
-  const items = showcase.promotions ?? [];
+  const items = showcase.projects ?? [];
   return (
     <MainLayout
       mode="full"

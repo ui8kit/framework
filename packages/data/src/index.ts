@@ -1,5 +1,5 @@
 // Main export for @ui8kit/data
-// Unified context (site, menu, sidebars, blocks) for engine and apps
+// Unified context (site, components, guides, showcase, sidebars, blocks) for engine and apps
 
 import { sidebarLinksCache } from './cache';
 
@@ -24,10 +24,10 @@ import type {
   FeaturesFixture,
   TestimonialsFixture,
   CTAFixture,
-  MenuFixture,
-  RecipesFixture,
+  ComponentsFixture,
+  GuidesFixture,
   BlogFixture,
-  PromotionsFixture,
+  ShowcaseFixture,
   AdminFixture,
   NavItem,
   SidebarLink,
@@ -55,10 +55,10 @@ const hero = heroData as HeroFixture;
 const features = featuresData as FeaturesFixture;
 const testimonials = testimonialsData as TestimonialsFixture;
 const cta = ctaData as CTAFixture;
-const components = componentsData as MenuFixture;
-const guides = guidesData as RecipesFixture;
+const components = componentsData as ComponentsFixture;
+const guides = guidesData as GuidesFixture;
 const blog = blogData as BlogFixture;
-const showcase = showcaseData as PromotionsFixture;
+const showcase = showcaseData as ShowcaseFixture;
 const admin = adminData as AdminFixture;
 
 /** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
@@ -195,10 +195,10 @@ const websiteDomain = Object.freeze({
   page: page.website ?? [],
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
-  components: components as MenuFixture,
-  guides: guides as RecipesFixture,
+  components: components as ComponentsFixture,
+  guides: guides as GuidesFixture,
   blog: blog as BlogFixture,
-  showcase: showcase as PromotionsFixture,
+  showcase: showcase as ShowcaseFixture,
   testimonials: testimonials as TestimonialsFixture,
   cta: cta as CTAFixture,
   site,
@@ -231,10 +231,10 @@ export const context = Object.freeze({
   getSidebarCacheDiagnostics,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
-  components: components as MenuFixture,
-  guides: guides as RecipesFixture,
+  components: components as ComponentsFixture,
+  guides: guides as GuidesFixture,
   blog: blog as BlogFixture,
-  showcase: showcase as PromotionsFixture,
+  showcase: showcase as ShowcaseFixture,
   testimonials: testimonials as TestimonialsFixture,
   cta: cta as CTAFixture,
   admin: admin as AdminFixture,

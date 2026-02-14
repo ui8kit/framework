@@ -1,7 +1,7 @@
 // Type definitions for fixtures and context
 
 // -----------------------------------------------------------------------------
-// Context: site, menu, sidebar (unified for engine + apps)
+// Context: site, components, guides, showcase (unified for engine + apps)
 // -----------------------------------------------------------------------------
 
 export interface NavItem {
@@ -144,7 +144,7 @@ export interface DashboardFixture {
   ctaUrl?: string;
 }
 
-export interface MenuDish {
+export interface ComponentItem {
   id: string;
   title: string;
   description: string;
@@ -153,19 +153,19 @@ export interface MenuDish {
   image?: string;
 }
 
-export interface MenuCategory {
+export interface ComponentCategory {
   id: string;
   title: string;
 }
 
-export interface MenuFixture {
+export interface ComponentsFixture {
   title?: string;
   subtitle?: string;
-  categories?: MenuCategory[];
-  dishes?: MenuDish[];
+  categories?: ComponentCategory[];
+  items?: ComponentItem[];
 }
 
-export interface RecipeItem {
+export interface GuideItem {
   slug: string;
   title: string;
   excerpt: string;
@@ -174,10 +174,10 @@ export interface RecipeItem {
   date?: string;
 }
 
-export interface RecipesFixture {
+export interface GuidesFixture {
   title?: string;
   subtitle?: string;
-  recipes?: RecipeItem[];
+  guides?: GuideItem[];
 }
 
 export interface BlogPost {
@@ -196,7 +196,7 @@ export interface BlogFixture {
   posts?: BlogPost[];
 }
 
-export interface PromotionItem {
+export interface ShowcaseProject {
   id: string;
   title: string;
   description: string;
@@ -204,10 +204,10 @@ export interface PromotionItem {
   image?: string;
 }
 
-export interface PromotionsFixture {
+export interface ShowcaseFixture {
   title?: string;
   subtitle?: string;
-  promotions?: PromotionItem[];
+  projects?: ShowcaseProject[];
 }
 
 export interface AdminFixture {
@@ -278,10 +278,10 @@ export interface AppContext {
   adminSidebarLinks: DashboardSidebarLink[];
   hero: HeroFixture;
   features: FeaturesFixture;
-  components: MenuFixture;
-  guides: RecipesFixture;
+  components: ComponentsFixture;
+  guides: GuidesFixture;
   blog: BlogFixture;
-  showcase: PromotionsFixture;
+  showcase: ShowcaseFixture;
   cta: CTAFixture;
   testimonials: TestimonialsFixture;
   admin: AdminFixture;
@@ -306,10 +306,10 @@ export interface WebsiteDomainContext {
   page: PageRecord[];
   hero: HeroFixture;
   features: FeaturesFixture;
-  components: MenuFixture;
-  guides: RecipesFixture;
+  components: ComponentsFixture;
+  guides: GuidesFixture;
   blog: BlogFixture;
-  showcase: PromotionsFixture;
+  showcase: ShowcaseFixture;
   cta: CTAFixture;
   testimonials: TestimonialsFixture;
   site: SiteInfo;
