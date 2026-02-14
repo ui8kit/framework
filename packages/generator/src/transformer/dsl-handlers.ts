@@ -21,7 +21,7 @@ function getStringAttr(
   return typeof value === 'string' ? value : undefined;
 }
 
-function getJsxAttributeMap(attributes: any[]): Record<string, string | boolean> {
+function getJsxAttributeMap(attributes: any[], source: string): Record<string, string | boolean> {
   const map: Record<string, string | boolean> = {};
   
   for (const attr of attributes) {
@@ -45,7 +45,7 @@ function getJsxAttributeMap(attributes: any[]): Record<string, string | boolean>
       } else if (expr.type === 'BooleanLiteral') {
         map[name] = expr.value;
       } else {
-        map[name] = getNodeSource(attributes.__source || '', expr);
+        map[name] = getNodeSource(source, expr);
       }
     }
   }
@@ -61,7 +61,7 @@ class LoopHandler implements IDslComponentHandler {
   tagName = 'Loop';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     
     const each = getStringAttr(attrs, 'each');
     const as = getStringAttr(attrs, 'as');
@@ -96,7 +96,7 @@ class IfHandler implements IDslComponentHandler {
   tagName = 'If';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     const test = getStringAttr(attrs, 'test');
     
     if (!test) {
@@ -142,7 +142,7 @@ class ElseIfHandler implements IDslComponentHandler {
   tagName = 'ElseIf';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     const test = getStringAttr(attrs, 'test');
     
     if (!test) {
@@ -168,7 +168,7 @@ class VarHandler implements IDslComponentHandler {
   tagName = 'Var';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     
     const name = getStringAttr(attrs, 'name');
     const defaultVal = getStringAttr(attrs, 'default');
@@ -213,7 +213,7 @@ class SlotHandler implements IDslComponentHandler {
   tagName = 'Slot';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     const name = getStringAttr(attrs, 'name') || 'content';
     
     return annotate(
@@ -234,7 +234,7 @@ class IncludeHandler implements IDslComponentHandler {
   tagName = 'Include';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     const partial = getStringAttr(attrs, 'partial');
     const propsStr = getStringAttr(attrs, 'props');
     
@@ -275,7 +275,7 @@ class DefineBlockHandler implements IDslComponentHandler {
   tagName = 'DefineBlock';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     const name = getStringAttr(attrs, 'name');
     
     if (!name) {
@@ -301,7 +301,7 @@ class ExtendsHandler implements IDslComponentHandler {
   tagName = 'Extends';
 
   handle(node: JSXElement, children: GenChild[], ctx: DslHandlerContext): GenElement | null {
-    const attrs = getJsxAttributeMap(node.openingElement.attributes);
+    const attrs = getJsxAttributeMap(node.openingElement.attributes, ctx.source);
     const layout = getStringAttr(attrs, 'layout');
     
     if (!layout) {

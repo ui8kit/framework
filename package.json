@@ -42,6 +42,7 @@
     "scaffold-app": "bun run scripts/scaffold-app.ts",
     "install-app": "bash scripts/installer.sh",
     "clean:engine": "bash scripts/clean-engine.sh",
+    "clean:workspace": "bash scripts/clean-workspace.sh",
     "sync-app": "bun run scripts/pipeline-app.ts sync --data-mode local",
     "sync-dev": "bun run scripts/pipeline-app.ts sync --target dev --domain website --data-mode local",
     "sync-test": "bun run scripts/pipeline-app.ts sync --target test --domain website --data-mode local",

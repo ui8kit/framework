@@ -146,15 +146,16 @@ const AccordionTrigger = React.forwardRef<HTMLButtonElement, AccordionTriggerPro
     const defaultUtilities = ux({
       rounded: rounded || "lg",
     });
+    const passedProps = {
+      ref,
+      variant: "ghost" as const,
+      onClick: () => onItemClick(value),
+      "data-class": "accordion-trigger",
+      className: cn(defaultUtilities, utilityClassName, className),
+      ...rest,
+    };
     return (
-      <Button
-        ref={ref}
-        variant="ghost"
-        onClick={() => onItemClick(value)}
-        data-class="accordion-trigger"
-        className={cn(defaultUtilities, utilityClassName, className)}
-        {...rest}
-      >
+      <Button {...(passedProps as ButtonProps)}>
         {props.children}
         <Icon component="span" lucideIcon={isOpen ? ChevronUp : ChevronDown} />
       </Button>

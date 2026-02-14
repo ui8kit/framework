@@ -20,22 +20,27 @@ import type { IFileSystem, FileStat } from './filesystem';
  */
 export class NodeFileSystem implements IFileSystem {
   async readFile(filePath: string, encoding = 'utf-8'): Promise<string> {
-    return fsReadFile(filePath, encoding);
+    return fsReadFile(filePath, { encoding: encoding as BufferEncoding });
   }
 
   async writeFile(filePath: string, content: string): Promise<void> {
-    return fsWriteFile(filePath, content, 'utf-8');
+    await fsWriteFile(filePath, content, { encoding: 'utf-8' });
   }
 
   async mkdir(dirPath: string, options?: { recursive?: boolean }): Promise<void> {
-    return fsMkdir(dirPath, options);
+    await fsMkdir(dirPath, options);
   }
 
+  async readdir(dirPath: string, options?: { withFileTypes?: false }): Promise<string[]>;
+  async readdir(dirPath: string, options: { withFileTypes: true }): Promise<Dirent[]>;
   async readdir(
     dirPath: string,
     options?: { withFileTypes?: boolean }
   ): Promise<string[] | Dirent[]> {
-    return fsReaddir(dirPath, options as any);
+    if (options?.withFileTypes) {
+      return fsReaddir(dirPath, { withFileTypes: true }) as Promise<Dirent[]>;
+    }
+    return fsReaddir(dirPath) as Promise<string[]>;
   }
 
   async stat(filePath: string): Promise<FileStat> {
