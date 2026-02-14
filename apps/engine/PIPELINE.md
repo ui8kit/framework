@@ -26,6 +26,7 @@ It is organized in this order:
 | Run sync flow for any domain/target | `bun run scripts/pipeline-app.ts sync --target <app> --domain <domain> --data-mode <local|shared>` |
 | Run full flow for any domain/target | `bun run scripts/pipeline-app.ts all --target <app> --domain <domain> --data-mode <local|shared>` |
 | Validate generated data bundle contract | `bun run validate:data-bundle -- --target <app>` |
+| Apply soft navigation policy in UI | Use `DomainNavButton` + `context.resolveNavigation(href)` |
 | Clean engine caches and stale build artifacts | `bun run clean:engine` |
 
 ### 1.1 Quick Start: Default website app (`engine -> apps/dev`)
@@ -159,6 +160,30 @@ It defines domain pages and is used by pipeline stages to:
 - build domain app shell expectations
 - keep route contracts predictable across generated apps
 
+### 2.4 Navigation authoring rules (soft domain policy)
+
+Use this rule set to keep navigation stable in domain-only builds.
+
+1. **Declare routable pages in one place**
+   - Add all internal pages to `packages/data/src/fixtures/shared/page.json`.
+   - Keep `id`, `domain`, and `path` consistent with generated route containers.
+
+2. **Build links from context data, not hardcoded strings**
+   - Header/sidebar/tabs should come from context-backed lists (`navItems`, `sidebarLinks`, domain sidebars).
+   - Internal links must point to paths that exist in the `page` model.
+
+3. **Use the domain-aware UI adapter for internal navigation**
+   - In components, prefer `DomainNavButton` from `apps/engine/src/partials/DomainNavButton.tsx`.
+   - It applies soft behavior automatically:
+     - available page -> normal link
+     - unavailable page in current domain build -> `disabled` + tooltip `Not available in this domain build`
+
+4. **Use low-level resolver only for custom flows**
+   - If a custom component cannot use `DomainNavButton`, call:
+     - `context.resolveNavigation(href)` for state
+     - `context.navigation.isEnabled(href)` for simple checks
+   - Keep the same soft UX contract (`disabled` + tooltip text from `context.navigation.unavailableTooltip`).
+
 ---
 
 ## 3) Data Strategy and Memory Behavior
@@ -180,6 +205,7 @@ It defines domain pages and is used by pipeline stages to:
 Local `src/data/index.ts` is expected to preserve API compatibility with shared context, including:
 - `context.page` and deprecated `context.routes` alias
 - `getPageByPath`, `getPagesByDomain`
+- `resolveNavigation`, `navigation`
 - sidebar link resolvers
 - cache diagnostics
 

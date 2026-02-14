@@ -51,6 +51,19 @@ We refuse to write theoretical guidelines. When this document is complete, every
 
 **Patience**: When we're ready for contributions, this document will reflect that—with battle-tested guidelines, not aspirational placeholders.
 
+### Internal Maintainer Checklist (Navigation)
+
+Until public contribution flow is enabled, use this checklist for internal changes:
+
+- Keep internal routes declared in `packages/data/src/fixtures/shared/page.json`.
+- Build navigation lists from data context (`navItems`, `sidebarLinks`, domain sidebars).
+- Use `DomainNavButton` for internal links in UI blocks/partials.
+- For custom widgets, use `context.resolveNavigation(href)` and keep soft UX:
+  - unavailable route -> `disabled` + tooltip `Not available in this domain build`.
+- After changes, run domain sync and validate data contract:
+  - `bun run scripts/pipeline-app.ts sync --target <app> --domain <domain> --data-mode <local|shared>`
+  - `bun run validate:data-bundle -- --target <app>`
+
 ---
 
 ## Our Commitment

@@ -1,4 +1,5 @@
-import { Stack, Text, Button } from '@ui8kit/core';
+import { Stack, Text } from '@ui8kit/core';
+import { DomainNavButton } from '@/partials';
 import { Fragment } from 'react';
 
 interface DashSidebarProps {
@@ -17,7 +18,7 @@ export function DashSidebar(props: DashSidebarProps) {
       </Text>
       {(links ?? []).length > 0 ? (<>{links.map((link, index) => (
       <Fragment key={link.id ?? index}>
-      {!!link.active ? (<><Button href={link.href} size="sm" variant="secondary" justify="start" data-class="dash-sidebar-link">{link.label}</Button></>) : null}{!link.active ? (<><Button href={link.href} size="sm" variant="ghost" justify="start" data-class="dash-sidebar-link">{link.label}</Button></>) : null}
+      {!!link.active ? (<><DomainNavButton href={link.href} size={"sm"} variant={"secondary"} justify={"start"} data-class={"dash-sidebar-link"}>{link.label}</DomainNavButton></>) : null}{!link.active ? (<><DomainNavButton href={link.href} size={"sm"} variant={"ghost"} justify={"start"} data-class={"dash-sidebar-link"}>{link.label}</DomainNavButton></>) : null}
       </Fragment>
       ))}</>) : null}
     </Stack>

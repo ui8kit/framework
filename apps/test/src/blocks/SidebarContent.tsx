@@ -1,5 +1,5 @@
-import { Stack, Text, Button } from '@ui8kit/core';
-import { EMPTY_ARRAY } from '@ui8kit/data';
+import { Stack, Text } from '@ui8kit/core';
+import { DomainNavButton } from '@/partials';
 import { Fragment } from 'react';
 
 interface SidebarContentProps {
@@ -11,6 +11,8 @@ interface SidebarContentProps {
 export function SidebarContent(props: SidebarContentProps) {
   const { title, links, dataClass } = props;
 
+  const normalizedLinks = (links ?? []) as SidebarLink[];
+
   return (
     <Stack gap="4" data-class={dataClass ?? 'sidebar-widgets'}>
       <Stack component="nav" data-class="sidebar-widget">
@@ -19,7 +21,7 @@ export function SidebarContent(props: SidebarContentProps) {
         </Text>
         {links ? (<><Stack gap="1" data-class="sidebar-links">{links.map((link, index) => (
         <Fragment key={link.id ?? index}>
-        <Button href={link.href} variant="link" size="sm" justify="start" data-class="sidebar-link">{link.label}</Button>
+        <DomainNavButton href={link.href} variant={"link"} size={"sm"} justify={"start"} data-class={"sidebar-link"}>{link.label}</DomainNavButton>
         </Fragment>
         ))}</Stack></>) : null}
       </Stack>

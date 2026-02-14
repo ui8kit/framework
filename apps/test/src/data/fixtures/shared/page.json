@@ -1,16 +1,16 @@
 {
   "page": {
-    "website": [],
+    "website": [
+      {
+        "id": "website-home",
+        "domain": "website",
+        "title": "Home",
+        "path": "/",
+        "component": "WebsitePage"
+      }
+    ],
     "docs": [],
     "examples": [],
-    "dashboard": [
-      {
-        "id": "dashboard-home",
-        "domain": "dashboard",
-        "title": "Dashboard",
-        "path": "/dashboard",
-        "component": "DashboardPage"
-      }
-    ]
+    "dashboard": []
   }
 }

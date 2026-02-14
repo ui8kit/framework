@@ -273,8 +273,20 @@ ui8kit-framework/
 - [Generator Package](packages/generator/README.md)
 - [Web App Example](apps/web/README.md)
 - [Docs App Example](apps/docs/README.md)
+- [Engine Pipeline Guide](apps/engine/PIPELINE.md)
+- [Engine README](apps/engine/README.md)
 - [Architecture Rules](.cursor/rules/architecture.mdc)
 - [UI8Kit Props Rules](.cursor/rules/ui8kit.mdc)
+
+## Domain Navigation Rules (Internal)
+
+For domain-specific builds (`website`, `docs`, `examples`, `dashboard`), keep navigation deterministic:
+
+- Route source of truth: `packages/data/src/fixtures/shared/page.json`
+- UI internal links: use `DomainNavButton` (engine partial)
+- Custom checks: `context.resolveNavigation(href)` / `context.navigation.isEnabled(href)`
+- Policy mode: soft only -> render disabled state with tooltip `Not available in this domain build`
+- Validate after sync: `bun run validate:data-bundle -- --target <app>`
 
 ## License
 

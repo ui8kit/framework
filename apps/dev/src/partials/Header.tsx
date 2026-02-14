@@ -1,4 +1,5 @@
-import { Block, Container, Group, Button, Text } from '@ui8kit/core';
+import { Block, Container, Group, Text } from '@ui8kit/core';
+import { DomainNavButton } from './DomainNavButton';
 import { Fragment } from 'react';
 
 interface HeaderProps {
@@ -23,7 +24,7 @@ export function Header(props: HeaderProps) {
         </a>
         {navItems ? (<><Block component="nav" flex="" gap="2" items="center" data-class="header-nav">{navItems.map((item, index) => (
         <Fragment key={item.id ?? index}>
-        <Button variant="ghost" size="sm" href={item.url} data-class="header-nav-item"><Text component="span">{item.title}</Text></Button>
+        <DomainNavButton variant={"ghost"} size={"sm"} href={item.url} data-class={"header-nav-item"}><Text component="span">{item.title}</Text></DomainNavButton>
         </Fragment>
         ))}</Block></>) : null}
       </Container>

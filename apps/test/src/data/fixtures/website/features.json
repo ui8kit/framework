@@ -1,1 +1,26 @@
-{}
+{
+  "title": "Why Choose UI8Kit?",
+  "subtitle": "Experience the best of both worlds: React development with semantic web standards.",
+  "features": [
+    {
+      "id": "1",
+      "title": "Lightning Fast",
+      "description": "Zero-runtime styling with static generation for optimal performance."
+    },
+    {
+      "id": "2",
+      "title": "Type Safe",
+      "description": "Full TypeScript support with strict prop validation at compile time."
+    },
+    {
+      "id": "3",
+      "title": "Developer Friendly",
+      "description": "Modern React development with semantic HTML5/CSS3 output."
+    },
+    {
+      "id": "4",
+      "title": "SEO Optimized",
+      "description": "Clean semantic markup that search engines love."
+    }
+  ]
+}

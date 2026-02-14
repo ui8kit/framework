@@ -1,0 +1,17 @@
+import { SidebarContent, WebsitePageView } from '@/blocks';
+import { context } from '@ui8kit/data';
+
+export function WebsitePage() {
+  return (
+    <WebsitePageView
+      mode="full"
+      navItems={context.navItems}
+      sidebar={<SidebarContent title="Quick Links" links={context.sidebarLinks} />}
+      headerTitle={context.site.title}
+      headerSubtitle={context.site.subtitle}
+      hero={context.hero}
+      examples={context.examples}
+      tabs={context.examplesSidebarLinks}
+    />
+  );
+}

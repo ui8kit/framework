@@ -41,6 +41,23 @@ export interface PageFixture {
   page: Record<PageDomain, PageRecord[]>;
 }
 
+export type NavigationPolicyMode = 'soft';
+
+export interface NavigationState {
+  href: string;
+  enabled: boolean;
+  mode: NavigationPolicyMode;
+  reason?: string;
+}
+
+export interface NavigationPolicy {
+  mode: NavigationPolicyMode;
+  unavailableTooltip: string;
+  availablePaths: readonly string[];
+  resolve: (href: string) => NavigationState;
+  isEnabled: (href: string) => boolean;
+}
+
 export interface SidebarCacheDiagnostics {
   stats: {
     hits: number;
@@ -210,6 +227,8 @@ export interface AppContext {
   getExamplesSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
   getPageByPath: (path: string) => PageRecord | undefined;
   getPagesByDomain: (domain: PageDomain) => PageRecord[];
+  resolveNavigation: (href: string) => NavigationState;
+  navigation: NavigationPolicy;
   getSidebarCacheDiagnostics: () => SidebarCacheDiagnostics;
   domains?: DomainsContext;
   clearCache?: () => void;

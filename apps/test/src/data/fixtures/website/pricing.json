@@ -1,1 +1,46 @@
-{}
+{
+  "badge": "Pricing",
+  "title": "Simple, Transparent Pricing",
+  "subtitle": "Choose the plan that fits your needs. No hidden fees.",
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "price": "Free",
+      "description": "Perfect for trying out UI8Kit",
+      "features": [
+        "5 components",
+        "Basic support",
+        "Community access"
+      ],
+      "featured": false
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "price": "$29",
+      "period": "/month",
+      "description": "For professional developers",
+      "features": [
+        "Unlimited components",
+        "Priority support",
+        "Source code access",
+        "Custom themes"
+      ],
+      "featured": true
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "price": "Custom",
+      "description": "For large teams and organizations",
+      "features": [
+        "Everything in Pro",
+        "Dedicated support",
+        "SLA guarantee",
+        "Custom integrations"
+      ],
+      "featured": false
+    }
+  ]
+}

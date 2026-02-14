@@ -1,5 +1,4 @@
 export { CTABlock } from './CTABlock';
-export * from './dashboard';
 export { DashboardBlock } from './DashboardBlock';
 export { DashSidebar } from './DashSidebar';
 export * from './examples';
@@ -9,3 +8,4 @@ export { HeroBlock } from './HeroBlock';
 export { PricingBlock } from './PricingBlock';
 export { SidebarContent } from './SidebarContent';
 export { TestimonialsBlock } from './TestimonialsBlock';
+export * from './website';
