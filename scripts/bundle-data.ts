@@ -33,7 +33,7 @@ interface RegistryItem {
 }
 
 const DOMAIN_FIXTURE_FILES: Record<Domain, string[]> = {
-  website: ["hero.json", "value-proposition.json", "blog.json", "showcase.json"],
+  website: ["hero.json", "features.json", "components.json", "guides.json", "blog.json", "showcase.json"],
 };
 
 function parseArg(flag: string): string | undefined {

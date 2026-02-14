@@ -1,9 +1,9 @@
 export { WebsitePage } from './website/WebsitePage';
-export { MenuPage } from './website/MenuPage';
-export { RecipesPage } from './website/RecipesPage';
-export { RecipeDetailPage } from './website/RecipeDetailPage';
+export { ComponentsPage } from './website/ComponentsPage';
+export { GuidesPage } from './website/GuidesPage';
+export { GuideDetailPage } from './website/GuideDetailPage';
 export { BlogPage } from './website/BlogPage';
 export { BlogDetailPage } from './website/BlogDetailPage';
-export { PromotionsPage } from './website/PromotionsPage';
+export { ShowcasePage } from './website/ShowcasePage';
 export { AdminLoginPage } from './admin/AdminLoginPage';
 export { AdminDashboardPage } from './admin/AdminDashboardPage';

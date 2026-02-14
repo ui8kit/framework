@@ -1,1 +1,1 @@
-{"exportSchema": {"menu": "dishes", "recipes": "recipes", "blog": "posts", "promotions": "promotions"}}
+{"exportSchema":{"components":"dishes","guides":"recipes","blog":"posts","showcase":"promotions"}}

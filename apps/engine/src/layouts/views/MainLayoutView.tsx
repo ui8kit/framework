@@ -37,8 +37,8 @@ export function MainLayoutView({
     <Fragment>
       <If test="showHeader ?? true" value={showHeader ?? true}>
         <Header
-          title={headerTitle ?? 'RestA'}
-          subtitle={headerSubtitle ?? 'Restaurant & Bar'}
+          title={headerTitle ?? 'UI8Kit'}
+          subtitle={headerSubtitle ?? 'Design System'}
           navItems={navItems ?? []}
           dataClass="main-layout-header"
         />
@@ -123,7 +123,7 @@ export function MainLayoutView({
 
       <If test="showFooter ?? true" value={showFooter ?? true}>
         <Footer
-          copyright={footerCopyright ?? '© 2025 RestA. All rights reserved.'}
+          copyright={footerCopyright ?? '© 2025 UI8Kit. All rights reserved.'}
           sections={footerSections ?? []}
           dataClass="main-layout-footer"
         />

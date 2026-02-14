@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'admin';
-const STORAGE_KEY = 'resta-admin-auth';
+const STORAGE_KEY = 'ui8kit-admin-auth';
 
 interface AdminAuthContextValue {
   isAuthenticated: boolean;

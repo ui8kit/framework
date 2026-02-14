@@ -14,10 +14,10 @@ import heroData from './fixtures/website/hero.json';
 import featuresData from './fixtures/website/features.json';
 import testimonialsData from './fixtures/website/testimonials.json';
 import ctaData from './fixtures/website/cta.json';
-import menuData from './fixtures/website/menu.json';
-import recipesData from './fixtures/website/recipes.json';
+import componentsData from './fixtures/website/components.json';
+import guidesData from './fixtures/website/guides.json';
 import blogData from './fixtures/website/blog.json';
-import promotionsData from './fixtures/website/promotions.json';
+import showcaseData from './fixtures/website/showcase.json';
 import adminData from './fixtures/admin/admin.json';
 import type {
   HeroFixture,
@@ -55,10 +55,10 @@ const hero = heroData as HeroFixture;
 const features = featuresData as FeaturesFixture;
 const testimonials = testimonialsData as TestimonialsFixture;
 const cta = ctaData as CTAFixture;
-const menu = menuData as MenuFixture;
-const recipes = recipesData as RecipesFixture;
+const components = componentsData as MenuFixture;
+const guides = guidesData as RecipesFixture;
 const blog = blogData as BlogFixture;
-const promotions = promotionsData as PromotionsFixture;
+const showcase = showcaseData as PromotionsFixture;
 const admin = adminData as AdminFixture;
 
 /** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
@@ -87,10 +87,10 @@ function getPageByPath(path: string): PageRecord | undefined {
     );
     if (matched) return matched;
   }
-  // Match dynamic routes: /recipes/:slug, /blog/:slug
-  const recipeMatch = normalizedPath.match(/^\/recipes\/([^/]+)$/);
-  if (recipeMatch) {
-    return (page.website ?? []).find((p) => p.path === '/recipes/:slug') ?? undefined;
+  // Match dynamic routes: /guides/:slug, /blog/:slug
+  const guideMatch = normalizedPath.match(/^\/guides\/([^/]+)$/);
+  if (guideMatch) {
+    return (page.website ?? []).find((p) => p.path === '/guides/:slug') ?? undefined;
   }
   const blogMatch = normalizedPath.match(/^\/blog\/([^/]+)$/);
   if (blogMatch) {
@@ -116,9 +116,9 @@ const availablePaths = Object.freeze([...new Set(staticPaths)]) as readonly stri
 
 const availablePathSet = new Set(availablePaths);
 
-/** Check if path matches dynamic route pattern (e.g. /recipes/slug, /blog/slug). */
+/** Check if path matches dynamic route pattern (e.g. /guides/slug, /blog/slug). */
 function matchesDynamicRoute(normalizedHref: string): boolean {
-  return /^\/recipes\/[^/]+$/.test(normalizedHref) || /^\/blog\/[^/]+$/.test(normalizedHref);
+  return /^\/guides\/[^/]+$/.test(normalizedHref) || /^\/blog\/[^/]+$/.test(normalizedHref);
 }
 
 function resolveNavigation(href: string): NavigationState {
@@ -195,10 +195,10 @@ const websiteDomain = Object.freeze({
   page: page.website ?? [],
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
-  menu: menu as MenuFixture,
-  recipes: recipes as RecipesFixture,
+  components: components as MenuFixture,
+  guides: guides as RecipesFixture,
   blog: blog as BlogFixture,
-  promotions: promotions as PromotionsFixture,
+  showcase: showcase as PromotionsFixture,
   testimonials: testimonials as TestimonialsFixture,
   cta: cta as CTAFixture,
   site,
@@ -231,10 +231,10 @@ export const context = Object.freeze({
   getSidebarCacheDiagnostics,
   hero: hero as HeroFixture,
   features: features as FeaturesFixture,
-  menu: menu as MenuFixture,
-  recipes: recipes as RecipesFixture,
+  components: components as MenuFixture,
+  guides: guides as RecipesFixture,
   blog: blog as BlogFixture,
-  promotions: promotions as PromotionsFixture,
+  showcase: showcase as PromotionsFixture,
   testimonials: testimonials as TestimonialsFixture,
   cta: cta as CTAFixture,
   admin: admin as AdminFixture,
@@ -249,10 +249,10 @@ export const context = Object.freeze({
 export const fixtures = {
   hero: context.hero,
   features: context.features,
-  menu: context.menu,
-  recipes: context.recipes,
+  components: context.components,
+  guides: context.guides,
   blog: context.blog,
-  promotions: context.promotions,
+  showcase: context.showcase,
   testimonials: context.testimonials,
   cta: context.cta,
 };

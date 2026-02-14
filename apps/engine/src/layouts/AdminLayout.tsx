@@ -15,7 +15,7 @@ export interface AdminLayoutProps {
 export function AdminLayout({ children, sidebar }: AdminLayoutProps) {
   return (
     <Block flex="col" min-h="screen" data-class="admin-layout">
-      <Header title="RestA" subtitle="Admin" navItems={[]} dataClass="admin-layout-header" />
+      <Header title="UI8Kit" subtitle="Admin" navItems={[]} dataClass="admin-layout-header" />
       <Block flex="" data-class="admin-layout-body" className="flex-1">
         <If test="sidebar" value={!!sidebar}>
           <Block

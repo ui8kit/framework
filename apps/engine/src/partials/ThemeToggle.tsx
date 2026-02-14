@@ -1,55 +1,37 @@
-import { useEffect, useState } from 'react';
-import { Button, Text } from '@ui8kit/core';
+import { Button, Icon } from '@ui8kit/core';
 import { If } from '@ui8kit/template';
-
-const THEME_KEY = 'resta-theme';
-
-function getInitialTheme(): boolean {
-  if (typeof window === 'undefined') return false;
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored === 'dark') return true;
-  if (stored === 'light') return false;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches;
-}
+import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/providers/theme';
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    setIsDark(getInitialTheme());
-  }, []);
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem(THEME_KEY, 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem(THEME_KEY, 'light');
-    }
-  }, [isDark]);
-
-  function toggle() {
-    setIsDark((prev) => !prev);
-  }
-
-  const title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+  const { isDarkMode, toggleDarkMode } = useTheme();
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={toggle}
-      title={title}
-      aria-label={title}
-      data-class="theme-toggle"
-    >
-      <If test="isDark" value={isDark}>
-        <Text component="span">☀</Text>
+    <>
+      <If test="isDarkMode" value={isDarkMode}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleDarkMode}
+          title="Switch to light mode"
+          aria-label="Switch to light mode"
+          data-class="theme-toggle"
+        >
+          <Icon lucideIcon={Sun} size="sm" data-class="theme-toggle-icon" />
+        </Button>
       </If>
-      <If test="!isDark" value={!isDark}>
-        <Text component="span">☽</Text>
+      <If test="!isDarkMode" value={!isDarkMode}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleDarkMode}
+          title="Switch to dark mode"
+          aria-label="Switch to dark mode"
+          data-class="theme-toggle"
+        >
+          <Icon lucideIcon={Moon} size="sm" data-class="theme-toggle-icon" />
+        </Button>
       </If>
-    </Button>
+    </>
   );
 }

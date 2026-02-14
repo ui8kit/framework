@@ -278,10 +278,10 @@ export interface AppContext {
   adminSidebarLinks: DashboardSidebarLink[];
   hero: HeroFixture;
   features: FeaturesFixture;
-  menu: MenuFixture;
-  recipes: RecipesFixture;
+  components: MenuFixture;
+  guides: RecipesFixture;
   blog: BlogFixture;
-  promotions: PromotionsFixture;
+  showcase: PromotionsFixture;
   cta: CTAFixture;
   testimonials: TestimonialsFixture;
   admin: AdminFixture;
@@ -306,10 +306,10 @@ export interface WebsiteDomainContext {
   page: PageRecord[];
   hero: HeroFixture;
   features: FeaturesFixture;
-  menu: MenuFixture;
-  recipes: RecipesFixture;
+  components: MenuFixture;
+  guides: RecipesFixture;
   blog: BlogFixture;
-  promotions: PromotionsFixture;
+  showcase: PromotionsFixture;
   cta: CTAFixture;
   testimonials: TestimonialsFixture;
   site: SiteInfo;

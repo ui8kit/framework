@@ -1,1 +1,1 @@
-{"title": "Welcome to RestA", "subtitle": "Experience fine dining and craft cocktails in a warm, inviting atmosphere. Every dish tells a story.", "ctaText": "View Menu", "ctaUrl": "/menu", "secondaryCtaText": "Reserve a Table", "secondaryCtaUrl": "#reserve"}
+{"title":"Welcome to UI8Kit","subtitle":"Props-driven React components with semantic HTML5 and DSL templates. Build type-safe UIs with constrained Tailwind and shadcn design tokens.","ctaText":"View Components","ctaUrl":"/components","secondaryCtaText":"Get Started","secondaryCtaUrl":"/guides"}

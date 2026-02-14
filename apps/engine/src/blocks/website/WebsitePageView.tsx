@@ -15,7 +15,7 @@ export interface WebsitePageViewProps {
 }
 
 /**
- * Home Page view — Hero + Features + CTA (RestA landing).
+ * Home Page view — Hero + Features + CTA (UI8Kit landing).
  */
 export function WebsitePageView({
   mode,

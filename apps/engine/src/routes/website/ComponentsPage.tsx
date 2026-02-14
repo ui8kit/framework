@@ -1,14 +1,14 @@
-import { SidebarContent, PromotionsPageView } from '@/blocks';
+import { SidebarContent, ComponentsPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-export function PromotionsPage() {
+export function ComponentsPage() {
   return (
-    <PromotionsPageView
+    <ComponentsPageView
       navItems={context.navItems}
       sidebar={<SidebarContent title="Quick Links" links={context.sidebarLinks} />}
       headerTitle={context.site.title}
       headerSubtitle={context.site.subtitle}
-      promotions={context.promotions}
+      components={context.components}
     />
   );
 }

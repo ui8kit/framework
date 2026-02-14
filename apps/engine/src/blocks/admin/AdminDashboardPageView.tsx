@@ -12,7 +12,7 @@ export interface AdminDashboardPageViewProps {
 }
 
 /**
- * Admin Dashboard Page — JSON import/export for menu, recipes, blog, promotions.
+ * Admin Dashboard Page — JSON import/export for components, guides, blog, showcase.
  */
 export function AdminDashboardPageView({ onExport, onImport }: AdminDashboardPageViewProps) {
   const { logout } = useAdminAuth();
@@ -26,16 +26,16 @@ export function AdminDashboardPageView({ onExport, onImport }: AdminDashboardPag
 
   function handleExport() {
     const data = {
-      menu: context.menu,
-      recipes: context.recipes,
+      components: context.components,
+      guides: context.guides,
       blog: context.blog,
-      promotions: context.promotions,
+      showcase: context.showcase,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'resta-data.json';
+    a.download = 'ui8kit-data.json';
     a.click();
     URL.revokeObjectURL(url);
     onExport?.();
@@ -87,7 +87,7 @@ export function AdminDashboardPageView({ onExport, onImport }: AdminDashboardPag
                 Export Data
               </CardTitle>
               <CardDescription data-class="admin-export-description">
-                Download menu, recipes, blog, and promotions as JSON.
+                Download components, guides, blog, and showcase as JSON.
               </CardDescription>
             </CardHeader>
             <CardContent data-class="admin-export-actions">

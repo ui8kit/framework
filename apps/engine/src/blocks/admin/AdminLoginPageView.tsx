@@ -37,7 +37,7 @@ export function AdminLoginPageView({ headerTitle }: AdminLoginPageViewProps) {
           Admin Login
         </Title>
         <Text fontSize="sm" textColor="muted-foreground" textAlign="center" data-class="admin-login-subtitle">
-          RestA admin area. Test credentials: admin / admin
+          UI8Kit admin area. Test credentials: admin / admin
         </Text>
         <form onSubmit={handleSubmit} data-class="admin-login-form-element">
           <Stack gap="4" data-class="admin-login-fields">
