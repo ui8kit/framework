@@ -109,6 +109,8 @@ apps/
 - [x] complete base ui design from DSL 
 - [x] reafactor domain like structure
 - [x] data cache control memory 
+- [x] data local domaint context
+- [x] syns navigations engine to local apps
 - [ ] complete full ui design and docs with examples
 - [ ] 
 - [ ] 
