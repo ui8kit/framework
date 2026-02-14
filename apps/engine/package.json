@@ -8,8 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "generate": "bun run generator.config.ts",
-    "lint": "bun run typecheck && bun run ../../packages/lint/src/cli/validate-dsl.ts src",
-    "lint:dsl": "bun run ../../packages/lint/src/cli/validate-dsl.ts src",
+    "lint": "bun run typecheck && bun run ../../packages/lint/src/cli/validate-dsl.ts apps/engine/src",
+    "lint:dsl": "bun run ../../packages/lint/src/cli/validate-dsl.ts apps/engine/src",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
@@ -20,6 +20,7 @@
     "@ui8kit/core": "workspace:*",
     "@ui8kit/data": "workspace:*",
     "@ui8kit/template": "workspace:*",
+    "lucide-react": "^0.460.0",
     "postcss": "^8.5.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

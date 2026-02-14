@@ -11,26 +11,14 @@ import siteData from './fixtures/shared/site.json';
 import navigationData from './fixtures/shared/navigation.json';
 import pageData from './fixtures/shared/page.json';
 import heroData from './fixtures/website/hero.json';
-import featuresData from './fixtures/website/features.json';
-import pricingData from './fixtures/website/pricing.json';
-import testimonialsData from './fixtures/website/testimonials.json';
-import ctaData from './fixtures/website/cta.json';
-import dashboardData from './fixtures/dashboard/dashboard.json';
-import docsIntroData from './fixtures/docs/intro.json';
-import docsInstallationData from './fixtures/docs/installation.json';
-import docsComponentsData from './fixtures/docs/components.json';
-import examplesData from './fixtures/examples/examples.json';
+import valuePropositionData from './fixtures/website/value-proposition.json';
+import blogData from './fixtures/website/blog.json';
+import showcaseData from './fixtures/website/showcase.json';
 import type {
   HeroFixture,
-  FeaturesFixture,
-  PricingFixture,
-  TestimonialsFixture,
-  CTAFixture,
-  DashboardFixture,
-  DocsIntroFixture,
-  DocsInstallationFixture,
-  DocsComponentsFixture,
-  ExamplesFixture,
+  ValuePropositionFixture,
+  BlogFixture,
+  ShowcaseFixture,
   NavItem,
   SidebarLink,
   DashboardSidebarLink,
@@ -46,7 +34,13 @@ import type {
 // -----------------------------------------------------------------------------
 
 const site = siteData as SiteInfo;
-const page = (pageData as PageFixture).page;
+const pageRaw = (pageData as PageFixture).page;
+const page = {
+  website: pageRaw.website,
+  docs: pageRaw.docs ?? [],
+  examples: pageRaw.examples ?? [],
+  dashboard: pageRaw.dashboard ?? [],
+};
 
 const navItems = navigationData.navItems as NavItem[];
 const sidebarLinks = navigationData.sidebarLinks as SidebarLink[];
@@ -57,15 +51,9 @@ const docsSidebarLabel = navigationData.labels.docsSidebarLabel;
 const examplesSidebarLabel = navigationData.labels.examplesSidebarLabel;
 
 const hero = heroData as HeroFixture;
-const features = featuresData as FeaturesFixture;
-const pricing = pricingData as PricingFixture;
-const testimonials = testimonialsData as TestimonialsFixture;
-const cta = ctaData as CTAFixture;
-const dashboard = dashboardData as DashboardFixture;
-const docsIntro = docsIntroData as DocsIntroFixture;
-const docsInstallation = docsInstallationData as DocsInstallationFixture;
-const docsComponents = docsComponentsData as DocsComponentsFixture;
-const examples = examplesData as ExamplesFixture;
+const valueProposition = valuePropositionData as ValuePropositionFixture;
+const blog = blogData as BlogFixture;
+const showcase = showcaseData as ShowcaseFixture;
 
 /** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
 export const EMPTY_ARRAY: readonly never[] = Object.freeze([]) as readonly never[];
@@ -81,14 +69,16 @@ function normalizeActiveHref(activeHref: string): string {
 }
 
 function getPagesByDomain(domain: PageDomain): PageRecord[] {
-  return page[domain];
+  return page[domain] ?? [];
 }
 
 function getPageByPath(path: string): PageRecord | undefined {
   const normalizedPath = normalizeActiveHref(path);
   const domains: PageDomain[] = ['website', 'docs', 'examples', 'dashboard'];
   for (const domain of domains) {
-    const matched = page[domain].find(
+    const domainPages = page[domain];
+    if (!domainPages) continue;
+    const matched = domainPages.find(
       (item) => normalizeActiveHref(item.path) === normalizedPath
     );
     if (matched) return matched;
@@ -103,9 +93,7 @@ function isInternalPath(href: string): boolean {
 }
 
 const availablePaths = Object.freeze(
-  (['website', 'docs', 'examples', 'dashboard'] as const).flatMap((domain) =>
-    page[domain].map((entry) => normalizeActiveHref(entry.path))
-  )
+  page.website.map((entry) => normalizeActiveHref(entry.path))
 ) as readonly string[];
 
 const availablePathSet = new Set(availablePaths);
@@ -175,18 +163,6 @@ function getExamplesSidebarLinks(activeHref: string): DashboardSidebarLink[] {
   return result;
 }
 
-/** Pre-warm cache for all docs and examples routes to avoid allocations during navigation. */
-const DOCS_PATHS = ['/docs', '/docs/installation', '/docs/components'];
-const EXAMPLES_PATHS = [
-  '/examples',
-  '/examples/dashboard',
-  '/examples/tasks',
-  '/examples/playground',
-  '/examples/authentication',
-];
-for (const p of DOCS_PATHS) getDocsSidebarLinks(p);
-for (const p of EXAMPLES_PATHS) getExamplesSidebarLinks(p);
-
 export function getSidebarCacheDiagnostics() {
   const keys = sidebarLinksCache.keys();
   let docsEntries = 0;
@@ -208,31 +184,30 @@ export function getSidebarCacheDiagnostics() {
 const websiteDomain = Object.freeze({
   page: page.website,
   hero: hero as HeroFixture,
-  features: features as FeaturesFixture,
-  pricing: pricing as PricingFixture,
-  testimonials: testimonials as TestimonialsFixture,
-  cta: cta as CTAFixture,
+  valueProposition: valueProposition as ValuePropositionFixture,
+  blog: blog as BlogFixture,
+  showcase: showcase as ShowcaseFixture,
   site,
   navItems,
   sidebarLinks,
 });
 const docsDomain = Object.freeze({
   page: page.docs,
-  docsIntro: docsIntro as DocsIntroFixture,
-  docsInstallation: docsInstallation as DocsInstallationFixture,
-  docsComponents: docsComponents as DocsComponentsFixture,
+  docsIntro: Object.freeze({}),
+  docsInstallation: Object.freeze({}),
+  docsComponents: Object.freeze({}),
   docsSidebarLabel,
   getDocsSidebarLinks,
 });
 const examplesDomain = Object.freeze({
   page: page.examples,
-  examples,
+  examples: Object.freeze({}),
   examplesSidebarLabel,
   getExamplesSidebarLinks,
 });
 const dashboardDomain = Object.freeze({
   page: page.dashboard,
-  dashboard: dashboard as DashboardFixture,
+  dashboard: Object.freeze({}),
   dashboardSidebarLinks,
 });
 
@@ -246,7 +221,6 @@ export const context = Object.freeze({
   dashboardSidebarLinks,
   docsSidebarLinks,
   examplesSidebarLinks,
-  examples,
   docsSidebarLabel,
   examplesSidebarLabel,
   getDocsSidebarLinks,
@@ -257,14 +231,9 @@ export const context = Object.freeze({
   navigation,
   getSidebarCacheDiagnostics,
   hero: hero as HeroFixture,
-  features: features as FeaturesFixture,
-  pricing: pricing as PricingFixture,
-  testimonials: testimonials as TestimonialsFixture,
-  cta: cta as CTAFixture,
-  dashboard: dashboard as DashboardFixture,
-  docsIntro: docsIntro as DocsIntroFixture,
-  docsInstallation: docsInstallation as DocsInstallationFixture,
-  docsComponents: docsComponents as DocsComponentsFixture,
+  valueProposition: valueProposition as ValuePropositionFixture,
+  blog: blog as BlogFixture,
+  showcase: showcase as ShowcaseFixture,
   domains: Object.freeze({
     website: websiteDomain,
     docs: docsDomain,
@@ -277,11 +246,9 @@ export const context = Object.freeze({
 /** @deprecated Use context instead */
 export const fixtures = {
   hero: context.hero,
-  features: context.features,
-  pricing: context.pricing,
-  testimonials: context.testimonials,
-  cta: context.cta,
-  dashboard: context.dashboard,
+  valueProposition: context.valueProposition,
+  blog: context.blog,
+  showcase: context.showcase,
 };
 
 export * from './types';

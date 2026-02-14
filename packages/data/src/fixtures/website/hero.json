@@ -2,7 +2,7 @@
   "title": "Welcome to UI8Kit",
   "subtitle": "The next generation UI framework combining React development with semantic HTML5/CSS3 static generation.",
   "ctaText": "Get Started",
-  "ctaUrl": "/examples",
-  "secondaryCtaText": "Learn More",
-  "secondaryCtaUrl": "/docs"
+  "ctaUrl": "/blog",
+  "secondaryCtaText": "View Showcase",
+  "secondaryCtaUrl": "/showcase"
 }

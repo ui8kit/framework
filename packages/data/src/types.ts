@@ -38,7 +38,50 @@ export interface PageRecord {
 }
 
 export interface PageFixture {
-  page: Record<PageDomain, PageRecord[]>;
+  page: {
+    website: PageRecord[];
+    docs?: PageRecord[];
+    examples?: PageRecord[];
+    dashboard?: PageRecord[];
+  };
+}
+
+export interface BlogPostFixture {
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+}
+
+export interface BlogFixture {
+  title?: string;
+  subtitle?: string;
+  posts?: BlogPostFixture[];
+}
+
+export interface ShowcaseProjectFixture {
+  id: string;
+  title: string;
+  description: string;
+  url?: string | null;
+}
+
+export interface ShowcaseFixture {
+  title?: string;
+  subtitle?: string;
+  projects?: ShowcaseProjectFixture[];
+}
+
+export interface ValuePropositionItemFixture {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface ValuePropositionFixture {
+  title?: string;
+  subtitle?: string;
+  items?: ValuePropositionItemFixture[];
 }
 
 export type NavigationPolicyMode = 'soft';
@@ -212,15 +255,9 @@ export interface AppContext {
   docsSidebarLinks: DashboardSidebarLink[];
   examplesSidebarLinks: DashboardSidebarLink[];
   hero: HeroFixture;
-  features: FeaturesFixture;
-  pricing: PricingFixture;
-  testimonials: TestimonialsFixture;
-  cta: CTAFixture;
-  dashboard: DashboardFixture;
-  docsIntro: DocsIntroFixture;
-  docsInstallation: DocsInstallationFixture;
-  docsComponents: DocsComponentsFixture;
-  examples: ExamplesFixture;
+  valueProposition: ValuePropositionFixture;
+  blog: BlogFixture;
+  showcase: ShowcaseFixture;
   docsSidebarLabel: string;
   examplesSidebarLabel: string;
   getDocsSidebarLinks: (activeHref: string) => DashboardSidebarLink[];
@@ -245,10 +282,9 @@ export interface DomainsContext {
 export interface WebsiteDomainContext {
   page: PageRecord[];
   hero: HeroFixture;
-  features: FeaturesFixture;
-  pricing: PricingFixture;
-  testimonials: TestimonialsFixture;
-  cta: CTAFixture;
+  valueProposition: ValuePropositionFixture;
+  blog: BlogFixture;
+  showcase: ShowcaseFixture;
   site: SiteInfo;
   navItems: NavItem[];
   sidebarLinks: SidebarLink[];

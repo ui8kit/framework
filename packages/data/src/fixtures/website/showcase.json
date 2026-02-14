@@ -1,0 +1,24 @@
+{
+  "title": "Showcase",
+  "subtitle": "Projects built with UI8Kit",
+  "projects": [
+    {
+      "id": "project-1",
+      "title": "Design System Portal",
+      "description": "A presentation site for a design system with component documentation and live examples.",
+      "url": null
+    },
+    {
+      "id": "project-2",
+      "title": "Marketing Landing",
+      "description": "A high-converting landing page built with semantic blocks and violet tonal palette.",
+      "url": null
+    },
+    {
+      "id": "project-3",
+      "title": "Admin Dashboard",
+      "description": "A data-driven admin interface with JSON import/export and theme switching.",
+      "url": null
+    }
+  ]
+}

@@ -1,6 +1,8 @@
-import { Block, Container, Group, Text } from '@ui8kit/core';
+import { Block, Container, Group, Text, Button, Icon } from '@ui8kit/core';
 import { If, Var, Loop } from '@ui8kit/template';
+import { Sun, Moon } from 'lucide-react';
 import { DomainNavButton } from './DomainNavButton';
+import { useTheme } from '@/providers/theme';
 
 export type NavItem = {
   id: string;
@@ -23,6 +25,7 @@ export function Header({
   dataClass,
   'data-class': dataClassAttr,
 }: HeaderProps) {
+  const { isDarkMode, toggleDarkMode } = useTheme();
   return (
     <Block
       component="header"
@@ -67,25 +70,51 @@ export function Header({
           </Group>
         </a>
 
-        {/* Navigation */}
-        <If test="navItems" value={(navItems ?? []).length > 0}>
-          <Block component="nav" flex="" gap="2" items="center" data-class="header-nav">
-            <Loop each="navItems" as="item" data={navItems ?? []}>
-              {(item: NavItem) => (
-                <DomainNavButton
-                  variant="ghost"
-                  size="sm"
-                  href={item.url}
-                  data-class="header-nav-item"
-                >
-                  <Text component="span">
-                    <Var name="item.title" value={item.title} />
-                  </Text>
-                </DomainNavButton>
-              )}
-            </Loop>
-          </Block>
-        </If>
+        {/* Navigation + Theme Toggle */}
+        <Group gap="4" items="center" data-class="header-nav-group">
+          <If test="navItems" value={(navItems ?? []).length > 0}>
+            <Block component="nav" flex="" gap="2" items="center" data-class="header-nav">
+              <Loop each="navItems" as="item" data={navItems ?? []}>
+                {(item: NavItem) => (
+                  <DomainNavButton
+                    variant="ghost"
+                    size="sm"
+                    href={item.url}
+                    data-class="header-nav-item"
+                  >
+                    <Text component="span">
+                      <Var name="item.title" value={item.title} />
+                    </Text>
+                  </DomainNavButton>
+                )}
+              </Loop>
+            </Block>
+          </If>
+          <If test="isDarkMode" value={isDarkMode}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleDarkMode}
+              title="Switch to light mode"
+              aria-label="Switch to light mode"
+              data-class="header-theme-toggle"
+            >
+              <Icon lucideIcon={Sun} size="sm" data-class="header-theme-icon" />
+            </Button>
+          </If>
+          <If test="!isDarkMode" value={!isDarkMode}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleDarkMode}
+              title="Switch to dark mode"
+              aria-label="Switch to dark mode"
+              data-class="header-theme-toggle"
+            >
+              <Icon lucideIcon={Moon} size="sm" data-class="header-theme-icon" />
+            </Button>
+          </If>
+        </Group>
       </Container>
     </Block>
   );

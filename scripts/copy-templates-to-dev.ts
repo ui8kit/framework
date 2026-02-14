@@ -19,7 +19,7 @@ const REPO_ROOT = join(__dirname, "..");
 const DIST_REACT = join(REPO_ROOT, "apps", "engine", "dist", "react");
 const PAGE_MODEL_PATH = join(REPO_ROOT, "packages", "data", "src", "fixtures", "shared", "page.json");
 
-const DOMAINS = ["website", "docs", "examples", "dashboard"] as const;
+const DOMAINS = ["website"] as const;
 type Domain = (typeof DOMAINS)[number];
 
 interface PageEntry {
@@ -198,7 +198,7 @@ export function ExamplesLayout() {
 function createRouteFile(componentName: string): string | null {
   switch (componentName) {
     case "WebsitePage":
-      return `import { SidebarContent, WebsitePageView } from '@/blocks';
+      return `import { WebsitePageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
 export function WebsitePage() {
@@ -206,79 +206,54 @@ export function WebsitePage() {
     <WebsitePageView
       mode="full"
       navItems={context.navItems}
-      sidebar={<SidebarContent title="Quick Links" links={context.sidebarLinks} />}
       headerTitle={context.site.title}
       headerSubtitle={context.site.subtitle}
       hero={context.hero}
-      examples={context.examples}
-      tabs={context.examplesSidebarLinks}
+      valueProposition={context.valueProposition}
     />
   );
 }
 `;
-    case "DashboardPage":
-      return `import { DashSidebar, DashboardPageView } from '@/blocks';
+    case "BlogPage":
+      return `import { BlogPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-export function DashboardPage() {
+export function BlogPage() {
   return (
-    <DashboardPageView
-      sidebar={<DashSidebar label="Navigation" links={context.dashboardSidebarLinks} />}
-      dashboard={context.dashboard}
+    <BlogPageView
+      navItems={context.navItems}
+      headerTitle={context.site.title}
+      headerSubtitle={context.site.subtitle}
+      blog={context.blog}
     />
   );
 }
 `;
-    case "DocsPage":
-      return `import { useMemo } from 'react';
-import { DashSidebar, DocsPageView } from '@/blocks';
+    case "ShowcasePage":
+      return `import { ShowcasePageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-const DOCS_PATH = context.page.docs[0]?.path ?? '/docs';
-const DOCS_LINKS = context.getDocsSidebarLinks(DOCS_PATH);
-
-export function DocsPage() {
-  const sidebar = useMemo(() => <DashSidebar label={context.docsSidebarLabel} links={DOCS_LINKS} />, []);
-  return <DocsPageView sidebar={sidebar} docsIntro={context.docsIntro} />;
-}
-`;
-    case "DocsComponentsPage":
-      return `import { useMemo } from 'react';
-import { DashSidebar, DocsComponentsPageView } from '@/blocks';
-import { context } from '@ui8kit/data';
-
-const COMPONENTS_PATH =
-  context.page.docs.find((entry) => entry.id === 'docs-components')?.path ??
-  '/docs/components';
-const COMPONENTS_LINKS = context.getDocsSidebarLinks(COMPONENTS_PATH);
-
-export function DocsComponentsPage() {
-  const sidebar = useMemo(() => <DashSidebar label={context.docsSidebarLabel} links={COMPONENTS_LINKS} />, []);
+export function ShowcasePage() {
   return (
-    <DocsComponentsPageView
-      sidebar={sidebar}
-      title={context.docsComponents.title}
-      lead={context.docsComponents.lead}
+    <ShowcasePageView
+      navItems={context.navItems}
+      headerTitle={context.site.title}
+      headerSubtitle={context.site.subtitle}
+      showcase={context.showcase}
     />
   );
 }
 `;
-    case "DocsInstallationPage":
-      return `import { useMemo } from 'react';
-import { DashSidebar, DocsInstallationPageView } from '@/blocks';
+    case "AdminPage":
+      return `import { AdminPageView } from '@/blocks';
 import { context } from '@ui8kit/data';
 
-const INSTALLATION_PATH =
-  context.page.docs.find((entry) => entry.id === 'docs-installation')?.path ??
-  '/docs/installation';
-const INSTALLATION_LINKS = context.getDocsSidebarLinks(INSTALLATION_PATH);
-
-export function DocsInstallationPage() {
-  const sidebar = useMemo(() => <DashSidebar label={context.docsSidebarLabel} links={INSTALLATION_LINKS} />, []);
+export function AdminPage() {
   return (
-    <DocsInstallationPageView
-      sidebar={sidebar}
-      docsInstallation={context.docsInstallation}
+    <AdminPageView
+      navItems={context.navItems}
+      headerTitle={context.site.title}
+      headerSubtitle={context.site.subtitle}
     />
   );
 }

@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
 const DATA_SRC_ROOT = join(REPO_ROOT, "packages", "data", "src");
 const FIXTURES_SRC_ROOT = join(DATA_SRC_ROOT, "fixtures");
-const DOMAINS = ["website", "docs", "examples", "dashboard"] as const;
+const DOMAINS = ["website"] as const;
 
 type Domain = (typeof DOMAINS)[number];
 type DataMode = "local" | "shared";
@@ -33,10 +33,7 @@ interface RegistryItem {
 }
 
 const DOMAIN_FIXTURE_FILES: Record<Domain, string[]> = {
-  website: ["hero.json", "features.json", "pricing.json", "testimonials.json", "cta.json"],
-  docs: ["intro.json", "installation.json", "components.json"],
-  examples: ["examples.json"],
-  dashboard: ["dashboard.json"],
+  website: ["hero.json", "value-proposition.json", "blog.json", "showcase.json"],
 };
 
 function parseArg(flag: string): string | undefined {
@@ -82,10 +79,7 @@ function slicePageModel(model: PageModel, domain: Domain, mode: DataMode): PageM
   if (mode === "shared") return model;
   return {
     page: {
-      website: domain === "website" ? model.page.website : [],
-      docs: domain === "docs" ? model.page.docs : [],
-      examples: domain === "examples" ? model.page.examples : [],
-      dashboard: domain === "dashboard" ? model.page.dashboard : [],
+      website: domain === "website" ? (model.page.website ?? []) : [],
     },
   };
 }

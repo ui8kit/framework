@@ -1,5 +1,4 @@
 export { WebsitePage } from './website/WebsitePage';
-export { DashboardPage } from './dashboard/DashboardPage';
-export { DocsPage } from './docs/DocsPage';
-export { DocsComponentsPage } from './docs/DocsComponentsPage';
-export { DocsInstallationPage } from './docs/DocsInstallationPage';
+export { BlogPage } from './website/BlogPage';
+export { ShowcasePage } from './website/ShowcasePage';
+export { AdminPage } from './website/AdminPage';

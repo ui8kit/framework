@@ -25,12 +25,12 @@ export function HeroBlock({
   return (
     <Block
       component="section"
-      py="24"
+      py="16"
       bg="background"
       data-class="hero-section"
     >
       <Container max="w-7xl" flex="col" gap="8" items="center">
-        <Stack gap="4" items="center" max="w-3xl">
+        <Stack gap="4" items="center" max="w-2xl">
             <Title 
               fontSize="5xl" 
               fontWeight="bold" 

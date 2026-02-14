@@ -1,0 +1,24 @@
+{
+  "title": "Blog",
+  "subtitle": "Insights on UI8Kit architecture and design principles",
+  "posts": [
+    {
+      "id": "architecture-principles",
+      "title": "Architecture Principles",
+      "excerpt": "Learn how UI8Kit's modular architecture enables type-safe, semantic UI development with clear separation of concerns.",
+      "slug": "architecture-principles"
+    },
+    {
+      "id": "props-driven-approach",
+      "title": "Props-Driven Approach",
+      "excerpt": "Discover how semantic props map directly to Tailwind classes, eliminating custom CSS while maintaining design consistency.",
+      "slug": "props-driven-approach"
+    },
+    {
+      "id": "constrained-tailwind-shadcn",
+      "title": "Constrained Tailwind + shadcn Design Tokens",
+      "excerpt": "Explore the combination of constrained utility classes with shadcn design tokens for a violet-first, accessible design system.",
+      "slug": "constrained-tailwind-shadcn"
+    }
+  ]
+}
