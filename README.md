@@ -195,7 +195,7 @@ src/
     └── badge.ts
 ```
 
-## Quick Start
+## Quick Start (Local UNIX)
 
 ```bash
 # Clone and install
@@ -204,11 +204,12 @@ cd ui8kit-framework
 bun install
 
 # Development (Vite + HMR)
-cd apps/web
+cd apps/engine
 bun run dev
 
-# Generate static site
-bun run generate
+# Run local quality checks
+cd ../..
+bun run quality:local
 ```
 
 ## Roadmap
@@ -239,11 +240,15 @@ Following Spectre CSS's minimal-JS philosophy:
 ```
 ui8kit-framework/
 ├── apps/
-│   ├── web/           # Static site generator demo
-│   └── docs/          # MDX documentation
+│   └── engine/        # Main presentation app + generator source
 ├── packages/
-│   ├── generator/     # Static site generator
-│   └── mdx-react/     # MDX processing
+│   ├── data/          # Source-of-truth fixtures + typed context
+│   ├── generator/     # Static site generator pipeline
+│   ├── blocks/        # UI blocks and page views
+│   ├── core/          # Core primitives and helpers
+│   ├── lint/          # DSL and repository linting
+│   ├── mdx-react/     # MDX processing
+│   └── template/      # Template primitives
 └── .cursor/rules/     # Architecture documentation
 ```
 
@@ -271,8 +276,6 @@ ui8kit-framework/
 ## Related Documentation
 
 - [Generator Package](packages/generator/README.md)
-- [Web App Example](apps/web/README.md)
-- [Docs App Example](apps/docs/README.md)
 - [Engine Pipeline Guide](apps/engine/PIPELINE.md)
 - [Engine README](apps/engine/README.md)
 - [Architecture Rules](.cursor/rules/architecture.mdc)
@@ -280,7 +283,7 @@ ui8kit-framework/
 
 ## Domain Navigation Rules (Internal)
 
-For domain-specific builds (`website`, `docs`, `examples`, `dashboard`), keep navigation deterministic:
+For domain-specific builds (`website`, `admin`), keep navigation deterministic:
 
 - Route source of truth: `packages/data/src/fixtures/shared/page.json`
 - UI internal links: use `DomainNavButton` (engine partial)
@@ -288,6 +291,13 @@ For domain-specific builds (`website`, `docs`, `examples`, `dashboard`), keep na
 - Policy mode: soft only -> render disabled state with tooltip `Not available in this domain build`
 - Validate after sync: `bun run validate:data-bundle -- --target <app>`
 
+## Domain Model And Invariants
+
+- Domain set is fixed to `website` and `admin` in `packages/data/src/fixtures/shared/page.json`.
+- Dynamic routes are explicitly modeled as `/guides/:slug` and `/blog/:slug`.
+- `@ui8kit/data` is the only source for runtime context consumed by engine blocks/layouts/routes.
+- Route/domain changes must be applied consistently in fixtures, context exports, scripts, and tests.
+
 ## License
 
-MIT
+GPL-3.0

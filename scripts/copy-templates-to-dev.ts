@@ -6,7 +6,7 @@
  *
  * Run from repo root:
  *   bun run scripts/copy-templates-to-dev.ts
- *   bun run scripts/copy-templates-to-dev.ts --target test --domain docs
+ *   bun run scripts/copy-templates-to-dev.ts --target test --domain website
  *   TARGET_APP=dev DOMAIN=website bun run scripts/copy-templates-to-dev.ts
  */
 
@@ -140,61 +140,6 @@ export function ${name}(props: ${propsType}) {
 `;
 }
 
-function createExamplesLayout(): string {
-  return `import { useMemo } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
-import { context } from '@ui8kit/data';
-import {
-  ExamplesPageView,
-  ExamplesDashboardPageView,
-  ExamplesTasksPageView,
-  ExamplesPlaygroundPageView,
-  ExamplesAuthPageView,
-} from '@/blocks';
-import { ExamplesLayoutView } from './views/ExamplesLayoutView';
-
-export function ExamplesLayout() {
-  const location = useLocation();
-  const { examplePage } = useParams<{ examplePage?: string }>();
-  const examplesRootPath =
-    context.page.examples.find((entry) => entry.id === 'examples-layout')?.path ?? '/examples';
-  const tabs = useMemo(
-    () => context.getExamplesSidebarLinks(location.pathname),
-    [location.pathname]
-  );
-  const activeView = useMemo(() => {
-    switch (examplePage) {
-      case undefined:
-        return <ExamplesPageView />;
-      case 'dashboard':
-        return <ExamplesDashboardPageView />;
-      case 'tasks':
-        return <ExamplesTasksPageView />;
-      case 'playground':
-        return <ExamplesPlaygroundPageView />;
-      case 'authentication':
-        return <ExamplesAuthPageView />;
-      default:
-        return <Navigate to={examplesRootPath} replace />;
-    }
-  }, [examplePage, examplesRootPath]);
-
-  return (
-    <ExamplesLayoutView
-      navItems={context.navItems}
-      headerTitle={context.site.title}
-      headerSubtitle={context.site.subtitle}
-      hero={context.hero}
-      examples={context.examples}
-      tabs={tabs}
-    >
-      {activeView}
-    </ExamplesLayoutView>
-  );
-}
-`;
-}
-
 function createRouteFile(componentName: string): string | null {
   switch (componentName) {
     case "WebsitePage":
@@ -273,22 +218,6 @@ function toDomainRelativePath(domainRoot: string, fullPath: string): string {
 }
 
 function createDomainApp(domain: Domain, pages: PageEntry[], routeComponents: string[]): string {
-  if (domain === "examples") {
-    return `import { Routes, Route, Navigate } from 'react-router-dom';
-import { ExamplesLayout } from '@/layouts';
-
-export function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<ExamplesLayout />} />
-      <Route path="/:examplePage" element={<ExamplesLayout />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  );
-}
-`;
-  }
-
   const routeImports = routeComponents
     .map((name) => `import { ${name} } from '@/routes/${name}';`)
     .join("\n");
@@ -315,55 +244,6 @@ ${routeLines}
   );
 }
 `;
-}
-
-function ensureExamplesTypes(targetBlocksDir: string): void {
-  const examplesDir = join(targetBlocksDir, "examples");
-  const examplesBlock = join(targetBlocksDir, "ExamplesBlock.tsx");
-  const typesPath = join(examplesDir, "types.ts");
-  if (!existsSync(examplesBlock) || existsSync(typesPath)) return;
-
-  const content = `export interface ExampleTab {
-  href: string;
-  label: string;
-  active?: boolean;
-}
-
-export interface ExamplesButtonContent {
-  title?: string;
-  defaultLabel?: string;
-  outlineLabel?: string;
-  ghostLabel?: string;
-}
-
-export interface ExamplesBadgeContent {
-  title?: string;
-  defaultLabel?: string;
-  secondaryLabel?: string;
-  outlineLabel?: string;
-}
-
-export interface ExamplesTypographyContent {
-  title?: string;
-  heading?: string;
-  body?: string;
-}
-
-export interface ExamplesActionsContent {
-  explore?: string;
-  allComponents?: string;
-}
-
-export interface ExamplesContent {
-  title?: string;
-  description?: string;
-  button?: ExamplesButtonContent;
-  badge?: ExamplesBadgeContent;
-  typography?: ExamplesTypographyContent;
-  actions?: ExamplesActionsContent;
-}
-`;
-  writeFile(typesPath, content);
 }
 
 function writeDomainIndexes(target: string): void {
@@ -467,23 +347,13 @@ function main(): void {
   }
 
   const generatedLayouts = new Set<string>();
-  if (
-    generatedLayoutViews.has("MainLayout") &&
-    (domain === "website" || domain === "examples")
-  ) {
+  if (generatedLayoutViews.has("MainLayout") && domain === "website") {
     writeFile(join(target, "layouts", "MainLayout.tsx"), createMainOrDashLayout("MainLayout"));
     generatedLayouts.add("MainLayout");
   }
-  if (
-    generatedLayoutViews.has("DashLayout") &&
-    (domain === "docs" || domain === "dashboard")
-  ) {
+  if (generatedLayoutViews.has("DashLayout") && domain === "website") {
     writeFile(join(target, "layouts", "DashLayout.tsx"), createMainOrDashLayout("DashLayout"));
     generatedLayouts.add("DashLayout");
-  }
-  if (generatedLayoutViews.has("ExamplesLayout") && domain === "examples") {
-    writeFile(join(target, "layouts", "ExamplesLayout.tsx"), createExamplesLayout());
-    generatedLayouts.add("ExamplesLayout");
   }
 
   const layoutExports = Array.from(generatedLayouts)
@@ -507,7 +377,6 @@ function main(): void {
     .join("\n");
   writeFile(join(target, "routes", "index.ts"), routesIndexContent + (routesIndexContent ? "\n" : ""));
 
-  ensureExamplesTypes(join(target, "blocks"));
   writeDomainIndexes(target);
   writePartialsIndex(target);
 

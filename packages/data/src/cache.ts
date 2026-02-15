@@ -1,6 +1,6 @@
 /**
  * Simple LRU-style cache for derived data.
- * Used by getDocsSidebarLinks and getExamplesSidebarLinks to avoid memory churn.
+ * Used by getAdminSidebarLinks to avoid memory churn.
  */
 
 import type { DashboardSidebarLink } from './types';
@@ -82,5 +82,5 @@ export function createCache<K, V>(maxSize: number): Cache<K, V> {
   };
 }
 
-/** Shared cache for sidebar links (docs + examples routes). Key = activeHref. */
+/** Shared cache for admin sidebar links. Key = "admin:${activeHref}". */
 export const sidebarLinksCache = createCache<string, DashboardSidebarLink[]>(SIDEBAR_CACHE_MAX_SIZE);
