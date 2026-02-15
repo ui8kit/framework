@@ -1,0 +1,13 @@
+{
+  "runId": "invariants_1771142193312",
+  "generatedAt": "2026-02-15T07:56:33.328Z",
+  "errors": [
+    {
+      "level": "error",
+      "code": "FORBIDDEN_LEGACY_TERM",
+      "message": "Forbidden legacy term detected in README.md:103",
+      "path": "README.md"
+    }
+  ],
+  "warnings": []
+}

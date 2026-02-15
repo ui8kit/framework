@@ -1,0 +1,2517 @@
+{
+  "runId": "audit_1771142214973",
+  "generatedAt": "2026-02-15T07:56:55.083Z",
+  "scope": [
+    "apps/engine",
+    "packages/core",
+    "packages/blocks",
+    "packages/data",
+    "packages/generator",
+    "packages/template",
+    "packages/lint"
+  ],
+  "mappingVersion": "1.0.0",
+  "mappingFile": ".manual/brand-mapping.json",
+  "filesScanned": 298,
+  "metrics": [
+    {
+      "from": "restaurant",
+      "to": "design system",
+      "severity": "error",
+      "oldCount": 0,
+      "newCount": 10,
+      "residualCount": 0,
+      "expectedCount": 10
+    },
+    {
+      "from": "bar",
+      "to": "showcase",
+      "severity": "warn",
+      "oldCount": 453,
+      "newCount": 81,
+      "residualCount": 453,
+      "expectedCount": 534
+    },
+    {
+      "from": "menu",
+      "to": "components",
+      "severity": "warn",
+      "oldCount": 6,
+      "newCount": 353,
+      "residualCount": 6,
+      "expectedCount": 359
+    },
+    {
+      "from": "recipes",
+      "to": "guides",
+      "severity": "error",
+      "oldCount": 0,
+      "newCount": 92,
+      "residualCount": 0,
+      "expectedCount": 92
+    },
+    {
+      "from": "promotions",
+      "to": "showcase",
+      "severity": "error",
+      "oldCount": 0,
+      "newCount": 81,
+      "residualCount": 0,
+      "expectedCount": 81
+    },
+    {
+      "from": "apps/web",
+      "to": "apps/engine",
+      "severity": "warn",
+      "oldCount": 5,
+      "newCount": 22,
+      "residualCount": 5,
+      "expectedCount": 27
+    },
+    {
+      "from": "apps/docs",
+      "to": "apps/engine",
+      "severity": "warn",
+      "oldCount": 4,
+      "newCount": 22,
+      "residualCount": 4,
+      "expectedCount": 26
+    },
+    {
+      "from": "getDocsSidebarLinks",
+      "to": "getAdminSidebarLinks",
+      "severity": "warn",
+      "oldCount": 2,
+      "newCount": 19,
+      "residualCount": 2,
+      "expectedCount": 21
+    },
+    {
+      "from": "getExamplesSidebarLinks",
+      "to": "getAdminSidebarLinks",
+      "severity": "warn",
+      "oldCount": 2,
+      "newCount": 19,
+      "residualCount": 2,
+      "expectedCount": 21
+    }
+  ],
+  "totals": {
+    "residualCount": 472,
+    "replacedCount": 699
+  },
+  "residualMatches": [
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/generator.config.ts",
+      "line": 14,
+      "excerpt": "*   bun run generate -e handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/generator.config.ts",
+      "line": 33,
+      "excerpt": "type Engine = 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/generator.config.ts",
+      "line": 35,
+      "excerpt": "const VALID_ENGINES: Engine[] = ['react', 'liquid', 'handlebars', 'twig', 'latte'];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/PIPELINE.md",
+      "line": 172,
+      "excerpt": "- Header/sidebar/tabs should come from context-backed lists (`navItems`, `sidebarLinks`, domain sidebars)."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/PIPELINE.md",
+      "line": 209,
+      "excerpt": "- sidebar link resolvers"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/PIPELINE.md",
+      "line": 219,
+      "excerpt": "- **Normalized sidebar cache keys**"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/PIPELINE.md",
+      "line": 224,
+      "excerpt": "- cached sidebar structures are immutable"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/README.md",
+      "line": 10,
+      "excerpt": "- **Handlebars** (JavaScript)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/README.md",
+      "line": 16,
+      "excerpt": "Use this checklist when changing routes, tabs, header links, or sidebars:"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/README.md",
+      "line": 19,
+      "excerpt": "2. Keep links data-driven (`context.navItems`, domain sidebars), avoid hardcoded internal paths when possible."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/README.md",
+      "line": 59,
+      "excerpt": "bun run generate --engine handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/SEMANTIC_HTML.md",
+      "line": 12,
+      "excerpt": "| `<aside>` | Sidebar, complementary | `<Block component=\"aside\">` |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/SEMANTIC_HTML.md",
+      "line": 21,
+      "excerpt": "1. **Header**: `<header>` wraps brand + `<nav>`. Do not use `nav` for the whole bar."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/admin/AdminDashboardPageView.tsx",
+      "line": 4,
+      "excerpt": "import { DashSidebar } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/admin/AdminDashboardPageView.tsx",
+      "line": 64,
+      "excerpt": "const sidebar = ("
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/admin/AdminDashboardPageView.tsx",
+      "line": 65,
+      "excerpt": "<DashSidebar label={context.adminSidebarLabel} links={context.getAdminSidebarLinks('/admin/dashboard')} />"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/admin/AdminDashboardPageView.tsx",
+      "line": 69,
+      "excerpt": "<AdminLayout sidebar={sidebar}>"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 5,
+      "excerpt": "export type DashSidebarLink = {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 11,
+      "excerpt": "export type DashSidebarProps = {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 13,
+      "excerpt": "links?: DashSidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 18,
+      "excerpt": "* Dashboard sidebar navigation block."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 21,
+      "excerpt": "export function DashSidebar({"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 25,
+      "excerpt": "}: DashSidebarProps) {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 27,
+      "excerpt": "<Stack gap=\"2\" p=\"4\" data-class={dataClass ?? 'dash-sidebar-nav'}>"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 33,
+      "excerpt": "data-class=\"dash-sidebar-label\""
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 40,
+      "excerpt": "{(link: DashSidebarLink) => ("
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/DashSidebar.tsx",
+      "line": 48,
+      "excerpt": "data-class=\"dash-sidebar-link\""
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/index.ts",
+      "line": 3,
+      "excerpt": "export { SidebarContent } from './SidebarContent';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/index.ts",
+      "line": 4,
+      "excerpt": "export { DashSidebar } from './DashSidebar';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 5,
+      "excerpt": "export type SidebarLink = {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 10,
+      "excerpt": "export type SidebarContentProps = {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 12,
+      "excerpt": "links?: SidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 17,
+      "excerpt": "* Sidebar content block for website layout."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 20,
+      "excerpt": "export function SidebarContent({"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 24,
+      "excerpt": "}: SidebarContentProps) {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 25,
+      "excerpt": "const normalizedLinks = (links ?? []) as SidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 28,
+      "excerpt": "<Stack gap=\"4\" data-class={dataClass ?? 'sidebar-widgets'}>"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 29,
+      "excerpt": "<Stack component=\"nav\" data-class=\"sidebar-widget\">"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/SidebarContent.tsx",
+      "line": 31,
+      "excerpt": "<Text component=\"h3\" fontSize=\"sm\" fontWeight=\"semibold\" data-class=\"sidebar-widget-title\">"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogDetailPageView.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogDetailPageView.tsx",
+      "line": 8,
+      "excerpt": "sidebar: React.ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogDetailPageView.tsx",
+      "line": 19,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogDetailPageView.tsx",
+      "line": 28,
+      "excerpt": "sidebar={sidebar}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogPageView.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogPageView.tsx",
+      "line": 19,
+      "excerpt": "sidebar: React.ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogPageView.tsx",
+      "line": 30,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/BlogPageView.tsx",
+      "line": 40,
+      "excerpt": "sidebar={sidebar}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ComponentsPageView.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ComponentsPageView.tsx",
+      "line": 7,
+      "excerpt": "sidebar: React.ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ComponentsPageView.tsx",
+      "line": 18,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ComponentsPageView.tsx",
+      "line": 27,
+      "excerpt": "sidebar={sidebar}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuideDetailPageView.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuideDetailPageView.tsx",
+      "line": 8,
+      "excerpt": "sidebar: React.ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuideDetailPageView.tsx",
+      "line": 19,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuideDetailPageView.tsx",
+      "line": 28,
+      "excerpt": "sidebar={sidebar}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuidesPageView.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuidesPageView.tsx",
+      "line": 18,
+      "excerpt": "sidebar: React.ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuidesPageView.tsx",
+      "line": 29,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/GuidesPageView.tsx",
+      "line": 39,
+      "excerpt": "sidebar={sidebar}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ShowcasePageView.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ShowcasePageView.tsx",
+      "line": 16,
+      "excerpt": "sidebar: React.ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ShowcasePageView.tsx",
+      "line": 27,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/ShowcasePageView.tsx",
+      "line": 37,
+      "excerpt": "sidebar={sidebar}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/WebsitePageView.tsx",
+      "line": 3,
+      "excerpt": "import { SidebarContent } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/WebsitePageView.tsx",
+      "line": 7,
+      "excerpt": "mode?: 'full' | 'with-sidebar' | 'sidebar-left';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/WebsitePageView.tsx",
+      "line": 9,
+      "excerpt": "sidebar: ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/WebsitePageView.tsx",
+      "line": 23,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/blocks/website/WebsitePageView.tsx",
+      "line": 34,
+      "excerpt": "sidebar={sidebar}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 27,
+      "excerpt": "--sidebar: hsl(263 20% 97%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 28,
+      "excerpt": "--sidebar-foreground: hsl(263 30% 12%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 29,
+      "excerpt": "--sidebar-primary: hsl(263 70% 50%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 30,
+      "excerpt": "--sidebar-primary-foreground: hsl(0 0% 100%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 31,
+      "excerpt": "--sidebar-accent: hsl(263 50% 94%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 32,
+      "excerpt": "--sidebar-accent-foreground: hsl(263 70% 50%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 33,
+      "excerpt": "--sidebar-border: hsl(263 20% 90%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 34,
+      "excerpt": "--sidebar-ring: hsl(263 70% 50%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 82,
+      "excerpt": "--sidebar: hsl(263 25% 10%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/css/shadcn.css",
+      "line": 83,
+      "excerpt": "--sidebar-foreground: hsl(263 15% 92%);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 4,
+      "excerpt": "import { Sidebar } from '@/partials/Sidebar';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 9,
+      "excerpt": "sidebar?: ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 13,
+      "excerpt": "* Admin layout: minimal header + optional sidebar + main content."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 15,
+      "excerpt": "export function AdminLayout({ children, sidebar }: AdminLayoutProps) {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 20,
+      "excerpt": "<If test=\"sidebar\" value={!!sidebar}>"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 23,
+      "excerpt": "data-class=\"admin-sidebar\""
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 26,
+      "excerpt": "<Box w=\"full\" h=\"full\" data-class=\"admin-sidebar-content\" className=\"overflow-auto\">"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/AdminLayout.tsx",
+      "line": 27,
+      "excerpt": "<Sidebar>{sidebar}</Sidebar>"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/MainLayout.tsx",
+      "line": 5,
+      "excerpt": "export type LayoutMode = 'full' | 'with-sidebar' | 'sidebar-left';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 6,
+      "excerpt": "import { Sidebar } from '../../partials/Sidebar';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 9,
+      "excerpt": "export type LayoutMode = 'full' | 'with-sidebar' | 'sidebar-left';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 14,
+      "excerpt": "sidebar?: ReactNode;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 27,
+      "excerpt": "sidebar,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 50,
+      "excerpt": "test=\"(mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left'\""
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 51,
+      "excerpt": "value={(mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left'}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 53,
+      "excerpt": "<If test=\"!!sidebar\" value={!!sidebar}>"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 60,
+      "excerpt": "<If test=\"(mode ?? 'with-sidebar') === 'sidebar-left'\" value={(mode ?? 'with-sidebar') === 'sidebar-left'}>"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 74,
+      "excerpt": "data-class=\"main-layout-sidebar-wrapper\""
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/layouts/views/MainLayoutView.tsx",
+      "line": 76,
+      "excerpt": "<Sidebar position=\"left\">"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/partials/index.ts",
+      "line": 1,
+      "excerpt": "// Factory Partial Components (Header, Footer, Sidebar)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/partials/index.ts",
+      "line": 8,
+      "excerpt": "export { Sidebar } from './Sidebar';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/partials/index.ts",
+      "line": 9,
+      "excerpt": "export type { SidebarProps } from './Sidebar';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/partials/Sidebar.tsx",
+      "line": 4,
+      "excerpt": "export type SidebarProps = {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/partials/Sidebar.tsx",
+      "line": 9,
+      "excerpt": "export function Sidebar({ children, position = 'right' }: SidebarProps) {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/partials/Sidebar.tsx",
+      "line": 13,
+      "excerpt": "data-class={`sidebar sidebar-${position}`}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/partials/Sidebar.tsx",
+      "line": 15,
+      "excerpt": "<Stack gap=\"6\" data-class=\"sidebar-content\">"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/BlogDetailPage.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent, BlogDetailPageView } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/BlogDetailPage.tsx",
+      "line": 12,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/BlogPage.tsx",
+      "line": 1,
+      "excerpt": "import { SidebarContent, BlogPageView } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/BlogPage.tsx",
+      "line": 8,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/ComponentsPage.tsx",
+      "line": 1,
+      "excerpt": "import { SidebarContent, ComponentsPageView } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/ComponentsPage.tsx",
+      "line": 8,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/GuideDetailPage.tsx",
+      "line": 2,
+      "excerpt": "import { SidebarContent, GuideDetailPageView } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/GuideDetailPage.tsx",
+      "line": 12,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/GuidesPage.tsx",
+      "line": 1,
+      "excerpt": "import { SidebarContent, GuidesPageView } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/GuidesPage.tsx",
+      "line": 8,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/ShowcasePage.tsx",
+      "line": 1,
+      "excerpt": "import { SidebarContent, ShowcasePageView } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/ShowcasePage.tsx",
+      "line": 8,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/WebsitePage.tsx",
+      "line": 1,
+      "excerpt": "import { SidebarContent, WebsitePageView } from '@/blocks';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "apps/engine/src/routes/website/WebsitePage.tsx",
+      "line": 12,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "apps/engine/src/shared/README.md",
+      "line": 9,
+      "excerpt": "- **Extract to packages/blocks/components**: Component used across engine and other apps (e.g. apps/web). Place in `packages/blocks/src/components/` for reuse across the monorepo."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/core/FLEX.md",
+      "line": 12,
+      "excerpt": "| **Group** | Horizontal (`flex` row) | Toolbars, buttons, labels |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/core/FLEX.md",
+      "line": 101,
+      "excerpt": "### Horizontal toolbar"
+    },
+    {
+      "term": "menu",
+      "replacement": "components",
+      "severity": "warn",
+      "file": "packages/core/FLEX.md",
+      "line": 106,
+      "excerpt": "<Icon lucideIcon={Menu} />"
+    },
+    {
+      "term": "menu",
+      "replacement": "components",
+      "severity": "warn",
+      "file": "packages/core/FLEX.md",
+      "line": 107,
+      "excerpt": "<Text>Menu</Text>"
+    },
+    {
+      "term": "menu",
+      "replacement": "components",
+      "severity": "warn",
+      "file": "packages/core/src/components/Sheet.tsx",
+      "line": 8,
+      "excerpt": "import { Menu } from \"lucide-react\";"
+    },
+    {
+      "term": "menu",
+      "replacement": "components",
+      "severity": "warn",
+      "file": "packages/core/src/components/Sheet.tsx",
+      "line": 110,
+      "excerpt": "<Icon component=\"span\" lucideIcon={triggerIcon || Menu} />"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/core/src/components/ui/Group.tsx",
+      "line": 17,
+      "excerpt": "flex: '',        // display: flex (bare token)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/core/src/components/ui/Icon.tsx",
+      "line": 18,
+      "excerpt": "inline: '',      // display: inline (bare token)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/core/src/lib/utility-props.ts",
+      "line": 13,
+      "excerpt": "type HasBareToken<P extends UtilityPropPrefix> = \"\" extends UtilityAllowed<P> ? true : false;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/core/src/lib/utility-props.ts",
+      "line": 19,
+      "excerpt": "* - allows `true` / \"\" only when the map contains a bare token \"\" (e.g. flex, block, absolute)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/core/src/lib/utility-props.ts",
+      "line": 25,
+      "excerpt": "| (HasBareToken<P> extends true ? \"\" | true : never);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/blocks/DSL.md",
+      "line": 34,
+      "excerpt": "**Generated Handlebars:**"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/blocks/DSL.md",
+      "line": 35,
+      "excerpt": "```handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/blocks/DSL.md",
+      "line": 61,
+      "excerpt": "**Generated Handlebars:**"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/blocks/DSL.md",
+      "line": 62,
+      "excerpt": "```handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/blocks/DSL.md",
+      "line": 98,
+      "excerpt": "**Generated Handlebars:**"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/blocks/DSL.md",
+      "line": 99,
+      "excerpt": "```handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/blocks/README.md",
+      "line": 11,
+      "excerpt": "- `partials/` - Reusable fragments (Header, Footer, Sidebar, etc.)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 20,
+      "excerpt": "sidebar={<SidebarContent title=\"Quick Links\" links={context.sidebarLinks} />}"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 48,
+      "excerpt": "- `cache.ts` — LRU-style cache for derived data (sidebar links)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 53,
+      "excerpt": "- `getDocsSidebarLinks(activeHref)` and `getExamplesSidebarLinks(activeHref)` are cached by `activeHref` (max 20 entries, FIFO eviction)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 60,
+      "excerpt": "context.domains.website  // hero, features, pricing, site, navItems, sidebarLinks"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 61,
+      "excerpt": "context.domains.docs     // docsIntro, docsInstallation, docsComponents, getDocsSidebarLinks"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 62,
+      "excerpt": "context.domains.examples // examples, getExamplesSidebarLinks"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 63,
+      "excerpt": "context.domains.dashboard // dashboard, dashboardSidebarLinks"
+    },
+    {
+      "term": "getDocsSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 53,
+      "excerpt": "- `getDocsSidebarLinks(activeHref)` and `getExamplesSidebarLinks(activeHref)` are cached by `activeHref` (max 20 entries, FIFO eviction)"
+    },
+    {
+      "term": "getDocsSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 61,
+      "excerpt": "context.domains.docs     // docsIntro, docsInstallation, docsComponents, getDocsSidebarLinks"
+    },
+    {
+      "term": "getExamplesSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 53,
+      "excerpt": "- `getDocsSidebarLinks(activeHref)` and `getExamplesSidebarLinks(activeHref)` are cached by `activeHref` (max 20 entries, FIFO eviction)"
+    },
+    {
+      "term": "getExamplesSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 62,
+      "excerpt": "context.domains.examples // examples, getExamplesSidebarLinks"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/cache.ts",
+      "line": 3,
+      "excerpt": "* Used by getAdminSidebarLinks to avoid memory churn."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/cache.ts",
+      "line": 6,
+      "excerpt": "import type { DashboardSidebarLink } from './types';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/cache.ts",
+      "line": 8,
+      "excerpt": "const SIDEBAR_CACHE_MAX_SIZE = 20;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/cache.ts",
+      "line": 85,
+      "excerpt": "/** Shared cache for admin sidebar links. Key = \"admin:${activeHref}\". */"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/cache.ts",
+      "line": 86,
+      "excerpt": "export const sidebarLinksCache = createCache<string, DashboardSidebarLink[]>(SIDEBAR_CACHE_MAX_SIZE);"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/fixtures/docs/intro.json",
+      "line": 18,
+      "excerpt": "\"text\": \"One source — React DSL. Generate to React, Liquid, Handlebars, Twig, Latte. Ready for CDN and MCP registry.\""
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/fixtures/shared/navigation.json",
+      "line": 1,
+      "excerpt": "{\"navItems\":[{\"id\":\"home\",\"title\":\"Home\",\"url\":\"/\"},{\"id\":\"components\",\"title\":\"Components\",\"url\":\"/components\"},{\"id\":\"guides\",\"title\":\"Guides\",\"url\":\"/guides\"},{\"id\":\"blog\",\"title\":\"Blog\",\"url\":\"/bl"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/fixtures/website/blog.json",
+      "line": 1,
+      "excerpt": "{\"title\":\"Blog\",\"subtitle\":\"Architecture, patterns, and updates from the UI8Kit team.\",\"posts\":[{\"slug\":\"architecture-principles\",\"title\":\"Architecture Principles\",\"excerpt\":\"How UI8Kit's modular desi"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/fixtures/website/guides.json",
+      "line": 1,
+      "excerpt": "{\"title\":\"Guides\",\"subtitle\":\"Step-by-step tutorials for UI8Kit.\",\"guides\":[{\"slug\":\"getting-started\",\"title\":\"Getting Started\",\"excerpt\":\"Install UI8Kit and create your first semantic component.\",\"bo"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 2,
+      "excerpt": "import { clearCache, context, EMPTY_ARRAY, getSidebarCacheDiagnostics } from './index';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 9,
+      "excerpt": "describe('getAdminSidebarLinks', () => {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 11,
+      "excerpt": "const base = context.getAdminSidebarLinks('/admin/dashboard');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 12,
+      "excerpt": "const withSlash = context.getAdminSidebarLinks('/admin/dashboard/');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 13,
+      "excerpt": "const withQuery = context.getAdminSidebarLinks('/admin/dashboard?tab=content');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 14,
+      "excerpt": "const withHash = context.getAdminSidebarLinks('/admin/dashboard#top');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 22,
+      "excerpt": "const a = context.getAdminSidebarLinks('/admin');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 23,
+      "excerpt": "const b = context.getAdminSidebarLinks('/admin/dashboard');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 28,
+      "excerpt": "const links = context.getAdminSidebarLinks('/admin');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.test.ts",
+      "line": 35,
+      "excerpt": "it('invalidates cached admin sidebar links', () => {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 2,
+      "excerpt": "// Unified context (site, components, guides, showcase, sidebars, blocks) for engine and apps"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 4,
+      "excerpt": "import { sidebarLinksCache } from './cache';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 6,
+      "excerpt": "/** Clear sidebar links cache. Use for tests or explicit cleanup. */"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 8,
+      "excerpt": "sidebarLinksCache.clear();"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 33,
+      "excerpt": "SidebarLink,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 34,
+      "excerpt": "DashboardSidebarLink,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 50,
+      "excerpt": "const sidebarLinks = navigationData.sidebarLinks as SidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 51,
+      "excerpt": "const adminSidebarLinks = (navigationData.adminSidebarLinks ?? []) as DashboardSidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 52,
+      "excerpt": "const adminSidebarLabel = navigationData.labels?.adminSidebarLabel ?? 'Admin';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/index.ts",
+      "line": 158,
+      "excerpt": "function freezeSidebarLinks("
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 13,
+      "excerpt": "export interface SidebarLink {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 18,
+      "excerpt": "export interface DashboardSidebarLink extends SidebarLink {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 61,
+      "excerpt": "export interface SidebarCacheDiagnostics {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 277,
+      "excerpt": "sidebarLinks: SidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 278,
+      "excerpt": "adminSidebarLinks: DashboardSidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 288,
+      "excerpt": "adminSidebarLabel: string;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 289,
+      "excerpt": "getAdminSidebarLinks: (activeHref: string) => DashboardSidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 294,
+      "excerpt": "getSidebarCacheDiagnostics: () => SidebarCacheDiagnostics;"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 317,
+      "excerpt": "sidebarLinks: SidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/data/src/types.ts",
+      "line": 323,
+      "excerpt": "adminSidebarLinks: DashboardSidebarLink[];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/docs/template-plugins.md",
+      "line": 12,
+      "excerpt": "| Handlebars | JS | `.hbs` | Express.js, static sites |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/docs/template-plugins.md",
+      "line": 111,
+      "excerpt": "| Handlebars | `{{#each products as \\|product\\|}}...{{/each}}` |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/docs/template-plugins.md",
+      "line": 132,
+      "excerpt": "| Handlebars | `{{#if isActive}}...{{/if}}` |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/docs/template-plugins.md",
+      "line": 154,
+      "excerpt": "| Handlebars | `{{uppercase (default title \"Untitled\")}}` |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/docs/template-plugins.md",
+      "line": 174,
+      "excerpt": "| Handlebars | `{{> partials/header title=title}}` |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/docs/template-plugins.md",
+      "line": 205,
+      "excerpt": "| Standard | Liquid | Twig | Handlebars | Latte |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 13,
+      "excerpt": "| `handlebars` | Handlebars | JS | `.hbs` | Express.js, static sites |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 36,
+      "excerpt": "engine: 'react', // or 'liquid', 'handlebars', 'twig', 'latte'"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 48,
+      "excerpt": "const engines = ['react', 'liquid', 'handlebars'];"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 54,
+      "excerpt": "engine: engine as 'react' | 'liquid' | 'handlebars',"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 84,
+      "excerpt": "**Handlebars:**"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 85,
+      "excerpt": "```handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 127,
+      "excerpt": "**Handlebars:**"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 128,
+      "excerpt": "```handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 220,
+      "excerpt": "**Handlebars:**"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 221,
+      "excerpt": "```handlebars"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 11,
+      "excerpt": "| `react` | React JSX | JS | `.tsx` | apps/web, apps/docs |"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 11,
+      "excerpt": "| `react` | React JSX | JS | `.tsx` | apps/web, apps/docs |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/README.md",
+      "line": 550,
+      "excerpt": "| Handlebars | JS | `.hbs` | Express.js, static sites |"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/cli/generate-templates.ts",
+      "line": 9,
+      "excerpt": "*   --engine, -e    Template engine (liquid, handlebars, twig, latte) [default: liquid]"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/cli/generate-templates.ts",
+      "line": 19,
+      "excerpt": "*   bun run generate:templates --engine handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/cli/generate-templates.ts",
+      "line": 31,
+      "excerpt": "engine: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/cli/generate-templates.ts",
+      "line": 60,
+      "excerpt": "if (nextArg && ['react', 'liquid', 'handlebars', 'twig', 'latte'].includes(nextArg)) {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/cli/generate-templates.ts",
+      "line": 121,
+      "excerpt": "--engine, -e    Template engine: liquid, handlebars, twig, latte"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/cli/generate-templates.ts",
+      "line": 144,
+      "excerpt": "# Generate Handlebars templates"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/cli/generate-templates.ts",
+      "line": 145,
+      "excerpt": "bun run generate:templates --engine handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/core/interfaces/IConfig.ts",
+      "line": 132,
+      "excerpt": "* Transforms React components to template files (Liquid, Handlebars, Twig, Latte)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/core/interfaces/IConfig.ts",
+      "line": 138,
+      "excerpt": "engine?: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/generate.ts",
+      "line": 137,
+      "excerpt": "* Transforms React components to template files (Liquid, Handlebars, Twig, Latte)."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/generate.ts",
+      "line": 143,
+      "excerpt": "engine?: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/generate.ts",
+      "line": 949,
+      "excerpt": "* for various template engines (Liquid, Handlebars, Twig, Latte)."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/hast/types.ts",
+      "line": 117,
+      "excerpt": "/** Slot name: \"default\", \"header\", \"footer\", \"sidebar\" */"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/hast/types.ts",
+      "line": 140,
+      "excerpt": "/** Original component name (preserves casing: \"CTABlock\", \"DashSidebar\") */"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/index.ts",
+      "line": 141,
+      "excerpt": "HandlebarsPlugin,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 21,
+      "excerpt": "\"bg-sidebar\": \"background-color: var(--sidebar);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 22,
+      "excerpt": "\"bg-sidebar-foreground\": \"background-color: var(--sidebar-foreground);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 23,
+      "excerpt": "\"bg-sidebar-primary\": \"background-color: var(--sidebar-primary);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 24,
+      "excerpt": "\"bg-sidebar-primary-foreground\": \"background-color: var(--sidebar-primary-foreground);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 25,
+      "excerpt": "\"bg-sidebar-accent\": \"background-color: var(--sidebar-accent);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 26,
+      "excerpt": "\"bg-sidebar-accent-foreground\": \"background-color: var(--sidebar-accent-foreground);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 27,
+      "excerpt": "\"bg-sidebar-border\": \"background-color: var(--sidebar-border);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 28,
+      "excerpt": "\"bg-sidebar-ring\": \"background-color: var(--sidebar-ring);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 39,
+      "excerpt": "\"text-sidebar-foreground\": \"color: var(--sidebar-foreground);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/lib/shadcn.map.json",
+      "line": 40,
+      "excerpt": "\"text-sidebar-primary-foreground\": \"color: var(--sidebar-primary-foreground);\","
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/index.ts",
+      "line": 15,
+      "excerpt": "HandlebarsPlugin,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 2,
+      "excerpt": "* HandlebarsPlugin - Template Plugin for Handlebars Template Engine"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 4,
+      "excerpt": "* Transforms GenHAST trees into Handlebars templates."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 5,
+      "excerpt": "* Handlebars is commonly used with Express.js and static site generators."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 7,
+      "excerpt": "* @see https://handlebarsjs.com/"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 26,
+      "excerpt": "// HandlebarsPlugin Implementation"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 29,
+      "excerpt": "export class HandlebarsPlugin extends BasePlugin {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 34,
+      "excerpt": "readonly name = 'handlebars';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 38,
+      "excerpt": "readonly description = 'Handlebars template engine plugin for Express.js and static sites';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 55,
+      "excerpt": "// Filter Mappings (Handlebars uses helpers)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/HandlebarsPlugin.ts",
+      "line": 59,
+      "excerpt": "// Handlebars uses helpers instead of filters"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 7,
+      "excerpt": "* - HandlebarsPlugin: For Express.js, static sites (JS runtime)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 14,
+      "excerpt": "export { HandlebarsPlugin } from './HandlebarsPlugin';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 21,
+      "excerpt": "import { HandlebarsPlugin } from './HandlebarsPlugin';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 55,
+      "excerpt": "name: 'handlebars',"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 59,
+      "excerpt": "description: 'Handlebars template engine for Express.js and static sites',"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 61,
+      "excerpt": "factory: (config) => new HandlebarsPlugin(),"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 5,
+      "excerpt": "* - ReactPlugin: For apps/web, apps/docs (JS runtime)"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 39,
+      "excerpt": "description: 'React JSX template plugin for apps/web, apps/docs',"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 5,
+      "excerpt": "* - ReactPlugin: For apps/web, apps/docs (JS runtime)"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 39,
+      "excerpt": "description: 'React JSX template plugin for apps/web, apps/docs',"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/LiquidPlugin.test.ts",
+      "line": 208,
+      "excerpt": "const result = plugin.renderSlot({ name: 'sidebar' }, '');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/LiquidPlugin.test.ts",
+      "line": 210,
+      "excerpt": "expect(result).toBe('{{ sidebar_content }}');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.test.ts",
+      "line": 345,
+      "excerpt": "const result = plugin.renderSlot({ name: 'sidebar' }, '');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.test.ts",
+      "line": 346,
+      "excerpt": "expect(result).toBe('{sidebar}');"
+    },
+    {
+      "term": "menu",
+      "replacement": "components",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.test.ts",
+      "line": 389,
+      "excerpt": "partial: 'components/nav_menu',"
+    },
+    {
+      "term": "menu",
+      "replacement": "components",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.test.ts",
+      "line": 391,
+      "excerpt": "expect(result).toBe('<NavMenu />');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.ts",
+      "line": 5,
+      "excerpt": "* Fifth official template plugin alongside Liquid, Handlebars, Twig, and Latte."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.ts",
+      "line": 238,
+      "excerpt": "// String literal types like 'full' | 'sidebar-left'"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.ts",
+      "line": 66,
+      "excerpt": "readonly description = 'React JSX template plugin for apps/web, apps/docs';"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.ts",
+      "line": 66,
+      "excerpt": "readonly description = 'React JSX template plugin for apps/web, apps/docs';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/index.ts",
+      "line": 5,
+      "excerpt": "* GenHAST trees into various template formats (Liquid, Twig, Handlebars, Latte)."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/index.ts",
+      "line": 52,
+      "excerpt": "HandlebarsPlugin,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/ITemplatePlugin.ts",
+      "line": 5,
+      "excerpt": "* for various template engines (Liquid, Handlebars, Twig, Latte, etc.)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/ITemplatePlugin.ts",
+      "line": 137,
+      "excerpt": "/** Unique plugin name (e.g., 'liquid', 'twig', 'handlebars') */"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/scripts/generate-registry.ts",
+      "line": 50,
+      "excerpt": "/** Path relative to dist (e.g. \"blocks/DashSidebar.tsx\") — where to unpack the generated file */"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/index.ts",
+      "line": 1,
+      "excerpt": "// Services barrel export"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/render/RenderService.test.ts",
+      "line": 132,
+      "excerpt": "import { Sidebar } from './layout';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/render/RenderService.test.ts",
+      "line": 145,
+      "excerpt": "expect(imports.get('Sidebar')).toEqual({"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/render/RenderService.ts",
+      "line": 274,
+      "excerpt": "// Handle \"as\" alias: { Foo as Bar }"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/template/TemplateService.ts",
+      "line": 60,
+      "excerpt": "engine: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/template/TemplateService.ts",
+      "line": 365,
+      "excerpt": "handlebars: '.hbs',"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/uikit-map/UiKitMapService.test.ts",
+      "line": 261,
+      "excerpt": "it('should handle bare tokens (empty value)', async () => {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/services/uikit-map/UiKitMapService.ts",
+      "line": 227,
+      "excerpt": "* Handles bare tokens (value=\"\") -> just prop name"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/stages/TemplateStage.ts",
+      "line": 17,
+      "excerpt": "engine?: 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/transformer/hast-builder.ts",
+      "line": 218,
+      "excerpt": "partials: [/^Header$/i, /^Footer$/i, /^Nav(bar)?$/i, /^Sidebar$/i],"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/transformer/hast-builder.ts",
+      "line": 600,
+      "excerpt": "//   CTABlock → cta-block, SidebarContent → sidebar-content, DashSidebar → dash-sidebar"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/transformer/hast-builder.ts",
+      "line": 603,
+      "excerpt": ".replace(/([a-z])([A-Z])/g, '$1-$2')          // split camel (sideBar → side-Bar)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/src/transformer/types.ts",
+      "line": 58,
+      "excerpt": "partials: [/^Header$/i, /^Footer$/i, /^Nav(bar)?$/i, /^Sidebar$/i, /^.*partials?\\/.*/i],"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/test/integration/real-components.test.ts",
+      "line": 7,
+      "excerpt": "import { LiquidPlugin, HandlebarsPlugin, TwigPlugin, LattePlugin } from '../../src/plugins/template/built-in';"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/test/integration/real-components.test.ts",
+      "line": 224,
+      "excerpt": "it('generates Handlebars template from Card', async () => {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/test/integration/real-components.test.ts",
+      "line": 227,
+      "excerpt": "const plugin = new HandlebarsPlugin();"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/test/integration/real-components.test.ts",
+      "line": 236,
+      "excerpt": "// Should contain Handlebars syntax"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/vite.config.ts",
+      "line": 51,
+      "excerpt": "// External: any bare import (npm packages)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/generator/vitest.config.ts",
+      "line": 47,
+      "excerpt": "'src/**/index.ts', // Barrel exports only"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/README.md",
+      "line": 7,
+      "excerpt": "This package provides declarative React components that define template logic. These components are detected by the `@ui8kit/generator` and converted to template engine syntax (Liquid, Handlebars, Twi"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/README.md",
+      "line": 151,
+      "excerpt": "### Handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/README.md",
+      "line": 153,
+      "excerpt": "```handlebars"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/src/components/Block.test.tsx",
+      "line": 18,
+      "excerpt": "createElement(DefineBlock, { name: 'sidebar' })"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/src/components/Block.test.tsx",
+      "line": 20,
+      "excerpt": "expect(html).toContain('data-gen-block=\"sidebar\"');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/src/components/index.ts",
+      "line": 5,
+      "excerpt": "* that will be converted to template engine syntax (Liquid, Handlebars, Twig, Latte)."
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/src/components/Slot.test.tsx",
+      "line": 26,
+      "excerpt": "createElement(Slot, { name: 'sidebar' })"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/src/components/Slot.test.tsx",
+      "line": 28,
+      "excerpt": "expect(html).toContain('data-gen-slot=\"sidebar\"');"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/template/src/index.ts",
+      "line": 9,
+      "excerpt": "* - Handlebars (JavaScript)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/lint/src/validator.test.ts",
+      "line": 34,
+      "excerpt": "it(\"returns null for valid boolean true (bare token)\", () => {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/lint/src/validator.test.ts",
+      "line": 38,
+      "excerpt": "it(\"returns error for invalid boolean true on non-bare props\", () => {"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/lint/src/validator.ts",
+      "line": 52,
+      "excerpt": "// Handle boolean true - means bare token (e.g., flex={true} -> \"flex\")"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/lint/src/validator.ts",
+      "line": 54,
+      "excerpt": "// Check if empty string is allowed (bare token)"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/lint/src/validator.ts",
+      "line": 60,
+      "excerpt": "message: `Prop '${prop}' doesn't support bare token (true). Use a value.`,"
+    },
+    {
+      "term": "bar",
+      "replacement": "showcase",
+      "severity": "warn",
+      "file": "packages/lint/src/whitelist-sync.ts",
+      "line": 45,
+      "excerpt": "* Handles bare tokens (value=\"\") -> just prop name"
+    }
+  ],
+  "severity": "warn",
+  "recommendations": [
+    "Review warn-level residual matches and confirm intentional exceptions."
+  ]
+}

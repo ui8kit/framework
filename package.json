@@ -28,6 +28,8 @@
     "bundle-data": "bun run scripts/bundle-data.ts",
     "alias-data": "bun run scripts/configure-data-alias.ts",
     "validate:data-bundle": "bun run scripts/validate-data-bundle.ts",
+    "validate:invariants": "bun run scripts/validate-invariants.ts",
+    "audit:refactor": "bun run scripts/refactor-audit.ts --mapping .manual/brand-mapping.json",
     "quality:local": "bash scripts/quality-gate.sh",
     "pipeline-app": "bun run scripts/pipeline-app.ts",
     "pipeline:dev": "bun run scripts/pipeline-app.ts all --target dev --domain website --data-mode local",

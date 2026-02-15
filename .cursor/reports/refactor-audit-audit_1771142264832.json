@@ -1,0 +1,195 @@
+{
+  "runId": "audit_1771142264832",
+  "generatedAt": "2026-02-15T07:57:44.882Z",
+  "scope": [
+    "apps/engine",
+    "packages/core",
+    "packages/blocks",
+    "packages/data",
+    "packages/generator",
+    "packages/template",
+    "packages/lint"
+  ],
+  "mappingVersion": "1.0.0",
+  "mappingFile": ".manual/brand-mapping.json",
+  "filesScanned": 298,
+  "metrics": [
+    {
+      "from": "restaurant",
+      "to": "design system",
+      "severity": "error",
+      "oldCount": 0,
+      "newCount": 10,
+      "residualCount": 0,
+      "expectedCount": 10
+    },
+    {
+      "from": "recipes",
+      "to": "guides",
+      "severity": "error",
+      "oldCount": 0,
+      "newCount": 92,
+      "residualCount": 0,
+      "expectedCount": 92
+    },
+    {
+      "from": "promotions",
+      "to": "showcase",
+      "severity": "error",
+      "oldCount": 0,
+      "newCount": 81,
+      "residualCount": 0,
+      "expectedCount": 81
+    },
+    {
+      "from": "apps/web",
+      "to": "apps/engine",
+      "severity": "warn",
+      "oldCount": 5,
+      "newCount": 22,
+      "residualCount": 5,
+      "expectedCount": 27
+    },
+    {
+      "from": "apps/docs",
+      "to": "apps/engine",
+      "severity": "warn",
+      "oldCount": 4,
+      "newCount": 22,
+      "residualCount": 4,
+      "expectedCount": 26
+    },
+    {
+      "from": "getDocsSidebarLinks",
+      "to": "getAdminSidebarLinks",
+      "severity": "warn",
+      "oldCount": 2,
+      "newCount": 19,
+      "residualCount": 2,
+      "expectedCount": 21
+    },
+    {
+      "from": "getExamplesSidebarLinks",
+      "to": "getAdminSidebarLinks",
+      "severity": "warn",
+      "oldCount": 2,
+      "newCount": 19,
+      "residualCount": 2,
+      "expectedCount": 21
+    }
+  ],
+  "totals": {
+    "residualCount": 13,
+    "replacedCount": 265
+  },
+  "residualMatches": [
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "apps/engine/src/shared/README.md",
+      "line": 9,
+      "excerpt": "- **Extract to packages/blocks/components**: Component used across engine and other apps (e.g. apps/web). Place in `packages/blocks/src/components/` for reuse across the monorepo."
+    },
+    {
+      "term": "getDocsSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 53,
+      "excerpt": "- `getDocsSidebarLinks(activeHref)` and `getExamplesSidebarLinks(activeHref)` are cached by `activeHref` (max 20 entries, FIFO eviction)"
+    },
+    {
+      "term": "getDocsSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 61,
+      "excerpt": "context.domains.docs     // docsIntro, docsInstallation, docsComponents, getDocsSidebarLinks"
+    },
+    {
+      "term": "getExamplesSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 53,
+      "excerpt": "- `getDocsSidebarLinks(activeHref)` and `getExamplesSidebarLinks(activeHref)` are cached by `activeHref` (max 20 entries, FIFO eviction)"
+    },
+    {
+      "term": "getExamplesSidebarLinks",
+      "replacement": "getAdminSidebarLinks",
+      "severity": "warn",
+      "file": "packages/data/README.md",
+      "line": 62,
+      "excerpt": "context.domains.examples // examples, getExamplesSidebarLinks"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 11,
+      "excerpt": "| `react` | React JSX | JS | `.tsx` | apps/web, apps/docs |"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/PLUGINS.md",
+      "line": 11,
+      "excerpt": "| `react` | React JSX | JS | `.tsx` | apps/web, apps/docs |"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 5,
+      "excerpt": "* - ReactPlugin: For apps/web, apps/docs (JS runtime)"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 39,
+      "excerpt": "description: 'React JSX template plugin for apps/web, apps/docs',"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 5,
+      "excerpt": "* - ReactPlugin: For apps/web, apps/docs (JS runtime)"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/index.ts",
+      "line": 39,
+      "excerpt": "description: 'React JSX template plugin for apps/web, apps/docs',"
+    },
+    {
+      "term": "apps/web",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.ts",
+      "line": 66,
+      "excerpt": "readonly description = 'React JSX template plugin for apps/web, apps/docs';"
+    },
+    {
+      "term": "apps/docs",
+      "replacement": "apps/engine",
+      "severity": "warn",
+      "file": "packages/generator/src/plugins/template/built-in/ReactPlugin.ts",
+      "line": 66,
+      "excerpt": "readonly description = 'React JSX template plugin for apps/web, apps/docs';"
+    }
+  ],
+  "severity": "warn",
+  "recommendations": [
+    "Review warn-level residual matches and confirm intentional exceptions."
+  ]
+}

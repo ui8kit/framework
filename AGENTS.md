@@ -88,6 +88,19 @@ This staged gate model is mandatory because it balances speed and consistency.
 - "Run lint/type checks after each domain chunk."
 - "Do not proceed to next chunk until lint is clean (or explicitly report blockers)."
 
+## 5.2) LLM Refactor Guardrails (Required)
+
+When performing brand/domain refactors with AI agents, treat this as mandatory protocol:
+
+1. Read and follow `.manual/_brand-migration-spec.md`.
+2. Use dictionary-based replacements from `.manual/brand-mapping.json`.
+3. Run:
+   - `bun run quality:local`
+   - `bun run audit:refactor`
+   - `bun run validate:invariants`
+4. Keep generated audit/invariant reports under `.cursor/reports/` for review.
+5. Do not mark refactor complete if residual legacy terms remain without explicit justification.
+
 ## 6) Data Layer Consistency
 
 When changing routes or domain names:
