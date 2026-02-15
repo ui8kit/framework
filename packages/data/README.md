@@ -50,17 +50,15 @@ export function HomePage() {
 
 ## Caching and Memory
 
-- `getDocsSidebarLinks(activeHref)` and `getExamplesSidebarLinks(activeHref)` are cached by `activeHref` (max 20 entries, FIFO eviction)
+- `getAdminSidebarLinks(activeHref)` is cached by `activeHref` (max 20 entries, FIFO eviction)
 - Use `EMPTY_ARRAY` instead of `x ?? []` to avoid creating new arrays on every access
 - Call `clearCache()` for tests or explicit cleanup
 
 ## Domain-Scoped Access
 
 ```ts
-context.domains.website  // hero, features, pricing, site, navItems, sidebarLinks
-context.domains.docs     // docsIntro, docsInstallation, docsComponents, getDocsSidebarLinks
-context.domains.examples // examples, getExamplesSidebarLinks
-context.domains.dashboard // dashboard, dashboardSidebarLinks
+context.domains.website // page, hero, features, components, guides, blog, showcase, testimonials, cta, site, navItems, sidebarLinks
+context.domains.admin   // page, admin, adminSidebarLinks, adminSidebarLabel, getAdminSidebarLinks
 ```
 
 ## Adding New Fixtures

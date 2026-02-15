@@ -8,7 +8,7 @@ The generator includes 5 official plugins for popular template engines:
 
 | Plugin | Engine | Runtime | Extension | Use Case |
 |--------|--------|---------|-----------|----------|
-| `react` | React JSX | JS | `.tsx` | apps/web, apps/docs |
+| `react` | React JSX | JS | `.tsx` | apps/engine |
 | `liquid` | Liquid | JS | `.liquid` | Shopify, Jekyll, Eleventy |
 | `handlebars` | Handlebars | JS | `.hbs` | Express.js, static sites |
 | `twig` | Twig | PHP | `.twig` | Symfony, PHP applications |

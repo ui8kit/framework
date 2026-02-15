@@ -5,7 +5,7 @@ import { loadScaffoldConfig } from "./scaffold-config";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
-type Domain = "website" | "docs" | "examples" | "dashboard";
+type Domain = "website";
 type DataMode = "local" | "shared";
 type Command = "generate" | "sync" | "scaffold" | "install" | "bundle-data" | "alias-data" | "all";
 
@@ -45,7 +45,7 @@ async function resolveRuntimeConfig(): Promise<{ target: string; domain: Domain;
   const target = parseArg("--target") ?? process.env.TARGET_APP ?? cfg.appName ?? "dev";
   const domainArg = parseArg("--domain") ?? process.env.DOMAIN ?? cfg.domain ?? "website";
   const dataModeArg = parseArg("--data-mode") ?? process.env.DATA_MODE ?? cfg.dataMode ?? "local";
-  const domain = (["website", "docs", "examples", "dashboard"].includes(domainArg)
+  const domain = (["website"].includes(domainArg)
     ? domainArg
     : "website") as Domain;
   const dataMode = normalizeDataMode(dataModeArg);

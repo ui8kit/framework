@@ -91,20 +91,6 @@ export interface FeaturesFixture {
   }>;
 }
 
-export interface PricingFixture {
-  title?: string;
-  subtitle?: string;
-  plans?: Array<{
-    id: string;
-    name: string;
-    price: string;
-    period?: string;
-    features: string[];
-    ctaText?: string;
-    ctaUrl?: string;
-  }>;
-}
-
 export interface TestimonialsFixture {
   title?: string;
   testimonials?: Array<{
@@ -124,24 +110,6 @@ export interface CTAFixture {
   ctaUrl?: string;
   secondaryCtaText?: string;
   secondaryCtaUrl?: string;
-}
-
-export interface ProductsFixture {
-  products?: Array<{
-    id: string;
-    title: string;
-    description?: string;
-    price?: string;
-    image?: string;
-    url?: string;
-  }>;
-}
-
-export interface DashboardFixture {
-  title?: string;
-  description?: string;
-  ctaText?: string;
-  ctaUrl?: string;
 }
 
 export interface ComponentItem {
@@ -212,56 +180,6 @@ export interface ShowcaseFixture {
 
 export interface AdminFixture {
   exportSchema?: Record<string, string>;
-}
-
-export interface DocsSection {
-  id: string;
-  title: string;
-  text?: string;
-  code?: string;
-}
-
-export interface DocsIntroFixture {
-  title?: string;
-  lead?: string;
-  sections?: DocsSection[];
-}
-
-export interface DocsInstallationFixture {
-  title?: string;
-  lead?: string;
-  sections?: DocsSection[];
-}
-
-export interface DocsComponentsFixture {
-  title?: string;
-  lead?: string;
-}
-
-export interface ExamplesFixture {
-  title?: string;
-  description?: string;
-  button?: {
-    title?: string;
-    defaultLabel?: string;
-    outlineLabel?: string;
-    ghostLabel?: string;
-  };
-  badge?: {
-    title?: string;
-    defaultLabel?: string;
-    secondaryLabel?: string;
-    outlineLabel?: string;
-  };
-  typography?: {
-    title?: string;
-    heading?: string;
-    body?: string;
-  };
-  actions?: {
-    explore?: string;
-    allComponents?: string;
-  };
 }
 
 // -----------------------------------------------------------------------------

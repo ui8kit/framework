@@ -33,6 +33,11 @@ export function MainLayoutView({
   showHeader,
   showFooter,
 }: MainLayoutProps) {
+  const resolvedMode = mode ?? 'with-sidebar';
+  const hasSidebarLayout = resolvedMode === 'with-sidebar' || resolvedMode === 'sidebar-left';
+  const isSidebarLeft = resolvedMode === 'sidebar-left';
+  const shouldRenderFull = resolvedMode === 'full' || !sidebar;
+
   return (
     <Fragment>
       <If test="showHeader ?? true" value={showHeader ?? true}>
@@ -46,10 +51,7 @@ export function MainLayoutView({
 
       {/* Main Content */}
       <Block component="main" flex="1" py="8" data-class="main-layout-content">
-        <If
-          test="(mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left'"
-          value={(mode ?? 'with-sidebar') === 'with-sidebar' || (mode ?? 'with-sidebar') === 'sidebar-left'}
-        >
+        <If test="hasSidebarLayout" value={hasSidebarLayout}>
           <If test="!!sidebar" value={!!sidebar}>
             <Container data-class="main-layout-container">
               <Grid
@@ -57,7 +59,7 @@ export function MainLayoutView({
                 gap="8"
                 data-class="main-layout-grid"
               >
-                <If test="(mode ?? 'with-sidebar') === 'sidebar-left'" value={(mode ?? 'with-sidebar') === 'sidebar-left'}>
+                <If test="isSidebarLeft" value={isSidebarLeft}>
                   <>
                     <Stack
                       col="span-2"
@@ -80,7 +82,7 @@ export function MainLayoutView({
                   </>
                 </If>
 
-                <If test="(mode ?? 'with-sidebar') !== 'sidebar-left'" value={(mode ?? 'with-sidebar') !== 'sidebar-left'}>
+                <If test="!isSidebarLeft" value={!isSidebarLeft}>
                   <>
                     <Stack
                       col="span-2"
@@ -107,10 +109,7 @@ export function MainLayoutView({
           </If>
         </If>
 
-        <If
-          test="(mode ?? 'with-sidebar') === 'full' || !sidebar"
-          value={(mode ?? 'with-sidebar') === 'full' || !sidebar}
-        >
+        <If test="shouldRenderFull" value={shouldRenderFull}>
           <Container
             flex="col"
             gap="6"

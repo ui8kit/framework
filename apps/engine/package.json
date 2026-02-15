@@ -12,6 +12,8 @@
     "lint:dsl": "bun run ../../packages/lint/src/cli/validate-dsl.ts apps/engine/src",
     "test": "vitest run",
     "test:watch": "vitest",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@ui8kit/generator": "workspace:*",

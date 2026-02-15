@@ -83,6 +83,130 @@ describe('context', () => {
     });
   });
 
+  describe('resolveNavigation', () => {
+    it('enables static internal routes', () => {
+      const result = context.resolveNavigation('/components');
+      expect(result).toEqual({
+        href: '/components',
+        enabled: true,
+        mode: 'soft',
+      });
+    });
+
+    it('enables dynamic guide and blog routes', () => {
+      const guide = context.resolveNavigation('/guides/getting-started');
+      const blog = context.resolveNavigation('/blog/architecture-principles');
+      expect(guide.enabled).toBe(true);
+      expect(blog.enabled).toBe(true);
+      expect(guide.mode).toBe('soft');
+      expect(blog.mode).toBe('soft');
+    });
+
+    it('disables unknown internal routes with reason', () => {
+      const result = context.resolveNavigation('/unknown-page');
+      expect(result.enabled).toBe(false);
+      expect(result.mode).toBe('soft');
+      expect(result.reason).toBe('Not available in this domain build');
+    });
+
+    it('enables external links without modification', () => {
+      const result = context.resolveNavigation('https://example.com');
+      expect(result).toEqual({
+        href: 'https://example.com',
+        enabled: true,
+        mode: 'soft',
+      });
+    });
+
+    it('normalizes trailing slashes, query strings, and hash fragments', () => {
+      const result = context.resolveNavigation('/guides/getting-started/?tab=1#intro');
+      expect(result.href).toBe('/guides/getting-started');
+      expect(result.enabled).toBe(true);
+    });
+  });
+
+  describe('navigation policy', () => {
+    it('exposes a frozen availablePaths array with required routes', () => {
+      expect(Object.isFrozen(context.navigation.availablePaths)).toBe(true);
+      expect(context.navigation.availablePaths).toEqual(
+        expect.arrayContaining([
+          '/',
+          '/components',
+          '/guides',
+          '/blog',
+          '/showcase',
+          '/admin',
+          '/admin/dashboard',
+        ])
+      );
+    });
+
+    it('isEnabled mirrors route availability', () => {
+      expect(context.navigation.isEnabled('/components')).toBe(true);
+      expect(context.navigation.isEnabled('/guides/getting-started')).toBe(true);
+      expect(context.navigation.isEnabled('/missing')).toBe(false);
+    });
+
+    it('keeps soft mode and unavailable tooltip', () => {
+      expect(context.navigation.mode).toBe('soft');
+      expect(context.navigation.unavailableTooltip).toBe('Not available in this domain build');
+    });
+  });
+
+  describe('public API contract', () => {
+    it('exposes stable top-level context keys', () => {
+      expect(Object.keys(context).sort()).toEqual([
+        'admin',
+        'adminSidebarLabel',
+        'adminSidebarLinks',
+        'blog',
+        'clearCache',
+        'components',
+        'cta',
+        'domains',
+        'features',
+        'getAdminSidebarLinks',
+        'getPageByPath',
+        'getPagesByDomain',
+        'getSidebarCacheDiagnostics',
+        'guides',
+        'hero',
+        'navItems',
+        'navigation',
+        'page',
+        'resolveNavigation',
+        'routes',
+        'showcase',
+        'sidebarLinks',
+        'site',
+        'testimonials',
+      ]);
+    });
+
+    it('exposes website and admin domains only', () => {
+      expect(Object.keys(context.domains).sort()).toEqual(['admin', 'website']);
+    });
+  });
+
+  describe('fixture data integrity', () => {
+    it('keeps expected content counts', () => {
+      expect(context.blog.posts).toHaveLength(3);
+      expect(context.showcase.projects).toHaveLength(3);
+      expect(context.guides.guides).toHaveLength(3);
+    });
+
+    it('keeps required fields for guides and blog posts', () => {
+      for (const guide of context.guides.guides ?? []) {
+        expect(guide.slug).toBeTruthy();
+        expect(guide.body).toBeTruthy();
+      }
+      for (const post of context.blog.posts ?? []) {
+        expect(post.slug).toBeTruthy();
+        expect(post.body).toBeTruthy();
+      }
+    });
+  });
+
   describe('cache diagnostics', () => {
     it('reports total entries and runtime stats', () => {
       context.getAdminSidebarLinks('/admin');

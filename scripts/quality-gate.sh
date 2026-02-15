@@ -107,6 +107,11 @@ run_optional_step \
   bash -lc "cd apps/engine && bun run test"
 
 run_optional_step \
+  "Run e2e smoke apps/engine (optional until stabilized)" \
+  "Install Playwright browsers and stabilize smoke tests before making this mandatory." \
+  bash -lc "cd apps/engine && bun run e2e"
+
+run_optional_step \
   "Run tests packages/mdx-react (optional by policy)" \
   "Stabilize mdx-react tests or complete deprecation plan." \
   bash -lc "cd packages/mdx-react && bun run test"

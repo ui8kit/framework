@@ -278,8 +278,8 @@ ui8kit-framework/
 - [Generator Package](packages/generator/README.md)
 - [Engine Pipeline Guide](apps/engine/PIPELINE.md)
 - [Engine README](apps/engine/README.md)
-- [Architecture Rules](.cursor/rules/architecture.mdc)
-- [UI8Kit Props Rules](.cursor/rules/ui8kit.mdc)
+- [Architecture Rules](.cursor/rules/ui8kit-architecture.mdc)
+- [UI8Kit Best Practices](.cursor/rules/best-practices.mdc)
 
 ## Domain Navigation Rules (Internal)
 

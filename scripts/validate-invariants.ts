@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "fs";
 import { dirname, extname, join, relative } from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 
 interface CheckIssue {
   level: "error" | "warn";
@@ -61,7 +61,7 @@ function addIssue(issues: CheckIssue[], issue: CheckIssue): void {
   issues.push(issue);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const issues: CheckIssue[] = [];
   const runId = `invariants_${Date.now()}`;
 
@@ -160,6 +160,85 @@ function main(): void {
     }
   }
 
+  const dataIndexPath = join(repoRoot, "packages", "data", "src", "index.ts");
+  const dataModule = await import(pathToFileURL(dataIndexPath).href);
+  const runtimeContext = dataModule.context as {
+    resolveNavigation?: (href: string) => { href: string; enabled: boolean; mode: string; reason?: string };
+    navigation?: { availablePaths?: string[]; unavailableTooltip?: string };
+  };
+
+  if (typeof runtimeContext.resolveNavigation !== "function") {
+    addIssue(issues, {
+      level: "error",
+      code: "NAVIGATION_RESOLVER_MISSING",
+      message: "context.resolveNavigation is not a callable function.",
+      path: "packages/data/src/index.ts",
+    });
+  } else {
+    for (const routePath of [...requiredWebsitePaths, ...requiredAdminPaths]) {
+      const result = runtimeContext.resolveNavigation(routePath);
+      if (!result || typeof result.href !== "string" || typeof result.enabled !== "boolean" || result.mode !== "soft") {
+        addIssue(issues, {
+          level: "error",
+          code: "NAVIGATION_STATE_SHAPE_INVALID",
+          message: `resolveNavigation(${routePath}) returned invalid state shape.`,
+          path: "packages/data/src/index.ts",
+        });
+        continue;
+      }
+      if (!result.enabled) {
+        addIssue(issues, {
+          level: "error",
+          code: "NAVIGATION_DISABLED_FOR_REQUIRED_ROUTE",
+          message: `resolveNavigation disabled a required route: ${routePath}`,
+          path: "packages/data/src/index.ts",
+        });
+      }
+    }
+
+    const dynamicGuides = runtimeContext.resolveNavigation("/guides/getting-started");
+    const dynamicBlog = runtimeContext.resolveNavigation("/blog/architecture-principles");
+    if (!dynamicGuides.enabled || !dynamicBlog.enabled) {
+      addIssue(issues, {
+        level: "error",
+        code: "DYNAMIC_NAVIGATION_ROUTE_DISABLED",
+        message: "resolveNavigation must enable dynamic guide/blog detail routes.",
+        path: "packages/data/src/index.ts",
+      });
+    }
+  }
+
+  const pipelineAppPath = "scripts/pipeline-app.ts";
+  const bundleDataPath = "scripts/bundle-data.ts";
+  const pipelineContent = readText(pipelineAppPath);
+  const bundleContent = readText(bundleDataPath);
+  const pipelineDomainMatch = pipelineContent.match(/type Domain = ([^;]+);/);
+  const bundleDomainsMatch = bundleContent.match(/const DOMAINS = \[([^\]]+)\] as const;/);
+  const expectedDomainLiteral = `"website"`;
+  if (!pipelineDomainMatch || !pipelineDomainMatch[1]?.includes(expectedDomainLiteral)) {
+    addIssue(issues, {
+      level: "error",
+      code: "PIPELINE_DOMAIN_TYPE_MISSING_WEBSITE",
+      message: 'pipeline-app Domain type must include "website".',
+      path: pipelineAppPath,
+    });
+  } else if (pipelineDomainMatch[1].replace(/\s/g, "") !== expectedDomainLiteral) {
+    addIssue(issues, {
+      level: "error",
+      code: "PIPELINE_DOMAIN_TYPE_DRIFT",
+      message: 'pipeline-app Domain type must be exactly "website".',
+      path: pipelineAppPath,
+    });
+  }
+  if (!bundleDomainsMatch || bundleDomainsMatch[1].replace(/\s/g, "") !== expectedDomainLiteral) {
+    addIssue(issues, {
+      level: "error",
+      code: "BUNDLE_DOMAINS_DRIFT",
+      message: 'bundle-data DOMAINS must be exactly ["website"].',
+      path: bundleDataPath,
+    });
+  }
+
   const blogPath = "packages/data/src/fixtures/website/blog.json";
   const showcasePath = "packages/data/src/fixtures/website/showcase.json";
   const blog = JSON.parse(readText(blogPath)) as { posts?: unknown[] };
@@ -224,4 +303,7 @@ function main(): void {
   }
 }
 
-main();
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+});
