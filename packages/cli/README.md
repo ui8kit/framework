@@ -90,6 +90,46 @@ Options:
 - `-o, --output <path>` Output directory (default: `./packages/registry/r`)
 - `-c, --cwd <cwd>` Working directory
 
+### `validate`
+
+Validate SDK app configuration and DSL files in the current project.
+
+```bash
+bunx ui8kit@latest validate
+bunx ui8kit@latest validate --cwd ./apps/engine
+```
+
+### `generate`
+
+Generate templates/artifacts for configured target engine from DSL sources.
+
+```bash
+bunx ui8kit@latest generate
+bunx ui8kit@latest generate --target liquid --out-dir ./dist/liquid
+```
+
+Options:
+
+- `--cwd <dir>` Working directory
+- `--target <engine>` Target engine (`react`, `liquid`, `handlebars`, `twig`, `latte`)
+- `--out-dir <dir>` Output directory override
+
+### `inspect`
+
+Inspect resolved UI8Kit app configuration.
+
+```bash
+bunx ui8kit@latest inspect
+```
+
+### `dev`
+
+Start Vite dev server for SDK-configured project.
+
+```bash
+bunx ui8kit@latest dev
+```
+
 ## Typical Flow
 
 ```bash

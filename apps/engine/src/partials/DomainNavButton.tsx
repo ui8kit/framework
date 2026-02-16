@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Button } from '@ui8kit/core';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 type DomainNavButtonProps = {
   href: string;

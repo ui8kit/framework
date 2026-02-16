@@ -6,13 +6,17 @@ import { addCommand } from "./commands/add.js"
 import { initCommand } from "./commands/init.js"
 import { buildCommand } from "./commands/build.js"
 import { scanCommand } from "./commands/scan.js"
+import { validateCommand } from "./commands/validate.js"
+import { devCommand } from "./commands/dev.js"
+import { generateCommand } from "./commands/generate.js"
+import { inspectCommand } from "./commands/inspect.js"
 
 const program = new Command()
 
 program
   .name("ui8kit")
   .description("A CLI for adding UI components to your Vite React projects (UI8Kit registry)")
-  .version("0.1.0")
+  .version("1.1.0")
 
 program
   .command("init")
@@ -50,6 +54,32 @@ program
   .option("-o, --output <path>", "Output directory", "./packages/registry/r")
   .option("-c, --cwd <cwd>", "Working directory", process.cwd())
   .action(buildCommand)
+
+program
+  .command("validate")
+  .description("Validate UI8Kit app config and DSL")
+  .option("--cwd <dir>", "Working directory")
+  .action(validateCommand)
+
+program
+  .command("dev")
+  .description("Run Vite dev server for current UI8Kit app")
+  .option("--cwd <dir>", "Working directory")
+  .action(devCommand)
+
+program
+  .command("generate")
+  .description("Generate target templates using SDK")
+  .option("--cwd <dir>", "Working directory")
+  .option("--out-dir <dir>", "Output directory override")
+  .option("--target <engine>", "Target engine: react|liquid|handlebars|twig|latte")
+  .action(generateCommand)
+
+program
+  .command("inspect")
+  .description("Inspect resolved UI8Kit app config")
+  .option("--cwd <dir>", "Working directory")
+  .action(inspectCommand)
 
 program.on("command:*", () => {
   console.error(chalk.red(`Invalid command: ${program.args.join(" ")}`))

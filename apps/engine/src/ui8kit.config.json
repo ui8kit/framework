@@ -1,5 +1,5 @@
 {
-  "$schema": "https://buildy.tw/schema.json",
+  "$schema": "https://ui.buildy.tw/schema.json",
   "framework": "vite-react",
   "typescript": true,
   "aliases": {

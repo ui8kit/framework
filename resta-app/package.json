@@ -1,0 +1,14 @@
+{
+  "name": "@brands/resta-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "bunx ui8kit validate --cwd .",
+    "generate": "bunx ui8kit generate --cwd . --target react",
+    "dev": "bunx ui8kit dev --cwd ."
+  },
+  "dependencies": {
+    "@ui8kit/sdk": "workspace:*"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "name": "@ui8kit/sdk",
+  "version": "0.1.0",
+  "description": "UI8Kit SDK for app definition, validation, and DSL generation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config.js",
+      "types": "./dist/config.d.ts"
+    },
+    "./validate": {
+      "import": "./dist/validate.js",
+      "types": "./dist/validate.d.ts"
+    },
+    "./build": {
+      "import": "./dist/build.js",
+      "types": "./dist/build.d.ts"
+    },
+    "./data": {
+      "import": "./dist/data.js",
+      "types": "./dist/data.d.ts"
+    },
+    "./source": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./source/config": {
+      "import": "./src/config.ts",
+      "types": "./src/config.ts"
+    },
+    "./source/validate": {
+      "import": "./src/validate.ts",
+      "types": "./src/validate.ts"
+    },
+    "./source/build": {
+      "import": "./src/build.ts",
+      "types": "./src/build.ts"
+    },
+    "./source/data": {
+      "import": "./src/data.ts",
+      "types": "./src/data.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ui8kit/data-contracts": "workspace:*",
+    "@ui8kit/generator": "workspace:*",
+    "@ui8kit/lint": "workspace:*",
+    "@ui8kit/template": "workspace:*",
+    "glob": "^13.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  }
+}

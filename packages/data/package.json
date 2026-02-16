@@ -23,6 +23,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
+  "dependencies": {
+    "@ui8kit/data-contracts": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.8.0",
     "vitest": "^4.0.18"

@@ -21,6 +21,7 @@
     "@ui8kit/blocks": "workspace:*",
     "@ui8kit/core": "workspace:*",
     "@ui8kit/data": "workspace:*",
+    "@ui8kit/sdk": "workspace:*",
     "@ui8kit/template": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

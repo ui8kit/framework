@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { SidebarContent, GuideDetailPageView } from '@/blocks';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export function GuideDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const guide = context.guides.guides?.find((r) => r.slug === slug);
+  const guide = context.guides.guides?.find((r: { slug?: string }) => r.slug === slug);
 
   return (
     <GuideDetailPageView

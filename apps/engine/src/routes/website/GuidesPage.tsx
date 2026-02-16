@@ -1,5 +1,5 @@
 import { SidebarContent, GuidesPageView } from '@/blocks';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export function GuidesPage() {
   return (

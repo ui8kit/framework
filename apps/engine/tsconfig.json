@@ -10,7 +10,8 @@
       "@ui8kit/core": ["../../packages/core/src/index.ts"],
       "@ui8kit/template": ["../../packages/template/src/index.ts"],
       "@ui8kit/blocks": ["../../packages/blocks/src/index.ts"],
-      "@ui8kit/data": ["../../packages/data/src/index.ts"]
+      "@ui8kit/data": ["../../packages/data/src/index.ts"],
+      "@ui8kit/sdk": ["../../packages/sdk/src/index.ts"]
     }
   },
   "include": ["src/**/*", "*.ts"],

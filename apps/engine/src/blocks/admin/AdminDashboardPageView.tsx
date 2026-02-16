@@ -4,7 +4,7 @@ import { AdminLayout } from '@/layouts';
 import { DashSidebar } from '@/blocks';
 import { Block, Stack, Title, Text, Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from '@ui8kit/core';
 import { useAdminAuth } from '@/providers/AdminAuthContext';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export interface AdminDashboardPageViewProps {
   onExport?: () => void;

@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { SidebarContent, BlogDetailPageView } from '@/blocks';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export function BlogDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const post = context.blog.posts?.find((p) => p.slug === slug);
+  const post = context.blog.posts?.find((p: { slug?: string }) => p.slug === slug);
 
   return (
     <BlogDetailPageView

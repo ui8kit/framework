@@ -90,7 +90,9 @@ export async function initCommand(options: InitOptions) {
   const spinner = ora(CLI_MESSAGES.info.initializing(registryName)).start()
   
   try {
-    // Save configuration under ./src
+    // Save configuration in project root (SDK-compatible)
+    await saveConfig(config)
+    // Backward compatibility for existing workflows expecting ./src/ui8kit.config.json
     await saveConfig(config, "./src")
     
     // Create src-based directory structure
