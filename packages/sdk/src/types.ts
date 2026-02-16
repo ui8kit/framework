@@ -1,9 +1,10 @@
-import type { LintError } from '@ui8kit/lint/source';
+import type { LintError } from '@ui8kit/lint';
 
 export type BuildTarget = 'react' | 'liquid' | 'handlebars' | 'twig' | 'latte';
 
 export interface AppConfig {
   $schema?: string;
+  configVersion?: string;
   brand: string;
   framework: 'vite-react';
   typescript?: boolean;
@@ -22,6 +23,17 @@ export interface AppConfig {
     strict?: boolean;
     dsl?: boolean;
   };
+}
+
+export interface ConfigLoadWarning {
+  code: 'LEGACY_SCHEMA_URL' | 'LEGACY_CONFIG_SHAPE';
+  message: string;
+}
+
+export interface LoadedAppConfig {
+  config: AppConfig;
+  configPath: string;
+  warnings: ConfigLoadWarning[];
 }
 
 export interface ValidationIssue {

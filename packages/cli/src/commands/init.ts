@@ -57,7 +57,8 @@ export async function initCommand(options: InitOptions) {
   
   if (options.yes) {
     config = {
-      $schema: `${SCHEMA_CONFIG.baseUrl}.json`,
+      $schema: SCHEMA_CONFIG.configSchemaUrl,
+      configVersion: SCHEMA_CONFIG.configVersion,
       framework: "vite-react",
       typescript: true,
       aliases,
@@ -77,7 +78,8 @@ export async function initCommand(options: InitOptions) {
     ])
     
     config = {
-      $schema: `${SCHEMA_CONFIG.baseUrl}.json`,
+      $schema: SCHEMA_CONFIG.configSchemaUrl,
+      configVersion: SCHEMA_CONFIG.configVersion,
       framework: "vite-react",
       typescript: responses.typescript,
       aliases,

@@ -116,6 +116,11 @@ run_optional_step \
   "Stabilize mdx-react tests or complete deprecation plan." \
   bash -lc "cd packages/mdx-react && bun run test"
 
+run_optional_step \
+  "SDK integration checks (engine + resta)" \
+  "Inspect CLI SDK commands and generated output parity for engine/resta projects." \
+  bun run check:sdk-integration
+
 run_step \
   "Validate architecture invariants" \
   "Fix invariant violations for routes, domains, fixtures, and terminology." \

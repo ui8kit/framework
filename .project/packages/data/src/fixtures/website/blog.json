@@ -1,9 +1,0 @@
-{
-  "title": "Blog",
-  "subtitle": "News, tips, and stories from the RestA kitchen.",
-  "posts": [
-    {"slug": "seasonal-ingredients", "title": "Cooking with Seasonal Ingredients", "excerpt": "Why we choose local and seasonal produce for our dishes.", "body": "At RestA, we believe the best flavors come from ingredients at their peak. Our chefs work closely with local farmers to bring you the freshest seasonal produce.", "image": "", "date": "2025-02-01", "author": "Chef Marco"},
-    {"slug": "wine-pairing-guide", "title": "Wine Pairing Guide", "excerpt": "Tips for pairing wine with your favorite dishes.", "body": "A great wine can elevate any meal. Our sommelier shares insights on matching wines with different cuisines and flavor profiles.", "image": "", "date": "2025-01-25", "author": "RestA Team"},
-    {"slug": "valentines-special", "title": "Valentine's Day Special Menu", "excerpt": "Romantic dining experience for two.", "body": "Join us for a specially curated menu designed for romance. Reserve your table for an unforgettable evening.", "image": "", "date": "2025-01-20", "author": "RestA Team"}
-  ]
-}

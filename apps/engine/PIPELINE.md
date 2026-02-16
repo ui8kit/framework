@@ -118,6 +118,7 @@ Useful when HMR or resource usage becomes unstable after many edits.
 ### 2.1 Source and artifact boundaries
 
 - **DSL source of truth**: `apps/engine/src` + reusable package blocks
+- **Fixture source of truth (SDK-first)**: `apps/engine/fixtures` (brand-owned data)
 - **Generated artifacts**: `apps/engine/dist/react/{domain}`
 - **Target runtime source**: `apps/<target>/src`
 

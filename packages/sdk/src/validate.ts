@@ -3,7 +3,7 @@ import { access } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { resolve } from 'node:path';
 import { glob } from 'glob';
-import { validateDSL } from '@ui8kit/lint/source';
+import { validateDSL } from '@ui8kit/lint';
 import type { AppConfig, ValidateResult, ValidationIssue } from './types';
 
 async function pathExists(path: string): Promise<boolean> {
@@ -62,6 +62,32 @@ export async function validateProject(config: AppConfig, cwd = process.cwd()): P
         if (!result.valid) {
           dslErrors.push(...result.errors);
         }
+      }
+    }
+  }
+
+  const importScanDirs = [
+    config.blocksDir,
+    config.layoutsDir,
+    config.partialsDir,
+    config.componentsDir,
+    './src/data',
+  ].filter(Boolean) as string[];
+
+  for (const dir of importScanDirs) {
+    const dirPath = resolve(cwd, dir);
+    if (!(await pathExists(dirPath))) continue;
+    const files = await glob('**/*.{ts,tsx,js,jsx,mts,mjs}', { cwd: dirPath, absolute: true });
+    for (const filePath of files) {
+      const source = await readFile(filePath, 'utf-8');
+      if (source.includes('@ui8kit/data/fixtures/')) {
+        diagnostics.push({
+          code: 'PACKAGE_FIXTURE_IMPORT',
+          message:
+            'Fixture import from @ui8kit/data/fixtures detected. Prefer app-local fixtures under project fixtures directory.',
+          file: filePath,
+          severity: 'warning',
+        });
       }
     }
   }

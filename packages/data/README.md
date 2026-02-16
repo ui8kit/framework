@@ -4,6 +4,12 @@ Shared data fixtures and unified context for UI8Kit framework.
 
 This package provides typed fixtures and a single `context` object used by engine templates and apps. Use it so that copied-generated templates work out of the box: install `@ui8kit/data`, point routes at `context`, run.
 
+## Ownership Boundary
+
+- `@ui8kit/data` is a compatibility package for shared context APIs.
+- Brand projects should keep fixtures in app-local directories (for example `apps/engine/fixtures`).
+- Avoid importing `@ui8kit/data/fixtures/*` in new projects; prefer local `fixtures/*` files wired into project context.
+
 ## Usage
 
 **Unified context (recommended for apps using engine-generated templates):**
@@ -63,6 +69,12 @@ context.domains.admin   // page, admin, adminSidebarLinks, adminSidebarLabel, ge
 
 ## Adding New Fixtures
 
+For compatibility mode in this package:
 1. Create a JSON file in `src/fixtures/`
 2. Add corresponding TypeScript interface in `src/types.ts`
 3. Add the fixture to `context` and to `AppContext` in `src/index.ts` and `src/types.ts`
+
+For SDK-first brand projects (recommended):
+1. Create fixture JSON files under your app repo `fixtures/` folder.
+2. Wire fixtures into app-local context builder (for example `src/data/context.ts` using `createContext`).
+3. Keep brand-specific fixture interfaces in the brand project, not in `@ui8kit/data`.

@@ -110,6 +110,12 @@ When changing routes or domain names:
 3. **Admin:** `admin.json` exportSchema and `AdminDashboardPageView` handleExport must use the same keys as context.
 4. **Bundle script:** `scripts/bundle-data.ts` DOMAIN_FIXTURE_FILES must list all domain fixtures used by the app.
 
+### 6.1 Fixture Ownership Policy (SDK-first)
+
+- New brand work should keep fixture JSON inside the app repository (for example `apps/engine/fixtures`).
+- Treat `@ui8kit/data` fixtures as compatibility fallback, not as source of truth for new brands.
+- Prefer app-local context wiring (`src/data/context.ts`) built via SDK/data contracts.
+
 ## 7) Verification Checklist
 
 - No broken internal routes.

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://buildy.tw/schema.json",
+  "framework": "vite-react",
+  "typescript": true,
+  "aliases": {
+    "@": "./src",
+    "@/components": "./src/components",
+    "@/ui": "./src/components/ui",
+    "@/layouts": "./src/layouts",
+    "@/blocks": "./src/blocks",
+    "@/lib": "./src/lib",
+    "@/variants": "./src/variants"
+  },
+  "brand": "legacy-brand",
+  "target": "react",
+  "fixtures": "./fixtures",
+  "tokens": "./src/css/shadcn.css",
+  "componentsDir": "./src/components",
+  "blocksDir": "./src/blocks",
+  "layoutsDir": "./src/layouts",
+  "partialsDir": "./src/partials",
+  "libDir": "./src/lib"
+}

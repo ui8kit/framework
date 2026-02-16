@@ -1,4 +1,4 @@
-export { createContext, EMPTY_ARRAY, normalizeActiveHref } from '@ui8kit/data-contracts/source';
+export { createContext, EMPTY_ARRAY, normalizeActiveHref } from '@ui8kit/data-contracts';
 export type {
   AppContextBase,
   DashboardSidebarLink,
@@ -10,4 +10,4 @@ export type {
   PageRecord,
   SidebarLink,
   SiteInfo,
-} from '@ui8kit/data-contracts/source';
+} from '@ui8kit/data-contracts';

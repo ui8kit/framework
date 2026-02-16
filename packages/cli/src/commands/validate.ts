@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { loadAppConfig } from '@ui8kit/sdk/source/config';
+import { loadAppConfigDetails } from '@ui8kit/sdk/source/config';
 import { validateProject } from '@ui8kit/sdk/source/validate';
 
 interface ValidateOptions {
@@ -10,8 +10,15 @@ export async function validateCommand(options: ValidateOptions = {}) {
   const cwd = options.cwd ?? process.cwd();
 
   try {
-    const config = await loadAppConfig(cwd);
-    const result = await validateProject(config, cwd);
+    const loaded = await loadAppConfigDetails(cwd);
+    const result = await validateProject(loaded.config, cwd);
+
+    if (loaded.warnings.length > 0) {
+      console.log(chalk.yellow('\nConfig compatibility warnings:'));
+      for (const warning of loaded.warnings) {
+        console.log(` - ${warning.code}: ${warning.message}`);
+      }
+    }
 
     if (result.diagnostics.length > 0) {
       console.log(chalk.yellow('\nProject diagnostics:'));

@@ -1,7 +1,9 @@
 import { z } from 'zod';
+import { SDK_SCHEMA_URL, SDK_CONFIG_VERSION } from './constants';
 
 export const appConfigSchema = z.object({
-  $schema: z.string().optional(),
+  $schema: z.string().optional().default(SDK_SCHEMA_URL),
+  configVersion: z.string().optional().default(SDK_CONFIG_VERSION),
   brand: z.string().min(1),
   framework: z.literal('vite-react'),
   typescript: z.boolean().optional().default(true),

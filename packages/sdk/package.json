@@ -26,6 +26,10 @@
       "import": "./dist/data.js",
       "types": "./dist/data.d.ts"
     },
+    "./constants": {
+      "import": "./dist/constants.js",
+      "types": "./dist/constants.d.ts"
+    },
     "./source": {
       "import": "./src/index.ts",
       "types": "./src/index.ts"
@@ -45,6 +49,10 @@
     "./source/data": {
       "import": "./src/data.ts",
       "types": "./src/data.ts"
+    },
+    "./source/constants": {
+      "import": "./src/constants.ts",
+      "types": "./src/constants.ts"
     }
   },
   "files": [
@@ -55,7 +63,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bunx vitest run"
   },
   "dependencies": {
     "@ui8kit/data-contracts": "workspace:*",
@@ -67,6 +76,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.3"
   }
 }

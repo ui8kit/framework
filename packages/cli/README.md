@@ -163,3 +163,19 @@ Run compiled CLI locally:
 ```bash
 node dist/index.js --help
 ```
+
+## Publish Precheck
+
+Before publish, CLI runs a parity smoke gate:
+
+- builds required SDK/runtime packages
+- builds CLI dist
+- executes identical smoke commands via:
+  - source runtime: `bun src/index.ts ...`
+  - dist runtime: `node dist/index.js ...`
+
+This is enforced by `prepublishOnly` through:
+
+```bash
+npm run smoke:parity
+```

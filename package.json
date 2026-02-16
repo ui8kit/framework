@@ -30,6 +30,7 @@
     "validate:data-bundle": "bun run scripts/validate-data-bundle.ts",
     "validate:invariants": "bun run scripts/validate-invariants.ts",
     "audit:refactor": "bun run scripts/refactor-audit.ts --mapping .manual/brand-mapping.json",
+    "check:sdk-integration": "bash scripts/check-sdk-integration.sh",
     "quality:local": "bash scripts/quality-gate.sh",
     "pipeline-app": "bun run scripts/pipeline-app.ts",
     "pipeline:dev": "bun run scripts/pipeline-app.ts all --target dev --domain website --data-mode local",

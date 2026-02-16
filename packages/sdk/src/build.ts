@@ -1,12 +1,12 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { Logger } from '@ui8kit/generator/source';
+import { Logger } from '@ui8kit/generator';
 import {
   TemplateService,
   generateRegistry,
   type RegistryConfig,
   type RegistrySourceDir,
-} from '@ui8kit/generator/source';
+} from '@ui8kit/generator';
 import type { AppConfig, BuildResult } from './types';
 
 function getRegistrySources(config: AppConfig, cwd: string): RegistrySourceDir[] {

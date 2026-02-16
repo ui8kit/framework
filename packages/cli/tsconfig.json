@@ -14,8 +14,16 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@ui8kit/sdk": ["../sdk/src/index.ts"],
+      "@ui8kit/sdk/config": ["../sdk/src/config.ts"],
+      "@ui8kit/sdk/validate": ["../sdk/src/validate.ts"],
+      "@ui8kit/sdk/build": ["../sdk/src/build.ts"],
+      "@ui8kit/sdk/data": ["../sdk/src/data.ts"],
+      "@ui8kit/sdk/constants": ["../sdk/src/constants.ts"]
+    }
   },
   "include": [
     "src/**/*.ts"
