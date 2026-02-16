@@ -1,0 +1,38 @@
+{
+  "name": "@ui8kit/engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Test application for template generation",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "generate": "bun run generator.config.ts",
+    "lint": "bun run typecheck && bun run ../../packages/lint/src/cli/validate-dsl.ts apps/engine/src",
+    "lint:dsl": "bun run ../../packages/lint/src/cli/validate-dsl.ts apps/engine/src",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@ui8kit/blocks": "workspace:*",
+    "@ui8kit/core": "workspace:*",
+    "@ui8kit/data": "workspace:*",
+    "@ui8kit/template": "workspace:*",
+    "postcss": "^8.5.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.1",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@ui8kit/generator": "workspace:*",
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "typescript": "^5.8.0",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.3"
+  }
+}

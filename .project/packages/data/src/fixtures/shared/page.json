@@ -1,0 +1,17 @@
+{
+  "page": {
+    "website": [
+      {"id": "website-home", "domain": "website", "title": "Home", "path": "/", "component": "WebsitePage"},
+      {"id": "website-menu", "domain": "website", "title": "Menu", "path": "/menu", "component": "MenuPage"},
+      {"id": "website-recipes", "domain": "website", "title": "Recipes", "path": "/recipes", "component": "RecipesPage"},
+      {"id": "website-recipes-detail", "domain": "website", "title": "Recipe", "path": "/recipes/:slug", "component": "RecipeDetailPage"},
+      {"id": "website-blog", "domain": "website", "title": "Blog", "path": "/blog", "component": "BlogPage"},
+      {"id": "website-blog-detail", "domain": "website", "title": "Blog Post", "path": "/blog/:slug", "component": "BlogDetailPage"},
+      {"id": "website-promotions", "domain": "website", "title": "Promotions", "path": "/promotions", "component": "PromotionsPage"}
+    ],
+    "admin": [
+      {"id": "admin-login", "domain": "admin", "title": "Admin Login", "path": "/admin", "component": "AdminLoginPage"},
+      {"id": "admin-dashboard", "domain": "admin", "title": "Admin", "path": "/admin/dashboard", "component": "AdminDashboardPage"}
+    ]
+  }
+}

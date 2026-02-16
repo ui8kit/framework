@@ -1,0 +1,20 @@
+{
+  "title": "Our Menu",
+  "subtitle": "Carefully crafted dishes made with the finest ingredients.",
+  "categories": [
+    {"id": "starters", "title": "Starters"},
+    {"id": "mains", "title": "Main Courses"},
+    {"id": "desserts", "title": "Desserts"},
+    {"id": "drinks", "title": "Drinks"}
+  ],
+  "dishes": [
+    {"id": "1", "title": "Bruschetta", "description": "Toasted bread with fresh tomatoes, basil, and olive oil", "price": "12", "category": "starters", "image": ""},
+    {"id": "2", "title": "Caesar Salad", "description": "Crisp romaine, parmesan, croutons, and house Caesar dressing", "price": "14", "category": "starters", "image": ""},
+    {"id": "3", "title": "Grilled Salmon", "description": "Atlantic salmon with herb butter and seasonal vegetables", "price": "28", "category": "mains", "image": ""},
+    {"id": "4", "title": "Beef Tenderloin", "description": "8oz premium cut with red wine reduction and truffle mashed potatoes", "price": "42", "category": "mains", "image": ""},
+    {"id": "5", "title": "Tiramisu", "description": "Classic Italian dessert with mascarpone and espresso", "price": "10", "category": "desserts", "image": ""},
+    {"id": "6", "title": "Chocolate Fondant", "description": "Warm chocolate cake with molten center and vanilla ice cream", "price": "11", "category": "desserts", "image": ""},
+    {"id": "7", "title": "Craft Cocktail", "description": "Seasonal selection of house-made cocktails", "price": "14", "category": "drinks", "image": ""},
+    {"id": "8", "title": "Wine Selection", "description": "Curated wines from local and international vineyards", "price": "12", "category": "drinks", "image": ""}
+  ]
+}
