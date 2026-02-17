@@ -112,11 +112,6 @@ run_optional_step \
   bash -lc "cd apps/engine && bun run e2e"
 
 run_optional_step \
-  "Run tests packages/mdx-react (optional by policy)" \
-  "Stabilize mdx-react tests or complete deprecation plan." \
-  bash -lc "cd packages/mdx-react && bun run test"
-
-run_optional_step \
   "SDK integration checks (engine + resta)" \
   "Inspect CLI SDK commands and generated output parity for engine/resta projects." \
   bun run check:sdk-integration

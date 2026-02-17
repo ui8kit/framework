@@ -28,9 +28,8 @@ import {
   CssStage,
   HtmlStage,
   AssetStage,
-  TemplateStage,
 } from './stages';
-import { TemplateService, type TemplateServiceOutput } from './services/template';
+import { TemplateService } from './services/template';
 import { ClassLogService } from './services/class-log';
 import { emitVariantsApplyCss } from './scripts/emit-variants-apply.js';
 import { emitVariantElements } from './scripts/emit-variant-elements.js';
@@ -96,39 +95,6 @@ export interface GenerateConfig extends GeneratorConfig {
     includeResponsive?: boolean;
     /** Include state variants like hover:, focus: (default: true) */
     includeStates?: boolean;
-  };
-  /** MDX documentation configuration */
-  mdx?: {
-    enabled: boolean;
-    docsDir: string;
-    outputDir: string;
-    navOutput?: string;
-    basePath?: string;
-    /**
-     * Import path aliases for resolving imports in MDX files.
-     * Same format as Vite's resolve.alias.
-     * @example
-     * ```typescript
-     * aliases: {
-     *   '@ui8kit/core': '../../packages/core/src/index',
-     *   '@': './src',
-     * }
-     * ```
-     */
-    aliases?: Record<string, string>;
-    /**
-     * @deprecated Use `aliases` instead. Components are now auto-resolved from MDX imports.
-     */
-    components?: Record<string, string>;
-    /**
-     * @deprecated No longer needed. Alias resolution handles component paths.
-     */
-    rootDir?: string;
-    propsSource?: string;
-    toc?: {
-      minLevel?: number;
-      maxLevel?: number;
-    };
   };
   
   /**
@@ -283,13 +249,7 @@ export async function generate(config: GenerateConfig): Promise<GenerateResult> 
       generated.elements = elementsResult.generated;
     }
     
-    // 12. Generate MDX documentation (optional)
-    if (config.mdx?.enabled) {
-      logger.info('📚 Generating MDX documentation...');
-      await generateMdxDocs(config, logger);
-    }
-    
-    // 13. Generate templates from React components (optional)
+    // 12. Generate templates from React components (optional)
     if (config.template?.enabled) {
       logger.info('🔧 Generating templates from React components...');
       const templateResult = await generateTemplates(config, logger);
@@ -873,73 +833,6 @@ async function generateVariantElements(
   logger.info(`✅ Generated ${result.files.size} element files`);
   
   return { generated: result.files.size };
-}
-
-/**
- * Generate MDX documentation using MdxService.
- * 
- * This function dynamically imports and uses the MdxService from @ui8kit/mdx-react
- * to generate static HTML documentation from MDX files.
- */
-async function generateMdxDocs(
-  config: GenerateConfig,
-  logger: Logger
-): Promise<{ pages: number }> {
-  const mdxConfig = config.mdx;
-  if (!mdxConfig) return { pages: 0 };
-  
-  try {
-    const module = await import('@ui8kit/mdx-react/service');
-    const MdxService = module.MdxService;
-    
-    if (!MdxService) {
-      throw new Error('MdxService class not found in @ui8kit/mdx-react/service');
-    }
-    
-    const service = new MdxService();
-    
-    // Initialize service with minimal context
-    await service.initialize({
-      config: {
-        html: { mode: config.html.mode ?? 'tailwind' },
-      },
-      logger: {
-        debug: (msg: string) => logger.debug(msg),
-        info: (msg: string) => logger.info(msg),
-        warn: (msg: string) => logger.warn(msg),
-        error: (msg: string) => logger.error(msg),
-      },
-    });
-    
-    // Execute MDX generation
-    const result = await service.execute({
-      docsDir: mdxConfig.docsDir,
-      outputDir: mdxConfig.outputDir,
-      basePath: mdxConfig.basePath,
-      navOutput: mdxConfig.navOutput,
-      aliases: mdxConfig.aliases,
-      // Legacy support: components and rootDir (deprecated)
-      components: mdxConfig.components,
-      rootDir: mdxConfig.rootDir,
-      propsSource: mdxConfig.propsSource,
-      toc: mdxConfig.toc,
-      htmlMode: config.html.mode ?? 'tailwind',
-      verbose: true,
-    });
-    
-    // Cleanup
-    await service.dispose();
-    
-    logger.info(`✅ Generated ${result.pages} documentation pages in ${Math.round(result.duration)}ms`);
-    
-    return { pages: result.pages };
-  } catch (error) {
-    // Fallback: if MdxService is not available, log warning
-    const message = error instanceof Error ? error.message : String(error);
-    logger.warn(`⚠️ MdxService not available: ${message}`);
-    logger.info('📚 Skipping MDX generation (install @ui8kit/mdx-react for MDX support)');
-    return { pages: 0 };
-  }
 }
 
 /**

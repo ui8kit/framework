@@ -16,10 +16,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@ui8kit/mdx-react": ["../mdx-react/src/index.ts"],
-      "@ui8kit/mdx-react/service": ["../mdx-react/src/service/index.ts"],
-      "@ui8kit/mdx-react/server": ["../mdx-react/src/server.ts"]
+      "@/*": ["src/*"]
     }
   },
   "include": [

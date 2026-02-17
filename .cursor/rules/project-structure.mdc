@@ -59,9 +59,6 @@ e-Bun-ui8kit-framework/
 │   │   │   ├── levenshtein.ts     ← Find closest valid props
 │   │   │   └── index.ts
 │   │   └── package.json
-│   │
-│   └── mdx-react/                 ← MDX compilation & rendering
-│       └── package.json
 │
 ├── .project/                      ← Project metadata
 │   └── report/                    ← Documentation & planning
