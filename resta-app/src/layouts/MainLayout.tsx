@@ -1,14 +1,9 @@
-import type { ReactNode } from 'react';
-import { Block } from '@ui8kit/core';
+import type { ComponentProps } from 'react';
+import { MainLayoutView } from './views/MainLayoutView';
 
-export interface MainLayoutProps {
-  children?: ReactNode;
-}
+export type MainLayoutProps = ComponentProps<typeof MainLayoutView>;
+export type LayoutMode = 'full' | 'with-sidebar' | 'sidebar-left';
 
-export function MainLayout({ children }: MainLayoutProps) {
-  return (
-    <Block component="main" data-class="resta-main-layout">
-      {children}
-    </Block>
-  );
+export function MainLayout(props: MainLayoutProps) {
+  return <MainLayoutView {...props} />;
 }
