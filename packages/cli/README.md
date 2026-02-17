@@ -90,44 +90,22 @@ Options:
 - `-o, --output <path>` Output directory (default: `./packages/registry/r`)
 - `-c, --cwd <cwd>` Working directory
 
-### `validate`
-
-Validate SDK app configuration and DSL files in the current project.
-
-```bash
-bunx ui8kit@latest validate
-bunx ui8kit@latest validate --cwd ./apps/engine
-```
-
-### `generate`
-
-Generate templates/artifacts for configured target engine from DSL sources.
-
-```bash
-bunx ui8kit@latest generate
-bunx ui8kit@latest generate --target liquid --out-dir ./dist/liquid
-```
-
-Options:
-
-- `--cwd <dir>` Working directory
-- `--target <engine>` Target engine (`react`, `liquid`, `handlebars`, `twig`, `latte`)
-- `--out-dir <dir>` Output directory override
-
-### `inspect`
-
-Inspect resolved UI8Kit app configuration.
-
-```bash
-bunx ui8kit@latest inspect
-```
-
 ### `dev`
 
 Start Vite dev server for SDK-configured project.
 
 ```bash
 bunx ui8kit@latest dev
+```
+
+### SDK binaries (validate, inspect, generate)
+
+Validate, inspect, and generate are provided by `@ui8kit/sdk`:
+
+```bash
+bunx ui8kit-validate --cwd ./apps/engine
+bunx ui8kit-inspect --cwd ./apps/engine
+bunx ui8kit-generate --cwd ./apps/engine --target react
 ```
 
 ## Typical Flow
@@ -166,16 +144,15 @@ node dist/index.js --help
 
 ## Publish Precheck
 
-Before publish, CLI runs a parity smoke gate:
+Before publish, CLI runs a parity smoke gate via `scripts/smoke-parity.mjs`:
 
-- builds required SDK/runtime packages
 - builds CLI dist
-- executes identical smoke commands via:
-  - source runtime: `bun src/index.ts ...`
-  - dist runtime: `node dist/index.js ...`
+- runs CLI and SDK commands (config-driven, see CONFIG at top of script)
+- for CLI: asserts source vs dist parity
+- for SDK: asserts binaries run successfully
 
-This is enforced by `prepublishOnly` through:
+Run from repo root:
 
 ```bash
-npm run smoke:parity
+bun run smoke:parity
 ```

@@ -77,8 +77,8 @@ RestA запущен. Краткий отчёт:
 
 ```bash
 cd resta-app
-bunx ui8kit validate --cwd .
-bunx ui8kit generate --cwd . --target react
+bunx ui8kit-validate --cwd .
+bunx ui8kit-generate --cwd . --target react
 ```
 
 ---

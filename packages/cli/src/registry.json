@@ -1,0 +1,576 @@
+{
+  "$schema": "https://ui.buildy.tw/schema/registry.json",
+  "items": [
+    {
+      "name": "Title",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Title.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Text",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Text.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Stack",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Stack.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Image.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Icon",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Icon.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Group",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Group.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Container",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Container.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Button.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Box",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Box.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Block",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Block.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Badge",
+      "type": "registry:ui",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/ui/Badge.tsx",
+          "target": "components/ui"
+        }
+      ]
+    },
+    {
+      "name": "Sheet",
+      "type": "registry:composite",
+      "description": "",
+      "dependencies": [
+        "react",
+        "lucide-react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/Sheet.tsx",
+          "target": "components"
+        }
+      ]
+    },
+    {
+      "name": "Grid",
+      "type": "registry:composite",
+      "description": "=============================================================================",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/Grid.tsx",
+          "target": "components"
+        }
+      ]
+    },
+    {
+      "name": "Card",
+      "type": "registry:composite",
+      "description": "Main Card component interface (CDL utility-props + variant)",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/Card.tsx",
+          "target": "components"
+        }
+      ]
+    },
+    {
+      "name": "Accordion",
+      "type": "registry:composite",
+      "description": "",
+      "dependencies": [
+        "react",
+        "lucide-react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/Accordion.tsx",
+          "target": "components"
+        }
+      ]
+    },
+    {
+      "name": "image",
+      "type": "registry:variants",
+      "description": "Image base variants",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/variants/image.ts",
+          "target": "variants"
+        }
+      ]
+    },
+    {
+      "name": "grid",
+      "type": "registry:variants",
+      "description": "Types for grid props",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/variants/grid.ts",
+          "target": "variants"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:variants",
+      "description": "",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/variants/card.ts",
+          "target": "variants"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:variants",
+      "description": "Button size variants",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/variants/button.ts",
+          "target": "variants"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:variants",
+      "description": "Badge size variants",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/variants/badge.ts",
+          "target": "variants"
+        }
+      ]
+    },
+    {
+      "name": "index",
+      "type": "registry:variants",
+      "description": "Base variants",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/variants/index.ts",
+          "target": "variants"
+        }
+      ]
+    },
+    {
+      "name": "index",
+      "type": "registry:composite",
+      "description": "Layout Components",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/components/index.ts",
+          "target": "components"
+        }
+      ]
+    },
+    {
+      "name": "SidebarContent",
+      "type": "registry:block",
+      "description": "Sidebar content block for website layout.\r\n * Pure presentational: title and links come from external context/props.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/SidebarContent.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "DashSidebar",
+      "type": "registry:block",
+      "description": "Dashboard sidebar navigation block. \r\n * Pure presentational: label and links come from external context/props.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/DashSidebar.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "AdminLoginPageView",
+      "type": "registry:block",
+      "description": "Admin Login Page — Simple form, admin/admin credentials.",
+      "dependencies": [
+        "react",
+        "react-router-dom"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/admin/AdminLoginPageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "AdminDashboardPageView",
+      "type": "registry:block",
+      "description": "Admin Dashboard Page — JSON import/export for components, guides, blog, showcase.",
+      "dependencies": [
+        "react",
+        "react-router-dom"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/admin/AdminDashboardPageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "WebsitePageView",
+      "type": "registry:block",
+      "description": "Home Page view — Hero + Features + CTA (UI8Kit landing).",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/website/WebsitePageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "ShowcasePageView",
+      "type": "registry:block",
+      "description": "Showcase Page view — Grid of project cards.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/website/ShowcasePageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "GuidesPageView",
+      "type": "registry:block",
+      "description": "Guides list Page view — Grid of guide cards.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/website/GuidesPageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "GuideDetailPageView",
+      "type": "registry:block",
+      "description": "Guide detail Page view — Article-style guide page.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/website/GuideDetailPageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "ComponentsPageView",
+      "type": "registry:block",
+      "description": "Components Page view — Component cards grid.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/website/ComponentsPageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "BlogPageView",
+      "type": "registry:block",
+      "description": "Blog list Page view — Grid of blog post cards.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/website/BlogPageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "BlogDetailPageView",
+      "type": "registry:block",
+      "description": "Blog detail Page view — Article-style blog post.",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/blocks/website/BlogDetailPageView.tsx",
+          "target": "blocks"
+        }
+      ]
+    },
+    {
+      "name": "MainLayout",
+      "type": "registry:layout",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/layouts/MainLayout.tsx",
+          "target": "layouts"
+        }
+      ]
+    },
+    {
+      "name": "AdminLayout",
+      "type": "registry:layout",
+      "description": "Admin layout: minimal header + optional sidebar + main content.",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/layouts/AdminLayout.tsx",
+          "target": "layouts"
+        }
+      ]
+    },
+    {
+      "name": "MainLayoutView",
+      "type": "registry:layout",
+      "description": "",
+      "dependencies": [
+        "react"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/layouts/views/MainLayoutView.tsx",
+          "target": "layouts"
+        }
+      ]
+    },
+    {
+      "name": "utils",
+      "type": "registry:lib",
+      "description": "",
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/lib/utils.ts",
+          "target": "lib"
+        }
+      ]
+    },
+    {
+      "name": "utility-props",
+      "type": "registry:lib",
+      "description": "Strict utility-prop value:\r\n * - allows only values listed in `utilityPropsMap` for the given prefix\r\n * - additionally allows numeric literals when the map contains numeric strings (e.g. \"8\" -> 8)\r\n * - allows `true` / \"\" only when the map contains a bare token \"\" (e.g. flex, block, absolute)\r\n * - allows false/null/undefined to omit the class",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/lib/utility-props.ts",
+          "target": "lib"
+        }
+      ]
+    },
+    {
+      "name": "utility-props.map",
+      "type": "registry:lib",
+      "description": "CDL Utility Props Map\r\n * src/cdl/utility-props.map.ts",
+      "dependencies": [],
+      "devDependencies": [],
+      "files": [
+        {
+          "path": "../../apps/engine/src/lib/utility-props.map.ts",
+          "target": "lib"
+        }
+      ]
+    }
+  ],
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-17T19:06:18.280Z",
+  "registry": "ui"
+}

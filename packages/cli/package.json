@@ -16,8 +16,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
-    "smoke:parity": "node ./scripts/smoke-parity.mjs",
-    "prepublishOnly": "npm run smoke:parity"
+    "prepublishOnly": "node ../../scripts/smoke-parity.mjs"
   },
   "dependencies": {
     "@ui8kit/sdk": "workspace:*",

@@ -121,9 +121,9 @@ Use DSL primitives (`If`, `Var`, `Loop`) from `@ui8kit/template` at the block le
 From the project root:
 
 ```bash
-npx ui8kit inspect --cwd .
-npx ui8kit validate --cwd .
-npx ui8kit generate --cwd . --target react --out-dir ./dist/react
+npx ui8kit-inspect --cwd .
+npx ui8kit-validate --cwd .
+npx ui8kit-generate --cwd . --target react --out-dir ./dist/react
 ```
 
 After that, `dist/react` will contain the generated React code without DSL artifacts.
@@ -152,9 +152,9 @@ cd my-app
 bun add react react-dom
 npx ui8kit init
 npx ui8kit add blank
-npx ui8kit inspect --cwd .
-npx ui8kit validate --cwd .
-npx ui8kit generate --cwd . --target react --out-dir ./dist/react
+npx ui8kit-inspect --cwd .
+npx ui8kit-validate --cwd .
+npx ui8kit-generate --cwd . --target react --out-dir ./dist/react
 bun run dev
 ```
 
@@ -211,9 +211,9 @@ Ensure `apps/my-brand/ui8kit.config.json` contains app-level fields such as:
 ### 5) Validate and generate from monorepo root
 
 ```bash
-bun "packages/cli/src/index.ts" inspect --cwd "apps/my-brand"
-bun "packages/cli/src/index.ts" validate --cwd "apps/my-brand"
-bun "packages/cli/src/index.ts" generate --cwd "apps/my-brand" --target react --out-dir "./dist/react"
+bun packages/sdk/src/cli/inspect.ts --cwd "apps/my-brand"
+bun packages/sdk/src/cli/validate.ts --cwd "apps/my-brand"
+bun packages/sdk/src/cli/generate.ts --cwd "apps/my-brand" --target react --out-dir "./dist/react"
 ```
 
 ### 6) Run app locally
@@ -235,9 +235,9 @@ bun add react react-dom
 cd ../..
 bun "packages/cli/src/index.ts" init --cwd "apps/my-brand"
 bun "packages/cli/src/index.ts" add blank --cwd "apps/my-brand"
-bun "packages/cli/src/index.ts" inspect --cwd "apps/my-brand"
-bun "packages/cli/src/index.ts" validate --cwd "apps/my-brand"
-bun "packages/cli/src/index.ts" generate --cwd "apps/my-brand" --target react --out-dir "./dist/react"
+bun packages/sdk/src/cli/inspect.ts --cwd "apps/my-brand"
+bun packages/sdk/src/cli/validate.ts --cwd "apps/my-brand"
+bun packages/sdk/src/cli/generate.ts --cwd "apps/my-brand" --target react --out-dir "./dist/react"
 cd apps/my-brand
 bun run dev
 ```

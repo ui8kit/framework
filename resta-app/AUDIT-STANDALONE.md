@@ -79,8 +79,8 @@ alias: {
 Scripts in `package.json`:
 
 ```json
-"validate": "bunx ui8kit validate --cwd .",
-"generate": "bunx ui8kit generate --cwd . --target react"
+"validate": "bunx ui8kit-validate --cwd .",
+"generate": "bunx ui8kit-generate --cwd . --target react"
 ```
 
 These require the **ui8kit** CLI (`ui8kit` package). The CLI depends on:
@@ -88,7 +88,7 @@ These require the **ui8kit** CLI (`ui8kit` package). The CLI depends on:
 - `@ui8kit/sdk` (config, validate, build)
 - SDK depends on: `@ui8kit/data-contracts`, `@ui8kit/generator`, `@ui8kit/lint`, `@ui8kit/template`
 
-**If packages are not published:** `bunx ui8kit validate` will fail because `@ui8kit/sdk` and its deps won't resolve.
+**If packages are not published:** `bunx ui8kit-validate` will fail because `@ui8kit/sdk` and its deps won't resolve.
 
 ---
 

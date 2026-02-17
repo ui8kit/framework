@@ -30,6 +30,7 @@
     "alias-data": "bun run scripts/configure-data-alias.ts",
     "validate:data-bundle": "bun run scripts/validate-data-bundle.ts",
     "validate:invariants": "bun run scripts/validate-invariants.ts",
+    "smoke:parity": "node scripts/smoke-parity.mjs",
     "audit:refactor": "bun run scripts/refactor-audit.ts --mapping .manual/brand-mapping.json",
     "check:sdk-integration": "bash scripts/check-sdk-integration.sh",
     "quality:local": "bash scripts/quality-gate.sh",

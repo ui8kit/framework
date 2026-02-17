@@ -121,9 +121,9 @@ npx ui8kit add all
 Из root проекта:
 
 ```bash
-npx ui8kit inspect --cwd .
-npx ui8kit validate --cwd .
-npx ui8kit generate --cwd . --target react --out-dir ./dist/react
+npx ui8kit-inspect --cwd .
+npx ui8kit-validate --cwd .
+npx ui8kit-generate --cwd . --target react --out-dir ./dist/react
 ```
 
 После этого в `dist/react` будет сгенерированный React-код без DSL-артефактов.
@@ -152,8 +152,8 @@ cd my-app
 bun add react react-dom
 npx ui8kit init
 npx ui8kit add blank
-npx ui8kit inspect --cwd .
-npx ui8kit validate --cwd .
-npx ui8kit generate --cwd . --target react --out-dir ./dist/react
+npx ui8kit-inspect --cwd .
+npx ui8kit-validate --cwd .
+npx ui8kit-generate --cwd . --target react --out-dir ./dist/react
 bun run dev
 ```

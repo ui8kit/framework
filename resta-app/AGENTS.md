@@ -100,9 +100,9 @@ Read these files before substantial edits:
 - `packages/sdk/src/config.ts`
 - `packages/sdk/src/validate.ts`
 - `packages/sdk/src/build.ts`
-- `packages/cli/src/commands/inspect.ts`
-- `packages/cli/src/commands/validate.ts`
-- `packages/cli/src/commands/generate.ts`
+- `packages/sdk/src/cli/inspect.ts`
+- `packages/sdk/src/cli/validate.ts`
+- `packages/sdk/src/cli/generate.ts`
 
 ## 7) Recommended Work Order
 
@@ -116,14 +116,14 @@ Read these files before substantial edits:
 
 Minimum checks:
 
-- `bun "packages/cli/src/index.ts" inspect --cwd "resta-app"`
-- `bun "packages/cli/src/index.ts" validate --cwd "resta-app"`
-- `bun "packages/cli/src/index.ts" generate --cwd "resta-app" --target react --out-dir "./dist/react"`
+- `bun packages/sdk/src/cli/inspect.ts --cwd "resta-app"`
+- `bun packages/sdk/src/cli/validate.ts --cwd "resta-app"`
+- `bun packages/sdk/src/cli/generate.ts --cwd "resta-app" --target react --out-dir "./dist/react"`
 
 Integration checks:
 
 - `bun run check:sdk-integration`
-- `npm run smoke:parity` (inside `packages/cli`)
+- `bun run smoke:parity` (from repo root)
 
 Output checks:
 

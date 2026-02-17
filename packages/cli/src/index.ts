@@ -6,10 +6,7 @@ import { addCommand } from "./commands/add.js"
 import { initCommand } from "./commands/init.js"
 import { buildCommand } from "./commands/build.js"
 import { scanCommand } from "./commands/scan.js"
-import { validateCommand } from "./commands/validate.js"
 import { devCommand } from "./commands/dev.js"
-import { generateCommand } from "./commands/generate.js"
-import { inspectCommand } from "./commands/inspect.js"
 
 const program = new Command()
 
@@ -41,7 +38,7 @@ function getClosestCommands(input: string, candidates: string[], limit = 3): str
 
 program
   .name("ui8kit")
-  .description("A CLI for adding UI components to your Vite React projects (UI8Kit registry)")
+  .description("UI8Kit CLI for component registry and build (init, add, scan, build, dev)")
   .version("1.1.0")
   .showHelpAfterError("(add --help for additional details)")
   .addHelpText(
@@ -52,16 +49,18 @@ Examples:
   bunx ui8kit@latest add button card
   bunx ui8kit@latest scan --cwd ./apps/engine
   bunx ui8kit@latest build ./src/registry.json --output ./packages/registry/r
-  bunx ui8kit@latest validate --cwd ./apps/engine
-  bunx ui8kit@latest inspect --cwd ./apps/engine
-  bunx ui8kit@latest generate --cwd ./apps/engine --target react
-  bunx ui8kit@latest generate --cwd ./apps/engine --target liquid --out-dir ./dist/liquid
+  bunx ui8kit@latest dev --cwd ./apps/engine
 
 Pipelines:
   Registry maintainer workflow:
     scan -> build
   Brand app workflow:
-    init -> add -> validate -> generate -> dev
+    init -> add -> dev
+
+For validate, inspect, generate use SDK binaries:
+  bunx ui8kit-validate --cwd ./apps/engine
+  bunx ui8kit-inspect --cwd ./apps/engine
+  bunx ui8kit-generate --cwd ./apps/engine --target react
 `
   )
 
@@ -140,20 +139,6 @@ Examples:
 `
 )
 
-const validateCmd = program
-  .command("validate")
-  .description("Validate UI8Kit app config and DSL")
-  .option("--cwd <dir>", "Working directory")
-  .action(validateCommand)
-validateCmd.addHelpText(
-  "after",
-  `
-Examples:
-  bunx ui8kit@latest validate
-  bunx ui8kit@latest validate --cwd ./apps/engine
-`
-)
-
 const devCmd = program
   .command("dev")
   .description("Run Vite dev server for current UI8Kit app")
@@ -168,36 +153,7 @@ Examples:
 `
 )
 
-const generateCmd = program
-  .command("generate")
-  .description("Generate target templates using SDK")
-  .option("--cwd <dir>", "Working directory")
-  .option("--out-dir <dir>", "Output directory override")
-  .option("--target <engine>", "Target engine: react|liquid|handlebars|twig|latte")
-  .action(generateCommand)
-generateCmd.addHelpText(
-  "after",
-  `
-Examples:
-  bunx ui8kit@latest generate
-  bunx ui8kit@latest generate --cwd ./apps/engine --target react
-  bunx ui8kit@latest generate --cwd ./apps/engine --target liquid --out-dir ./dist/liquid
-`
-)
-
-const inspectCmd = program
-  .command("inspect")
-  .description("Inspect resolved UI8Kit app config")
-  .option("--cwd <dir>", "Working directory")
-  .action(inspectCommand)
-inspectCmd.addHelpText(
-  "after",
-  `
-Examples:
-  bunx ui8kit@latest inspect
-  bunx ui8kit@latest inspect --cwd ./apps/engine
-`
-)
+const SDK_MOVED = ["validate", "inspect", "generate"]
 
 program.on("command:*", () => {
   const invalid = String(program.args[0] ?? "")
@@ -205,10 +161,12 @@ program.on("command:*", () => {
   const suggestions = invalid ? getClosestCommands(invalid, available) : []
 
   console.error(chalk.red(`Invalid command: ${program.args.join(" ")}`))
-  if (suggestions.length > 0) {
+  if (SDK_MOVED.includes(invalid)) {
+    console.log(`'${invalid}' moved to SDK. Use: bunx ui8kit-${invalid} --help`)
+  } else if (suggestions.length > 0) {
     console.log(`Did you mean: ${suggestions.map((s) => `'${s}'`).join(", ")}?`)
   }
-  if (invalid) {
+  if (invalid && !SDK_MOVED.includes(invalid)) {
     console.log(`Try: ui8kit ${invalid} --help`)
   }
   console.log("See --help for a list of available commands.")

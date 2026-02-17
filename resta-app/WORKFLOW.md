@@ -121,9 +121,9 @@ Use DSL primitives (`If`, `Var`, `Loop`) from `@ui8kit/template` at the block le
 From the project root:
 
 ```bash
-npx ui8kit inspect --cwd .
-npx ui8kit validate --cwd .
-npx ui8kit generate --cwd . --target react --out-dir ./dist/react
+npx ui8kit-inspect --cwd .
+npx ui8kit-validate --cwd .
+npx ui8kit-generate --cwd . --target react --out-dir ./dist/react
 ```
 
 After that, `dist/react` will contain the generated React code without DSL artifacts.
@@ -152,9 +152,9 @@ cd my-app
 bun add react react-dom
 npx ui8kit init
 npx ui8kit add blank
-npx ui8kit inspect --cwd .
-npx ui8kit validate --cwd .
-npx ui8kit generate --cwd . --target react --out-dir ./dist/react
+npx ui8kit-inspect --cwd .
+npx ui8kit-validate --cwd .
+npx ui8kit-generate --cwd . --target react --out-dir ./dist/react
 bun run dev
 ```
 

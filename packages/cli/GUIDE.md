@@ -16,14 +16,12 @@ This guide explains the main command chains for daily development, release safet
 From repo root:
 
 ```bash
-bun "packages/cli/src/index.ts" inspect --cwd "apps/engine"
-bun "packages/cli/src/index.ts" validate --cwd "apps/engine"
-bun "packages/cli/src/index.ts" generate --cwd "apps/engine" --target react --out-dir "dist/local-check"
+bun packages/sdk/src/cli/inspect.ts --cwd "apps/engine"
+bun packages/sdk/src/cli/validate.ts --cwd "apps/engine"
+bun packages/sdk/src/cli/generate.ts --cwd "apps/engine" --target react --out-dir "dist/local-check"
 ```
 
-Use the same chain for `resta-app` by replacing `--cwd`.
-
-### 2) Full SDK integration check for both brands
+### 2) Full SDK integration check
 
 From repo root:
 
@@ -32,8 +30,7 @@ bun run check:sdk-integration
 ```
 
 This runs:
-- `inspect` + `validate` + `generate` for `apps/engine`
-- `inspect` + `validate` + `generate` for `resta-app`
+- `inspect` + `validate` + `generate` for `apps/engine` (SDK binaries)
 - output folder existence checks
 - generated file count threshold checks
 - DSL residue checks in generated output (`<If`, `<Loop`, `<Var`, `@ui8kit/template`, `data-gen-`)
@@ -50,35 +47,26 @@ This includes many package checks and also calls `check:sdk-integration` as an o
 
 ## `smoke:parity` Explained
 
-`smoke:parity` is a CLI release-safety gate that verifies behavior parity between:
-- source CLI entrypoint: `bun src/index.ts ...`
-- built CLI entrypoint: `bun dist/index.js ...`
+`smoke:parity` is a release-safety gate in `scripts/smoke-parity.mjs` with config-driven test cases (edit CONFIG at top of file).
 
 ### What it does
 
-From `packages/cli/scripts/smoke-parity.mjs`:
-- builds CLI dist (`bun run build`)
-- runs the same smoke commands in both source and dist runtimes:
-  - `inspect --cwd apps/engine`
-  - `validate --cwd apps/engine`
-  - `inspect --cwd resta-app`
-  - `validate --cwd resta-app`
-  - `generate --cwd resta-app --target react --out-dir resta-app/dist/parity`
-- compares exit codes between source and dist
-- fails fast if any command fails or parity is broken
+- builds CLI dist
+- for CLI: runs same commands via source and dist, asserts parity
+- for SDK: runs validate, inspect, generate binaries, asserts success
 
 ### How to run
 
-From `packages/cli`:
+From repo root:
 
 ```bash
-npm run smoke:parity
+bun run smoke:parity
 ```
 
 ### Why it matters
 
 - catches regressions where dev/source runtime works but packaged CLI behaves differently
-- blocks publish when parity is broken (`prepublishOnly` runs `smoke:parity`)
+- blocks publish when parity is broken (`prepublishOnly` in CLI package)
 
 ## `check:sdk-integration` Explained
 
@@ -86,9 +74,9 @@ npm run smoke:parity
 
 ### What it validates
 
-- both brand configs can be loaded (`inspect`)
-- both brands pass SDK validation (`validate`)
-- both brands can generate React output (`generate`)
+- engine config can be loaded (`inspect`)
+- engine passes SDK validation (`validate`)
+- engine can generate React output (`generate`)
 - generated output looks like final transformed code (no DSL artifacts)
 
 ### How to run
@@ -107,20 +95,20 @@ Script location:
 ### Parity check fails in `smoke:parity`
 
 1. Run source command manually:
-   - `bun src/index.ts inspect --cwd "<project>"`
+   - `bun packages/cli/src/index.ts scan --cwd "<project>"`
 2. Run dist command manually:
-   - `bun dist/index.js inspect --cwd "<project>"`
+   - `bun packages/cli/dist/index.js scan --cwd "<project>"`
 3. Compare output and exit code behavior.
 4. Rebuild CLI and rerun:
-   - `bun run build`
-   - `npm run smoke:parity`
+   - `bun run build` (in packages/cli)
+   - `bun run smoke:parity` (from root)
 
 ### Integration check fails in `check:sdk-integration`
 
 1. Run each failing command directly from root:
-   - `bun "packages/cli/src/index.ts" inspect --cwd "<project>"`
-   - `bun "packages/cli/src/index.ts" validate --cwd "<project>"`
-   - `bun "packages/cli/src/index.ts" generate --cwd "<project>" --target react --out-dir "dist/debug"`
+   - `bun packages/sdk/src/cli/inspect.ts --cwd "<project>"`
+   - `bun packages/sdk/src/cli/validate.ts --cwd "<project>"`
+   - `bun packages/sdk/src/cli/generate.ts --cwd "<project>" --target react --out-dir "dist/debug"`
 2. Inspect generated files under `<project>/dist/...`.
 3. Ensure no DSL artifacts remain and output folder exists.
 
@@ -130,7 +118,12 @@ From `packages/cli`:
 
 ```bash
 bun run build
-npm run smoke:parity
+```
+
+From repo root:
+
+```bash
+bun run smoke:parity
 ```
 
 From repo root (recommended before publishing):

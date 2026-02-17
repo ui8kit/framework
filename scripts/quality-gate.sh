@@ -112,8 +112,8 @@ run_optional_step \
   bash -lc "cd apps/engine && bun run e2e"
 
 run_optional_step \
-  "SDK integration checks (engine + resta)" \
-  "Inspect CLI SDK commands and generated output parity for engine/resta projects." \
+  "SDK integration checks (engine)" \
+  "Inspect SDK binaries and generated output for engine project." \
   bun run check:sdk-integration
 
 run_step \
