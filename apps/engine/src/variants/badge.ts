@@ -33,6 +33,6 @@ export const badgeStyleVariants = cva("inline-flex items-center font-semibold tr
   }
 });
 
-export interface BadgeSizeProps extends VariantProps<typeof badgeSizeVariants> {}
-export interface BadgeStyleProps extends VariantProps<typeof badgeStyleVariants> {} 
+export interface BadgeSizeVariantProps extends VariantProps<typeof badgeSizeVariants> {}
+export interface BadgeStyleVariantProps extends VariantProps<typeof badgeStyleVariants> {}
 export type BadgeVariantProps = VariantProps<typeof badgeStyleVariants> & VariantProps<typeof badgeSizeVariants>;

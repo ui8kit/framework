@@ -42,7 +42,6 @@ const defaultMappingPath = join(repoRoot, ".manual", "brand-mapping.json");
 const defaultScope = [
   "apps/engine",
   "packages/core",
-  "packages/blocks",
   "apps/engine/src/data",
   "packages/generator",
   "packages/template",

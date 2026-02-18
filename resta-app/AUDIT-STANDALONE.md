@@ -9,7 +9,7 @@ This document lists what resta-app needs when extracted to a **separate reposito
 | Package | Used for | Install via | Published? |
 |---------|----------|-------------|------------|
 | **@ui8kit/core** | Block, Container, Button, Card, etc. | CDN Registry (you) | Yes |
-| **@ui8kit/blocks** | HeroBlock (LandingPageView) | CDN Registry (you) | Yes |
+| **@/blocks** | HeroBlock (LandingPageView) | Local `src/blocks/HeroBlock.tsx` | Yes |
 | **@ui8kit/template** | If, Loop, Var (DSL) | npm | **No** |
 | **@ui8kit/sdk** | createContext, types (context.ts) | npm | **No** |
 | **@ui8kit/data-contracts** | createContext (SDK re-exports it) | npm | **No** |
@@ -19,7 +19,7 @@ This document lists what resta-app needs when extracted to a **separate reposito
 ```
 @ui8kit/core        → Block, Button, Card, Container, Grid, Stack, Text, Title, Icon, Field, etc.
 @ui8kit/template    → If, Loop, Var
-@ui8kit/blocks      → HeroBlock (only in LandingPageView)
+@/blocks            → HeroBlock (only in LandingPageView, local)
 @ui8kit/sdk/source/data → createContext, EMPTY_ARRAY, types (NavItem, PageFixture, etc.)
 ```
 
@@ -42,7 +42,6 @@ alias: {
   '@': resolve(__dirname, './src'),
   '@ui8kit/core': resolve(__dirname, '../packages/core/src/index.ts'),
   '@ui8kit/template': resolve(__dirname, '../packages/template/src/index.ts'),
-  '@ui8kit/blocks': resolve(__dirname, '../packages/blocks/src/index.ts'),
   '@ui8kit/data-contracts': resolve(__dirname, '../packages/data-contracts/src/index.ts'),
   '@ui8kit/sdk/source/data': resolve(__dirname, '../packages/sdk/src/data.ts'),
 }
@@ -99,7 +98,7 @@ To run resta-app in a standalone repo **without** copying code:
 | Package | Publish? | Reason |
 |---------|----------|--------|
 | **@ui8kit/core** | Yes (CDN) | You install via CDN Registry |
-| **@ui8kit/blocks** | Yes (CDN) | You install via CDN Registry |
+| **@/blocks** | Yes (local) | Blocks in `src/blocks/` |
 | **@ui8kit/template** | **Yes** | If, Loop, Var — no alternative |
 | **@ui8kit/data-contracts** | **Yes** | createContext, types — SDK re-exports it |
 | **@ui8kit/sdk** | **Yes** | Or inline createContext in app |
@@ -115,7 +114,7 @@ To run resta-app in a standalone repo **without** copying code:
 
 - Copy `createContext` + types from `@ui8kit/data-contracts` into resta-app (e.g. `src/lib/context.ts`)
 - Remove `@ui8kit/sdk` dependency
-- Still need: `@ui8kit/template`, `@ui8kit/core`, `@ui8kit/blocks`
+- Still need: `@ui8kit/template`, `@ui8kit/core`; blocks are local in `src/blocks/`
 
 ---
 
@@ -192,7 +191,6 @@ Then update `resta-app/src/css/index.css`:
 ```json
 {
   "dependencies": {
-    "@ui8kit/blocks": "^0.1.0",
     "@ui8kit/core": "^0.1.0",
     "@ui8kit/sdk": "^0.1.0",
     "@ui8kit/template": "^0.1.0",

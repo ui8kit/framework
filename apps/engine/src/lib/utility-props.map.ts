@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 /**
  * CDL Utility Props Map
  * src/cdl/utility-props.map.ts
@@ -117,7 +117,6 @@ export const utilityPropsMap = {
     "end-10",
     "end-11",
     "end-12",
-    "end-13",
     "end-2",
     "end-3",
     "end-4",
@@ -131,7 +130,6 @@ export const utilityPropsMap = {
     "start-10",
     "start-11",
     "start-12",
-    "start-13",
     "start-2",
     "start-3",
     "start-4",
@@ -156,33 +154,7 @@ export const utilityPropsMap = {
     "auto",
     "span-full",
     "start-auto",
-    "start-1",
-    "tart-2",
-    "start-3",
-    "start-4",
-    "start-5",
-    "start-6",
-    "start-7",
-    "tart-8",
-    "start-9",
-    "start-10",
-    "start-11",
-    "start-12",
-    "start-13",
-    "end-auto",
-    "end-1",
-    "end-2",
-    "end-3",
-    "end-4",
-    "end-5",
-    "end-6",
-    "end-7",
-    "end-8",
-    "end-9",
-    "end-10",
-    "end-11",
-    "end-12",
-    "end-13"
+    "end-auto"
   ],
   "collapse": [
     ""
@@ -227,6 +199,11 @@ export const utilityPropsMap = {
     "4",
     "6",
     "8",
+    "lg",
+    "md",
+    "sm",
+    "xl",
+    "xs",
     "x-0",
     "x-1",
     "x-2",
@@ -272,6 +249,9 @@ export const utilityPropsMap = {
     "5",
     "6",
     "8",
+    "10",
+    "11",
+    "12",
     "auto",
     "fit",
     "full",
@@ -352,6 +332,7 @@ export const utilityPropsMap = {
     "w-2xl",
     "w-4xl",
     "w-6xl",
+    "w-7xl",
     "w-full",
     "w-lg",
     "w-md",
@@ -509,10 +490,6 @@ export const utilityPropsMap = {
     "6",
     "8"
   ],
-  "placeholder": [
-    "foreground",
-    "muted-foreground"
-  ],
   "pointer": [
     "events-auto",
     "events-none"
@@ -565,12 +542,7 @@ export const utilityPropsMap = {
     "1",
     "2",
     "4",
-    "8",
-    "offset-0",
-    "offset-1",
-    "offset-2",
-    "offset-4",
-    "offset-8"
+    "8"
   ],
   "rounded": [
     "",

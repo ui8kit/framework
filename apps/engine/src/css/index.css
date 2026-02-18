@@ -3,9 +3,7 @@
 @import "./shadcn.css";
 
 @source "../**/*.{ts,tsx}";
-/* @source "../../../src/assets/maps/ui8kit.tailwind.log.json"; */
 @source "../../../../packages/generator/src/lib/ui8kit.map.json";
-@source "../../../../packages/core/src/**/*.{ts,tsx}";
 
 @layer base {
   body {

@@ -18,8 +18,6 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
-    "@ui8kit/blocks": "workspace:*",
-    "@ui8kit/core": "workspace:*",
     "@ui8kit/data-contracts": "workspace:*",
     "@ui8kit/sdk": "workspace:*",
     "@ui8kit/template": "workspace:*",

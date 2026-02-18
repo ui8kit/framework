@@ -2,14 +2,13 @@ import type { ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "../lib/utils";
 import { resolveUtilityClassName, ux, type UtilityPropBag, type UtilityPropPrefix } from "../lib/utility-props";
-import { cardVariantVariants, cardHeaderVariants, cardTitleVariants, cardDescriptionVariants, cardContentVariants, cardFooterVariants } from "../variants";
+import { cardVariants, cardHeaderVariants, cardTitleVariants, cardDescriptionVariants, cardContentVariants, cardFooterVariants, type CardVariantProps } from "../variants/card";
 
 type CardDomProps = Omit<React.HTMLAttributes<HTMLDivElement>, UtilityPropPrefix>;
 
 // Main Card component interface (CDL utility-props + variant)
-interface CardProps extends CardDomProps, UtilityPropBag {
+interface CardProps extends CardDomProps, UtilityPropBag, CardVariantProps {
   children: ReactNode;
-  variant?: 'default' | 'outlined' | 'filled';
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -33,7 +32,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         data-class="card"
         className={cn(
-          cardVariantVariants({ variant }),
+          cardVariants({ variant }),
           defaultUtilities,
           utilityClassName,
           className
@@ -241,5 +240,5 @@ export type {
   CardDescriptionProps,
   CardContentProps,
   CardFooterProps
-} from "../variants";
+};
 export { CompoundCard as Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }; 

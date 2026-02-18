@@ -53,7 +53,7 @@ export function CTABlock({
               <Var name="ctaText" value={ctaText} />
             </Button>
           </If>
-          
+
           <If test="secondaryCtaText" value={!!secondaryCtaText}>
             <Button variant="outline" size="lg" href={secondaryCtaUrl} data-class="cta-secondary-button">
               <Var name="secondaryCtaText" value={secondaryCtaText} />

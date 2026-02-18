@@ -1,6 +1,6 @@
 import { MainLayout } from '@/layouts';
 import { SidebarContent } from '@/blocks';
-import { ComponentsBlock } from '@ui8kit/blocks';
+import { ComponentsBlock } from './ComponentsBlock';
 
 export interface ComponentsPageViewProps {
   navItems?: { id: string; title: string; url: string }[];

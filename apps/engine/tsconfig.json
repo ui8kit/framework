@@ -7,9 +7,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@ui8kit/core": ["../../packages/core/src/index.ts"],
+      "@ui8kit/core": ["./src/components/index.ts"],
       "@ui8kit/template": ["../../packages/template/src/index.ts"],
-      "@ui8kit/blocks": ["../../packages/blocks/src/index.ts"],
       "@ui8kit/sdk": ["../../packages/sdk/src/index.ts"],
       "@ui8kit/sdk/config": ["../../packages/sdk/src/config.ts"],
       "@ui8kit/sdk/validate": ["../../packages/sdk/src/validate.ts"],

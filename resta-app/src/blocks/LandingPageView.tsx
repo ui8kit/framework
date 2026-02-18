@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { MainLayout } from '@/layouts';
 import { SidebarContent } from '@/blocks';
-import { HeroBlock } from '@ui8kit/blocks';
+import { HeroBlock } from './HeroBlock';
 
 export interface LandingPageViewProps {
   mode?: 'full' | 'with-sidebar' | 'sidebar-left';

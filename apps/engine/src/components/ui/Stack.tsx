@@ -13,7 +13,7 @@ export type StackProps
 };
 
 const defaultProps = ux({
-  flex: 'col',     // flex-direction: column + display: flex
+  flex: 'col',     // display: flex + flex-direction: column
   gap: '4',        // gap: 1rem
   items: 'start',  // align-items: flex-start
   justify: 'start' // justify-content: flex-start

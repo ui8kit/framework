@@ -31,7 +31,7 @@ await service.initialize({
 });
 
 const result = await service.execute({
-  sourceDirs: ['../../packages/blocks/src'],
+  sourceDirs: ['../../apps/engine/src/blocks'],
   outputDir: './dist/templates',
   engine: 'react', // or 'liquid', 'handlebars', 'twig', 'latte'
   include: ['**/*.tsx'],
@@ -49,7 +49,7 @@ const engines = ['react', 'liquid', 'handlebars'];
 
 for (const engine of engines) {
   const result = await service.execute({
-    sourceDirs: ['../../packages/blocks/src'],
+    sourceDirs: ['../../apps/engine/src/blocks'],
     outputDir: `./dist/templates/${engine}`,
     engine: engine as 'react' | 'liquid' | 'handlebars',
     include: ['**/*.tsx'],

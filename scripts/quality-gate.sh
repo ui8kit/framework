@@ -97,11 +97,6 @@ run_step \
   bash -lc "cd packages/lint && bun run test"
 
 run_optional_step \
-  "Lint packages/blocks (known baseline debt allowed)" \
-  "Address blocks tsconfig/path mapping debt; move this step to mandatory when clean." \
-  bash -lc "cd packages/blocks && bun run lint"
-
-run_optional_step \
   "Run tests apps/engine (optional until tests exist)" \
   "Add engine tests or configure test include; then make this mandatory." \
   bash -lc "cd apps/engine && bun run test"

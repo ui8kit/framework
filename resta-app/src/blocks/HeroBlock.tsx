@@ -19,7 +19,6 @@ export function HeroBlock({
   ctaUrl,
   secondaryCtaText,
   secondaryCtaUrl,
-  backgroundImage,
   children,
 }: HeroBlockProps) {
   return (
@@ -31,19 +30,19 @@ export function HeroBlock({
     >
       <Container max="w-7xl" flex="col" gap="8" items="center">
         <Stack gap="4" items="center" max="w-2xl">
-            <Title 
-              fontSize="5xl" 
-              fontWeight="bold" 
+            <Title
+              fontSize="5xl"
+              fontWeight="bold"
               textAlign="center"
               data-class="hero-title"
             >
               <Var name="title" value={title} />
             </Title>
-            
+
             <If test="subtitle" value={!!subtitle}>
-              <Text 
-                fontSize="xl" 
-                textColor="muted-foreground" 
+              <Text
+                fontSize="xl"
+                textColor="muted-foreground"
                 textAlign="center"
                 data-class="hero-subtitle"
               >
@@ -54,18 +53,18 @@ export function HeroBlock({
 
         <Group gap="4" justify="center" items="center" data-class="hero-actions">
             <If test="ctaText" value={!!ctaText}>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 href={ctaUrl}
                 data-class="hero-cta-primary"
               >
                 <Var name="ctaText" value={ctaText} />
               </Button>
             </If>
-            
+
             <If test="secondaryCtaText" value={!!secondaryCtaText}>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="lg"
                 href={secondaryCtaUrl}
                 data-class="hero-cta-secondary"

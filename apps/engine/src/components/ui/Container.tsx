@@ -1,4 +1,5 @@
-import { ElementType, forwardRef, ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
+import { forwardRef } from "react";
 import { cn } from "../../lib/utils";
 import { resolveUtilityClassName, ux, type UtilityPropBag, type UtilityPropPrefix } from "../../lib/utility-props";
 
@@ -11,6 +12,7 @@ export type ContainerProps = ContainerDomProps & UtilityPropBag & {
 };
 
 const defaultProps = ux({
+  max: 'w-7xl',
   mx: 'auto',
   px: '4'
 });
@@ -26,10 +28,13 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
 
     const Element = component as ElementType;
 
+    // Use provided data-class or default to "container"
+    const dataClass = (rest as any)['data-class'] || 'container';
+
     return (
       <Element
         ref={ref}
-        data-class="container"
+        data-class={dataClass}
         className={cn(
           defaultProps,
           utilityClassName,

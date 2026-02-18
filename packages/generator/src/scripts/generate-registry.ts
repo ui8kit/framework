@@ -328,7 +328,7 @@ function matchesAny(path: string, patterns: string[]): boolean {
 /**
  * Extract domain from file path when under blocks/{domain}/.
  * Returns undefined for files in blocks/ root or outside engine domain structure.
- * Uses lastIndexOf to handle packages/blocks/src/blocks/ (no domain) vs apps/engine/src/blocks/website/ (domain=website).
+ * Uses lastIndexOf to handle apps/engine/src/blocks/website/ (domain=website) vs apps/engine/src/blocks/ (no domain).
  */
 function extractDomainFromPath(filePath: string): string | undefined {
   const parts = filePath.replace(/\\/g, '/').split('/');
@@ -338,7 +338,7 @@ function extractDomainFromPath(filePath: string): string | undefined {
   const next = parts[blocksIdx + 1];
   // Next segment is a folder (domain) if it does not look like a file
   if (next.endsWith('.tsx') || next.endsWith('.ts')) return undefined;
-  // "src" is a path segment in packages/blocks/src/blocks/, not a domain
+  // "src" as next segment after blocks is a path segment, not a domain
   if (next === 'src') return undefined;
   return next;
 }

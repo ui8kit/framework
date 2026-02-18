@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import { MainLayout } from '@/layouts';
 import { SidebarContent } from '@/blocks';
-import { HeroBlock, FeaturesBlock, CTABlock } from '@ui8kit/blocks';
+import { HeroBlock } from './HeroBlock';
+import { FeaturesBlock } from './FeaturesBlock';
+import { CTABlock } from './CTABlock';
 
 export interface WebsitePageViewProps {
   mode?: 'full' | 'with-sidebar' | 'sidebar-left';

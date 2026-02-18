@@ -11,8 +11,6 @@
     "generate": "bunx ui8kit generate --cwd . --target react"
   },
   "dependencies": {
-    "@ui8kit/blocks": "workspace:*",
-    "@ui8kit/core": "workspace:*",
     "@ui8kit/sdk": "workspace:*",
     "@ui8kit/template": "workspace:*",
     "class-variance-authority": "^0.7.1",

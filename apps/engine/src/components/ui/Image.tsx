@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { cn } from "../../lib/utils";
 import { resolveUtilityClassName, ux, type UtilityPropBag, type UtilityPropPrefix } from "../../lib/utility-props";
+import { imagePositionVariants } from "../../variants/image";
 
 type ImageDomProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, UtilityPropPrefix | 'width' | 'height'>;
 
@@ -21,6 +22,7 @@ const defaultProps = ux({
   h: 'auto'        // height: auto
 });
 
+// Simple fit variants - single class each, handled via ux()
 const fitProps = {
   contain: ux({ object: 'contain' }),
   cover: ux({ object: 'cover' }),
@@ -29,18 +31,16 @@ const fitProps = {
   'scale-down': ux({ object: 'scale-down' })
 };
 
-const positionProps = {
+// Simple position variants - single class each, handled via ux()
+const simplePositionProps = {
   bottom: ux({ object: 'bottom' }),
   center: ux({ object: 'center' }),
   left: ux({ object: 'left' }),
-  'left-bottom': ux({ object: 'left-bottom' }),
-  'left-top': ux({ object: 'left-top' }),
   right: ux({ object: 'right' }),
-  'right-bottom': ux({ object: 'right-bottom' }),
-  'right-top': ux({ object: 'right-top' }),
   top: ux({ object: 'top' })
 };
 
+// Aspect ratio variants - single class each, handled via ux()
 const aspectProps = {
   auto: ux({ aspect: 'auto' }),
   square: ux({ aspect: 'square' }),
@@ -72,9 +72,14 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     };
 
     const fitClasses = fitProps[fit];
-    const positionClasses = positionProps[position];
     const aspectClasses = aspectProps[aspect];
     const placeholderClasses = withPlaceholder ? ux({ bg: 'muted' }) : '';
+    
+    // Handle position: use variants for combinations, ux() for simple positions
+    const isCombinedPosition = position && ['left-bottom', 'left-top', 'right-bottom', 'right-top'].includes(position);
+    const positionClasses = isCombinedPosition 
+      ? imagePositionVariants({ position: position as 'left-bottom' | 'left-top' | 'right-bottom' | 'right-top' })
+      : simplePositionProps[position as keyof typeof simplePositionProps] || '';
 
     return (
       <img

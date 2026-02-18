@@ -39,6 +39,16 @@ export type UtilityPropValue<P extends UtilityPropPrefix> =
  * Use this when whitelist checks are enforced by scripts/guards and you want
  * the runtime to be as cheap as simple `cn(...)`.
  */
+const FLEX_DIR_VALUES = ['col', 'row', 'col-reverse', 'row-reverse'] as const;
+
+const GAP_SEMANTIC: Record<string, string> = {
+  xs: "1",
+  sm: "2",
+  md: "4",
+  lg: "6",
+  xl: "8",
+};
+
 export function ux(props: UtilityPropBag): string {
   const tokens: string[] = [];
 
@@ -53,6 +63,25 @@ export function ux(props: UtilityPropBag): string {
     const value = String(raw).trim();
     if (!value) {
       tokens.push(k);
+      continue;
+    }
+
+    // Bare-token alias: italic="italic" → "italic" (when map allows "")
+    const allowed = (utilityPropsMap as Record<string, string[] | undefined>)[k];
+    if (allowed?.includes("") && value === k) {
+      tokens.push(k);
+      continue;
+    }
+
+    // flex="col"|"row"|... → "flex" + "flex-col" (direction implies display: flex)
+    if (k === 'flex' && (FLEX_DIR_VALUES as readonly string[]).includes(value)) {
+      tokens.push('flex', `flex-${value}`);
+      continue;
+    }
+
+    // gap="md"|"lg"|... → "gap-4"|"gap-6"|... (semantic spacing)
+    if (k === 'gap' && value in GAP_SEMANTIC) {
+      tokens.push(`gap-${GAP_SEMANTIC[value as keyof typeof GAP_SEMANTIC]}`);
       continue;
     }
 

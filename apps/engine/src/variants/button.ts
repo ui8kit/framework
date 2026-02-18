@@ -22,7 +22,7 @@ export const buttonSizeVariants = cva("", {
 export const buttonStyleVariants = cva("inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium rounded transition-colors shrink-0 outline-none", {
   variants: {
     variant: {
-      default: "bg-primary text-primary-foreground0",
+      default: "bg-primary text-primary-foreground",
       primary: "bg-primary text-primary-foreground",
       destructive: "bg-destructive text-destructive-foreground",
       outline: "border border-input bg-background",
@@ -36,19 +36,6 @@ export const buttonStyleVariants = cva("inline-flex items-center justify-center 
   }
 });
 
-// Button content alignment variants (layout-only, no visual decoration)
-export const buttonContentAlignVariants = cva("", {
-  variants: {
-    contentAlign: {
-      start: "justify-start",
-      center: "justify-center",
-      end: "justify-end",
-      between: "justify-between"
-    }
-  }
-});
-
-export interface ButtonSizeProps extends VariantProps<typeof buttonSizeVariants> {}
-export interface ButtonStyleProps extends VariantProps<typeof buttonStyleVariants> {} 
-export interface ButtonContentAlignProps extends VariantProps<typeof buttonContentAlignVariants> {}
-export type ButtonVariantProps = VariantProps<typeof buttonStyleVariants> & VariantProps<typeof buttonSizeVariants> & VariantProps<typeof buttonContentAlignVariants>;
+export interface ButtonSizeVariantProps extends VariantProps<typeof buttonSizeVariants> {}
+export interface ButtonStyleVariantProps extends VariantProps<typeof buttonStyleVariants> {}
+export type ButtonVariantProps = VariantProps<typeof buttonStyleVariants> & VariantProps<typeof buttonSizeVariants>;

@@ -131,6 +131,7 @@ export const truncateVariants = cva("", {
   variants: {
     truncate: {
       true: "truncate",
+      "truncate": "truncate",
       false: "",
     },
   },
@@ -188,6 +189,7 @@ export const typographyVariants = cva("", {
     },
     truncate: {
       true: "truncate",
+      "truncate": "truncate",
       false: "",
     },
   },

@@ -4,7 +4,7 @@
  * UI8Kit Engine — Template Generator Configuration
  *
  * Generates React (and other engine) templates from DSL components.
- * Source: apps/engine/src + packages/blocks/src
+ * Source: apps/engine/src
  * Output: apps/engine/dist/{engine}/
  *
  * Usage:
@@ -46,7 +46,6 @@ const PASSTHROUGH_COMPONENTS = getFallbackCoreComponents();
 /** Single source of truth for registry (and thus template) sources. Paths relative to app root. */
 const REGISTRY_SOURCE_DIRS: RegistrySourceDir[] = [
   { path: './src/blocks', type: 'registry:block', target: 'blocks', exclude: ['**/*PageView.tsx'] },
-  { path: '../../packages/blocks/src/blocks', type: 'registry:block', target: 'blocks' },
   { path: './src/layouts/views', type: 'registry:layout', target: 'layouts' },
   { path: './src/partials', type: 'registry:partial', target: 'partials' },
   { path: './src/blocks/website', type: 'registry:route', target: 'views', include: ['**/*PageView.tsx'], pathTemplate: 'views/{{name}}.tsx' },
