@@ -1,6 +1,6 @@
 import { Fragment, ReactNode } from 'react';
 import { Block, Container, Grid, Stack } from '@ui8kit/core';
-import { If } from '@ui8kit/template';
+import { If } from '@ui8kit/dsl';
 import { Header } from '../../partials/Header';
 import { Footer } from '../../partials/Footer';
 import { Sidebar } from '../../partials/Sidebar';

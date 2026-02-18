@@ -1,5 +1,5 @@
 import { Block, Container, Group, Text } from '@ui8kit/core';
-import { If, Var, Loop } from '@ui8kit/template';
+import { If, Var, Loop } from '@ui8kit/dsl';
 import { DomainNavButton } from './DomainNavButton';
 import { ThemeToggle } from './ThemeToggle';
 

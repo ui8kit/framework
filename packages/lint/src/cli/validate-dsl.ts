@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * CLI script to validate JSX control flow against @ui8kit/template DSL.
+ * CLI script to validate JSX control flow against @ui8kit/dsl DSL.
  *
  * Usage:
  *   bun run packages/lint/src/cli/validate-dsl.ts

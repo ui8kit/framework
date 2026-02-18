@@ -1,5 +1,5 @@
 import { Button, Icon } from '@ui8kit/core';
-import { If } from '@ui8kit/template';
+import { If } from '@ui8kit/dsl';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/providers/theme';
 

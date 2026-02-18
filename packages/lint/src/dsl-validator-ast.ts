@@ -1,7 +1,7 @@
 /**
  * UI8Kit Lint - DSL Validation via Babel AST
  *
- * Reliable AST-based validation for @ui8kit/template DSL rules.
+ * Reliable AST-based validation for @ui8kit/dsl DSL rules.
  * Uses a pattern table for easy rule extension.
  */
 
@@ -97,7 +97,7 @@ const DSL_RULES: DSLRule[] = [
       if (method !== "map" && method !== "forEach") return null;
       return ctx.createError(
         "NON_DSL_LOOP",
-        "Detected JS loop in JSX. Prefer @ui8kit/template <Loop> for stable generation.",
+        "Detected JS loop in JSX. Prefer @ui8kit/dsl <Loop> for stable generation.",
         ctx.source.slice(expr.start ?? 0, expr.end ?? 0).trim(),
         ['<Loop each="items" as="item" keyExpr="item.id" data={items}>...</Loop>'],
         'Rewrite loop to <Loop each="..." as="..." data={...}>',
@@ -113,7 +113,7 @@ const DSL_RULES: DSLRule[] = [
       if (expr.type === "ConditionalExpression") {
         return ctx.createError(
           "NON_DSL_CONDITIONAL",
-          "Detected JS conditional in JSX. Prefer @ui8kit/template <If> for stable generation.",
+          "Detected JS conditional in JSX. Prefer @ui8kit/dsl <If> for stable generation.",
           ctx.source.slice(expr.start ?? 0, expr.end ?? 0).trim(),
           ['<If test="condition" value={!!condition}>...</If>'],
           'Rewrite condition to <If test="..." value={...}>',
@@ -123,7 +123,7 @@ const DSL_RULES: DSLRule[] = [
       if (expr.type === "LogicalExpression" && expr.operator === "&&") {
         return ctx.createError(
           "NON_DSL_CONDITIONAL",
-          "Detected JS conditional in JSX. Prefer @ui8kit/template <If> for stable generation.",
+          "Detected JS conditional in JSX. Prefer @ui8kit/dsl <If> for stable generation.",
           ctx.source.slice(expr.start ?? 0, expr.end ?? 0).trim(),
           ['<If test="condition" value={!!condition}>...</If>'],
           'Rewrite condition to <If test="..." value={...}>',

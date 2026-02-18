@@ -4,7 +4,7 @@ Test application demonstrating the **DSL-based React to Template Engine conversi
 
 ## Overview
 
-Templetor showcases the `@ui8kit/template` DSL package, which provides declarative React components for defining template logic that can be converted to multiple template engine formats:
+Templetor showcases the `@ui8kit/dsl` DSL package, which provides declarative React components for defining template logic that can be converted to multiple template engine formats:
 
 - **Liquid** (Shopify, Jekyll, Eleventy)
 - **Handlebars** (JavaScript)
@@ -29,7 +29,7 @@ Use this checklist when changing routes, tabs, header links, or sidebars:
 ## DSL Components
 
 ```tsx
-import { Loop, If, Else, Var, Slot, Include, DefineBlock, Extends } from '@ui8kit/template';
+import { Loop, If, Else, Var, Slot, Include, DefineBlock, Extends } from '@ui8kit/dsl';
 ```
 
 | Component | Description | Example Output (Liquid) |
@@ -65,7 +65,7 @@ bun run generate --engine latte
 
 ```tsx
 // src/components/ProductList.tsx
-import { Loop, If, Else, Var, Include } from '@ui8kit/template';
+import { Loop, If, Else, Var, Include } from '@ui8kit/dsl';
 
 export function ProductList({ products, isLoading, title }) {
   return (
@@ -153,7 +153,7 @@ dist/templates/
 
 ## Architecture
 
-1. **DSL Components** (`@ui8kit/template`) - React components with `data-gen-*` markers
+1. **DSL Components** (`@ui8kit/dsl`) - React components with `data-gen-*` markers
 2. **JSX Transformer** - Parses React to HAST with annotations
 3. **Template Plugins** - Convert HAST to specific template syntax
 

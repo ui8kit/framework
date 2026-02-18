@@ -8,7 +8,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@ui8kit/core": ["./src/components/index.ts"],
-      "@ui8kit/template": ["../../packages/template/src/index.ts"],
+      "@ui8kit/dsl": ["../../packages/dsl/src/index.ts"],
       "@ui8kit/sdk": ["../../packages/sdk/src/index.ts"],
       "@ui8kit/sdk/config": ["../../packages/sdk/src/config.ts"],
       "@ui8kit/sdk/validate": ["../../packages/sdk/src/validate.ts"],

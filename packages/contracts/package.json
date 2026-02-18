@@ -1,5 +1,5 @@
 {
-  "name": "@ui8kit/data-contracts",
+  "name": "@ui8kit/contracts",
   "version": "0.1.0",
   "description": "Generic data contracts and context helpers for UI8Kit SDK",
   "type": "module",
@@ -17,7 +17,8 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc",

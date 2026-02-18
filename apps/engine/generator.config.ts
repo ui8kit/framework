@@ -59,7 +59,7 @@ interface EngineConfig {
   exclude: string[];
   verbose: boolean;
   passthroughComponents: string[];
-  /** Exclude these modules from generated template imports (e.g. @ui8kit/template) */
+  /** Exclude these modules from generated template imports (e.g. @ui8kit/dsl) */
   excludeDependencies: string[];
 }
 
@@ -89,7 +89,7 @@ const config: EngineConfig = {
   exclude: ['**/*.test.tsx', '**/*.test.ts', '**/*.meta.ts', '**/index.ts'],
   verbose: true,
   passthroughComponents: [...PASSTHROUGH_COMPONENTS, 'Link'],
-  excludeDependencies: ['@ui8kit/template'],
+  excludeDependencies: ['@ui8kit/dsl'],
 };
 
 // =============================================================================
@@ -154,7 +154,7 @@ async function main() {
     outputPath: resolve(engineOutputDir, '_temp', 'registry.json'),
     registryName: 'ui8kit',
     version: '0.1.0',
-    excludeDependencies: ['@ui8kit/template'],
+    excludeDependencies: ['@ui8kit/dsl'],
     write: false,
   };
 

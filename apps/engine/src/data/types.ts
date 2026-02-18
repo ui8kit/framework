@@ -12,7 +12,7 @@ import type {
   SidebarCacheDiagnostics,
   SidebarLink,
   SiteInfo,
-} from '@ui8kit/data-contracts/source';
+} from '@ui8kit/contracts/source';
 
 export type {
   AppContextBase,
@@ -26,7 +26,7 @@ export type {
   SidebarCacheDiagnostics,
   SidebarLink,
   SiteInfo,
-} from '@ui8kit/data-contracts/source';
+} from '@ui8kit/contracts/source';
 
 export interface HeroFixture {
   title?: string;

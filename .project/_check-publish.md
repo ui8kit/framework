@@ -1,0 +1,10 @@
+- [ ] @ui8kit/contracts
+- [ ] upd workspace:*
+- [ ] @ui8kit/lint
+- [ ] upd workspace:*
+- [ ] @ui8kit/dsl
+- [ ] upd workspace:*
+- [ ] @ui8kit/sdk
+- [ ] upd workspace:*
+- [ ] @ui8kit/generator
+- [ ] upd workspace:*

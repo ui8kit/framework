@@ -284,7 +284,7 @@ apps/engine/src/blocks/
 └── index.ts           ← Re-exports all domains
 ```
 
-**Rule:** A block imports only from `@ui8kit/core` and `@ui8kit/template`. No cross-domain imports inside blocks.
+**Rule:** A block imports only from `@ui8kit/core` and `@ui8kit/dsl`. No cross-domain imports inside blocks.
 
 ### Where to Put New Components — Decision Tree
 
@@ -323,7 +323,7 @@ export function BookingBlock() {
 
 ### Cognitive Load — Keep It Simple
 
-1. **Blocks = composition only.** No business logic. Use `Var`, `If`, `Loop` from `@ui8kit/template` for data binding.
+1. **Blocks = composition only.** No business logic. Use `Var`, `If`, `Loop` from `@ui8kit/dsl` for data binding.
 2. **One dependency per layer.** Block → core (required). Block → calendar/editor (optional, only when needed).
 3. **Copy-paste = block + its imports.** When copying a block, you get a self-contained file. No hidden shared components.
 4. **Don't extract "FeatureCard".** Use `Card` from core. Different block types (event, product, news) = same Card, different content.

@@ -17,6 +17,6 @@ export {
   SDK_LEGACY_SCHEMA_URLS,
 } from './constants';
 
-export * from '@ui8kit/template';
+export * from '@ui8kit/dsl';
 export * from '@ui8kit/lint';
-export * from '@ui8kit/data-contracts';
+export * from '@ui8kit/contracts';

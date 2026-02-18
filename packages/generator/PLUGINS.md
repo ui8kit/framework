@@ -62,7 +62,7 @@ for (const engine of engines) {
 
 ## DSL Component Mapping
 
-The generator automatically transforms DSL components from `@ui8kit/template` to template syntax:
+The generator automatically transforms DSL components from `@ui8kit/dsl` to template syntax:
 
 ### Var Component
 
@@ -269,7 +269,7 @@ The generator automatically transforms DSL components from `@ui8kit/template` to
 
 ### Engine (apps/engine) — Dev Mode Only
 
-When the engine app runs in dev mode (Vite), it uses the **actual React components** from `@ui8kit/template` (`If`, `Loop`, `Var`, etc.). These components must render something at runtime:
+When the engine app runs in dev mode (Vite), it uses the **actual React components** from `@ui8kit/dsl` (`If`, `Loop`, `Var`, etc.). These components must render something at runtime:
 
 - **`<If>`** currently renders a `<span style="display:contents">` wrapper around its children (with `data-gen-if` for debugging). This wrapper is visible in the DOM inspector and can be confusing during development.
 - The generator **never sees this runtime output**. It parses the source AST and transforms `<If>` in the source code directly.
@@ -421,7 +421,7 @@ interface TemplatePluginConfig {
 
 ## Best Practices
 
-1. **Use DSL components** - Always use `If`, `Var`, `Loop`, `Slot` from `@ui8kit/template` for dynamic content
+1. **Use DSL components** - Always use `If`, `Var`, `Loop`, `Slot` from `@ui8kit/dsl` for dynamic content
 2. **Add data-class** - Every semantic element should have a `data-class` attribute
 3. **Test in dev mode** - Test blocks with actual data before generating templates
 4. **Validate output** - Check generated templates match expected syntax

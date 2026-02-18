@@ -1,5 +1,5 @@
 {
-  "name": "@ui8kit/template",
+  "name": "@ui8kit/dsl",
   "version": "0.1.0",
   "description": "DSL components for React to Template Engine conversion",
   "type": "module",
@@ -18,7 +18,8 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "README.md"
   ],
   "scripts": {
     "build": "vite build && tsc -p tsconfig.build.json --emitDeclarationOnly --declaration --outDir dist",

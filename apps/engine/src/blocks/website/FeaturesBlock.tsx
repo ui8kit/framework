@@ -1,5 +1,5 @@
 import { Block, Grid, Stack, Title, Text } from '@ui8kit/core';
-import { If, Var, Loop } from '@ui8kit/template';
+import { If, Var, Loop } from '@ui8kit/dsl';
 
 export interface Feature {
   id: string;

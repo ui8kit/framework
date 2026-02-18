@@ -1,7 +1,7 @@
 import { MainLayout } from '@/layouts';
 import { SidebarContent } from '@/blocks';
 import { Block, Container, Title, Text } from '@ui8kit/core';
-import { If, Var } from '@ui8kit/template';
+import { If, Var } from '@ui8kit/dsl';
 
 export interface PromotionDetailPageViewProps {
   navItems?: { id: string; title: string; url: string }[];

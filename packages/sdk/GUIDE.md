@@ -46,7 +46,7 @@ This runs:
 - `inspect` + `validate` + `generate` for `apps/engine` (SDK binaries)
 - output folder existence checks
 - generated file count threshold checks
-- DSL residue checks in generated output (`<If`, `<Loop`, `<Var`, `@ui8kit/template`, `data-gen-`)
+- DSL residue checks in generated output (`<If`, `<Loop`, `<Var`, `@ui8kit/dsl`, `data-gen-`)
 
 ### 3) Programmatic usage in scripts
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '@/layouts';
 import { Block, Stack, Title, Text, Button, Field } from '@ui8kit/core';
-import { If } from '@ui8kit/template';
+import { If } from '@ui8kit/dsl';
 import { useAdminAuth } from '@/providers/AdminAuthContext';
 
 export interface AdminLoginPageViewProps {

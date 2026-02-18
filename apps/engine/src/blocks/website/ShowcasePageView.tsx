@@ -1,7 +1,7 @@
 import { MainLayout } from '@/layouts';
 import { SidebarContent } from '@/blocks';
 import { Block, Grid, Card, CardHeader, CardTitle, CardDescription, Text } from '@ui8kit/core';
-import { If, Var, Loop } from '@ui8kit/template';
+import { If, Var, Loop } from '@ui8kit/dsl';
 
 export interface ShowcaseItem {
   id: string;

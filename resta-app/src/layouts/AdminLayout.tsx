@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Block, Box } from '@ui8kit/core';
-import { If } from '@ui8kit/template';
+import { If } from '@ui8kit/dsl';
 import { Sidebar } from '@/partials/Sidebar';
 import { Header } from '@/partials/Header';
 

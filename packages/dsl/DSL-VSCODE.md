@@ -1,10 +1,10 @@
 # DSL Component Highlighting in VS Code
 
-This guide explains how to configure VS Code to visually distinguish `@ui8kit/template` DSL components from regular JSX/HTML tags using the [vscode-highlight](https://marketplace.visualstudio.com/items?itemName=fabiospampinato.vscode-highlight) extension.
+This guide explains how to configure VS Code to visually distinguish `@ui8kit/dsl` DSL components from regular JSX/HTML tags using the [vscode-highlight](https://marketplace.visualstudio.com/items?itemName=fabiospampinato.vscode-highlight) extension.
 
 ## Why Highlight DSL Components?
 
-The `@ui8kit/template` package provides declarative components (`Loop`, `If`, `Var`, `Slot`, etc.) that define template logic for conversion to various template engines. Visually distinguishing these DSL components from regular React/HTML tags makes it easier to:
+The `@ui8kit/dsl` package provides declarative components (`Loop`, `If`, `Var`, `Slot`, etc.) that define template logic for conversion to various template engines. Visually distinguishing these DSL components from regular React/HTML tags makes it easier to:
 
 - Quickly identify template logic within your components
 - Differentiate between UI components and template directives
@@ -178,7 +178,7 @@ However, theme colors are recommended because they:
 ### Example 1: Basic Usage
 
 ```tsx
-import { Loop, If, Var } from '@ui8kit/template';
+import { Loop, If, Var } from '@ui8kit/dsl';
 
 function ProductList({ items }) {
   return (
@@ -306,8 +306,8 @@ The following components are highlighted by this configuration:
 - [vscode-highlight Documentation](https://marketplace.visualstudio.com/items?itemName=fabiospampinato.vscode-highlight)
 - [VS Code Theme Color Reference](https://code.visualstudio.com/api/references/theme-color)
 - [VS Code Decoration API](https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions)
-- [@ui8kit/template Package](../README.md)
+- [@ui8kit/dsl Package](../README.md)
 
 ## License
 
-This configuration is part of the @ui8kit/template package and is licensed under MIT.
+This configuration is part of the @ui8kit/dsl package and is licensed under MIT.

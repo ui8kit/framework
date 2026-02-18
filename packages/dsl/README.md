@@ -1,4 +1,4 @@
-# @ui8kit/template
+# @ui8kit/dsl
 
 DSL components for React to Template Engine conversion.
 
@@ -9,13 +9,13 @@ This package provides declarative React components that define template logic. T
 ## Installation
 
 ```bash
-bun add @ui8kit/template
+bun add @ui8kit/dsl
 ```
 
 ## Usage
 
 ```tsx
-import { Loop, If, Else, Var, Slot, Include } from '@ui8kit/template';
+import { Loop, If, Else, Var, Slot, Include } from '@ui8kit/dsl';
 
 function ProductCard({ product, isOnSale }) {
   return (

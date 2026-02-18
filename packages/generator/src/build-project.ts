@@ -80,7 +80,7 @@ export async function buildProject(config: AppConfig, cwd = process.cwd()): Prom
     outputPath: registryPath,
     registryName: config.brand,
     version: '0.1.0',
-    excludeDependencies: ['@ui8kit/template'],
+    excludeDependencies: ['@ui8kit/dsl'],
     write: false,
   };
 
@@ -94,7 +94,7 @@ export async function buildProject(config: AppConfig, cwd = process.cwd()): Prom
     engine: config.target,
     verbose: false,
     passthroughComponents: [],
-    excludeDependencies: ['@ui8kit/template'],
+    excludeDependencies: ['@ui8kit/dsl'],
   });
 
   await service.dispose();

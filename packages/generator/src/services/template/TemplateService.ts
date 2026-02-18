@@ -82,7 +82,7 @@ export interface TemplateServiceInput {
    * Module specifiers to exclude from generated template imports.
    * Imports from these sources are stripped from tree.meta.imports before
    * the plugin runs (e.g. React plugin will not emit them).
-   * Use for DSL packages like @ui8kit/template whose components are
+   * Use for DSL packages like @ui8kit/dsl whose components are
    * compiled away and must not appear in the output.
    */
   excludeDependencies?: string[];
@@ -286,7 +286,7 @@ export class TemplateService implements IService<TemplateServiceInput, TemplateS
               continue;
             }
 
-            // Strip imports from excluded dependencies (e.g. @ui8kit/template)
+            // Strip imports from excluded dependencies (e.g. @ui8kit/dsl)
             // so the plugin does not emit them in generated templates.
             if (excludeDependencies?.length && transformResult.tree.meta?.imports?.length) {
               transformResult.tree.meta.imports = transformResult.tree.meta.imports.filter(

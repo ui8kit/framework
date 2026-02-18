@@ -1,9 +1,9 @@
 /**
- * Shared cache utilities delegated to @ui8kit/data-contracts.
+ * Shared cache utilities delegated to @ui8kit/contracts.
  */
 
-import { createCache } from '@ui8kit/data-contracts/source';
-import type { Cache, CacheStats, DashboardSidebarLink } from '@ui8kit/data-contracts/source';
+import { createCache } from '@ui8kit/contracts/source';
+import type { Cache, CacheStats, DashboardSidebarLink } from '@ui8kit/contracts/source';
 
 const SIDEBAR_CACHE_MAX_SIZE = 20;
 

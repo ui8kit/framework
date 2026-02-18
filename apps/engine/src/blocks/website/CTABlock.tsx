@@ -1,5 +1,5 @@
 import { Block, Stack, Group, Title, Text, Button } from '@ui8kit/core';
-import { If, Var } from '@ui8kit/template';
+import { If, Var } from '@ui8kit/dsl';
 
 export interface CTABlockProps {
   title?: string;

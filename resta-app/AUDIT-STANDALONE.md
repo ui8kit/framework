@@ -10,22 +10,22 @@ This document lists what resta-app needs when extracted to a **separate reposito
 |---------|----------|-------------|------------|
 | **@ui8kit/core** | Block, Container, Button, Card, etc. | CDN Registry (you) | Yes |
 | **@/blocks** | HeroBlock (LandingPageView) | Local `src/blocks/HeroBlock.tsx` | Yes |
-| **@ui8kit/template** | If, Loop, Var (DSL) | npm | **No** |
+| **@ui8kit/dsl** | If, Loop, Var (DSL) | npm | **No** |
 | **@ui8kit/sdk** | createContext, types (context.ts) | npm | **No** |
-| **@ui8kit/data-contracts** | createContext (SDK re-exports it) | npm | **No** |
+| **@ui8kit/contracts** | createContext (SDK re-exports it) | npm | **No** |
 
 ### Current imports in resta-app
 
 ```
 @ui8kit/core        → Block, Button, Card, Container, Grid, Stack, Text, Title, Icon, Field, etc.
-@ui8kit/template    → If, Loop, Var
+@ui8kit/dsl    → If, Loop, Var
 @/blocks            → HeroBlock (only in LandingPageView, local)
 @ui8kit/sdk/source/data → createContext, EMPTY_ARRAY, types (NavItem, PageFixture, etc.)
 ```
 
 ### SDK cannot auto-load unpublished packages
 
-The SDK is a normal npm package. It does **not** fetch or install dependencies at runtime. Its dependencies (`@ui8kit/data-contracts`, `@ui8kit/generator`, etc.) must be:
+The SDK is a normal npm package. It does **not** fetch or install dependencies at runtime. Its dependencies (`@ui8kit/contracts`, `@ui8kit/generator`, etc.) must be:
 
 - Either **published to npm** and installed via `npm install @ui8kit/sdk`
 - Or **bundled** into the SDK before publishing
@@ -41,8 +41,8 @@ Current `vite.config.ts` uses **monorepo-relative aliases**:
 alias: {
   '@': resolve(__dirname, './src'),
   '@ui8kit/core': resolve(__dirname, '../packages/core/src/index.ts'),
-  '@ui8kit/template': resolve(__dirname, '../packages/template/src/index.ts'),
-  '@ui8kit/data-contracts': resolve(__dirname, '../packages/data-contracts/src/index.ts'),
+  '@ui8kit/dsl': resolve(__dirname, '../packages/dsl/src/index.ts'),
+  '@ui8kit/contracts': resolve(__dirname, '../packages/contracts/src/index.ts'),
   '@ui8kit/sdk/source/data': resolve(__dirname, '../packages/sdk/src/data.ts'),
 }
 ```
@@ -85,7 +85,7 @@ Scripts in `package.json`:
 These require the **ui8kit** CLI (`ui8kit` package). The CLI depends on:
 
 - `@ui8kit/sdk` (config, validate, build)
-- SDK depends on: `@ui8kit/data-contracts`, `@ui8kit/generator`, `@ui8kit/lint`, `@ui8kit/template`
+- SDK depends on: `@ui8kit/contracts`, `@ui8kit/generator`, `@ui8kit/lint`, `@ui8kit/dsl`
 
 **If packages are not published:** `bunx ui8kit-validate` will fail because `@ui8kit/sdk` and its deps won't resolve.
 
@@ -99,22 +99,22 @@ To run resta-app in a standalone repo **without** copying code:
 |---------|----------|--------|
 | **@ui8kit/core** | Yes (CDN) | You install via CDN Registry |
 | **@/blocks** | Yes (local) | Blocks in `src/blocks/` |
-| **@ui8kit/template** | **Yes** | If, Loop, Var — no alternative |
-| **@ui8kit/data-contracts** | **Yes** | createContext, types — SDK re-exports it |
+| **@ui8kit/dsl** | **Yes** | If, Loop, Var — no alternative |
+| **@ui8kit/contracts** | **Yes** | createContext, types — SDK re-exports it |
 | **@ui8kit/sdk** | **Yes** | Or inline createContext in app |
 | **ui8kit** (CLI) | Optional | Only if you need validate/generate |
 
 ### Option A: Publish SDK + data-contracts + template
 
-- Publish: `@ui8kit/data-contracts`, `@ui8kit/template`, `@ui8kit/sdk`
-- resta-app: `npm install @ui8kit/sdk @ui8kit/template`
-- SDK will pull `@ui8kit/data-contracts` as its dependency
+- Publish: `@ui8kit/contracts`, `@ui8kit/dsl`, `@ui8kit/sdk`
+- resta-app: `npm install @ui8kit/sdk @ui8kit/dsl`
+- SDK will pull `@ui8kit/contracts` as its dependency
 
 ### Option B: Inline context (no SDK publish)
 
-- Copy `createContext` + types from `@ui8kit/data-contracts` into resta-app (e.g. `src/lib/context.ts`)
+- Copy `createContext` + types from `@ui8kit/contracts` into resta-app (e.g. `src/lib/context.ts`)
 - Remove `@ui8kit/sdk` dependency
-- Still need: `@ui8kit/template`, `@ui8kit/core`; blocks are local in `src/blocks/`
+- Still need: `@ui8kit/dsl`, `@ui8kit/core`; blocks are local in `src/blocks/`
 
 ---
 
@@ -132,8 +132,8 @@ Used by Tailwind `@source` for class whitelist. Options:
 
 | Task | How |
 |------|-----|
-| Publish `@ui8kit/data-contracts` | `npm publish` (or your registry) |
-| Publish `@ui8kit/template` | `npm publish` |
+| Publish `@ui8kit/contracts` | `npm publish` (or your registry) |
+| Publish `@ui8kit/dsl` | `npm publish` |
 | Publish `@ui8kit/sdk` | After data-contracts; ensure SDK's package.json deps use published versions |
 | Bundle ui8kit.map.json | Copy or script in postinstall |
 | Remove Vite aliases | When packages are installed from npm |
@@ -153,8 +153,8 @@ Used by Tailwind `@source` for class whitelist. Options:
 
 **Minimal publish set for full functionality:**
 
-- `@ui8kit/data-contracts`
-- `@ui8kit/template`
+- `@ui8kit/contracts`
+- `@ui8kit/dsl`
 - `@ui8kit/sdk` (depends on data-contracts)
 
 **Plus:** Bundle or publish `ui8kit.map.json` for Tailwind.
@@ -182,8 +182,8 @@ Then update `resta-app/src/css/index.css`:
 
 ### Publish order (if publishing)
 
-1. `@ui8kit/data-contracts` (no ui8kit deps)
-2. `@ui8kit/template` (no ui8kit deps)
+1. `@ui8kit/contracts` (no ui8kit deps)
+2. `@ui8kit/dsl` (no ui8kit deps)
 3. `@ui8kit/sdk` (depends on data-contracts; can drop generator/lint for runtime if only using data export)
 
 ### Standalone package.json (after extract)
@@ -193,7 +193,7 @@ Then update `resta-app/src/css/index.css`:
   "dependencies": {
     "@ui8kit/core": "^0.1.0",
     "@ui8kit/sdk": "^0.1.0",
-    "@ui8kit/template": "^0.1.0",
+    "@ui8kit/dsl": "^0.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.1",

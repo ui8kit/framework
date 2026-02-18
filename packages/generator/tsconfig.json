@@ -20,9 +20,9 @@
       "@/*": ["src/*"],
       "@ui8kit/sdk": ["../sdk/src/index.ts"],
       "@ui8kit/sdk/config": ["../sdk/src/config.ts"],
-      "@ui8kit/template": ["../template/src/index.ts"],
+      "@ui8kit/dsl": ["../template/src/index.ts"],
       "@ui8kit/lint": ["../lint/src/index.ts"],
-      "@ui8kit/data-contracts": ["../data-contracts/src/index.ts"],
+      "@ui8kit/contracts": ["../data-contracts/src/index.ts"],
       "@ui8kit/core": ["src/stub/core.ts"]
     }
   },

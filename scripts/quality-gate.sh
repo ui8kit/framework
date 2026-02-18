@@ -77,14 +77,14 @@ run_step \
   bash -lc "cd packages/generator && bun run test"
 
 run_optional_step \
-  "Lint packages/template" \
-  "Fix type/lint issues in packages/template; currently non-blocking to keep local flow stable." \
-  bash -lc "cd packages/template && bun run lint"
+  "Lint packages/dsl" \
+  "Fix type/lint issues in packages/dsl; currently non-blocking to keep local flow stable." \
+  bash -lc "cd packages/dsl && bun run lint"
 
 run_step \
-  "Run tests packages/template" \
+  "Run tests packages/dsl" \
   "Inspect template test failures and update implementation/tests." \
-  bash -lc "cd packages/template && bun run test"
+  bash -lc "cd packages/dsl && bun run test"
 
 run_optional_step \
   "Lint packages/lint" \

@@ -9,7 +9,7 @@ alwaysApply: false
 ## Constraints
 
 - No hardcode: data from `context` (@ui8kit/data) or props only
-- DSL only: use `<If>`, `<Loop>`, `<Var>` from @ui8kit/template (no `.map`, `?:`, `&&` in JSX)
+- DSL only: use `<If>`, `<Loop>`, `<Var>` from @ui8kit/dsl (no `.map`, `?:`, `&&` in JSX)
 - ui8kit semantics: semantic props, no `className`/`style`/raw HTML
 - Comments in English
 

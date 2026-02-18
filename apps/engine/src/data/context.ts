@@ -4,7 +4,7 @@
 import {
   createContext,
   EMPTY_ARRAY as BASE_EMPTY_ARRAY,
-} from '@ui8kit/data-contracts/source';
+} from '@ui8kit/contracts/source';
 import siteData from './fixtures/shared/site.json';
 import navigationData from './fixtures/shared/navigation.json';
 import pageData from './fixtures/shared/page.json';

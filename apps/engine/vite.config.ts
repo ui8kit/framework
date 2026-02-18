@@ -11,7 +11,7 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       '@ui8kit/core': resolve(__dirname, './src/components/index.ts'),
-      '@ui8kit/template': resolve(__dirname, '../../packages/template/src/index.ts'),
+      '@ui8kit/dsl': resolve(__dirname, '../../packages/dsl/src/index.ts'),
     },
   },
 });

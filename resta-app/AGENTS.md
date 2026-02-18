@@ -126,7 +126,7 @@ Integration checks:
 Output checks:
 
 - generated files exist under `resta-app/dist/*`
-- no DSL residue in generated output (`<If`, `<Loop`, `<Var`, `@ui8kit/template`)
+- no DSL residue in generated output (`<If`, `<Loop`, `<Var`, `@ui8kit/dsl`)
 
 ## 9) Agent Output Format (Required)
 

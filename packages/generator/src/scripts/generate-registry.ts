@@ -99,7 +99,7 @@ export interface RegistryConfig {
   exclude?: string[];
   /**
    * Package names to exclude from each item's dependencies.
-   * Used for DSL/build-only deps (e.g. @ui8kit/template) that are not needed
+   * Used for DSL/build-only deps (e.g. @ui8kit/dsl) that are not needed
    * in consuming apps. If absent or empty, dependencies are left as-is.
    */
   excludeDependencies?: string[];

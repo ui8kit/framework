@@ -114,7 +114,7 @@ npx ui8kit add all
 - `src/layouts/MainLayout.tsx`
 - `src/blocks/HomePageView.tsx`
 
-И используй DSL-примитивы (`If`, `Var`, `Loop`) из `@ui8kit/template` внутри block-уровня.
+И используй DSL-примитивы (`If`, `Var`, `Loop`) из `@ui8kit/dsl` внутри block-уровня.
 
 ## 6) Validate and generate
 

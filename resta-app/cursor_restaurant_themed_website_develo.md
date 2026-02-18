@@ -317,8 +317,8 @@ SDK — обычный npm-пакет. Он не устанавливает за
 
 | Пакет | Зачем |
 |-------|--------|
-| **@ui8kit/data-contracts** | `createContext`, типы |
-| **@ui8kit/template** | If, Loop, Var (DSL) |
+| **@ui8kit/contracts** | `createContext`, типы |
+| **@ui8kit/dsl** | If, Loop, Var (DSL) |
 | **@ui8kit/sdk** | Реэкспорт `createContext` из data-contracts |
 
 **Порядок публикации:** data-contracts → template → sdk (SDK зависит от data-contracts).
@@ -336,8 +336,8 @@ SDK — обычный npm-пакет. Он не устанавливает за
 
 ## Альтернатива без публикации SDK
 
-- Встроить `createContext` и типы из `@ui8kit/data-contracts` прямо в resta-app (например, в `src/lib/context.ts`).
-- Оставить только `@ui8kit/template` (его нужно опубликовать или тоже встроить).
+- Встроить `createContext` и типы из `@ui8kit/contracts` прямо в resta-app (например, в `src/lib/context.ts`).
+- Оставить только `@ui8kit/dsl` (его нужно опубликовать или тоже встроить).
 - Core и blocks — из CDN Registry.
 
 Полный аудит в `resta-app/AUDIT-STANDALONE.md`.

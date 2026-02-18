@@ -114,7 +114,7 @@ Create:
 - `src/layouts/MainLayout.tsx`
 - `src/blocks/HomePageView.tsx`
 
-Use DSL primitives (`If`, `Var`, `Loop`) from `@ui8kit/template` at the block level.
+Use DSL primitives (`If`, `Var`, `Loop`) from `@ui8kit/dsl` at the block level.
 
 ## 6) Validate and generate
 

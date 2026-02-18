@@ -1,5 +1,5 @@
 /**
- * @ui8kit/template - DSL for React to Template Engine conversion
+ * @ui8kit/dsl - DSL for React to Template Engine conversion
  *
  * Provides declarative components for defining template logic
  * that will be converted to various template engine syntax.
@@ -12,7 +12,7 @@
  *
  * @example
  * ```tsx
- * import { Loop, If, Else, Var, Slot } from '@ui8kit/template';
+ * import { Loop, If, Else, Var, Slot } from '@ui8kit/dsl';
  *
  * function ProductList({ items, isLoading }) {
  *   return (

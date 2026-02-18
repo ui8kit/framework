@@ -44,7 +44,7 @@ const defaultScope = [
   "packages/core",
   "apps/engine/src/data",
   "packages/generator",
-  "packages/template",
+  "packages/dsl",
   "packages/lint",
 ];
 const validExtensions = new Set([

@@ -1,5 +1,5 @@
 import { Stack, Text } from '@ui8kit/core';
-import { If, Loop, Var } from '@ui8kit/template';
+import { If, Loop, Var } from '@ui8kit/dsl';
 import { DomainNavButton } from '@/partials';
 
 export type SidebarLink = {
