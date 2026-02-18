@@ -1,13 +1,18 @@
+/**
+ * Build project — template generation from app config.
+ * Lives in generator: app build/generation is the generator's responsibility.
+ */
+
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { Logger } from '@ui8kit/generator';
+import { Logger } from './core';
+import { TemplateService } from './services/template';
 import {
-  TemplateService,
   generateRegistry,
   type RegistryConfig,
   type RegistrySourceDir,
-} from '@ui8kit/generator';
-import type { AppConfig, BuildResult } from './types';
+} from './scripts';
+import type { AppConfig, BuildResult } from '@ui8kit/sdk';
 
 function getRegistrySources(config: AppConfig, cwd: string): RegistrySourceDir[] {
   const entries: RegistrySourceDir[] = [];

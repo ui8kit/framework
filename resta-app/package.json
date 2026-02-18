@@ -8,9 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "validate": "bunx ui8kit validate --cwd .",
-    "generate": "bunx ui8kit generate --cwd . --target react"
+    "generate": "bunx ui8kit-generate --cwd . --target react"
   },
   "dependencies": {
+    "@ui8kit/generator": "workspace:*",
     "@ui8kit/sdk": "workspace:*",
     "@ui8kit/template": "workspace:*",
     "class-variance-authority": "^0.7.1",

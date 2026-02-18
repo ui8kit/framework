@@ -2,18 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "jsx": "react-jsx",
     "declaration": true,
     "declarationMap": true,
     "composite": true,
-    "baseUrl": ".",
-    "paths": {
-      "@ui8kit/lint": ["../lint/src/index.ts"],
-      "@ui8kit/generator": ["../generator/src/index.ts"],
-      "@ui8kit/template": ["../template/src/index.ts"],
-      "@ui8kit/data-contracts": ["../data-contracts/src/index.ts"]
-    }
+    "baseUrl": "."
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

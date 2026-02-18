@@ -1,25 +1,29 @@
 #!/usr/bin/env bun
 
-import { Command } from "commander";
-import chalk from "chalk";
-import { loadAppConfig } from "../config";
-import { buildProject } from "../build";
+/**
+ * ui8kit-generate — Generate target templates from app config.
+ * Lives in generator: app build/generation is the generator's responsibility.
+ */
 
-type BuildTarget = "react" | "liquid" | "handlebars" | "twig" | "latte";
+import { Command } from 'commander';
+import chalk from 'chalk';
+import { loadAppConfig } from '@ui8kit/sdk/config';
+import { buildProject } from '../build-project';
+import type { BuildTarget } from '@ui8kit/sdk';
 
 const program = new Command();
 
 program
-  .name("ui8kit-generate")
-  .description("Generate target templates using SDK")
-  .option("--cwd <dir>", "Working directory", process.cwd())
-  .option("--out-dir <dir>", "Output directory override")
+  .name('ui8kit-generate')
+  .description('Generate target templates from ui8kit.config')
+  .option('--cwd <dir>', 'Working directory', process.cwd())
+  .option('--out-dir <dir>', 'Output directory override')
   .option(
-    "--target <engine>",
-    "Target engine: react|liquid|handlebars|twig|latte"
+    '--target <engine>',
+    'Target engine: react|liquid|handlebars|twig|latte'
   )
   .addHelpText(
-    "after",
+    'after',
     `
 Examples:
   bunx ui8kit-generate
@@ -40,26 +44,26 @@ Examples:
 
       const result = await buildProject(runtimeConfig, cwd);
       if (!result.ok) {
-        console.log(chalk.red("Generation failed."));
+        console.log(chalk.red('Generation failed.'));
         for (const error of result.errors) {
           console.log(` - ${error}`);
         }
         process.exit(1);
       }
 
-      console.log(chalk.green("Generation completed."));
+      console.log(chalk.green('Generation completed.'));
       console.log(`Engine: ${result.engine}`);
       console.log(`Output: ${result.outputDir}`);
       console.log(`Files: ${result.generated}`);
       if (result.warnings.length > 0) {
-        console.log(chalk.yellow("\nWarnings:"));
+        console.log(chalk.yellow('\nWarnings:'));
         for (const warning of result.warnings) {
           console.log(` - ${warning}`);
         }
       }
     } catch (error) {
       console.error(
-        chalk.red("Generation failed:"),
+        chalk.red('Generation failed:'),
         (error as Error).message
       );
       process.exit(1);

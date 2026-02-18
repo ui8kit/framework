@@ -1,6 +1,5 @@
 export { defineApp, findAppConfigPath, loadAppConfig, loadAppConfigDetails } from './config';
 export { validateProject } from './validate';
-export { buildProject } from './build';
 export type {
   AppConfig,
   BuildResult,
@@ -20,5 +19,4 @@ export {
 
 export * from '@ui8kit/template';
 export * from '@ui8kit/lint';
-export * from '@ui8kit/generator';
 export * from '@ui8kit/data-contracts';

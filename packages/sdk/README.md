@@ -1,6 +1,6 @@
 # @ui8kit/sdk
 
-UI8Kit SDK for app definition, validation, and DSL generation. Provides programmatic APIs and CLI binaries for config-driven template workflows.
+UI8Kit SDK — developer helper for app config, validation, and DSL tooling. Ensures DSL is valid and apps look correct at runtime. Template generation lives in `@ui8kit/generator`.
 
 ## Requirements
 
@@ -17,7 +17,7 @@ npm install @ui8kit/sdk
 
 ## CLI Binaries
 
-The SDK exposes three standalone binaries for app inspection, validation, and template generation.
+The SDK exposes two binaries for app inspection and validation. Template generation is provided by `@ui8kit/generator` (see `ui8kit-generate`).
 
 ### `ui8kit-validate`
 
@@ -37,21 +37,11 @@ bunx ui8kit-inspect
 bunx ui8kit-inspect --cwd ./apps/engine
 ```
 
-### `ui8kit-generate`
-
-Generate target templates from DSL sources.
-
-```bash
-bunx ui8kit-generate
-bunx ui8kit-generate --cwd ./apps/engine --target react
-bunx ui8kit-generate --cwd ./apps/engine --target liquid --out-dir ./dist/liquid
-```
-
-Options:
-
-- `--cwd <dir>` Working directory
-- `--target <engine>` Target engine: `react`, `liquid`, `handlebars`, `twig`, `latte`
-- `--out-dir <dir>` Output directory override
+> **Note:** `ui8kit-generate` is provided by `@ui8kit/generator`. Install it for template generation:
+> ```bash
+> bun add @ui8kit/generator
+> bunx ui8kit-generate --cwd ./apps/engine --target react
+> ```
 
 ## Programmatic API
 
@@ -90,8 +80,11 @@ if (!result.ok) {
 
 ### Build (Generate)
 
+Template generation is in `@ui8kit/generator`:
+
 ```typescript
-import { loadAppConfig, buildProject } from "@ui8kit/sdk";
+import { loadAppConfig } from "@ui8kit/sdk/config";
+import { buildProject } from "@ui8kit/generator";
 
 const config = await loadAppConfig("./apps/engine");
 const result = await buildProject(config, "./apps/engine");
@@ -117,10 +110,9 @@ bunx ui8kit-generate --cwd ./my-app --target react
 
 | Export | Description |
 |--------|-------------|
-| `@ui8kit/sdk` | Main entry (config, validate, build, types) |
+| `@ui8kit/sdk` | Main entry (config, validate, types) |
 | `@ui8kit/sdk/config` | Config loading only |
 | `@ui8kit/sdk/validate` | Validation only |
-| `@ui8kit/sdk/build` | Build/generate only |
 | `@ui8kit/sdk/source` | Source TypeScript (for monorepo) |
 
 ## Local Development
@@ -137,5 +129,10 @@ Run CLI binaries from source:
 ```bash
 bun src/cli/validate.ts --cwd apps/engine --help
 bun src/cli/inspect.ts --cwd apps/engine --help
-bun src/cli/generate.ts --cwd apps/engine --target react --help
+```
+
+For generation, use `@ui8kit/generator`:
+
+```bash
+bun packages/generator/src/cli/generate.ts --cwd apps/engine --target react --help
 ```

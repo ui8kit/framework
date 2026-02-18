@@ -213,7 +213,7 @@ Ensure `apps/my-brand/ui8kit.config.json` contains app-level fields such as:
 ```bash
 bun packages/sdk/src/cli/inspect.ts --cwd "apps/my-brand"
 bun packages/sdk/src/cli/validate.ts --cwd "apps/my-brand"
-bun packages/sdk/src/cli/generate.ts --cwd "apps/my-brand" --target react --out-dir "./dist/react"
+bun packages/generator/src/cli/generate.ts --cwd "apps/my-brand" --target react --out-dir "./dist/react"
 ```
 
 ### 6) Run app locally
@@ -237,7 +237,7 @@ bun "packages/cli/src/index.ts" init --cwd "apps/my-brand"
 bun "packages/cli/src/index.ts" add blank --cwd "apps/my-brand"
 bun packages/sdk/src/cli/inspect.ts --cwd "apps/my-brand"
 bun packages/sdk/src/cli/validate.ts --cwd "apps/my-brand"
-bun packages/sdk/src/cli/generate.ts --cwd "apps/my-brand" --target react --out-dir "./dist/react"
+bun packages/generator/src/cli/generate.ts --cwd "apps/my-brand" --target react --out-dir "./dist/react"
 cd apps/my-brand
 bun run dev
 ```

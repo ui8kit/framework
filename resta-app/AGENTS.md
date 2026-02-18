@@ -49,7 +49,6 @@ For published-package mode outside this monorepo, equivalent imports can use:
 
 - `@ui8kit/sdk/config`
 - `@ui8kit/sdk/validate`
-- `@ui8kit/sdk/build`
 - `@ui8kit/sdk/data`
 
 Do not add new dependencies on `@ui8kit/data/fixtures/*` for this app.
@@ -99,10 +98,9 @@ Read these files before substantial edits:
 - `resta-app/tokens/resta.css`
 - `packages/sdk/src/config.ts`
 - `packages/sdk/src/validate.ts`
-- `packages/sdk/src/build.ts`
 - `packages/sdk/src/cli/inspect.ts`
 - `packages/sdk/src/cli/validate.ts`
-- `packages/sdk/src/cli/generate.ts`
+- `packages/generator/src/cli/generate.ts`
 
 ## 7) Recommended Work Order
 
@@ -118,7 +116,7 @@ Minimum checks:
 
 - `bun packages/sdk/src/cli/inspect.ts --cwd "resta-app"`
 - `bun packages/sdk/src/cli/validate.ts --cwd "resta-app"`
-- `bun packages/sdk/src/cli/generate.ts --cwd "resta-app" --target react --out-dir "./dist/react"`
+- `bun packages/generator/src/cli/generate.ts --cwd "resta-app" --target react --out-dir "./dist/react"`
 
 Integration checks:
 

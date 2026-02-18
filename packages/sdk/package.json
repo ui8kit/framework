@@ -1,7 +1,7 @@
 {
   "name": "@ui8kit/sdk",
   "version": "0.1.0",
-  "description": "UI8Kit SDK for app definition, validation, and DSL generation",
+  "description": "UI8Kit SDK — app config, validation, and DSL tooling for developer experience",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,21 +9,18 @@
     ".": {"import": "./dist/index.js", "types": "./dist/index.d.ts"},
     "./config": {"import": "./dist/config.js", "types": "./dist/config.d.ts"},
     "./validate": {"import": "./dist/validate.js", "types": "./dist/validate.d.ts"},
-    "./build": {"import": "./dist/build.js", "types": "./dist/build.d.ts"},
     "./data": {"import": "./dist/data.js", "types": "./dist/data.d.ts"},
     "./constants": {"import": "./dist/constants.js", "types": "./dist/constants.d.ts"},
     "./source": {"import": "./src/index.ts", "types": "./src/index.ts"},
     "./source/config": {"import": "./src/config.ts", "types": "./src/config.ts"},
     "./source/validate": {"import": "./src/validate.ts", "types": "./src/validate.ts"},
-    "./source/build": {"import": "./src/build.ts", "types": "./src/build.ts"},
     "./source/data": {"import": "./src/data.ts", "types": "./src/data.ts"},
     "./source/constants": {"import": "./src/constants.ts", "types": "./src/constants.ts"}
   },
   "files": ["dist", "src", "README.md", "GUIDE.md"],
   "bin": {
     "ui8kit-validate": "./src/cli/validate.ts",
-    "ui8kit-inspect": "./src/cli/inspect.ts",
-    "ui8kit-generate": "./src/cli/generate.ts"
+    "ui8kit-inspect": "./src/cli/inspect.ts"
   },
   "scripts": {
     "build": "tsc",
@@ -36,7 +33,6 @@
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
     "@ui8kit/data-contracts": "workspace:*",
-    "@ui8kit/generator": "workspace:*",
     "@ui8kit/lint": "workspace:*",
     "@ui8kit/template": "workspace:*",
     "glob": "^13.0.0",

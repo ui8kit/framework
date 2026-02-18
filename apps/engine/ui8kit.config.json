@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.buildy.tw/schema.json",
+  "configVersion": "1",
+  "brand": "ui8kit",
+  "framework": "vite-react",
+  "typescript": true,
+  "target": "react",
+  "outDir": "./dist/react",
+  "aliases": {
+    "@": "./src",
+    "@/components": "./src/components",
+    "@/ui": "./src/components/ui",
+    "@/layouts": "./src/layouts",
+    "@/blocks": "./src/blocks",
+    "@/lib": "./src/lib",
+    "@/variants": "./src/variants"
+  },
+  "fixtures": "./src/data/fixtures",
+  "tokens": "./src/css/shadcn.css",
+  "componentsDir": "./src/components",
+  "blocksDir": "./src/blocks",
+  "layoutsDir": "./src/layouts/views",
+  "partialsDir": "./src/partials",
+  "libDir": "./src/lib",
+  "registry": "@ui8kit",
+  "lint": { "strict": true, "dsl": true }
+}

@@ -17,7 +17,7 @@ echo "-> validate engine"
 bun packages/sdk/src/cli/validate.ts --cwd "apps/engine"
 
 echo "-> generate engine react"
-bun packages/sdk/src/cli/generate.ts --cwd "apps/engine" --target react --out-dir "$ENGINE_OUT"
+bun packages/generator/src/cli/generate.ts --cwd "apps/engine" --target react --out-dir "$ENGINE_OUT"
 
 if [ ! -d "apps/engine/$ENGINE_OUT" ]; then
   echo "ERROR: expected output directory missing: apps/engine/$ENGINE_OUT"

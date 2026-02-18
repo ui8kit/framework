@@ -7,7 +7,8 @@ This guide explains SDK usage: CLI binaries, programmatic API, and integration w
 | Package | Role | Commands |
 |---------|------|----------|
 | `ui8kit` (CLI) | Component registry and build | init, add, scan, build, dev |
-| `@ui8kit/sdk` | App config, validation, generation | ui8kit-validate, ui8kit-inspect, ui8kit-generate |
+| `@ui8kit/sdk` | App config, validation | ui8kit-validate, ui8kit-inspect |
+| `@ui8kit/generator` | Template generation | ui8kit-generate |
 
 Use **CLI** for registry workflows (install components, scan, build registry). Use **SDK** for app workflows (validate config, inspect, generate templates).
 
@@ -29,7 +30,7 @@ From repo root:
 ```bash
 bun packages/sdk/src/cli/inspect.ts --cwd "apps/engine"
 bun packages/sdk/src/cli/validate.ts --cwd "apps/engine"
-bun packages/sdk/src/cli/generate.ts --cwd "apps/engine" --target react --out-dir "dist/local-check"
+bun packages/generator/src/cli/generate.ts --cwd "apps/engine" --target react --out-dir "dist/local-check"
 ```
 
 ### 2) Full SDK integration check
@@ -50,7 +51,8 @@ This runs:
 ### 3) Programmatic usage in scripts
 
 ```typescript
-import { loadAppConfigDetails, validateProject, buildProject } from "@ui8kit/sdk";
+import { loadAppConfigDetails, validateProject } from "@ui8kit/sdk";
+import { buildProject } from "@ui8kit/generator";
 
 const cwd = "./apps/engine";
 const { config } = await loadAppConfigDetails(cwd);
@@ -98,7 +100,7 @@ bun run check:sdk-integration
 1. Run each command directly from root:
    - `bun packages/sdk/src/cli/inspect.ts --cwd "<project>"`
    - `bun packages/sdk/src/cli/validate.ts --cwd "<project>"`
-   - `bun packages/sdk/src/cli/generate.ts --cwd "<project>" --target react --out-dir "dist/debug"`
+   - `bun packages/generator/src/cli/generate.ts --cwd "<project>" --target react --out-dir "dist/debug"`
 2. Inspect generated files under `<project>/dist/...`.
 3. Ensure no DSL artifacts remain and output folder exists.
 

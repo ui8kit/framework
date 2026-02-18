@@ -12,7 +12,6 @@
       "@ui8kit/sdk": ["../../packages/sdk/src/index.ts"],
       "@ui8kit/sdk/config": ["../../packages/sdk/src/config.ts"],
       "@ui8kit/sdk/validate": ["../../packages/sdk/src/validate.ts"],
-      "@ui8kit/sdk/build": ["../../packages/sdk/src/build.ts"],
       "@ui8kit/sdk/data": ["../../packages/sdk/src/data.ts"],
       "@ui8kit/sdk/constants": ["../../packages/sdk/src/constants.ts"]
     }

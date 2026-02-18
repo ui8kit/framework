@@ -11,6 +11,8 @@
 export { generate, createGenerator } from './generate';
 export type { GenerateConfig, GenerateResult } from './generate';
 
+export { buildProject } from './build-project';
+
 // Re-export config types for convenience
 export type { GeneratorConfig, RouteConfig } from './core/interfaces';
 
