@@ -1,42 +1,61 @@
-import { createContext, EMPTY_ARRAY } from '@ui8kit/sdk/source/data';
-import siteData from '../../fixtures/shared/site.json';
-import navigationData from '../../fixtures/shared/navigation.json';
-import pageData from '../../fixtures/shared/page.json';
-import heroData from '../../fixtures/website/hero.json';
-import featuresData from '../../fixtures/website/features.json';
-import testimonialsData from '../../fixtures/website/testimonials.json';
-import ctaData from '../../fixtures/website/cta.json';
-import componentsData from '../../fixtures/website/components.json';
-import guidesData from '../../fixtures/website/guides.json';
-import blogData from '../../fixtures/website/blog.json';
-import showcaseData from '../../fixtures/website/showcase.json';
-import adminData from '../../fixtures/admin/admin.json';
+// Unified context (site, components, guides, showcase, sidebars, blocks) for engine
+// Source of truth: apps/engine. Fixtures live in ./fixtures (future: DB/GraphQL)
+
+import {
+  createContext,
+  EMPTY_ARRAY as BASE_EMPTY_ARRAY,
+} from '@ui8kit/data-contracts/source';
+import siteData from './fixtures/shared/site.json';
+import navigationData from './fixtures/shared/navigation.json';
+import pageData from './fixtures/shared/page.json';
+import heroData from './fixtures/website/hero.json';
+import featuresData from './fixtures/website/features.json';
+import testimonialsData from './fixtures/website/testimonials.json';
+import ctaData from './fixtures/website/cta.json';
+import componentsData from './fixtures/website/components.json';
+import guidesData from './fixtures/website/guides.json';
+import blogData from './fixtures/website/blog.json';
+import showcaseData from './fixtures/website/showcase.json';
+import adminData from './fixtures/admin/admin.json';
 import type {
-  DashboardSidebarLink,
+  HeroFixture,
+  FeaturesFixture,
+  TestimonialsFixture,
+  CTAFixture,
+  ComponentsFixture,
+  GuidesFixture,
+  BlogFixture,
+  ShowcaseFixture,
+  AdminFixture,
   NavItem,
-  PageFixture,
   SidebarLink,
+  DashboardSidebarLink,
   SiteInfo,
-} from '@ui8kit/sdk/source/data';
+  PageFixture,
+} from './types';
 
 const site = siteData as SiteInfo;
 const page = (pageData as PageFixture).page;
+
 const navItems = navigationData.navItems as NavItem[];
 const sidebarLinks = navigationData.sidebarLinks as SidebarLink[];
-const adminSidebarLinks = (navigationData.adminSidebarLinks ?? EMPTY_ARRAY) as DashboardSidebarLink[];
+const adminSidebarLinks = (navigationData.adminSidebarLinks ?? BASE_EMPTY_ARRAY) as DashboardSidebarLink[];
 const adminSidebarLabel = navigationData.labels?.adminSidebarLabel ?? 'Admin';
 
-const baseContext = createContext<{
-  hero: typeof heroData;
-  features: typeof featuresData;
-  testimonials: typeof testimonialsData;
-  cta: typeof ctaData;
-  components: typeof componentsData;
-  guides: typeof guidesData;
-  blog: typeof blogData;
-  showcase: typeof showcaseData;
-  admin: typeof adminData;
-}>({
+const hero = heroData as HeroFixture;
+const features = featuresData as FeaturesFixture;
+const testimonials = testimonialsData as TestimonialsFixture;
+const cta = ctaData as CTAFixture;
+const components = componentsData as ComponentsFixture;
+const guides = guidesData as GuidesFixture;
+const blog = blogData as BlogFixture;
+const showcase = showcaseData as ShowcaseFixture;
+const admin = adminData as AdminFixture;
+
+/** Stable empty array to avoid `x ?? []` creating new arrays on every access. */
+export const EMPTY_ARRAY: readonly never[] = BASE_EMPTY_ARRAY;
+
+const baseContext = createContext({
   site,
   page,
   navItems,
@@ -45,28 +64,28 @@ const baseContext = createContext<{
   adminSidebarLabel,
   dynamicRoutePatterns: ['/guides/:slug', '/blog/:slug'],
   fixtures: {
-    hero: heroData,
-    features: featuresData,
-    testimonials: testimonialsData,
-    cta: ctaData,
-    components: componentsData,
-    guides: guidesData,
-    blog: blogData,
-    showcase: showcaseData,
-    admin: adminData,
+    hero: hero as HeroFixture,
+    features: features as FeaturesFixture,
+    components: components as ComponentsFixture,
+    guides: guides as GuidesFixture,
+    blog: blog as BlogFixture,
+    showcase: showcase as ShowcaseFixture,
+    testimonials: testimonials as TestimonialsFixture,
+    cta: cta as CTAFixture,
+    admin: admin as AdminFixture,
   },
 });
 
 const websiteDomain = Object.freeze({
   page: page.website ?? [],
-  hero: baseContext.fixtures.hero,
-  features: baseContext.fixtures.features,
-  components: baseContext.fixtures.components,
-  guides: baseContext.fixtures.guides,
-  blog: baseContext.fixtures.blog,
-  showcase: baseContext.fixtures.showcase,
-  testimonials: baseContext.fixtures.testimonials,
-  cta: baseContext.fixtures.cta,
+  hero: baseContext.fixtures.hero as HeroFixture,
+  features: baseContext.fixtures.features as FeaturesFixture,
+  components: baseContext.fixtures.components as ComponentsFixture,
+  guides: baseContext.fixtures.guides as GuidesFixture,
+  blog: baseContext.fixtures.blog as BlogFixture,
+  showcase: baseContext.fixtures.showcase as ShowcaseFixture,
+  testimonials: baseContext.fixtures.testimonials as TestimonialsFixture,
+  cta: baseContext.fixtures.cta as CTAFixture,
   site: baseContext.site,
   navItems: baseContext.navItems,
   sidebarLinks: baseContext.sidebarLinks,
@@ -74,25 +93,59 @@ const websiteDomain = Object.freeze({
 
 const adminDomain = Object.freeze({
   page: page.admin ?? [],
-  admin: baseContext.fixtures.admin,
+  admin: baseContext.fixtures.admin as AdminFixture,
   adminSidebarLinks: baseContext.adminSidebarLinks,
   adminSidebarLabel: baseContext.adminSidebarLabel,
   getAdminSidebarLinks: baseContext.getAdminSidebarLinks,
 });
 
 export const context = Object.freeze({
-  ...baseContext,
-  hero: baseContext.fixtures.hero,
-  features: baseContext.fixtures.features,
-  testimonials: baseContext.fixtures.testimonials,
-  cta: baseContext.fixtures.cta,
-  components: baseContext.fixtures.components,
-  guides: baseContext.fixtures.guides,
-  blog: baseContext.fixtures.blog,
-  showcase: baseContext.fixtures.showcase,
-  admin: baseContext.fixtures.admin,
+  page: baseContext.page,
+  /** @deprecated Use page instead. */
+  routes: baseContext.routes,
+  site: baseContext.site,
+  navItems: baseContext.navItems,
+  sidebarLinks: baseContext.sidebarLinks,
+  adminSidebarLinks: baseContext.adminSidebarLinks,
+  adminSidebarLabel: baseContext.adminSidebarLabel,
+  getAdminSidebarLinks: baseContext.getAdminSidebarLinks,
+  getPageByPath: baseContext.getPageByPath,
+  getPagesByDomain: baseContext.getPagesByDomain,
+  resolveNavigation: baseContext.resolveNavigation,
+  navigation: baseContext.navigation,
+  getSidebarCacheDiagnostics: baseContext.getSidebarCacheDiagnostics,
+  hero: baseContext.fixtures.hero as HeroFixture,
+  features: baseContext.fixtures.features as FeaturesFixture,
+  components: baseContext.fixtures.components as ComponentsFixture,
+  guides: baseContext.fixtures.guides as GuidesFixture,
+  blog: baseContext.fixtures.blog as BlogFixture,
+  showcase: baseContext.fixtures.showcase as ShowcaseFixture,
+  testimonials: baseContext.fixtures.testimonials as TestimonialsFixture,
+  cta: baseContext.fixtures.cta as CTAFixture,
+  admin: baseContext.fixtures.admin as AdminFixture,
   domains: Object.freeze({
     website: websiteDomain,
     admin: adminDomain,
   }),
+  clearCache: baseContext.clearCache,
 });
+
+export function clearCache(): void {
+  baseContext.clearCache();
+}
+
+export function getSidebarCacheDiagnostics() {
+  return baseContext.getSidebarCacheDiagnostics();
+}
+
+/** @deprecated Use context instead */
+export const fixtures = {
+  hero: context.hero,
+  features: context.features,
+  components: context.components,
+  guides: context.guides,
+  blog: context.blog,
+  showcase: context.showcase,
+  testimonials: context.testimonials,
+  cta: context.cta,
+};

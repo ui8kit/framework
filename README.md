@@ -285,7 +285,7 @@ ui8kit-framework/
 
 For domain-specific builds (`website`, `admin`), keep navigation deterministic:
 
-- Route source of truth: `packages/data/src/fixtures/shared/page.json`
+- Route source of truth: `apps/engine/src/data/src/fixtures/shared/page.json`
 - UI internal links: use `DomainNavButton` (engine partial)
 - Custom checks: `context.resolveNavigation(href)` / `context.navigation.isEnabled(href)`
 - Policy mode: soft only -> render disabled state with tooltip `Not available in this domain build`
@@ -293,7 +293,7 @@ For domain-specific builds (`website`, `admin`), keep navigation deterministic:
 
 ## Domain Model And Invariants
 
-- Domain set is fixed to `website` and `admin` in `packages/data/src/fixtures/shared/page.json`.
+- Domain set is fixed to `website` and `admin` in `apps/engine/src/data/src/fixtures/shared/page.json`.
 - Dynamic routes are explicitly modeled as `/guides/:slug` and `/blog/:slug`.
 - `@ui8kit/data` is the only source for runtime context consumed by engine blocks/layouts/routes.
 - Route/domain changes must be applied consistently in fixtures, context exports, scripts, and tests.

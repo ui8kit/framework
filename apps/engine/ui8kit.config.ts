@@ -16,7 +16,7 @@ export default defineApp({
     '@/lib': './src/lib',
     '@/variants': './src/variants',
   },
-  fixtures: './fixtures',
+  fixtures: './src/data/fixtures',
   tokens: './src/css/shadcn.css',
   componentsDir: './src/components',
   blocksDir: './src/blocks',

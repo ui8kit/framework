@@ -30,7 +30,7 @@ function isInternalPath(href: string): boolean {
 
 function buildDynamicRouteRegex(pathPattern: string): RegExp {
   const escaped = pathPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const withParams = escaped.replace(/\\:([a-zA-Z0-9_]+)/g, '[^/]+');
+  const withParams = escaped.replace(/:([a-zA-Z0-9_]+)/g, '[^/]+');
   return new RegExp(`^${withParams}$`);
 }
 

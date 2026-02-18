@@ -55,7 +55,7 @@ We refuse to write theoretical guidelines. When this document is complete, every
 
 Until public contribution flow is enabled, use this checklist for internal changes:
 
-- Keep internal routes declared in `packages/data/src/fixtures/shared/page.json`.
+- Keep internal routes declared in `apps/engine/src/data/fixtures/shared/page.json`.
 - Build navigation lists from data context (`navItems`, `sidebarLinks`, domain sidebars).
 - Use `DomainNavButton` for internal links in UI blocks/partials.
 - For custom widgets, use `context.resolveNavigation(href)` and keep soft UX:

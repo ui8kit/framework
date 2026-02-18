@@ -52,19 +52,19 @@ run_step \
   bunx tsc --noEmit -p packages/core/tsconfig.json
 
 run_step \
-  "Typecheck packages/data" \
-  "Resolve TypeScript issues in packages/data before rerun." \
-  bash -lc "cd packages/data && bun run typecheck"
+  "Typecheck apps/engine" \
+  "Resolve TypeScript issues in apps/engine before rerun." \
+  bash -lc "cd apps/engine && bun run typecheck"
 
 run_step \
-  "Lint packages/data" \
-  "Fix lint issues in packages/data before rerun." \
-  bash -lc "cd packages/data && bun run lint"
+  "Lint apps/engine" \
+  "Fix lint issues in apps/engine before rerun." \
+  bash -lc "cd apps/engine && bun run lint"
 
 run_step \
-  "Run tests packages/data" \
-  "Inspect failing suites in packages/data and align fixtures/contracts." \
-  bash -lc "cd packages/data && bun run test"
+  "Run tests apps/engine" \
+  "Inspect failing suites in apps/engine and align fixtures/contracts." \
+  bash -lc "cd apps/engine && bun run test"
 
 run_optional_step \
   "Lint packages/generator" \

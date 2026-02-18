@@ -5,8 +5,8 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
-const DATA_SRC_ROOT = join(REPO_ROOT, "packages", "data", "src");
-const FIXTURES_SRC_ROOT = join(DATA_SRC_ROOT, "fixtures");
+const ENGINE_DATA_ROOT = join(REPO_ROOT, "apps", "engine", "src", "data");
+const FIXTURES_SRC_ROOT = join(ENGINE_DATA_ROOT, "fixtures");
 const DOMAINS = ["website"] as const;
 
 type Domain = (typeof DOMAINS)[number];
@@ -133,15 +133,17 @@ function main(): void {
 
   console.log(`Bundle data for target=${targetArg}, domain=${domain}, mode=${dataMode}`);
 
-  // Copy base implementation files for API parity.
-  const sourceTypes = join(DATA_SRC_ROOT, "types.ts");
-  const sourceCache = join(DATA_SRC_ROOT, "cache.ts");
-  const sourceIndex = join(DATA_SRC_ROOT, "index.ts");
+  // Copy base implementation files for API parity (source: apps/engine).
+  const sourceTypes = join(ENGINE_DATA_ROOT, "types.ts");
+  const sourceCache = join(ENGINE_DATA_ROOT, "cache.ts");
+  const sourceContext = join(ENGINE_DATA_ROOT, "context.ts");
+  const sourceIndex = join(ENGINE_DATA_ROOT, "index.ts");
   const indexSourceText = readFileSync(sourceIndex, "utf-8");
   const loadedDomains = (dataMode === "shared" ? DOMAINS : [domain]) as Domain[];
 
   copyFileSync(sourceTypes, join(targetDataRoot, "types.ts"));
   copyFileSync(sourceCache, join(targetDataRoot, "cache.ts"));
+  copyFileSync(sourceContext, join(targetDataRoot, "context.ts"));
   writeText(
     join(targetDataRoot, "index.ts"),
     `${indexSourceText}\n${buildLocalDataDiagnostics(dataMode, domain, loadedDomains)}`

@@ -19,7 +19,7 @@
     "./source/data": {"import": "./src/data.ts", "types": "./src/data.ts"},
     "./source/constants": {"import": "./src/constants.ts", "types": "./src/constants.ts"}
   },
-  "files": ["dist", "src"],
+  "files": ["dist", "src", "README.md", "GUIDE.md"],
   "bin": {
     "ui8kit-validate": "./src/cli/validate.ts",
     "ui8kit-inspect": "./src/cli/inspect.ts",

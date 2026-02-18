@@ -15,7 +15,7 @@ Templetor showcases the `@ui8kit/template` DSL package, which provides declarati
 
 Use this checklist when changing routes, tabs, header links, or sidebars:
 
-1. Update the page model in `packages/data/src/fixtures/shared/page.json`.
+1. Update the page model in `apps/engine/src/data/fixtures/shared/page.json`.
 2. Keep links data-driven (`context.navItems`, domain sidebars), avoid hardcoded internal paths when possible.
 3. In UI components, use `DomainNavButton` for internal navigation.
 4. If a component cannot use `DomainNavButton`, use:

@@ -17,7 +17,7 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
 const DIST_REACT = join(REPO_ROOT, "apps", "engine", "dist", "react");
-const PAGE_MODEL_PATH = join(REPO_ROOT, "packages", "data", "src", "fixtures", "shared", "page.json");
+const PAGE_MODEL_PATH = join(REPO_ROOT, "apps", "engine", "src", "data", "fixtures", "shared", "page.json");
 
 const DOMAINS = ["website"] as const;
 type Domain = (typeof DOMAINS)[number];
@@ -144,7 +144,7 @@ function createRouteFile(componentName: string): string | null {
   switch (componentName) {
     case "WebsitePage":
       return `import { WebsitePageView } from '@/blocks';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export function WebsitePage() {
   return (
@@ -161,7 +161,7 @@ export function WebsitePage() {
 `;
     case "BlogPage":
       return `import { BlogPageView } from '@/blocks';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export function BlogPage() {
   return (
@@ -176,7 +176,7 @@ export function BlogPage() {
 `;
     case "ShowcasePage":
       return `import { ShowcasePageView } from '@/blocks';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export function ShowcasePage() {
   return (
@@ -191,7 +191,7 @@ export function ShowcasePage() {
 `;
     case "AdminPage":
       return `import { AdminPageView } from '@/blocks';
-import { context } from '@ui8kit/data';
+import { context } from '@/data/context';
 
 export function AdminPage() {
   return (

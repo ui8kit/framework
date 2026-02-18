@@ -30,23 +30,23 @@ Build a presentation website for the UI8Kit framework in English:
 | `/blog/:slug`   | blog         | blog.json       | context.blog.posts |
 | `/showcase`     | showcase     | showcase.json   | context.showcase |
 
-When adding or renaming routes, update **all** of: `page.json`, `navigation.json`, `App.tsx`, route components, block views, `packages/data` context, `admin.json` exportSchema, `scripts/bundle-data.ts` DOMAIN_FIXTURE_FILES, and `AdminDashboardPageView` export keys.
+When adding or renaming routes, update **all** of: `page.json`, `navigation.json`, `App.tsx`, route components, block views, `apps/engine/src/data` context, `admin.json` exportSchema, `scripts/bundle-data.ts` DOMAIN_FIXTURE_FILES, and `AdminDashboardPageView` export keys.
 
 ## 3) Required Technical Constraints
 
-1. Route/page source of truth: `packages/data/src/fixtures/shared/page.json` (`page` model first).
+1. Route/page source of truth: `apps/engine/src/data/fixtures/shared/page.json` (`page` model first).
 2. Internal links in UI should use domain-aware navigation patterns (`DomainNavButton` where applicable).
 3. Theme toggle must integrate with `apps/engine/src/providers/theme.tsx`.
 4. Color direction is violet-first and must be reflected in `apps/engine/src/css/shadcn.css`.
-5. Keep compatibility of `@ui8kit/data` context APIs used by Engine.
+5. Keep compatibility of context APIs used by Engine (apps/engine/src/data).
 6. Layout fallbacks (e.g. `MainLayoutView` headerSubtitle) must use "Design System" or similar — never "Restaurant & Bar" or other legacy labels.
 
 ## 4) Required Reading Before Editing
 
 - `apps/engine/PIPELINE.md`
-- `packages/data/src/index.ts`
-- `packages/data/src/types.ts`
-- `packages/data/src/fixtures/shared/page.json`
+- `apps/engine/src/data/index.ts`
+- `apps/engine/src/data/types.ts`
+- `apps/engine/src/data/fixtures/shared/page.json`
 - `apps/engine/src/App.tsx`
 - `apps/engine/src/layouts/*`
 - `apps/engine/src/blocks/**/*`
@@ -106,14 +106,14 @@ When performing brand/domain refactors with AI agents, treat this as mandatory p
 When changing routes or domain names:
 
 1. **Fixtures:** `components.json` (uses `items`), `guides.json` (uses `guides`), `showcase.json` (uses `projects`) — array names align with domain labels.
-2. **Context:** `packages/data/src/index.ts` exposes `components`, `guides`, `showcase`; `getPageByPath` and `matchesDynamicRoute` must handle `/guides/:slug`.
+2. **Context:** `apps/engine/src/data/index.ts` exposes `components`, `guides`, `showcase`; `getPageByPath` and `matchesDynamicRoute` must handle `/guides/:slug`.
 3. **Admin:** `admin.json` exportSchema and `AdminDashboardPageView` handleExport must use the same keys as context.
 4. **Bundle script:** `scripts/bundle-data.ts` DOMAIN_FIXTURE_FILES must list all domain fixtures used by the app.
 
 ### 6.1 Fixture Ownership Policy (SDK-first)
 
-- New brand work should keep fixture JSON inside the app repository (for example `apps/engine/fixtures`).
-- Treat `@ui8kit/data` fixtures as compatibility fallback, not as source of truth for new brands.
+- New brand work should keep fixture JSON inside the app repository (for example `apps/engine/src/data/fixtures`).
+- apps/engine is the single source of truth for fixtures and context; future: DB/GraphQL.
 - Prefer app-local context wiring (`src/data/context.ts`) built via SDK/data contracts.
 
 ## 7) Verification Checklist
@@ -144,7 +144,7 @@ If any script is unavailable, report it and provide the closest safe alternative
 
 For route/domain refactors (e.g. menu→components, recipes→guides, promotions→showcase):
 
-> "Change routes: menu → components, recipes → guides, promotions → showcase. Update page.json, navigation.json, App.tsx, route components, block views, packages/data context, admin.json exportSchema, bundle-data.ts, and AdminDashboardPageView. Remove all restaurant-related terminology from layout fallbacks and UI. Use DSL markup. Run lint after each chunk."
+> "Change routes: menu → components, recipes → guides, promotions → showcase. Update page.json, navigation.json, App.tsx, route components, block views, apps/engine/src/data context, admin.json exportSchema, bundle-data.ts, and AdminDashboardPageView. Remove all restaurant-related terminology from layout fallbacks and UI. Use DSL markup. Run lint after each chunk."
 
 For theme/terminology cleanup:
 

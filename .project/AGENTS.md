@@ -32,7 +32,7 @@ The target site should cover:
 ## 3) Non-Negotiable Architecture Rules
 
 1. **Route source of truth**
-   - Internal page map must be defined in `packages/data/src/fixtures/shared/page.json`.
+   - Internal page map must be defined in `apps/engine/src/data/src/fixtures/shared/page.json`.
    - Prefer `page` model. Keep `routes` only as backward-compatible alias.
 
 2. **Domain-aware navigation**
@@ -62,9 +62,9 @@ The target site should cover:
 Read these files first:
 
 - `apps/engine/PIPELINE.md`
-- `packages/data/src/index.ts`
-- `packages/data/src/types.ts`
-- `packages/data/src/fixtures/shared/page.json`
+- `apps/engine/src/data/src/index.ts`
+- `apps/engine/src/data/src/types.ts`
+- `apps/engine/src/data/src/fixtures/shared/page.json`
 - `apps/engine/src/App.tsx`
 - `apps/engine/src/layouts/*`
 - `apps/engine/src/blocks/**/*`

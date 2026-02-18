@@ -84,7 +84,7 @@ export async function validateProject(config: AppConfig, cwd = process.cwd()): P
         diagnostics.push({
           code: 'PACKAGE_FIXTURE_IMPORT',
           message:
-            'Fixture import from @ui8kit/data/fixtures detected. Prefer app-local fixtures under project fixtures directory.',
+            'Fixture import from @ui8kit/data/fixtures detected. Prefer app-local fixtures (e.g. apps/engine/src/data/fixtures).',
           file: filePath,
           severity: 'warning',
         });

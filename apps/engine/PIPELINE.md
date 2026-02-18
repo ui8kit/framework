@@ -139,7 +139,7 @@ The pipeline is intentionally one-way:
 
 3. **Bundle Data**
    - `scripts/bundle-data.ts`
-   - Creates `apps/<target>/src/data` from `packages/data` fixtures.
+   - Creates `apps/<target>/src/data` from `apps/engine/src/data` fixtures.
    - Supports:
      - `local`: domain slice + required shared data
      - `shared`: full context parity
@@ -148,13 +148,13 @@ The pipeline is intentionally one-way:
    - `scripts/configure-data-alias.ts`
    - Rewrites `@ui8kit/data` alias in target app configs:
      - local -> `src/data/index.ts`
-     - shared -> `../../packages/data/src/index.ts`
+     - shared -> `../../apps/engine/src/data/index.ts`
 
 
 ### 2.3 DSL page model and domain routing
 
 The page model lives in:
-- `packages/data/src/fixtures/shared/page.json`
+- `apps/engine/src/data/fixtures/shared/page.json`
 
 It defines domain pages and is used by pipeline stages to:
 - map components/layouts to domain outputs
@@ -166,7 +166,7 @@ It defines domain pages and is used by pipeline stages to:
 Use this rule set to keep navigation stable in domain-only builds.
 
 1. **Declare routable pages in one place**
-   - Add all internal pages to `packages/data/src/fixtures/shared/page.json`.
+   - Add all internal pages to `apps/engine/src/data/fixtures/shared/page.json`.
    - Keep `id`, `domain`, and `path` consistent with generated route containers.
 
 2. **Build links from context data, not hardcoded strings**
@@ -247,7 +247,7 @@ These choices are particularly important in long dev sessions with frequent rout
 ### Domain app shows unexpected pages/data
 
 1. verify selected `--domain`
-2. inspect `packages/data/src/fixtures/shared/page.json`
+2. inspect `apps/engine/src/data/fixtures/shared/page.json`
 3. run `validate:data-bundle`
 4. check generated `apps/<target>/src/data/fixtures/...`
 

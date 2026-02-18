@@ -37,7 +37,7 @@ async function main(): Promise<void> {
   const target = parseArg("--target") ?? process.env.TARGET_APP ?? "dev";
   const appRoot = join(REPO_ROOT, "apps", target);
   const localDataPath = join(appRoot, "src", "data", "index.ts");
-  const sharedDataPath = join(REPO_ROOT, "packages", "data", "src", "index.ts");
+  const sharedDataPath = join(REPO_ROOT, "apps", "engine", "src", "data", "index.ts");
 
   if (!existsSync(localDataPath)) {
     throw new Error(`Local data bundle not found: apps/${target}/src/data/index.ts`);

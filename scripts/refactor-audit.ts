@@ -43,7 +43,7 @@ const defaultScope = [
   "apps/engine",
   "packages/core",
   "packages/blocks",
-  "packages/data",
+  "apps/engine/src/data",
   "packages/generator",
   "packages/template",
   "packages/lint",

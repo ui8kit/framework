@@ -56,7 +56,7 @@ async function main(): Promise<void> {
         dependencies: {
           "@ui8kit/blocks": "workspace:*",
           "@ui8kit/core": "workspace:*",
-          "@ui8kit/data": "workspace:*",
+          "@ui8kit/data-contracts": "workspace:*",
           "@ui8kit/template": "workspace:*",
           "lucide-react": "^0.460.0",
           "react": "^19.1.0",
@@ -98,7 +98,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
       '@ui8kit/core': path.resolve(__dirname, '../../packages/core/src/index.ts'),
       '@ui8kit/template': path.resolve(__dirname, '../../packages/template/src/index.ts'),
-      '@ui8kit/data': path.resolve(__dirname, '../../packages/data/src/index.ts'),
+      '@ui8kit/data': path.resolve(__dirname, '../engine/src/data/index.ts'),
       '@ui8kit/blocks': path.resolve(__dirname, '../../packages/blocks/src/index.ts')
     }
   },
@@ -127,7 +127,7 @@ export default defineConfig({
       "@ui8kit/core": ["../../packages/core/src/index.ts"],
       "@ui8kit/template": ["../../packages/template/src/index.ts"],
       "@ui8kit/blocks": ["../../packages/blocks/src/index.ts"],
-      "@ui8kit/data": ["../../packages/data/src/index.ts"]
+      "@ui8kit/data": ["../engine/src/data/index.ts"]
     }
   },
   "include": ["src"]

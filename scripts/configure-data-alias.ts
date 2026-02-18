@@ -23,7 +23,7 @@ function updateViteAlias(viteConfigPath: string, dataMode: DataMode): void {
   const replacementTarget =
     dataMode === "local"
       ? "path.resolve(__dirname, './src/data/index.ts')"
-      : "path.resolve(__dirname, '../../packages/data/src/index.ts')";
+      : "path.resolve(__dirname, '../engine/src/data/index.ts')";
   const updated = content.replace(
     /'@ui8kit\/data'\s*:\s*path\.resolve\(__dirname,\s*'[^']*'\)/,
     `'@ui8kit/data': ${replacementTarget}`
@@ -43,7 +43,7 @@ function updateTsConfigAlias(tsConfigPath: string, dataMode: DataMode): void {
   parsed.compilerOptions.paths["@ui8kit/data"] =
     dataMode === "local"
       ? ["src/data/index.ts"]
-      : ["../../packages/data/src/index.ts"];
+      : ["../engine/src/data/index.ts"];
   writeFileSync(tsConfigPath, JSON.stringify(parsed, null, 2) + "\n", "utf-8");
 }
 

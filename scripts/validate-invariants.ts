@@ -31,9 +31,9 @@ const criticalContentPaths = [
   "apps/engine/src/App.tsx",
   "apps/engine/src/layouts/views/MainLayoutView.tsx",
   "apps/engine/src/blocks/admin/AdminDashboardPageView.tsx",
-  "packages/data/src/index.ts",
-  "packages/data/src/fixtures/shared/site.json",
-  "packages/data/src/fixtures/shared/navigation.json",
+  "apps/engine/src/data/index.ts",
+  "apps/engine/src/data/fixtures/shared/site.json",
+  "apps/engine/src/data/fixtures/shared/navigation.json",
 ];
 
 const forbiddenTerms = ["restaurant", "bar", "menu", "recipes", "promotions"];
@@ -65,7 +65,7 @@ async function main(): Promise<void> {
   const issues: CheckIssue[] = [];
   const runId = `invariants_${Date.now()}`;
 
-  const pageFixturePath = "packages/data/src/fixtures/shared/page.json";
+  const pageFixturePath = "apps/engine/src/data/fixtures/shared/page.json";
   const pageFixture = JSON.parse(readText(pageFixturePath)) as PageFixture;
 
   const domainKeys = Object.keys(pageFixture.page).sort();
@@ -125,8 +125,8 @@ async function main(): Promise<void> {
     }
   }
 
-  const contextIndexPath = "packages/data/src/index.ts";
-  const contextIndex = readText(contextIndexPath);
+  const contextSourcePath = "apps/engine/src/data/context.ts";
+  const contextSource = readText(contextSourcePath);
   const requiredContextSymbols = [
     "components",
     "guides",
@@ -137,12 +137,12 @@ async function main(): Promise<void> {
     "getAdminSidebarLinks",
   ];
   for (const symbol of requiredContextSymbols) {
-    if (!contextIndex.includes(symbol)) {
+    if (!contextSource.includes(symbol)) {
       addIssue(issues, {
         level: "error",
         code: "MISSING_CONTEXT_SYMBOL",
-        message: `Missing context symbol in data index: ${symbol}`,
-        path: contextIndexPath,
+        message: `Missing context symbol in data context: ${symbol}`,
+        path: contextSourcePath,
       });
     }
   }
@@ -160,7 +160,7 @@ async function main(): Promise<void> {
     }
   }
 
-  const dataIndexPath = join(repoRoot, "packages", "data", "src", "index.ts");
+  const dataIndexPath = join(repoRoot, "apps", "engine", "src", "data", "index.ts");
   const dataModule = await import(pathToFileURL(dataIndexPath).href);
   const runtimeContext = dataModule.context as {
     resolveNavigation?: (href: string) => { href: string; enabled: boolean; mode: string; reason?: string };
@@ -172,7 +172,7 @@ async function main(): Promise<void> {
       level: "error",
       code: "NAVIGATION_RESOLVER_MISSING",
       message: "context.resolveNavigation is not a callable function.",
-      path: "packages/data/src/index.ts",
+      path: "apps/engine/src/data/index.ts",
     });
   } else {
     for (const routePath of [...requiredWebsitePaths, ...requiredAdminPaths]) {
@@ -182,7 +182,7 @@ async function main(): Promise<void> {
           level: "error",
           code: "NAVIGATION_STATE_SHAPE_INVALID",
           message: `resolveNavigation(${routePath}) returned invalid state shape.`,
-          path: "packages/data/src/index.ts",
+          path: "apps/engine/src/data/index.ts",
         });
         continue;
       }
@@ -191,7 +191,7 @@ async function main(): Promise<void> {
           level: "error",
           code: "NAVIGATION_DISABLED_FOR_REQUIRED_ROUTE",
           message: `resolveNavigation disabled a required route: ${routePath}`,
-          path: "packages/data/src/index.ts",
+          path: "apps/engine/src/data/index.ts",
         });
       }
     }
@@ -203,7 +203,7 @@ async function main(): Promise<void> {
         level: "error",
         code: "DYNAMIC_NAVIGATION_ROUTE_DISABLED",
         message: "resolveNavigation must enable dynamic guide/blog detail routes.",
-        path: "packages/data/src/index.ts",
+        path: "apps/engine/src/data/index.ts",
       });
     }
   }
@@ -239,8 +239,8 @@ async function main(): Promise<void> {
     });
   }
 
-  const blogPath = "packages/data/src/fixtures/website/blog.json";
-  const showcasePath = "packages/data/src/fixtures/website/showcase.json";
+  const blogPath = "apps/engine/src/data/fixtures/website/blog.json";
+  const showcasePath = "apps/engine/src/data/fixtures/website/showcase.json";
   const blog = JSON.parse(readText(blogPath)) as { posts?: unknown[] };
   const showcase = JSON.parse(readText(showcasePath)) as { projects?: unknown[] };
   if ((blog.posts ?? []).length !== 3) {
@@ -262,7 +262,7 @@ async function main(): Promise<void> {
 
   const termsRegex = new RegExp(`\\b(${forbiddenTerms.join("|")})\\b`, "i");
   const scanPaths = Array.from(
-    new Set([...criticalContentPaths, ...collectFiles("packages/data/src/fixtures/website")])
+    new Set([...criticalContentPaths, ...collectFiles("apps/engine/src/data/fixtures/website")])
   );
   for (const relPath of scanPaths) {
     if (!existsSync(join(repoRoot, relPath))) continue;
