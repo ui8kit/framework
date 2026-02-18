@@ -90,24 +90,6 @@ Options:
 - `-o, --output <path>` Output directory (default: `./packages/registry/r`)
 - `-c, --cwd <cwd>` Working directory
 
-### `dev`
-
-Start Vite dev server for SDK-configured project.
-
-```bash
-bunx ui8kit@latest dev
-```
-
-### SDK binaries (validate, inspect, generate)
-
-Validate, inspect, and generate are provided by `@ui8kit/sdk`:
-
-```bash
-bunx ui8kit-validate --cwd ./apps/engine
-bunx ui8kit-inspect --cwd ./apps/engine
-bunx ui8kit-generate --cwd ./apps/engine --target react
-```
-
 ## Typical Flow
 
 ```bash
@@ -140,19 +122,4 @@ Run compiled CLI locally:
 
 ```bash
 node dist/index.js --help
-```
-
-## Publish Precheck
-
-Before publish, CLI runs a parity smoke gate via `scripts/smoke-parity.mjs`:
-
-- builds CLI dist
-- runs CLI and SDK commands (config-driven, see CONFIG at top of script)
-- for CLI: asserts source vs dist parity
-- for SDK: asserts binaries run successfully
-
-Run from repo root:
-
-```bash
-bun run smoke:parity
 ```

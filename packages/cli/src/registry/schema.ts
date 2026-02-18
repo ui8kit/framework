@@ -36,7 +36,6 @@ export type Component = z.infer<typeof componentSchema>
 
 export const configSchema = z.object({
   $schema: z.string().optional(),
-  configVersion: z.string().optional(),
   framework: z.literal(SCHEMA_CONFIG.supportedFrameworks[0]),
   typescript: z.boolean().default(true),
   aliases: z.record(z.string(), z.string()).default(SCHEMA_CONFIG.defaultAliases as Record<string, string>),

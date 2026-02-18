@@ -38,14 +38,10 @@ export async function hasReact(): Promise<boolean> {
 }
 
 /**
- * Find configuration for the project (prefer root config)
+ * Find configuration for the project (prefer ./src)
  */
 export async function findConfig(_registryType?: string): Promise<Config | null> {
-  // Prefer root config (SDK-compatible)
-  const rootConfig = await getConfig()
-  if (rootConfig) return rootConfig
-
-  // Backward compatibility: config inside ./src
+  // Prefer config inside ./src
   const srcConfig = await getConfig("./src")
   if (srcConfig) return srcConfig
 

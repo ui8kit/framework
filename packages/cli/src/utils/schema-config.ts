@@ -1,14 +1,10 @@
 // Configuration for schema generation
 // Centralized configuration file with all constants and defaults
 
-import { SDK_SCHEMA_BASE_URL, SDK_SCHEMA_URL, SDK_CONFIG_VERSION } from "@ui8kit/sdk/source/constants";
-
 export const SCHEMA_CONFIG = {
   // Base schema information
   schemaVersion: "http://json-schema.org/draft-07/schema#",
-  baseUrl: SDK_SCHEMA_BASE_URL,
-  configSchemaUrl: SDK_SCHEMA_URL,
-  configVersion: SDK_CONFIG_VERSION,
+  baseUrl: "https://ui.buildy.tw/schema",
   
   // Framework configuration
   supportedFrameworks: ["vite-react"] as const,

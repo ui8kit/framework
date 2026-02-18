@@ -57,8 +57,7 @@ export async function initCommand(options: InitOptions) {
   
   if (options.yes) {
     config = {
-      $schema: SCHEMA_CONFIG.configSchemaUrl,
-      configVersion: SCHEMA_CONFIG.configVersion,
+      $schema: `${SCHEMA_CONFIG.baseUrl}.json`,
       framework: "vite-react",
       typescript: true,
       aliases,
@@ -78,8 +77,7 @@ export async function initCommand(options: InitOptions) {
     ])
     
     config = {
-      $schema: SCHEMA_CONFIG.configSchemaUrl,
-      configVersion: SCHEMA_CONFIG.configVersion,
+      $schema: `${SCHEMA_CONFIG.baseUrl}.json`,
       framework: "vite-react",
       typescript: responses.typescript,
       aliases,
@@ -92,9 +90,7 @@ export async function initCommand(options: InitOptions) {
   const spinner = ora(CLI_MESSAGES.info.initializing(registryName)).start()
   
   try {
-    // Save configuration in project root (SDK-compatible)
-    await saveConfig(config)
-    // Backward compatibility for existing workflows expecting ./src/ui8kit.config.json
+    // Save configuration under ./src
     await saveConfig(config, "./src")
     
     // Create src-based directory structure
