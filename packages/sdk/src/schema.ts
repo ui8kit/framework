@@ -22,7 +22,11 @@ export const appConfigSchema = z.object({
     .object({
       strict: z.boolean().optional().default(false),
       dsl: z.boolean().optional().default(true),
+      /** Path to ui8kit.map.json (whitelist). Used by ui8kit-lint. Default: ./src/ui8kit.map.json */
+      ui8kitMapPath: z.string().optional().default('./src/ui8kit.map.json'),
+      /** Path to utility-props.map.ts. Used by ui8kit-lint. Default: ./src/lib/utility-props.map.ts */
+      utilityPropsMapPath: z.string().optional().default('./src/lib/utility-props.map.ts'),
     })
     .optional()
-    .default({ strict: false, dsl: true }),
+    .default({ strict: false, dsl: true, ui8kitMapPath: './src/ui8kit.map.json', utilityPropsMapPath: './src/lib/utility-props.map.ts' }),
 });

@@ -111,6 +111,11 @@ run_optional_step \
   "Inspect SDK binaries and generated output for engine project." \
   bun run check:sdk-integration
 
+run_optional_step \
+  "CLI publish audit (packages with cli/)" \
+  "Run 'bun run audit:cli' and fix bin→dist, shebang, --help/description issues before publish." \
+  bun run audit:cli
+
 run_step \
   "Validate architecture invariants" \
   "Fix invariant violations for routes, domains, fixtures, and terminology." \

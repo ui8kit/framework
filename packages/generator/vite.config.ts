@@ -15,10 +15,13 @@ export default defineConfig({
   build: {
     // Library mode configuration
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        'cli/generate': resolve(__dirname, 'src/cli/generate.ts'),
+        'cli/generate-templates': resolve(__dirname, 'src/cli/generate-templates.ts'),
+      },
       name: 'UI8KitGenerator',
       formats: ['es'],
-      fileName: (format) => `index.js`,
     },
     
     // Output directory

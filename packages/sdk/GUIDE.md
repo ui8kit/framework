@@ -1,131 +1,143 @@
-# UI8Kit SDK Guide
+# UI8Kit SDK — CLI Guide for Standalone Apps
 
-This guide explains SDK usage: CLI binaries, programmatic API, and integration with workspace scripts.
+This guide explains how to use the SDK CLI tools in a **standalone application** (not a monorepo). These commands help you develop DSL templates, validate configuration, and ensure your UI8Kit app is correctly set up.
 
-## SDK vs CLI
+## Prerequisites
 
-| Package | Role | Commands |
-|---------|------|----------|
-| `ui8kit` (CLI) | Component registry and build | init, add, scan, build, dev |
-| `@ui8kit/sdk` | App config, validation | ui8kit-validate, ui8kit-inspect |
-| `@ui8kit/generator` | Template generation | ui8kit-generate |
+- Node.js `>=18` or Bun
+- A project with `ui8kit.config.ts` or `ui8kit.config.json` in the root
 
-Use **CLI** for registry workflows (install components, scan, build registry). Use **SDK** for app workflows (validate config, inspect, generate templates).
-
-## Where To Run Commands
-
-- **SDK CLI binaries** — run from repository root or project directory:
-  - `bun packages/sdk/src/cli/validate.ts --cwd "apps/engine"` (monorepo)
-  - `bunx ui8kit-validate --cwd ./apps/engine` (published package)
-- **Root workspace scripts** — run from repository root:
-  - `bun run check:sdk-integration`
-  - `bun run smoke:parity`
-
-## Main Development Chains
-
-### 1) Quick local check for one brand project
-
-From repo root:
+## Installation
 
 ```bash
-bun packages/sdk/src/cli/inspect.ts --cwd "apps/engine"
-bun packages/sdk/src/cli/validate.ts --cwd "apps/engine"
-bun packages/generator/src/cli/generate.ts --cwd "apps/engine" --target react --out-dir "dist/local-check"
+bun add @ui8kit/sdk
+# or
+npm install @ui8kit/sdk
 ```
 
-### 2) Full SDK integration check
+## CLI Commands
 
-From repo root:
+### `ui8kit-inspect` — Inspect Your Config
+
+Shows the resolved UI8Kit configuration. Use this to verify that your config loads correctly and paths resolve as expected.
+
+**What it does:**
+- Loads `ui8kit.config.*` from your project
+- Prints brand, framework, target engine, paths (blocks, layouts, partials, fixtures)
+- Reports any config compatibility warnings
+
+**Examples:**
 
 ```bash
-bun run check:sdk-integration
+# From project root (default)
+bunx ui8kit-inspect
+
+# From another directory
+bunx ui8kit-inspect --cwd ./my-app
+
+# With npm
+npx ui8kit-inspect --cwd ./my-app
 ```
 
-This runs:
+**Typical output:**
+```
+UI8Kit project inspection
+Config path: /path/to/my-app/ui8kit.config.ts
+Brand: my-brand
+Framework: react
+Target: react
+Blocks: ./src/blocks
+Layouts: ./src/layouts
+Partials: ./src/partials
+...
+```
 
-- `inspect` + `validate` + `generate` for `apps/engine` (SDK binaries)
-- output folder existence checks
-- generated file count threshold checks
-- DSL residue checks in generated output (`<If`, `<Loop`, `<Var`, `@ui8kit/dsl`, `data-gen-`)
+---
 
-### 3) Programmatic usage in scripts
+### `ui8kit-validate` — Validate Config and DSL
+
+Validates your app configuration and DSL usage. Run this before generating templates or deploying.
+
+**What it does:**
+- Checks that required paths exist (blocks, layouts, partials, fixtures)
+- Validates DSL syntax in your components (`<If>`, `<Loop>`, `<Var>`, etc.)
+- Reports diagnostics (missing paths, invalid props, DSL errors)
+- Exits with code 0 on success, 1 on failure (suitable for CI)
+
+**Examples:**
+
+```bash
+# Validate from project root
+bunx ui8kit-validate
+
+# Validate a specific project
+bunx ui8kit-validate --cwd ./my-app
+```
+
+**When validation fails:**
+- Fix paths in `ui8kit.config.ts` (e.g. `blocksDir`, `layoutsDir`)
+- Fix DSL errors in your `.tsx` files (use `<Loop>` instead of `.map()`, `<If>` instead of ternary)
+- Run `ui8kit-lint-dsl` (from `@ui8kit/lint`) for detailed DSL suggestions
+
+---
+
+## Typical Workflow for DSL Development
+
+1. **Inspect** — Confirm config loads:
+   ```bash
+   bunx ui8kit-inspect
+   ```
+
+2. **Validate** — Ensure project is valid:
+   ```bash
+   bunx ui8kit-validate
+   ```
+
+3. **Generate** — Build templates (requires `@ui8kit/generator`):
+   ```bash
+   bun add @ui8kit/generator
+   bunx ui8kit-generate --target react
+   ```
+
+4. **Lint DSL** — Check control flow in components (requires `@ui8kit/lint`):
+   ```bash
+   bun add @ui8kit/lint
+   bunx ui8kit-lint-dsl src
+   ```
+
+---
+
+## Programmatic Usage
 
 ```typescript
 import { loadAppConfigDetails, validateProject } from "@ui8kit/sdk";
-import { buildProject } from "@ui8kit/generator";
 
-const cwd = "./apps/engine";
-const { config } = await loadAppConfigDetails(cwd);
+const cwd = process.cwd();
+const { config, configPath, warnings } = await loadAppConfigDetails(cwd);
 
-const validation = await validateProject(config, cwd);
-if (!validation.ok) throw new Error("Validation failed");
-
-const build = await buildProject(config, cwd);
-if (!build.ok) throw new Error("Build failed");
+const result = await validateProject(config, cwd);
+if (!result.ok) {
+  console.error(result.diagnostics);
+  console.error(result.dslErrors);
+}
 ```
 
-## `smoke:parity` and SDK
+---
 
-`scripts/smoke-parity.mjs` tests both CLI and SDK. For SDK it runs:
+## Troubleshooting
 
-- `ui8kit-validate --cwd apps/engine`
-- `ui8kit-inspect --cwd apps/engine`
-- `ui8kit-generate --cwd apps/engine --target react`
+| Issue | Solution |
+|-------|----------|
+| Config not found | Ensure `ui8kit.config.ts` or `ui8kit.config.json` exists in project root. Use `--cwd` to point to the correct directory. |
+| MISSING_PATH | Check that `blocksDir`, `layoutsDir`, `partialsDir`, `fixtures` in config point to existing directories. |
+| DSL validation errors | Run `ui8kit-lint-dsl src` for detailed suggestions. Prefer `<Loop>`, `<If>`, `<Var>` over raw JS. |
 
-Edit the CONFIG at the top of `scripts/smoke-parity.mjs` to add or change test cases.
+---
 
-## `check:sdk-integration` Explained
+## Related Packages
 
-`scripts/check-sdk-integration.sh` is a repository-level end-to-end check for SDK workflows.
-
-### What it validates
-
-- engine config can be loaded (`inspect`)
-- engine passes SDK validation (`validate`)
-- engine can generate React output (`generate`)
-- generated output looks like final transformed code (no DSL artifacts)
-
-### How to run
-
-From repo root:
-
-```bash
-bun run check:sdk-integration
-```
-
-## Typical Troubleshooting
-
-### Integration check fails in `check:sdk-integration`
-
-1. Run each command directly from root:
-   - `bun packages/sdk/src/cli/inspect.ts --cwd "<project>"`
-   - `bun packages/sdk/src/cli/validate.ts --cwd "<project>"`
-   - `bun packages/generator/src/cli/generate.ts --cwd "<project>" --target react --out-dir "dist/debug"`
-2. Inspect generated files under `<project>/dist/...`.
-3. Ensure no DSL artifacts remain and output folder exists.
-
-### Config not found
-
-- Ensure `ui8kit.config.ts`, `ui8kit.config.json`, or another supported config file exists in the project root.
-- Use `--cwd` to point to the correct directory.
-
-### Validation fails (MISSING_PATH)
-
-- Check that `fixtures`, `tokens`, `componentsDir`, `blocksDir`, `layoutsDir`, `partialsDir`, `libDir` in config point to existing paths.
-
-## Release Checklist For SDK Package
-
-From repo root (recommended before publishing):
-
-```bash
-bun run smoke:parity
-bun run check:sdk-integration
-bun run quality:local
-```
-
-From `packages/sdk`:
-
-```bash
-bun run build
-bun run test
-```
+| Package | Commands | Purpose |
+|---------|----------|---------|
+| `@ui8kit/sdk` | `ui8kit-validate`, `ui8kit-inspect` | Config validation and inspection |
+| `@ui8kit/generator` | `ui8kit-generate` | Template generation from DSL components |
+| `@ui8kit/lint` | `ui8kit-lint-dsl`, `ui8kit-lint` | DSL flow validation, whitelist sync |

@@ -23,5 +23,10 @@
   "partialsDir": "./src/partials",
   "libDir": "./src/lib",
   "registry": "@ui8kit",
-  "lint": { "strict": true, "dsl": true }
+  "lint": {
+    "strict": true,
+    "dsl": true,
+    "ui8kitMapPath": "./src/ui8kit.map.json",
+    "utilityPropsMapPath": "./src/lib/utility-props.map.ts"
+  }
 }

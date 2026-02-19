@@ -1,24 +1,43 @@
 {
   "name": "@ui8kit/generator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Static site generator for UI8Kit - converts React to Liquid templates",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": {"import": "./dist/index.js", "types": "./dist/index.d.ts"},
-    "./plugins": {"import": "./dist/plugins/template/index.js", "types": "./dist/plugins/template/index.d.ts"},
-    "./react": {"import": "./dist/plugins/template/built-in/ReactPlugin.js", "types": "./dist/plugins/template/built-in/ReactPlugin.d.ts"},
-    "./source": {"import": "./src/index.ts", "types": "./src/index.ts"}
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./plugins": {
+      "import": "./dist/plugins/template/index.js",
+      "types": "./dist/plugins/template/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/plugins/template/built-in/ReactPlugin.js",
+      "types": "./dist/plugins/template/built-in/ReactPlugin.d.ts"
+    },
+    "./source": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
   },
-  "files": ["dist", "src", "templates", "README.md"],
+  "files": [
+    "dist",
+    "src",
+    "templates",
+    "README.md",
+    "GUIDE.md"
+  ],
   "bin": {
     "generate-templates": "./dist/cli/generate-templates.js",
     "ui8kit-generate": "./dist/cli/generate.js"
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly --declaration --outDir dist && tsc -p tsconfig.cli.json",
+    "prepublishOnly": "npm run build",
+    "build": "vite build && tsc --emitDeclarationOnly --declaration --outDir dist",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest",

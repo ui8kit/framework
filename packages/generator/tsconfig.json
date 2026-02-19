@@ -22,7 +22,8 @@
       "@ui8kit/sdk/config": ["../sdk/src/config.ts"],
       "@ui8kit/dsl": ["../dsl/src/index.ts"],
       "@ui8kit/lint": ["../lint/src/index.ts"],
-      "@ui8kit/contracts": ["../contracts/src/index.ts"]
+      "@ui8kit/contracts": ["../contracts/src/index.ts"],
+      "@ui8kit/core": ["src/stub/core.ts"]
     }
   },
   "include": ["src/**/*"],

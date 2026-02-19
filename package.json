@@ -29,6 +29,7 @@
     "alias-data": "bun run scripts/configure-data-alias.ts",
     "validate:data-bundle": "bun run scripts/validate-data-bundle.ts",
     "validate:invariants": "bun run scripts/validate-invariants.ts",
+    "audit:cli": "bun run scripts/audit-cli-publish.ts",
     "smoke:parity": "node scripts/smoke-parity.mjs",
     "audit:refactor": "bun run scripts/refactor-audit.ts --mapping .manual/brand-mapping.json",
     "check:sdk-integration": "bash scripts/check-sdk-integration.sh",
@@ -47,6 +48,7 @@
     "sync-dev": "bun run scripts/pipeline-app.ts sync --target dev --domain website --data-mode local",
     "sync-test": "bun run scripts/pipeline-app.ts sync --target test --domain website --data-mode local",
     "sync:website": "bun run scripts/pipeline-app.ts sync --domain website --data-mode local",
+     "version:patch": "node -e \"const fs=require('fs');const p=process.argv[1]||'package.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));const[a,b,c]=j.version.split('.').map(Number);j.version=[a,b,c+1].join('.');fs.writeFileSync(p,JSON.stringify(j,null,2)+'\\n');console.log(j.version)\"",
     "m": "bash scripts/engine.sh"
 
   },

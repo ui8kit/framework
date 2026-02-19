@@ -22,6 +22,10 @@ export interface AppConfig {
   lint?: {
     strict?: boolean;
     dsl?: boolean;
+    /** Path to ui8kit.map.json (whitelist). Used by ui8kit-lint. */
+    ui8kitMapPath?: string;
+    /** Path to utility-props.map.ts. Used by ui8kit-lint. */
+    utilityPropsMapPath?: string;
   };
 }
 

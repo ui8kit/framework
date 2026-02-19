@@ -1,28 +1,64 @@
 {
   "name": "@ui8kit/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "UI8Kit SDK — app config, validation, and DSL tooling for developer experience",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": {"import": "./dist/index.js", "types": "./dist/index.d.ts"},
-    "./config": {"import": "./dist/config.js", "types": "./dist/config.d.ts"},
-    "./validate": {"import": "./dist/validate.js", "types": "./dist/validate.d.ts"},
-    "./data": {"import": "./dist/data.js", "types": "./dist/data.d.ts"},
-    "./constants": {"import": "./dist/constants.js", "types": "./dist/constants.d.ts"},
-    "./source": {"import": "./src/index.ts", "types": "./src/index.ts"},
-    "./source/config": {"import": "./src/config.ts", "types": "./src/config.ts"},
-    "./source/validate": {"import": "./src/validate.ts", "types": "./src/validate.ts"},
-    "./source/data": {"import": "./src/data.ts", "types": "./src/data.ts"},
-    "./source/constants": {"import": "./src/constants.ts", "types": "./src/constants.ts"}
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config.js",
+      "types": "./dist/config.d.ts"
+    },
+    "./validate": {
+      "import": "./dist/validate.js",
+      "types": "./dist/validate.d.ts"
+    },
+    "./data": {
+      "import": "./dist/data.js",
+      "types": "./dist/data.d.ts"
+    },
+    "./constants": {
+      "import": "./dist/constants.js",
+      "types": "./dist/constants.d.ts"
+    },
+    "./source": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./source/config": {
+      "import": "./src/config.ts",
+      "types": "./src/config.ts"
+    },
+    "./source/validate": {
+      "import": "./src/validate.ts",
+      "types": "./src/validate.ts"
+    },
+    "./source/data": {
+      "import": "./src/data.ts",
+      "types": "./src/data.ts"
+    },
+    "./source/constants": {
+      "import": "./src/constants.ts",
+      "types": "./src/constants.ts"
+    }
   },
-  "files": ["dist", "src", "README.md", "GUIDE.md"],
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "GUIDE.md"
+  ],
   "bin": {
     "ui8kit-validate": "./dist/cli/validate.js",
     "ui8kit-inspect": "./dist/cli/inspect.js"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "tsc --noEmit",
