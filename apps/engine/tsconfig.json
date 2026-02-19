@@ -9,11 +9,8 @@
       "@/*": ["./src/*"],
       "@ui8kit/core": ["./src/components/index.ts"],
       "@ui8kit/dsl": ["../../packages/dsl/src/index.ts"],
-      "@ui8kit/sdk": ["../../packages/sdk/src/index.ts"],
-      "@ui8kit/sdk/config": ["../../packages/sdk/src/config.ts"],
-      "@ui8kit/sdk/validate": ["../../packages/sdk/src/validate.ts"],
-      "@ui8kit/sdk/data": ["../../packages/sdk/src/data.ts"],
-      "@ui8kit/sdk/constants": ["../../packages/sdk/src/constants.ts"]
+      "@ui8kit/contracts": ["../../packages/contracts/src/index.ts"],
+      "@ui8kit/sdk": ["../../packages/sdk/src/index.ts"]
     }
   },
   "include": ["src/**/*", "*.ts"],

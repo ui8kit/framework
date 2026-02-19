@@ -3,8 +3,8 @@
 @import "./resta.css";
 
 @source "../**/*.{ts,tsx}";
-@source "../../../packages/generator/src/lib/ui8kit.map.json";
-@source "../../../packages/core/src/**/*.{ts,tsx}";
+@source "../../node_modules/@ui8kit/generator/src/lib/ui8kit.map.json";
+@source "../../node_modules/@ui8kit/core/src/**/*.{ts,tsx}";
 
 @layer base {
   body {

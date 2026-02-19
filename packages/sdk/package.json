@@ -32,9 +32,9 @@
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
-    "@ui8kit/contracts": "workspace:*",
-    "@ui8kit/lint": "workspace:*",
-    "@ui8kit/dsl": "workspace:*",
+    "@ui8kit/contracts": "^0.1.0",
+    "@ui8kit/lint": "^0.1.0",
+    "@ui8kit/dsl": "^0.1.0",
     "glob": "^13.0.0",
     "zod": "^3.23.0"
   },

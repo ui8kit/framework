@@ -12,6 +12,8 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
       '@ui8kit/core': resolve(__dirname, './src/components/index.ts'),
       '@ui8kit/dsl': resolve(__dirname, '../../packages/dsl/src/index.ts'),
+      '@ui8kit/contracts': resolve(__dirname, '../../packages/contracts/src/index.ts'),
+      '@ui8kit/sdk': resolve(__dirname, '../../packages/sdk/src/index.ts')
     },
   },
 });

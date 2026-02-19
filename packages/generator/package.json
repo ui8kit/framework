@@ -34,7 +34,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@ui8kit/sdk": "workspace:*",
+    "@ui8kit/sdk": "^0.1.0",
     "@babel/parser": "^7.24.0",
     "@babel/traverse": "^7.24.0",
     "@babel/types": "^7.24.0",

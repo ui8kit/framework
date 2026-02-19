@@ -32,6 +32,14 @@ export {
   Logger,
 } from './core';
 
+// Scanner utilities
+export {
+  getCoreComponentNames,
+  getFallbackCoreComponents,
+  isKnownCoreComponent,
+  findUnknownComponents,
+} from './core/scanner/core-component-scanner';
+
 // Types and interfaces
 export type {
   IOrchestrator,
@@ -301,9 +309,11 @@ export {
 
 export {
   generateRegistry,
+  resolveDomainItems,
   type Registry,
   type RegistryItem,
   type RegistryItemType,
   type RegistryConfig,
   type RegistrySourceDir,
+  type ResolveDomainOptions,
 } from './scripts';

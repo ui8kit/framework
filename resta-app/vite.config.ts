@@ -10,10 +10,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@ui8kit/core': resolve(__dirname, '../packages/core/src/index.ts'),
-      '@ui8kit/dsl': resolve(__dirname, '../packages/dsl/src/index.ts'),
-      '@ui8kit/contracts': resolve(__dirname, '../packages/contracts/src/index.ts'),
-      '@ui8kit/sdk/source/data': resolve(__dirname, '../packages/sdk/src/data.ts'),
     },
   },
 });

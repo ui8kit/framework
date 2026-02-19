@@ -14,15 +14,16 @@
  *   bun run generate -e handlebars
  */
 
-import { TemplateService } from '../../packages/generator/src/services/template/TemplateService';
-import { Logger } from '../../packages/generator/src/core';
-import { getFallbackCoreComponents } from '../../packages/generator/src/core/scanner/core-component-scanner';
 import {
+  TemplateService,
+  Logger,
+  getFallbackCoreComponents,
   generateRegistry,
   resolveDomainItems,
   type RegistryConfig,
   type RegistrySourceDir,
-} from '../../packages/generator/src/scripts';
+  type ResolveDomainOptions,
+} from '@ui8kit/generator';
 import { resolve } from 'path';
 import { writeFileSync, mkdirSync } from 'fs';
 
@@ -62,25 +63,6 @@ interface EngineConfig {
   /** Exclude these modules from generated template imports (e.g. @ui8kit/dsl) */
   excludeDependencies: string[];
 }
-
-/**
- * @ui8kit/core component names — preserved as-is in generated templates.
- * These are UI primitives that remain as React component references.
- */
-const CORE_COMPONENTS = [
-  // Layout
-  'Block', 'Container', 'Stack', 'Group', 'Box',
-  // Typography
-  'Title', 'Text',
-  // Interactive
-  'Button', 'Badge',
-  // Media
-  'Image', 'Icon',
-  // Composite
-  'Grid', 'Card', 'CardHeader', 'CardTitle', 'CardDescription',
-  'CardContent', 'CardFooter', 'Sheet',
-  'Accordion', 'AccordionItem', 'AccordionTrigger', 'AccordionContent',
-];
 
 const config: EngineConfig = {
   engine: 'react',
@@ -193,7 +175,14 @@ async function main() {
     console.log(`  Domain: ${domain}`);
     console.log('  ─────────────────────────────────');
 
-    const domainItems = await resolveDomainItems(fullRegistry, domain);
+    const domainItems = await resolveDomainItems(fullRegistry, domain, {
+      layoutContainerMap: {
+        MainLayout: 'MainLayoutView',
+        DashLayout: 'DashLayoutView',
+        ExamplesLayout: 'ExamplesLayoutView',
+      },
+      registryImportPrefixes: ['@/blocks', '@/layouts', '@/partials'],
+    } satisfies ResolveDomainOptions);
     console.log(`  Items:   ${domainItems.length}`);
 
     mkdirSync(domainOutputDir, { recursive: true });

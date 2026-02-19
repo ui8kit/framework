@@ -12,18 +12,32 @@ import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import type { RegistryItem, Registry } from './generate-registry';
 
-/** Map layout container names to their view names (registry layout items) */
-const LAYOUT_CONTAINER_TO_VIEW: Record<string, string> = {
-  MainLayout: 'MainLayoutView',
-  DashLayout: 'DashLayoutView',
-  ExamplesLayout: 'ExamplesLayoutView',
-};
+/**
+ * Options for resolving domain items.
+ */
+export interface ResolveDomainOptions {
+  /**
+   * Map from layout container component names to their registry view names.
+   * Used when a PageView imports a layout wrapper (e.g. MainLayout) but the
+   * registry stores it under a different name (e.g. MainLayoutView).
+   *
+   * @example
+   * { MainLayout: 'MainLayoutView', DashLayout: 'DashLayoutView' }
+   */
+  layoutContainerMap?: Record<string, string>;
 
-/** Import specifiers that may reference registry items */
-const REGISTRY_IMPORT_SPECIFIERS = [
-  '@/blocks',
-  '@/layouts',
-  '@/partials',
+  /**
+   * Additional path-alias prefixes that count as registry-relevant imports.
+   * The resolver always follows relative imports and `@ui8kit/*` specifiers.
+   * Pass project-specific aliases here so they are also traversed.
+   *
+   * @example ['@/blocks', '@/layouts', '@/partials']
+   */
+  registryImportPrefixes?: string[];
+}
+
+/** Built-in import specifiers that always reference registry items */
+const BUILTIN_REGISTRY_SPECIFIERS = [
   '@ui8kit/blocks',
   '@ui8kit/core',
 ];
@@ -32,7 +46,7 @@ const REGISTRY_IMPORT_SPECIFIERS = [
  * Extract imported identifiers from a source file.
  * Returns component/block/layout/partial names that might be in the registry.
  */
-function extractImportedNames(source: string): string[] {
+function extractImportedNames(source: string, extraPrefixes: string[]): string[] {
   const names = new Set<string>();
 
   // import { A, B, type C } from '...'
@@ -45,7 +59,7 @@ function extractImportedNames(source: string): string[] {
 
   while ((match = namedImportRegex.exec(source)) !== null) {
     const specifier = match[2];
-    if (!isRegistryRelevantImport(specifier)) continue;
+    if (!isRegistryRelevantImport(specifier, extraPrefixes)) continue;
 
     const bindings = match[1];
     for (const part of bindings.split(',')) {
@@ -58,7 +72,7 @@ function extractImportedNames(source: string): string[] {
 
   while ((match = defaultImportRegex.exec(source)) !== null) {
     const specifier = match[2];
-    if (!isRegistryRelevantImport(specifier)) continue;
+    if (!isRegistryRelevantImport(specifier, extraPrefixes)) continue;
     const name = match[1];
     if (name && /^[A-Z]/.test(name)) names.add(name);
   }
@@ -78,15 +92,12 @@ function extractImportedNames(source: string): string[] {
   return Array.from(names);
 }
 
-function isRegistryRelevantImport(specifier: string): boolean {
-  if (
-    specifier === '@/blocks' ||
-    specifier === '@/layouts' ||
-    specifier === '@/partials' ||
-    specifier.startsWith('@ui8kit/blocks') ||
-    specifier.startsWith('@ui8kit/core')
-  ) {
-    return true;
+function isRegistryRelevantImport(specifier: string, extraPrefixes: string[]): boolean {
+  for (const builtin of BUILTIN_REGISTRY_SPECIFIERS) {
+    if (specifier.startsWith(builtin)) return true;
+  }
+  for (const prefix of extraPrefixes) {
+    if (specifier === prefix || specifier.startsWith(prefix + '/')) return true;
   }
   if (specifier.startsWith('./') || specifier.startsWith('../')) {
     return true;
@@ -96,10 +107,14 @@ function isRegistryRelevantImport(specifier: string): boolean {
 
 /**
  * Resolve an imported name to a registry item name.
- * Handles layout container -> view mapping.
+ * Handles layout container -> view mapping (configurable via options).
  */
-function resolveToRegistryName(importedName: string, nameToItem: Map<string, RegistryItem>): string | null {
-  const viewName = LAYOUT_CONTAINER_TO_VIEW[importedName];
+function resolveToRegistryName(
+  importedName: string,
+  nameToItem: Map<string, RegistryItem>,
+  layoutContainerMap: Record<string, string>
+): string | null {
+  const viewName = layoutContainerMap[importedName];
   if (viewName && nameToItem.has(viewName)) return viewName;
   if (nameToItem.has(importedName)) return importedName;
   return null;
@@ -110,12 +125,17 @@ function resolveToRegistryName(importedName: string, nameToItem: Map<string, Reg
  *
  * @param registry Full registry (all items)
  * @param domain Domain name (e.g. "website", "docs")
+ * @param options Optional configuration for layout container mapping and import prefixes
  * @returns Filtered registry items for the domain
  */
 export async function resolveDomainItems(
   registry: Registry,
-  domain: string
+  domain: string,
+  options?: ResolveDomainOptions
 ): Promise<RegistryItem[]> {
+  const layoutContainerMap = options?.layoutContainerMap ?? {};
+  const extraPrefixes = options?.registryImportPrefixes ?? [];
+
   const items = registry.items;
   const nameToItem = new Map<string, RegistryItem>();
   for (const item of items) {
@@ -152,10 +172,10 @@ export async function resolveDomainItems(
     if (!sourcePath || !existsSync(sourcePath)) continue;
 
     const source = await readFile(sourcePath, 'utf-8');
-    const importedNames = extractImportedNames(source);
+    const importedNames = extractImportedNames(source, extraPrefixes);
 
     for (const name of importedNames) {
-      const resolved = resolveToRegistryName(name, nameToItem);
+      const resolved = resolveToRegistryName(name, nameToItem, layoutContainerMap);
       if (resolved && !result.has(resolved)) {
         const dep = nameToItem.get(resolved)!;
         result.set(resolved, dep);

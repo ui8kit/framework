@@ -8,4 +8,5 @@ export {
 } from './generate-registry';
 export {
   resolveDomainItems,
+  type ResolveDomainOptions,
 } from './resolve-domain-deps';

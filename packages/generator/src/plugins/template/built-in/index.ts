@@ -2,7 +2,7 @@
  * Built-in Template Plugins
  *
  * Official plugins for common template engines:
- * - ReactPlugin: For apps/engine (JS runtime)
+ * - ReactPlugin: React JSX runtime
  * - LiquidPlugin: For Shopify, Jekyll, Eleventy (JS runtime)
  * - HandlebarsPlugin: For Express.js, static sites (JS runtime)
  * - TwigPlugin: For Symfony, PHP applications (PHP runtime)
@@ -36,7 +36,7 @@ export const builtInPlugins: Array<{
       version: '1.0.0',
       runtime: 'js',
       fileExtension: '.tsx',
-      description: 'React JSX template plugin for apps/engine',
+      description: 'React JSX template plugin for UI8Kit',
     },
     factory: (config) => new ReactPlugin(),
   },

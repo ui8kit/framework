@@ -63,7 +63,7 @@ export class ReactPlugin extends BasePlugin {
   readonly version = '1.0.0';
   readonly runtime = 'js' as const;
   readonly fileExtension = '.tsx';
-  readonly description = 'React JSX template plugin for apps/engine';
+  readonly description = 'React JSX template plugin for UI8Kit';
 
   // ===========================================================================
   // Features
