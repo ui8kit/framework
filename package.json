@@ -12,8 +12,7 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*",
-    "resta-app"
+    "packages/*"
   ],
   "scripts": {
     "dev": "bunx turbo run dev",
